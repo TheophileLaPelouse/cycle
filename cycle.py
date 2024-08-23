@@ -26,10 +26,10 @@ from qgis.core import QgsProject, QgsSettings
 from qgis.gui import QgsGui
 
 
-from .qgis_utilities import QGisLogger, ArrayWidgetFactory, QGisProjectManager
+from .qgis_utilities import QGisLogger, QGisProjectManager #, ArrayWidgetFactory
 from .gui.menu_widgets.menu import CycleMenu
 from .gui.menu_widgets.toolbar import CycleToolbar
-from .services import set_service
+from .service import set_service
 from .utility.log import LogManager
 import os
 
@@ -96,7 +96,7 @@ class Cycle:
 
         self.__menu = CycleMenu(self.__log_manager)
         self.__iface.mainWindow().menuBar().addMenu(self.__menu)
-        QgsGui.editorWidgetRegistry().registerWidget("Array", ArrayWidgetFactory())
+        # QgsGui.editorWidgetRegistry().registerWidget("Array", ArrayWidgetFactory())
         self.__project_loaded()
 
 

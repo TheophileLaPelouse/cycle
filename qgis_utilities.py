@@ -33,29 +33,9 @@ from qgis.gui import QgsEditorWidgetFactory, QgsEditorWidgetWrapper, QgsEditorCo
 from qgis.PyQt.QtCore import QObject, QSettings, QCoreApplication, QFile
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.PyQt.QtXml import QDomDocument
-from .gui.widgets.array_and_graph import ArrayAndGraph
 from .service import get_service
-from .database.version import __version__
+from .database.version import __version__ 
 
-# @qgsfunction(args=1, group='Custom', usesgeometry=False)
-# def pg_array(values, *args):
-#     """
-#     convert postgres string representation of array to array
-#     """
-#     return eval(values[0].replace('}', ']').replace('{', '['))
-
-# @qgsfunction(args=3, group='Custom', usesgeometry=False)
-# def pg_array_sorted(values, *args):
-#     r"""
-#     pq_array_sorted(array, n, 'asc') test if postgres array nth column is sorted in ascending order (use 'desc' for decending
-#     """
-#     a = [r[values[1]] for r in eval(values[0].replace('}', ']').replace('{', '['))]
-#     if values[2] == 'asc':
-#         return a == list(sorted(a))
-#     elif values[2] == 'desc':
-#         return a == list(sorted(a, reverse=True))
-#     else:
-#         raise ValueError("third function value should be eith 'asc' or 'desc')")
 
 def tr(msg):
     return QCoreApplication.translate('@default', msg)
@@ -67,67 +47,67 @@ _svg_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), 'ressources'
 _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
 
-class ArrayWidgetWrapper(QgsEditorWidgetWrapper):
-    array_properties = {
-        "sz_array":                 {"max_len": 10, "title": tr("S(Z) Curve"),                  "columns": ["Z (m)",     tr("Surface (m²)")    ], 'rotate': True},
-        "zt_array":                 {"max_len": 20, "title": tr("Z(t) Curve"),                  "columns": ["t (h)",     "Z (m)"               ]},
-        "qt_array":                 {"max_len": 20, "title": tr("Q(t) Curve"),                  "columns": ["t (h)",     "Q (m3/h)"            ]},
-        "regul_pq_array":           {"max_len": 10, "title": tr("P(Q) Curve"),                  "columns": ["Q (m3/h)",  "P (m)"               ]},
-        "pq_array":                 {"max_len": 10, "title": tr("P(Q) Curve"),                  "columns": ["Q (m3/h)",  "P (m)"               ],
-                                        "image": os.path.join(os.path.dirname(__file__), '..', 'ressources', 'images', "pump.jpg")},
-        "alpt_array":               {"max_len": 10, "title": tr("Alpha(t) Curve"),              "columns": ["Time (s)",  "Alpha"                   ]},
-        "hourly_modulation_array":  {"max_len": 24, "title": tr("Hourly coefs."),    "columns": [tr("Weekday\nHourly coefficients"), tr("Weekend\nHourly coefficients")],
-            "vertical_headers": [f'{i}h-{i+1}h' for i in range(24)], "bar": True}
-        }
+# class ArrayWidgetWrapper(QgsEditorWidgetWrapper):
+#     array_properties = {
+#         "sz_array":                 {"max_len": 10, "title": tr("S(Z) Curve"),                  "columns": ["Z (m)",     tr("Surface (m²)")    ], 'rotate': True},
+#         "zt_array":                 {"max_len": 20, "title": tr("Z(t) Curve"),                  "columns": ["t (h)",     "Z (m)"               ]},
+#         "qt_array":                 {"max_len": 20, "title": tr("Q(t) Curve"),                  "columns": ["t (h)",     "Q (m3/h)"            ]},
+#         "regul_pq_array":           {"max_len": 10, "title": tr("P(Q) Curve"),                  "columns": ["Q (m3/h)",  "P (m)"               ]},
+#         "pq_array":                 {"max_len": 10, "title": tr("P(Q) Curve"),                  "columns": ["Q (m3/h)",  "P (m)"               ],
+#                                         "image": os.path.join(os.path.dirname(__file__), '..', 'ressources', 'images', "pump.jpg")},
+#         "alpt_array":               {"max_len": 10, "title": tr("Alpha(t) Curve"),              "columns": ["Time (s)",  "Alpha"                   ]},
+#         "hourly_modulation_array":  {"max_len": 24, "title": tr("Hourly coefs."),    "columns": [tr("Weekday\nHourly coefficients"), tr("Weekend\nHourly coefficients")],
+#             "vertical_headers": [f'{i}h-{i+1}h' for i in range(24)], "bar": True}
+#         }
 
-    def __init__(self, vl, fieldIdx, editor, parent):
-        super().__init__(vl, fieldIdx, editor, parent)
-        self.__array = None
-        self.__array_and_graph = None
+#     def __init__(self, vl, fieldIdx, editor, parent):
+#         super().__init__(vl, fieldIdx, editor, parent)
+#         self.__array = None
+#         self.__array_and_graph = None
 
-    def createWidget(self, parent):
-        return ArrayAndGraph(parent, **self.array_properties[self.field().name()])
+#     def createWidget(self, parent):
+#         return ArrayAndGraph(parent, **self.array_properties[self.field().name()])
 
-    def initWidget(self, editor):
-        self.__array_and_graph = editor
-        self.__array = editor.array_widget
-        self.__array.valuesChanged.connect(self.emitValueChanged)
+#     def initWidget(self, editor):
+#         self.__array_and_graph = editor
+#         self.__array = editor.array_widget
+#         self.__array.valuesChanged.connect(self.emitValueChanged)
 
-    def valid(self):
-        return True
+#     def valid(self):
+#         return True
 
-    def updateValues(self, value, lst=None):
-        if value is not None:
-            value = re.sub(r"'(.*)'::real\[\]", r"\1", value).replace('{', '[').replace('}', ']')
-            self.__array.set_table_items(eval(value))
-            self.__array_and_graph.draw_graph() # necessary because widget is not enabled without edition
+#     def updateValues(self, value, lst=None):
+#         if value is not None:
+#             value = re.sub(r"'(.*)'::real\[\]", r"\1", value).replace('{', '[').replace('}', ']')
+#             self.__array.set_table_items(eval(value))
+#             self.__array_and_graph.draw_graph() # necessary because widget is not enabled without edition
 
-    def setValue(self, value):
-        self.updateValues(value)
+#     def setValue(self, value):
+#         self.updateValues(value)
 
-    def value(self):
-        return str(self.__array.get_table_items()).replace(']', '}').replace('[', '{')
+#     def value(self):
+#         return str(self.__array.get_table_items()).replace(']', '}').replace('[', '{')
 
-class ArrayWidgetConfig(QgsEditorConfigWidget):
-    def __init__(self, vl, fieldIdx, parent):
-        super().__init__(vl, fieldIdx, parent)
-        self.__cfg = {}
+# class ArrayWidgetConfig(QgsEditorConfigWidget):
+#     def __init__(self, vl, fieldIdx, parent):
+#         super().__init__(vl, fieldIdx, parent)
+#         self.__cfg = {}
 
-    def config(self):
-        return self.__cfg
+#     def config(self):
+#         return self.__cfg
 
-    def setConfig(self, cfg):
-        self.__cfg = cfg
+#     def setConfig(self, cfg):
+#         self.__cfg = cfg
 
-class ArrayWidgetFactory(QgsEditorWidgetFactory):
-    def __init__(self):
-        super().__init__('Array')
+# class ArrayWidgetFactory(QgsEditorWidgetFactory):
+#     def __init__(self):
+#         super().__init__('Array')
 
-    def create(self, vl, fieldIdx, editor, parent):
-        return ArrayWidgetWrapper(vl, fieldIdx, editor, parent)
+#     def create(self, vl, fieldIdx, editor, parent):
+#         return ArrayWidgetWrapper(vl, fieldIdx, editor, parent)
 
-    def configWidget(self, vl, fieldIdx, parent):
-        return ArrayWidgetConfig(vl, fieldIdx, parent)
+#     def configWidget(self, vl, fieldIdx, parent):
+#         return ArrayWidgetConfig(vl, fieldIdx, parent)
 
 class MessageBarLogger:
     def __init__(self, message_bar):
@@ -168,40 +148,6 @@ class QGisProjectManager(QObject):
                     (tr("Water delivery point"), "api", "water_delivery_point", "name"),
                     (tr("Fire hydrant"), "api", "fire_hydrant", "name"),
                     ]),
-                (tr("Measures layers"), [
-                    (tr("Sensor"), "api", "sensor", "id"),
-                    (tr("Measure"), "api", "measure", "id"),
-                    ]),
-                (tr("Informations"), [
-                    (tr("Configured"), "api", "configured", "id"),
-                    (tr("Warning"), "api", "warning", "id"),
-                    (tr("Link without piezo reference"), "api", "link_without_piezo", "id"),
-                    (tr("Node without piezo reference"), "api", "node_without_piezo", "id"),
-                    ]),
-                (tr("Singularities"), [
-                    (tr("Imposed piezometry"), "api", "imposed_piezometry_singularity", "id"),
-                    (tr("Surge tank"), "api", "surge_tank_singularity", "id"),
-                    (tr("Flow injection"), "api", "flow_injection_singularity", "id"),
-                    #(tr("Chlorine injection"), "chlorine_injection_singularity", "id"),
-                    (tr("Air relief valve"), "api", "air_relief_valve_singularity", "id"),
-                    (tr("Pressure accumulator"), "api", "pressure_accumulator_singularity", "id"),
-                    (tr("Model connection"), "api", "model_connection_singularity", "id"),
-                    ]),
-                (tr("Nodes"), [
-                    (tr("User node"), "api", "user_node", "id"),
-                    (tr("Reservoir"), "api", "reservoir_node", "id"),
-                    (tr("All nodes"), "api", "node", "id"),
-                    ]),
-                (tr("Links"), [
-                    (tr("Check valve"), "api", "check_valve_link", "id"),
-                    (tr("Valve"), "api", "valve_link", "id"),
-                    (tr("Headloss"), "api", "headloss_link", "id"),
-                    (tr("Flow regulator"), "api", "flow_regulator_link", "id"),
-                    (tr("Pressure regulator"), "api", "pressure_regulator_link", "id"),
-                    (tr("Pump"), "api", "pump_link", "id"),
-                    (tr("Sector"), "api", "sector", "id"),
-                    (tr("Pipe"), "api", "pipe_link", "id"),
-                    ]),
                 (tr("Settings"), [
                     (tr("Metadata"), "api", "metadata", "id"),
                     (tr("Fluid properties"), "api", "fluid_properties", "id"),
@@ -231,16 +177,18 @@ class QGisProjectManager(QObject):
             if tbl.endswith('_link'):
                 rel.append([nam+tr(' up'), nam, 'up', tr('All nodes'), 'id', tbl])
                 rel.append([nam+tr(' down'), nam, 'down', tr('All nodes'), 'id', tbl])
-
-        rel.append([tr('User node domestic curve'), tr('User node'), 'domestic_curve', tr('Hourly modulation curve'), 'name', 'user_node'])
-        rel.append([tr('User node industrial curve'), tr('User node'), 'industrial_curve', tr('Hourly modulation curve'), 'name', 'user_node'])
-        #rel.append([tr('Chlorine injection target node'), tr('Chlorine injection'), 'target_node', tr('All nodes'), 'id', 'chlorine_injection_singularity'])
-        rel.append([tr('Pipe material'), tr('Pipe'), 'material', tr('Material'), 'name', 'pipe_link'])
-        rel.append([tr('Pump target node'), tr('Pump'), 'target_node', tr('All nodes'), 'id', 'pump_link'])
-        rel.append([tr('Water delivery point pipe'), tr('Water delivery point'), 'pipe_link', tr('Pipe'), 'id', 'water_delivery_point'])
-        rel.append([tr('Pipe singularity pipe'), tr('Pipe singularity'), 'pipe_link', tr('Pipe'), 'id', 'pipe_link_singularity'])
-        rel.append([tr('Fire hydrant pipe'), tr('Fire hydrant'), 'pipe_link', tr('Pipe'), 'id', 'fire_hydrant'])
-        rel.append([tr('Sensor'), tr('Measure'), 'sensor', tr('Sensor'), 'id', 'measure'])
+            # Est ce que c'est ici que je rajoute les polygons et sur blocs ?
+        # Je laisse parce que je comprend pas bien encore comment ça marche 
+        
+        # rel.append([tr('User node domestic curve'), tr('User node'), 'domestic_curve', tr('Hourly modulation curve'), 'name', 'user_node'])
+        # rel.append([tr('User node industrial curve'), tr('User node'), 'industrial_curve', tr('Hourly modulation curve'), 'name', 'user_node'])
+        # #rel.append([tr('Chlorine injection target node'), tr('Chlorine injection'), 'target_node', tr('All nodes'), 'id', 'chlorine_injection_singularity'])
+        # rel.append([tr('Pipe material'), tr('Pipe'), 'material', tr('Material'), 'name', 'pipe_link'])
+        # rel.append([tr('Pump target node'), tr('Pump'), 'target_node', tr('All nodes'), 'id', 'pump_link'])
+        # rel.append([tr('Water delivery point pipe'), tr('Water delivery point'), 'pipe_link', tr('Pipe'), 'id', 'water_delivery_point'])
+        # rel.append([tr('Pipe singularity pipe'), tr('Pipe singularity'), 'pipe_link', tr('Pipe'), 'id', 'pipe_link_singularity'])
+        # rel.append([tr('Fire hydrant pipe'), tr('Fire hydrant'), 'pipe_link', tr('Pipe'), 'id', 'fire_hydrant'])
+        # rel.append([tr('Sensor'), tr('Measure'), 'sensor', tr('Sensor'), 'id', 'measure'])
         return rel
 
     @staticmethod
@@ -310,189 +258,6 @@ class QGisProjectManager(QObject):
         for layer in QgsProject.instance().mapLayersByName(tr('All nodes')):
             layer.commitChanges()
 
-    @staticmethod
-    def remove_ugrid(scenario):
-        root = QgsProject.instance().layerTreeRoot()
-        ##modif marjo 26/07/23
-        main_group = root.findGroup(tr("ANIMATED RESULTS"))
-        #for node in root.children():
-        if main_group is not None:
-            for node in main_group.children():
-                if node.name() ==  f"{scenario} "+tr("results"):
-                    main_group.removeChildNode(node)
-                    return
-    @staticmethod
-    def load_ugrid(scenario, nc_files):
-        root = QgsProject.instance().layerTreeRoot()
-        ##modif marjo 26/07/23
-        if root.findGroup(tr("ANIMATED RESULTS")) is None:
-            main_group = root.insertGroup(0, tr("ANIMATED RESULTS"))
-        else:
-            main_group = root.findGroup(tr("ANIMATED RESULTS"))
-
-        for nc in nc_files:
-            layer = QgsMeshLayer(f"{nc}", Path(nc).stem, "mdal")
-
-            if layer.isValid():
-                QgsProject.instance().addMapLayer(layer, False)
-                main_group.addLayer(layer)
-
-    @staticmethod
-    def remove_results(scenario):
-        root = QgsProject.instance().layerTreeRoot()
-        ##modif marjo 26/07/23
-        main_group = root.findGroup(tr("SYNTHETIC RESULTS"))
-        #for node in root.children():
-        if main_group is not None:
-            for node in main_group.children():
-                if node.name() ==  f"{scenario} "+tr("synthetic results"):
-                    main_group.removeChildNode(node)
-                    return
-
-    @staticmethod
-    def load_results(scenario, gpkg, comput_mode):
-        root = QgsProject.instance().layerTreeRoot()
-        ##modif marjo 26/07/23
-        if root.findGroup(tr("SYNTHETIC RESULTS")) is None:
-            main_group = root.insertGroup(0, tr("SYNTHETIC RESULTS"))
-        else:
-            main_group = root.findGroup(tr("SYNTHETIC RESULTS"))
-
-        group = main_group.addGroup(f"{scenario} "+tr("synthetic results"))
-        deci_layer = QgsVectorLayer(f"{gpkg}|layername=fire_hydrant_min_pressure", "fire_hydrant_min_pressure", "ogr")
-        deci_layer2 = QgsVectorLayer(f"{gpkg}|layername=fire_hydrant_flow_at_1bar", "fire_hydrant_flow_at_1bar", "ogr")
-        criti_layer = QgsVectorLayer(f"{gpkg}|layername=wd_loss_broken_pipe", "wd_loss_broken_pipe", "ogr")
-
-        if deci_layer.isValid():
-            QgsProject.instance().addMapLayer(deci_layer, False)
-            group.addLayer(deci_layer)
-        elif deci_layer2.isValid():
-            QgsProject.instance().addMapLayer(deci_layer2, False)
-            group.addLayer(deci_layer2)
-        elif criti_layer.isValid():
-            QgsProject.instance().addMapLayer(criti_layer, False)
-            group.addLayer(criti_layer)
-        else:
-            ssgroup1 = group.addGroup(tr("Results tables"))
-            ssgroup2 = group.addGroup(tr("Hydraulic maps results"))
-            if comput_mode != "Fast transient":
-                ssgroup3 = group.addGroup(tr("Exterior fire defense"))
-            ssgroup4 = group.addGroup(tr("Warning"))
-            if comput_mode == "Gradual transient":
-                ssgroup5 = group.addGroup(tr("Water quality maps results")) #pas forcément rempli mais possible qu'en GT
-
-            #group1
-            if comput_mode == "Fast transient":
-                my_tuple_of_tuple = (
-                    (tr("Node"), 'user_node'),
-                    (tr("Pipe"), 'pipe_link'),
-                    )
-            else :
-                my_tuple_of_tuple = (
-                    (tr("Water delivery sector"), 'water_delivery_sector'),
-                    (tr("Node"), 'user_node'),
-                    (tr("Pipe"), 'pipe_link'),
-                    #(tr("Flow on pipe"), 'temporal_flow_on_pipe'),
-                    (tr("Reservoir"), 'reservoir_node'),
-                    )
-            for layer_name, tbl in my_tuple_of_tuple:
-                layer = QgsVectorLayer(f"{gpkg}|layername={tbl}", layer_name, "ogr")
-                QgsProject.instance().addMapLayer(layer, False)
-                item = ssgroup1.addLayer(layer)
-                item.setItemVisibilityChecked(False)
-                item.setExpanded(False)
-
-            #group2
-            if comput_mode == "Steady state":
-                 my_tuple_of_tuple = (
-                    ("P moy (mCE)", "p_moy_mce"),
-                    ("Piezo moy (m)", "piezo_moy_m"),
-                    ("Q moy (m3/h)", "q_moy_m3_per_h"),
-                    ("V moy (m/s)", "v_moy_m_per_s"),
-                    (tr("Headloss max (mm/m)"), "headloss_max_mm_per_m"),
-                    ("Sources ratio", "source_ratio")
-                    )
-            elif comput_mode == "Gradual transient":
-                my_tuple_of_tuple = (
-                    ("P min (mCE)", "p_min_mce"),
-                    ("P max (mCE)", "p_max_mce"),
-                    ("P moy (mCE)", "p_moy_mce"),
-                    ("delta_p_mce", "delta_p_mce"),
-                    ("Piezo min (m)", "piezo_min_m"),
-                    ("Piezo max (m)", "piezo_max_m"),
-                    ("Piezo moy (m)", "piezo_moy_m"),
-                    ("Q min (m3/h)", "q_min_m3_per_h"),
-                    ("Q max (m3/h)", "q_max_m3_per_h"),
-                    ("Q moy (m3/h)", "q_moy_m3_per_h"),
-                    ("V min (m/s)", "v_min_m_per_s"),
-                    ("V max (m/s)", "v_max_m_per_s"),
-                    ("V moy (m/s)", "v_moy_m_per_s"),
-                    (tr("Headloss max (mm/m)"), "headloss_max_mm_per_m"),
-                    ("Sources ratio", "source_ratio")
-                    )
-            elif comput_mode == "Fast transient":
-                my_tuple_of_tuple = (
-                    ("P min (mCE)", "p_min_mce"),
-                    ("P max (mCE)", "p_max_mce"),
-                    ("delta_p_mce", "delta_p_mce")
-                    )
-
-            for layer_name, tbl in my_tuple_of_tuple:
-                layer = QgsVectorLayer(f"{gpkg}|layername={tbl}", layer_name, "ogr")
-                QgsProject.instance().addMapLayer(layer, False)
-                item = ssgroup2.addLayer(layer)
-                item.setItemVisibilityChecked("p_min_mce" == layer_name)
-                item.setExpanded(False)
-
-            #group3
-            if comput_mode != "Fast transient":
-                my_tuple_of_tuple = (
-                    ("P min (mCE)", "fire_hydrant_p_min_mce"),)
-                for layer_name, tbl in my_tuple_of_tuple:
-                    layer = QgsVectorLayer(f"{gpkg}|layername={tbl}", layer_name, "ogr")
-                    QgsProject.instance().addMapLayer(layer, False)
-                    item = ssgroup3.addLayer(layer)
-                    item.setItemVisibilityChecked(False)
-                    item.setExpanded(False)
-
-            #group4
-            if comput_mode == "Fast transient":
-                my_tuple_of_tuple = (
-                    (tr("warning_on_node"), 'warning_on_node'),
-                    (tr("warning_on_pipe"), 'warning_on_pipe'))
-            else:
-                my_tuple_of_tuple = (
-                    (tr("warning_on_node"), 'warning_on_node'),
-                    (tr("warning_on_pipe"), 'warning_on_pipe'),
-                    (tr("slowdown"), 'slowdown'))
-            for layer_name, tbl in my_tuple_of_tuple:
-                layer = QgsVectorLayer(f"{gpkg}|layername={tbl}", layer_name, "ogr")
-                QgsProject.instance().addMapLayer(layer, False)
-                item = ssgroup4.addLayer(layer)
-                item.setItemVisibilityChecked(False)
-                item.setExpanded(False)
-
-            #group5
-            if comput_mode == "Gradual transient":
-                my_tuple_of_tuple = (
-                        ("C Cl min (mg/l)", "c_cl_min_mg_per_l"),
-                        ("C Cl max (mg/l)", "c_cl_max_mg_per_l"),
-                        ("C Cl moy (mg/l)", "c_cl_moy_mg_per_l"),
-                        ("C THM min (mg/l)", "c_thm_min_mg_per_l"),
-                        ("C THM max (mg/l)", "c_thm_max_mg_per_l"),
-                        ("C THM moy (mg/l)", "c_thm_moy_mg_per_l"),
-                        ("C tracer min (mg/l)", "c_tracer_min_mg_per_l"),
-                        ("C tracer max (mg/l)", "c_tracer_max_mg_per_l"),
-                        ("C tracer moy (mg/l)", "c_tracer_moy_mg_per_l"),
-                        (tr("Travel time max (h)"), "travel_time_max_h"),
-                        (tr("Contact time max (h)"), "contact_time_max_h")
-                        )
-                for layer_name, tbl in my_tuple_of_tuple:
-                    layer = QgsVectorLayer(f"{gpkg}|layername={tbl}", layer_name, "ogr")
-                    QgsProject.instance().addMapLayer(layer, False)
-                    item = ssgroup5.addLayer(layer)
-                    item.setItemVisibilityChecked("travel_time_max_h" == layer_name)
-                    item.setExpanded(False)
 
     @staticmethod
     def update_project(project_filename):
@@ -522,8 +287,6 @@ class QGisProjectManager(QObject):
                         layer = QgsVectorLayer(uri, layer_name, "postgres")
                         project.addMapLayer(layer, False)
                         n = g.addLayer(layer)
-                        if layer_name in (tr('All nodes'), tr('Water delivery point'), tr('Sector')):
-                            n.setItemVisibilityChecked(False)
                         name_id_map[layer_name] = layer.id()
                         if not layer.isValid():
                             raise RuntimeError(f'layer {layer_name} is invalid')
@@ -592,6 +355,7 @@ class QGisProjectManager(QObject):
                     for i in range(fieldConfiguration.childNodes().count()):
                         field = fieldConfiguration.childNodes().item(i).toElement().attribute('name')
                         config = fieldConfiguration.childNodes().item(i).toElement().firstChildElement('editWidget').firstChildElement('config').firstChildElement('Option')
+                        # Comme des xpath quand on vole des données sur internet
                         for j in range(config.childNodes().count()):
                             e = config.childNodes().item(j).toElement()
                             if e.attribute('name') == 'Relation':
@@ -605,36 +369,38 @@ class QGisProjectManager(QObject):
                             #if e.attribute
 
                     # change referenced layers in default values expressions
-                    defaults = root.firstChildElement('defaults')
-                    for i in range(defaults.childNodes().count()):
-                        e = defaults.childNodes().item(i).toElement()
-                        if e.attribute('expression').find('layer:=') != -1:
-                            field = e.attribute('field')
-                            if field == '_model':
-                                e.setAttribute('expression',
-                                        re.sub("layer:='[^']+'",
-                                        f"layer:='{all_nodes_layer_id}'",
-                                        e.attribute('expression')))
-                            elif field == '_sector':
-                                e.setAttribute('expression',
-                                        re.sub("layer:='[^']+'",
-                                        f"layer:='{sector_layer_id}'",
-                                        e.attribute('expression')))
-                            elif field in ('_roughness_mm', '_elasticity_n_m2'):
-                                e.setAttribute('expression',
-                                        re.sub("layer:='[^']+'",
-                                        f"layer:='{material_layer_id}'",
-                                        e.attribute('expression')))
-                            elif field == '_celerity':
-                                e.setAttribute('expression',
-                                        re.sub("layer:='[^']+'",
-                                        f"layer:='{fluid_layer_id}'",
-                                        e.attribute('expression')))
-                            else:
-                                e.setAttribute('expression',
-                                        re.sub("layer:='[^']+'",
-                                        f"layer:='{relation_field_id_map[field].referencedLayer().id()}'",
-                                        e.attribute('expression')))
+                    # defaults = root.firstChildElement('defaults')
+                    # for i in range(defaults.childNodes().count()):
+                    #     e = defaults.childNodes().item(i).toElement()
+                    #     if e.attribute('expression').find('layer:=') != -1:
+                    #         field = e.attribute('field')
+                    #         if field == '_model':
+                    #             e.setAttribute('expression',
+                    #                     re.sub("layer:='[^']+'",
+                    #                     f"layer:='{all_nodes_layer_id}'",
+                    #                     e.attribute('expression')))
+                    #         elif field == '_sector':
+                    #             e.setAttribute('expression',
+                    #                     re.sub("layer:='[^']+'",
+                    #                     f"layer:='{sector_layer_id}'",
+                    #                     e.attribute('expression')))
+                    #         elif field in ('_roughness_mm', '_elasticity_n_m2'):
+                    #             e.setAttribute('expression',
+                    #                     re.sub("layer:='[^']+'",
+                    #                     f"layer:='{material_layer_id}'",
+                    #                     e.attribute('expression')))
+                    #         elif field == '_celerity':
+                    #             e.setAttribute('expression',
+                    #                     re.sub("layer:='[^']+'",
+                    #                     f"layer:='{fluid_layer_id}'",
+                    #                     e.attribute('expression')))
+                    #         else:
+                    #             e.setAttribute('expression',
+                    #                     re.sub("layer:='[^']+'",
+                    #                     f"layer:='{relation_field_id_map[field].referencedLayer().id()}'",
+                    #                     e.attribute('expression')))
+                    # On enlèvera le commentaire le jour où on aura des expressions intéressantes dans cetaines tables.
+                    # En gros faut définir les références qui nous seront utiles avant ça.
 
                     # save to tmp file
                     tmp_qml = os.path.join(tempfile.gettempdir(), qml_basename)
@@ -706,6 +472,7 @@ class QGisProjectManager(QObject):
         snap_config.setTolerance(12)
         snap_config.setIntersectionSnapping(True)
         project.setSnappingConfig(snap_config)
+        # I guess on laisse ça mais faudra regarder si ça nous intéresse de changer ça dans le design 
 
         # set crs
         target_crs = QgsCoordinateReferenceSystem()
