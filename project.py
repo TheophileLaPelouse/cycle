@@ -3,7 +3,6 @@
 """
 cycle module to handle project
 """
-
 import os
 import psycopg2
 from psycopg2.extras import LoggingConnection
@@ -80,7 +79,7 @@ class Project(object):
     def data_directory(self):
         if not os.path.exists(os.path.join(self.directory, 'data')):
             os.makedirs(os.path.join(self.directory, 'data'))
-        return os.path.join(self.directory, 'data'))
+        return os.path.join(self.directory, 'data')
 
     @property
     def backup_directory(self):

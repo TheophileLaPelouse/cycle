@@ -25,7 +25,7 @@ _plugin_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir,
 _icons_dir = os.path.join(_plugin_dir, "ressources", "images")
 
 
-class ToolBar(QToolBar):
+class CycleToolbar(QToolBar):
     mod_changed_signal = pyqtSignal()
     layers_changed_signal = pyqtSignal(list)
 

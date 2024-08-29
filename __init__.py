@@ -14,6 +14,8 @@
 
  This script initializes the plugin, making it known to QGIS.
 """
+import os 
+
 
 # ENVIRONMENTS
 if 'PGSERVICEFILE' not in os.environ: # .pg_service.conf not set in environment

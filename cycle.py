@@ -34,7 +34,7 @@ from .utility.log import LogManager
 import os
 
 
-class Cycle:
+class Cycle(QObject):
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):

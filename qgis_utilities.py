@@ -144,22 +144,8 @@ class QGisProjectManager(QObject):
     def layertree():
         # this is a function, not calss static variable because othierwise translation is initialize after creation
         return [("", [
-                    (tr("Water delivery sector"), "api", "water_delivery_sector", "name"),
-                    (tr("Water delivery point"), "api", "water_delivery_point", "name"),
-                    (tr("Fire hydrant"), "api", "fire_hydrant", "name"),
-                    ]),
-                (tr("Settings"), [
-                    (tr("Metadata"), "api", "metadata", "id"),
-                    (tr("Fluid properties"), "api", "fluid_properties", "id"),
-                    (tr("Material"), "api", "material", "name"),
-                    (tr("Hourly modulation curve"), "api", "hourly_modulation_curve", "name"),
-                    (tr("Failure curve"), "api", "failure_curve", "name"),
-                    (tr("Threshold warning"), "api", "threshold_warning_settings", "id"),
-                    (tr("Model"), "api", "model", "name"),
-                    (tr("Configuration"), "api", "configuration", "name"),
-                    (tr("Sectorization"), "api", "sectorization_settings", "id"),
-                    (tr("Pipe singularity"), "api", "pipe_link_singularity", "id"),
-                    ]),
+                    (tr("First bloc"), "api", "1st_bloc", "name"),
+                    ])
                 ]
     @staticmethod
     def layers():

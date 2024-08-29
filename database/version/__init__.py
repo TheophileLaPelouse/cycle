@@ -10,4 +10,5 @@ def __versions():
             res.add((int(m.group(4)), int(m.group(5)), int(m.group(6))))
     return res
 
-__version__ = '{}.{}.{}'.format(*sorted(__versions())[-1])
+# __version__ = '{}.{}.{}'.format(*sorted(__versions())[-1]) pour plus tard
+__version__ = '0.0.1'
