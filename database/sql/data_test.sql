@@ -523,7 +523,7 @@ insert into ___.metadata default values;
 
 create type ___.zone as enum ('urban', 'rural') ; 
 
-create type ___.geo_type as enum('point', 'line', 'polygon');
+create type ___.geo_type as enum('Point', 'LineString', 'Polygon') ; 
 
 ------------------------------------------------------------------------------------------------
 -- MODELS                                                                                     --
@@ -561,13 +561,15 @@ create table ___.bloc(
     unique (id)
 );
 
+create index on bloc_geomidx ___.bloc using gist(geom);
+
 create table ___.link(
     -- Peut être que ça va changer mais pour l'instant un lien c'est juste un objet abstrait et tous les blocs sont des noueuds 
     id serial primary key,
     up integer not null references ___.bloc(id) on update cascade on delete cascade,
     down integer not null references ___.bloc(id) on update cascade on delete cascade, 
     up_to_down varchar[] not null, -- Pas de check donc faudra faire gaffe dans l'api avec des triggers 
-    geom geometry('LINESTRING', 2154) not null check(ST_IsValid(geom)),
+    geom geometry('LINESTRING', 2154) check(ST_IsValid(geom)),
     unique (id),
     unique (up, down)
 );
@@ -587,7 +589,7 @@ insert into ___.sorties (liste_sorties) values (array['Q', 'DBO5']::varchar[]);
 
 create table ___.test_bloc(
     id serial primary key,
-    shape ___.geo_type not null default 'polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
+    shape ___.geo_type not null default 'Polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
     name varchar not null default ___.unique_name('test_bloc', abbreviation=>'test_bloc'),
     DBO5 real default null, 
     Q real default null, 
@@ -704,7 +706,68 @@ instead of insert on api.test_bloc0
 for each row
 execute function api.test_bloc_insert_trigger();
 
-select template.inherited_view('test', 'bloc') ;
+
+------------------------------------------------------------------------------------------------
+-- Views avec template
+------------------------------------------------------------------------------------------------
+
+-- fonction pour trouver les sous-blocs d'un bloc
+create or replace function api.find_ss_blocs(id_sur_bloc integer, g geometry, model_name varchar)
+returns integer[]
+language plpgsql
+as $$
+declare
+    ss_blocs_array integer[];
+Begin 
+    select array_agg(id) into ss_blocs_array
+    from ___.bloc
+    where st_within(___.bloc.geom, g) and ___.bloc.model = model_name;
+
+    update ___.bloc set sur_bloc = id_sur_bloc where id = any(ss_blocs_array);
+
+    return ss_blocs_array;
+end ;
+$$; 
+
+-- Fonction pour trouver le sur-bloc d'un bloc que l'on ajoute à la view et update tout ça
+create or replace function api.find_sur_bloc(id_ss_bloc integer, g geometry, model_name varchar)
+returns integer
+language plpgsql
+as $$
+declare
+    sur_bloc_id integer;
+begin
+    select id into sur_bloc_id
+    from ___.bloc
+    where st_within(g, ___.bloc.geom) and ___.bloc.model = model_name
+    order by st_area(___.bloc.geom) asc
+    limit 1;
+    update ___.bloc set ss_blocs = array_append(ss_blocs, id_ss_bloc) where id = sur_bloc_id; 
+    return sur_bloc_id;
+end;
+$$;
+
+select template.inherited_view('test', 'bloc', specific_geom => 
+    'ST_Force2D(a.geom)::geometry(Polygon,'||(select srid from ___.metadata)||')', 
+    after_update_section =>
+    $$
+        --if new.geom != old.geom then
+        if not St_equals(old.geom,new.geom) then
+            update ___.link set geom=st_setpoint(geom, 0, new.geom) where up=new.id;
+            update ___.link set geom=st_setpoint(geom, -1, new.geom) where down=new.id;
+        end if;
+    $$, 
+    start_section =>
+    $$
+        if tg_op = 'INSERT' or tg_op = 'UPDATE' then
+            new.ss_blocs := api.find_ss_blocs(new.id, new.geom, new.model);
+            new.sur_bloc := api.find_sur_bloc(new.id, new.geom, new.model);
+        end if ;
+        if tg_op = 'DELETE' then
+            update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- on enlève le bloc de la liste des sous-blocs du sur-bloc
+            update ___.bloc set sur_bloc = api.find_sur_bloc(old.id, old.geom, old.model) where sur_bloc = old.id; -- on met à jour le sur-bloc
+        end if ;
+    $$);
 
 ------------------------------------------------------------------------------------------------
 -- insert and select tests
@@ -723,8 +786,14 @@ insert into ___.model (name, comment) values ('test_model', 'model for testing')
 
 -- insert into api.test_bloc0 (id, shape, name, geom, model, DBO5, Q, EH) values (3, 'polygon', 'test_bloc3', st_geomfromtext('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 4, 5, 6);
 insert into api.test_bloc(name, geom, model) values ('test_bloc4', st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model');
+insert into api.test_bloc(name, geom, model) values ('test_bloc5', st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
+
 
 select * from ___.model;
 select * from ___.test_bloc;
 select * from ___.bloc;
+
+delete from api.test_bloc where name = 'test_bloc4';
+
+select * from ___.bloc ; 
 -- select column_name from information_schema.columns where table_name = 'test_bloc' and table_schema = '___';

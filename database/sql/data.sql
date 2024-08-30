@@ -1,4 +1,11 @@
-create extension if not exists postgis;
+Create extension if not exists  postgis;
+
+------------------------------------------------------------------------------------------------
+-- SCHEMA solid                                                                                --
+------------------------------------------------------------------------------------------------
+
+
+drop schema if exists ___ cascade ; 
 
 create schema ___;
 
@@ -19,7 +26,10 @@ begin
     end if;
     tab := concrete||coalesce('_'||abstract, '');
     seq := tab||'_name_seq';
+    raise notice 'seq := %', seq;
     nxt := nextval('___.'||seq);
+    raise notice 'nxt := %', nxt;
+    -- nxt := 1;
     execute format('with substrings as (
                         select substring(name from ''%2$s_(.*)'') as s
                         from ___.%1$I
@@ -59,7 +69,7 @@ insert into ___.metadata default values;
 
 create type ___.zone as enum ('urban', 'rural') ; 
 
-create type ___.geo_type as enum('point', 'line', 'polygon');
+create type ___.geo_type as enum('Point', 'LineString', 'Polygon') ; 
 
 ------------------------------------------------------------------------------------------------
 -- MODELS                                                                                     --
@@ -97,17 +107,26 @@ create table ___.bloc(
     unique (id)
 );
 
+create index on bloc_geomidx ___.bloc using gist(geom);
+
 create table ___.link(
     -- Peut être que ça va changer mais pour l'instant un lien c'est juste un objet abstrait et tous les blocs sont des noueuds 
     id serial primary key,
     up integer not null references ___.bloc(id) on update cascade on delete cascade,
     down integer not null references ___.bloc(id) on update cascade on delete cascade, 
-    unique (id)
+    up_to_down varchar[] not null, -- Pas de check donc faudra faire gaffe dans l'api avec des triggers 
+    geom geometry('LINESTRING', 2154) check(ST_IsValid(geom)),
+    unique (id),
+    unique (up, down)
 );
 
 
-
-
+create table ___.sorties(
+    name varchar primary key default 'principal',
+    liste_sorties varchar[] not null
+) ; 
+insert into ___.sorties (liste_sorties) values (array['Q', 'DBO5']::varchar[]);
+-- Permet d'identifier si le nom d'une colonne peut être une sortie.
 
 ------------------------------------------------------------------------------------------------
 -- Concrete tables
@@ -116,8 +135,43 @@ create table ___.link(
 
 create table ___.test_bloc(
     id serial primary key,
-    shape ___.geo_type not null, -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
+    shape ___.geo_type not null default 'Polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
     name varchar not null default ___.unique_name('test_bloc', abbreviation=>'test_bloc'),
-    foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade
+    DBO5 real default null, 
+    Q real default null, 
+    EH integer default null,
+    formula varchar[] default array['Q = 2*EH']::varchar[],
+    foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
+    unique (name, id)
 );
+
+
+------------------------------------------------------------------------------------------------
+-- Config 
+------------------------------------------------------------------------------------------------
+
+create table ___.configuration(
+    name varchar primary key default ___.unique_name('configuration', abbreviation=>'CFG'),
+    creation_date timestamp not null default current_date,
+    comment varchar
+);
+
+create table ___.user_configuration(
+    user_ varchar primary key default session_user,
+    config varchar references ___.configuration(name)
+);
+
+create table ___.test_bloc_config(
+    like ___.test_bloc,
+    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+    foreign key (id, name) references ___.test_bloc(id, name) on delete cascade on update cascade,
+    primary key (id, config)
+) ; 
+
+create or replace function ___.current_config()
+returns varchar 
+language sql stable as
+$$
+    select null::varchar;
+$$;
 
