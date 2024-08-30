@@ -30,6 +30,7 @@ from qgis.core import QgsProcessingFeedback
 
 _cycle_dir = os.path.join(os.path.expanduser('~'), ".cycle")
 _log_file = os.path.join(_cycle_dir, 'cycle.log')
+    
 
 class ConsoleLogger:
     def error(self, title, message):

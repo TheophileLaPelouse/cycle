@@ -144,7 +144,7 @@ class QGisProjectManager(QObject):
     def layertree():
         # this is a function, not calss static variable because othierwise translation is initialize after creation
         return [("", [
-                    (tr("First bloc"), "api", "1st_bloc", "name"),
+                    (tr("Test bloc"), "api", "test_bloc", "name"),
                     ])
                 ]
     @staticmethod
@@ -310,7 +310,8 @@ class QGisProjectManager(QObject):
         fluid_layer_id = project.mapLayersByName(tr('Fluid properties'))[0].id()
 
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
-        lang = '' if locale == 'en' else '_fr'
+        # lang = '' if locale == 'en' else '_fr'
+        lang = ''
         for layer_name, tbl in QGisProjectManager.layers().items():
             found_layers = project.mapLayersByName(layer_name)
             if len(found_layers):

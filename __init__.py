@@ -21,6 +21,15 @@ import os
 if 'PGSERVICEFILE' not in os.environ: # .pg_service.conf not set in environment
     os.environ['PGSERVICEFILE'] = os.path.join(os.path.expanduser('~'), ".pg_service.conf")
     
+_cycle_dir = os.path.join(os.path.expanduser('~'), ".cycle")
+_log_file = os.path.join(_cycle_dir, 'cycle.log')
+
+if not os.path.exists(_cycle_dir):
+    os.makedirs(_cycle_dir)
+    
+if not os.path.exists(_log_file):
+    open(_log_file, 'w').close()
+    
 
 def classFactory(iface):  # pylint: disable=invalid-name
     """Load Cycle class from file Cycle.

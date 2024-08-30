@@ -270,13 +270,13 @@ begin
     --raise notice '%', template.view_statement(table_name, additional_columns => additional_columns, additional_join => additional_join, additional_union => additional_union, specific_geom => specific_geom, specific_columns => specific_columns);
     execute template.view_statement(table_name, additional_columns => additional_columns, additional_join => additional_join, additional_union => additional_union, specific_geom => specific_geom, specific_columns => specific_columns);
     for s in select * from template.view_default_statement(table_name) loop
-        raise notice '%', s;
+        -- raise notice '%', s;
         execute s;
     end loop;
     if with_trigger then
-        raise notice '%', template.basic_function_statement(table_name, cannot_delete=>cannot_delete);
+        -- raise notice '%', template.basic_function_statement(table_name, cannot_delete=>cannot_delete);
         execute template.basic_function_statement(table_name, cannot_delete=>cannot_delete, start_section=>start_section);
-        raise notice '%', template.trigger_statement(table_name);
+        -- raise notice '%', template.trigger_statement(table_name);
         execute template.trigger_statement(table_name);
     end if;
 
@@ -305,7 +305,7 @@ begin
     additional_join := coalesce(additional_join, '')||format(' where c.id not in (select g.id from ___.%s_%s_config g where g.config=___.current_config())', concrete, abstract);
 
     s := template.view_statement(concrete, abstract, additional_columns => additional_columns, additional_join => additional_join, specific_geom => specific_geom, specific_columns => specific_columns);
-    raise notice '%', s;
+    -- raise notice '%', s;
     -- add configuration
 
     s := s||
@@ -318,12 +318,12 @@ begin
     execute s;
 
     for s in select * from template.view_default_statement(concrete, abstract) loop
-        raise notice '%', s;
+        -- raise notice '%', s;
         execute s;
     end loop;
-    raise notice '%', template.inherited_function_statement(concrete, abstract);
+    -- raise notice '%', template.inherited_function_statement(concrete, abstract);
     execute template.inherited_function_statement(concrete, abstract, start_section=>start_section, after_update_section=>after_update_section);
-    raise notice '%', template.trigger_statement(concrete, abstract);
+    -- raise notice '%', template.trigger_statement(concrete, abstract);
     execute template.trigger_statement(concrete, abstract);
 
     return 'CREATE INHERITED VIEW api.'||concrete||'_'||abstract;
@@ -335,6 +335,7 @@ create or replace function template.bloc_view(concrete varchar, abstract varchar
 returns varchar
 language plpgsql as
 $fonction$
+-- Create a view api for a bloc with the section to update the links and the relationship between blocs
 DECLARE
     query text;
 begin 
@@ -356,7 +357,7 @@ begin
     E'        update ___.bloc set sur_bloc = api.find_sur_bloc(old.id, old.geom, old.model) where sur_bloc = old.id; -- update the sur-bloc\n' ||
     E'    end if;\n' ||
     E'$$);';
-    raise notice '%', query;
+    -- raise notice '%', query;
     execute query;
     return 'CREATE VIEW ' || concrete || '_' || abstract;
 end;
@@ -527,5 +528,21 @@ begin
 end;
 $$;
 
+------------------------------------------------------------------------------------------------
+-- Views on blocs
+------------------------------------------------------------------------------------------------
 
 select template.bloc_view('test', 'bloc', 'Polygon') ; 
+
+
+------------------------------------------------------------------------------------------------
+-- Metadata
+------------------------------------------------------------------------------------------------
+
+select template.basic_view('metadata');
+
+------------------------------------------------------------------------------------------------
+-- MODELS                                                                                     --
+------------------------------------------------------------------------------------------------
+
+select template.basic_view('model');
