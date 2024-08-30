@@ -335,6 +335,37 @@ end;
 $$
 ;
 
+create or replace function template.bloc_view(concrete varchar, abstract varchar, shape varchar)
+returns varchar
+language plpgsql as
+$fonction$
+DECLARE
+    query text;
+begin 
+    query := E'select template.inherited_view(''' || concrete || ''', ''' || abstract || ''', specific_geom => ' ||
+    E'''ST_Force2D(a.geom)::geometry('|| shape ||',' || (select srid from ___.metadata) || ')'',' ||
+    E'after_update_section => $$\n' ||
+    E'    if not St_equals(old.geom, new.geom) then\n' ||
+    E'        update ___.link set geom = st_setpoint(geom, 0, new.geom) where up = new.id;\n' ||
+    E'        update ___.link set geom = st_setpoint(geom, -1, new.geom) where down = new.id;\n' ||
+    E'    end if;\n' ||
+    E'$$, \n' ||
+    E'start_section => $$\n' ||
+    E'    if tg_op = ''INSERT'' or tg_op = ''UPDATE'' then\n' ||
+    E'        new.ss_blocs := api.find_ss_blocs(new.id, new.geom, new.model);\n' ||
+    E'        new.sur_bloc := api.find_sur_bloc(new.id, new.geom, new.model);\n' ||
+    E'    end if;\n' ||
+    E'    if tg_op = ''DELETE'' then\n' ||
+    E'        update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- remove the bloc from the list of sub-blocs of the sur-bloc\n' ||
+    E'        update ___.bloc set sur_bloc = api.find_sur_bloc(old.id, old.geom, old.model) where sur_bloc = old.id; -- update the sur-bloc\n' ||
+    E'    end if;\n' ||
+    E'$$);';
+    raise notice '%', query;
+    execute query;
+    return 'CREATE VIEW ' || concrete || '_' || abstract;
+end;
+$fonction$;
+
 create function template.execute_with_srid(query varchar, srid integer)
 returns varchar
 language plpgsql volatile as
@@ -747,27 +778,8 @@ begin
 end;
 $$;
 
-select template.inherited_view('test', 'bloc', specific_geom => 
-    'ST_Force2D(a.geom)::geometry(Polygon,'||(select srid from ___.metadata)||')', 
-    after_update_section =>
-    $$
-        --if new.geom != old.geom then
-        if not St_equals(old.geom,new.geom) then
-            update ___.link set geom=st_setpoint(geom, 0, new.geom) where up=new.id;
-            update ___.link set geom=st_setpoint(geom, -1, new.geom) where down=new.id;
-        end if;
-    $$, 
-    start_section =>
-    $$
-        if tg_op = 'INSERT' or tg_op = 'UPDATE' then
-            new.ss_blocs := api.find_ss_blocs(new.id, new.geom, new.model);
-            new.sur_bloc := api.find_sur_bloc(new.id, new.geom, new.model);
-        end if ;
-        if tg_op = 'DELETE' then
-            update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- on enlève le bloc de la liste des sous-blocs du sur-bloc
-            update ___.bloc set sur_bloc = api.find_sur_bloc(old.id, old.geom, old.model) where sur_bloc = old.id; -- on met à jour le sur-bloc
-        end if ;
-    $$);
+
+select template.bloc_view('test', 'bloc', 'Polygon') ;
 
 ------------------------------------------------------------------------------------------------
 -- insert and select tests
