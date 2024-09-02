@@ -31,8 +31,11 @@ from .gui.menu_widgets.menu import CycleMenu
 from .gui.menu_widgets.toolbar import CycleToolbar
 from .service import set_service
 from .utility.log import LogManager
+from .project import Project
 import os
 
+def tr(msg):
+    return QCoreApplication.translate("Cycle", msg)
 
 class Cycle(QObject):
     """QGIS Plugin Implementation."""
@@ -48,6 +51,7 @@ class Cycle(QObject):
         # Save reference to the QGIS interface
         QObject.__init__(self)
         self.__iface = iface
+        self.__project = None
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)

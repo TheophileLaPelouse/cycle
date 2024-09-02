@@ -654,11 +654,39 @@ create table ___.test_bloc_config(
 ) ; 
 
 create or replace function ___.current_config()
-returns varchar 
-language sql stable as
+returns varchar
+language sql volatile security definer as
 $$
-    select null::varchar;
-$$;
+    select config from ___.user_configuration where user_=session_user;
+$$
+;
+
+
+do $$
+declare
+   r record;
+   c varchar;
+begin
+    for r in
+        select 'create sequence ___.'||replace(replace(regexp_replace(replace(replace(
+            col.column_default,
+            '___.unique_name(''', ''),
+            '::character varying', ''),
+            ''', abbreviation =>.*\)', ''),
+            ''', ''', '_'),
+            ''')', '')||'_name_seq' as query
+        from information_schema.columns col
+        where col.column_default is not null
+              and col.table_schema='___' and col.column_default ~ '^___.unique_name\(.*'
+    loop
+        raise notice '%',r.query;
+        execute r.query;
+    end loop;
+
+
+end
+$$
+;
 
 
 ------------------------------------------------------------------------------------------------
@@ -785,7 +813,11 @@ select template.bloc_view('test', 'bloc', 'Polygon') ;
 -- insert and select tests
 ------------------------------------------------------------------------------------------------
 
-insert into ___.model (name, comment) values ('test_model', 'model for testing');
+select ___.current_config();
+
+select ___.unique_name('test_bloc', abbreviation=>'test_bloc');
+
+insert into ___.model (comment) values ('model for testing');
 
 -- insert into ___.bloc (name, model, shape, geom) values ('test_bloc', 'test_model', 'polygon', st_geomfromtext('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', 2154));
 -- insert into ___.test_bloc (shape, name, DBO5, Q, EH) values ('polygon', 'test_bloc', 1, 2, 3);
@@ -797,8 +829,8 @@ insert into ___.model (name, comment) values ('test_model', 'model for testing')
 -- insert into ___.link (up, down, up_to_down) values (2, 1, array['Q', 'DBO5']::varchar[]);
 
 -- insert into api.test_bloc0 (id, shape, name, geom, model, DBO5, Q, EH) values (3, 'polygon', 'test_bloc3', st_geomfromtext('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 4, 5, 6);
-insert into api.test_bloc(name, geom, model) values ('test_bloc4', st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model');
-insert into api.test_bloc(name, geom, model) values ('test_bloc5', st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
+-- insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model');
+-- insert into api.test_bloc(geom, model) values ('test_bloc5', st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
 
 
 select * from ___.model;

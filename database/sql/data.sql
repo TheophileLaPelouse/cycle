@@ -21,9 +21,6 @@ declare
     seq varchar;
     tab varchar;
 begin
-    if abbreviation is null then
-        execute format('(select abbreviation from ___.type_%2$s where name=''%1$s'')', concrete, abstract) into abbreviation;
-    end if;
     tab := concrete||coalesce('_'||abstract, '');
     seq := tab||'_name_seq';
     raise notice 'seq := %', seq;
@@ -169,9 +166,37 @@ create table ___.test_bloc_config(
 ) ; 
 
 create or replace function ___.current_config()
-returns varchar 
-language sql stable as
+returns varchar
+language sql volatile security definer as
 $$
-    select null::varchar;
-$$;
+    select config from ___.user_configuration where user_=session_user;
+$$
+;
+
+
+do $$
+declare
+   r record;
+   c varchar;
+begin
+    for r in
+        select 'create sequence ___.'||replace(replace(regexp_replace(replace(replace(
+            col.column_default,
+            '___.unique_name(''', ''),
+            '::character varying', ''),
+            ''', abbreviation =>.*\)', ''),
+            ''', ''', '_'),
+            ''')', '')||'_name_seq' as query
+        from information_schema.columns col
+        where col.column_default is not null
+              and col.table_schema='___' and col.column_default ~ '^___.unique_name\(.*'
+    loop
+        raise notice '%',r.query;
+        execute r.query;
+    end loop;
+
+
+end
+$$
+;
 

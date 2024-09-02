@@ -546,3 +546,25 @@ select template.basic_view('metadata');
 ------------------------------------------------------------------------------------------------
 
 select template.basic_view('model');
+
+------------------------------------------------------------------------------------------------
+-- Config 
+------------------------------------------------------------------------------------------------
+
+create function api.current_config()
+returns varchar
+language sql stable security definer as
+$$
+    select ___.current_config();
+$$
+;
+
+create function api.set_current_config(name varchar)
+returns void
+language sql volatile security definer as
+$$
+    insert into ___.user_configuration(user_, config) values (session_user, name)
+    on conflict on constraint user_configuration_pkey do
+    update set config=name;
+$$
+;

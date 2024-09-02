@@ -304,12 +304,12 @@ class QGisProjectManager(QObject):
 
     @staticmethod
     def load_qml(project):
-        all_nodes_layer_id = project.mapLayersByName(tr('All nodes'))[0].id()
-        sector_layer_id = project.mapLayersByName(tr('Water delivery sector'))[0].id()
-        material_layer_id = project.mapLayersByName(tr('Material'))[0].id()
-        fluid_layer_id = project.mapLayersByName(tr('Fluid properties'))[0].id()
+        # all_nodes_layer_id = project.mapLayersByName(tr('All nodes'))[0].id()
+        # sector_layer_id = project.mapLayersByName(tr('Water delivery sector'))[0].id()
+        # material_layer_id = project.mapLayersByName(tr('Material'))[0].id()
+        # fluid_layer_id = project.mapLayersByName(tr('Fluid properties'))[0].id()
 
-        locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
+        # locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         # lang = '' if locale == 'en' else '_fr'
         lang = ''
         for layer_name, tbl in QGisProjectManager.layers().items():

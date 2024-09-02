@@ -14,6 +14,7 @@ import psycopg2
 from ..utility.string import normalized_name
 from .version import __version__
 from ..service import get_service
+from qgis.core import QgsMessageLog
 __current_dir = os.path.dirname(__file__)
 
 CYCLE_DIR = os.path.join(os.path.expanduser('~'), ".cycle")
@@ -194,6 +195,11 @@ def get_projects_list(all_db=False):
     with autoconnection("postgres") as con, con.cursor() as cur:
         cur.execute("select datname from pg_database where datistemplate=false order by datname;")
         return [db for db, in cur.fetchall() if is_cycle_db(db) or all_db]
+    
+def get_rid(dbname) : 
+    with autoconnection("postgres") as con, con.cursor() as cur:
+        cur.execute(f"drop database {dbname};")
+        
 
 def project_exists(project_name):
     with autoconnection("postgres") as con, con.cursor() as cur:
