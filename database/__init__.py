@@ -18,6 +18,7 @@ from qgis.core import QgsMessageLog
 __current_dir = os.path.dirname(__file__)
 
 CYCLE_DIR = os.path.join(os.path.expanduser('~'), ".cycle")
+_custom_sql_dir = os.path.join(CYCLE_DIR, 'sql')
 
 class ProjectCreationError(Exception):
     pass
@@ -175,6 +176,7 @@ def reset_project(project_name, srid, debug=False):
             cur.execute(f.read())
         # default srid in cycle extension is already set to 2154
         cur.execute(f"update api.metadata set srid={srid} where {srid}!=2154;")
+    
 
 def is_cycle_db(dbname):
     try:

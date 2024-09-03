@@ -315,15 +315,17 @@ begin
         s, 'create view [^ ]+ as select ', ' union all select '),
         concrete||'_'||abstract, concrete||'_'||abstract||'_config'),
         ' where .*', ' where c.config=___.current_config()');
+    
+    raise notice '%', s;
     execute s;
 
     for s in select * from template.view_default_statement(concrete, abstract) loop
-        -- raise notice '%', s;
+        raise notice '%', s;
         execute s;
     end loop;
-    -- raise notice '%', template.inherited_function_statement(concrete, abstract);
+    raise notice '%', template.inherited_function_statement(concrete, abstract);
     execute template.inherited_function_statement(concrete, abstract, start_section=>start_section, after_update_section=>after_update_section);
-    -- raise notice '%', template.trigger_statement(concrete, abstract);
+    raise notice '%', template.trigger_statement(concrete, abstract);
     execute template.trigger_statement(concrete, abstract);
 
     return 'CREATE INHERITED VIEW api.'||concrete||'_'||abstract;
@@ -351,6 +353,7 @@ begin
     E'    if tg_op = ''INSERT'' or tg_op = ''UPDATE'' then\n' ||
     E'        new.ss_blocs := api.find_ss_blocs(new.id, new.geom, new.model);\n' ||
     E'        new.sur_bloc := api.find_sur_bloc(new.id, new.geom, new.model);\n' ||
+   -- E'        perform api.update_links(new.id, new.shape, new.geom, new.model);\n' ||
     E'    end if;\n' ||
     E'    if tg_op = ''DELETE'' then\n' ||
     E'        update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- remove the bloc from the list of sub-blocs of the sur-bloc\n' ||
@@ -502,8 +505,23 @@ declare
 Begin 
     select array_agg(id) into ss_blocs_array
     from ___.bloc
-    where st_within(___.bloc.geom, g) and ___.bloc.model = model_name;
+    where st_within(___.bloc.geom, g) and ___.bloc.model = model_name ;
 
+    -- On enlève les sous-blocs de sous-blocs
+    ss_blocs_array := array(
+        WITH b AS (
+            SELECT id, sur_bloc
+            FROM ___.bloc
+        )
+        SELECT id
+        FROM unnest(ss_blocs_array) AS id
+        WHERE id IN (
+            SELECT b.id
+            FROM b
+            WHERE b.sur_bloc is null or not b.sur_bloc = ANY(ss_blocs_array)
+        )
+    );
+    raise notice 'ss_blocs_array := %', ss_blocs_array;
     update ___.bloc set sur_bloc = id_sur_bloc where id = any(ss_blocs_array);
 
     return ss_blocs_array;
@@ -528,13 +546,36 @@ begin
 end;
 $$;
 
+create or replace function api.update_links(link_id integer, shape ___.geo_type, g geometry, model_name varchar)
+returns void
+language plpgsql
+as $$
+declare
+    ups integer[];
+    downs integer[];
+    point_up geometry;
+    point_down geometry;
+begin 
+    if shape = 'LineString' then
+        point_up := st_startpoint(g);
+        point_down := st_endpoint(g);
+        for ups in select id from ___.bloc where st_intersects(geom, point_up) and model = model_name loop
+            insert into ___.link (up, down) values (ups, link_id);
+        end loop;
+        for downs in select id from ___.bloc where st_intersects(geom, point_down) and model = model_name loop
+            insert into ___.link (up, down) values (link_id, downs);
+        end loop;
+    end if;
+end;
+$$;
+
 ------------------------------------------------------------------------------------------------
 -- Views on blocs
 ------------------------------------------------------------------------------------------------
 
 select template.bloc_view('test', 'bloc', 'Polygon') ; 
 
-
+select template.bloc_view('piptest', 'bloc', 'LineString') ;
 ------------------------------------------------------------------------------------------------
 -- Metadata
 ------------------------------------------------------------------------------------------------
@@ -568,3 +609,26 @@ $$
     update set config=name;
 $$
 ;
+
+------------------------------------------------------------------------------------------------
+-- Add future bloc 
+------------------------------------------------------------------------------------------------
+
+create or replace function api.add_new_bloc(concrete varchar, abstract varchar, shape varchar)
+returns varchar
+language plpgsql as 
+$$
+begin
+    if not exists (
+        select 1 
+        from information_schema.views 
+        where table_schema = 'api' 
+        and table_name = concrete || '_' || abstract
+    ) then 
+        perform template.bloc_view(concrete, abstract, shape);
+        return 'Bloc ' || concrete || '_' || abstract || ' added';
+    end if;
+    return 'Bloc ' || concrete || '_' || abstract || ' already exists';
+end; 
+$$;
+

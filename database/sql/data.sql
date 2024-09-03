@@ -109,14 +109,18 @@ create index bloc_geomidx on ___.bloc using gist(geom);
 create table ___.link(
     -- Peut être que ça va changer mais pour l'instant un lien c'est juste un objet abstrait et tous les blocs sont des noueuds 
     id serial primary key,
+    name varchar not null default ___.unique_name('link', abbreviation=>'link'),
     up integer not null references ___.bloc(id) on update cascade on delete cascade,
     down integer not null references ___.bloc(id) on update cascade on delete cascade, 
-    up_to_down varchar[] not null, -- Pas de check donc faudra faire gaffe dans l'api avec des triggers 
+    -- up_to_down varchar[] not null, -- Pas de check donc faudra faire gaffe dans l'api avec des triggers 
     geom geometry('LINESTRING', 2154) check(ST_IsValid(geom)),
-    unique (id),
+    unique (id, name),
     unique (up, down)
 );
 
+create index link_geomidx on ___.link using gist(geom);
+create index link_upidx on ___.link(up);
+create index link_downidx on ___.link(down);
 
 create table ___.sorties(
     name varchar primary key default 'principal',
@@ -131,7 +135,7 @@ insert into ___.sorties (liste_sorties) values (array['Q', 'DBO5']::varchar[]);
 ------------------------------------------------------------------------------------------------
 
 create table ___.test_bloc(
-    id serial primary key,
+    id integer primary key,
     shape ___.geo_type not null default 'Polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
     name varchar not null default ___.unique_name('test_bloc', abbreviation=>'test_bloc'),
     DBO5 real default null, 
@@ -142,6 +146,16 @@ create table ___.test_bloc(
     unique (name, id)
 );
 
+create table ___.piptest_bloc(
+    id integer primary key, 
+    shape ___.geo_type not null default 'LineString',
+    name varchar not null default ___.unique_name('piptest_bloc', abbreviation=>'piptest_bloc'),
+    Q real default null, 
+    formula varchar[] default array['CO2 = Q']::varchar[],
+    foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
+    unique (name, id)
+
+) ;
 
 ------------------------------------------------------------------------------------------------
 -- Config 
@@ -162,6 +176,13 @@ create table ___.test_bloc_config(
     like ___.test_bloc,
     config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
     foreign key (id, name) references ___.test_bloc(id, name) on delete cascade on update cascade,
+    primary key (id, config)
+) ; 
+
+create table ___.piptest_bloc_config(
+    like ___.piptest_bloc,
+    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+    foreign key (id, name) references ___.piptest_bloc(id, name) on delete cascade on update cascade,
     primary key (id, config)
 ) ; 
 

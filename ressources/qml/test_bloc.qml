@@ -439,7 +439,7 @@
     <default field="eh" expression="" applyOnUpdate="0"/>
     <default field="formula" expression="" applyOnUpdate="0"/>
     <default field="sur_bloc" expression="" applyOnUpdate="0"/>
-    <default field="model" expression="" applyOnUpdate="0"/>
+    <default field="model" expression="@current_model" applyOnUpdate="0"/>
     <default field="ss_blocs" expression="" applyOnUpdate="0"/>
   </defaults>
   <constraints>
@@ -517,13 +517,13 @@ def my_form_open(dialog, layer, feature):
     <field editable="1" name="dbo5"/>
     <field editable="1" name="eh"/>
     <field editable="1" name="formula"/>
-    <field editable="1" name="id"/>
+    <field editable="0" name="id"/>
     <field editable="1" name="model"/>
     <field editable="1" name="name"/>
     <field editable="1" name="q"/>
     <field editable="1" name="shape"/>
-    <field editable="1" name="ss_blocs"/>
-    <field editable="1" name="sur_bloc"/>
+    <field editable="0" name="ss_blocs"/>
+    <field editable="0" name="sur_bloc"/>
   </editable>
   <labelOnTop>
     <field labelOnTop="0" name="dbo5"/>
