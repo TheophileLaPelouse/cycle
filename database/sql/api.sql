@@ -197,6 +197,7 @@ create function template.inherited_function_statement(
     concrete varchar,
     abstract varchar,
     start_section varchar default null,
+    after_insert_section varchar default null,
     after_update_section varchar default null
     )
 returns varchar
@@ -216,6 +217,7 @@ begin
     E'    if tg_op = ''INSERT'' then\n'||
     E'        '||template.insert_statement(abstract, concrete)||E';\n'||
     E'        '||template.insert_statement(concrete||'_'||abstract, concrete)||E';\n'||
+    E'        '||coalesce(after_insert_section, '')||
     E'        return new;\n'||
     E'    elsif tg_op = ''UPDATE'' then\n'||
     E'        '||template.update_statement(abstract)||E';\n'||
@@ -293,6 +295,7 @@ create function template.inherited_view(
     specific_geom varchar default null,
     specific_columns json default '{}'::json,
     start_section varchar default '',
+    after_insert_section varchar default null,
     after_update_section varchar default ''
     )
 returns varchar
@@ -316,16 +319,17 @@ begin
         concrete||'_'||abstract, concrete||'_'||abstract||'_config'),
         ' where .*', ' where c.config=___.current_config()');
     
-    raise notice '%', s;
+    -- raise notice '%', s;
     execute s;
 
     for s in select * from template.view_default_statement(concrete, abstract) loop
-        raise notice '%', s;
+        -- raise notice '%', s;
         execute s;
     end loop;
-    raise notice '%', template.inherited_function_statement(concrete, abstract);
-    execute template.inherited_function_statement(concrete, abstract, start_section=>start_section, after_update_section=>after_update_section);
-    raise notice '%', template.trigger_statement(concrete, abstract);
+    -- raise notice '%', template.inherited_function_statement(concrete, abstract);
+    execute template.inherited_function_statement(concrete, abstract, start_section=>start_section,
+     after_update_section=>after_update_section, after_insert_section=>after_insert_section);
+    -- raise notice '%', template.trigger_statement(concrete, abstract);
     execute template.trigger_statement(concrete, abstract);
 
     return 'CREATE INHERITED VIEW api.'||concrete||'_'||abstract;
@@ -349,11 +353,13 @@ begin
     E'        update ___.link set geom = st_setpoint(geom, -1, new.geom) where down = new.id;\n' ||
     E'    end if;\n' ||
     E'$$, \n' ||
+    E'after_insert_section => $$\n' ||
+    E'      perform api.update_links(new.id, ''' || shape || ''', new.geom, new.model);' ||
+    E'$$, \n' ||
     E'start_section => $$\n' ||
     E'    if tg_op = ''INSERT'' or tg_op = ''UPDATE'' then\n' ||
     E'        new.ss_blocs := api.find_ss_blocs(new.id, new.geom, new.model);\n' ||
     E'        new.sur_bloc := api.find_sur_bloc(new.id, new.geom, new.model);\n' ||
-   -- E'        perform api.update_links(new.id, new.shape, new.geom, new.model);\n' ||
     E'    end if;\n' ||
     E'    if tg_op = ''DELETE'' then\n' ||
     E'        update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- remove the bloc from the list of sub-blocs of the sur-bloc\n' ||
@@ -551,21 +557,37 @@ returns void
 language plpgsql
 as $$
 declare
-    ups integer[];
-    downs integer[];
+    ups integer;
+    downs integer;
     point_up geometry;
     point_down geometry;
 begin 
     if shape = 'LineString' then
         point_up := st_startpoint(g);
         point_down := st_endpoint(g);
-        for ups in select id from ___.bloc where st_intersects(geom, point_up) and model = model_name loop
+        for ups in (select id from ___.bloc where st_intersects(geom, point_up) 
+            and model = model_name and not id = link_id) 
+            loop
             insert into ___.link (up, down) values (ups, link_id);
         end loop;
-        for downs in select id from ___.bloc where st_intersects(geom, point_down) and model = model_name loop
+        for downs in (select id from ___.bloc where st_intersects(geom, point_down) 
+            and model = model_name and not id = link_id) 
+            loop
             insert into ___.link (up, down) values (link_id, downs);
         end loop;
+    else 
+        for downs in (select id
+        from ___.bloc where st_intersects(st_startpoint(geom), g) and model = model_name 
+        and not id = link_id and ___.bloc.shape = 'LineString') loop 
+            insert into ___.link (up, down) values (link_id, downs);
+        end loop;
+        for ups in (select id
+        from ___.bloc where st_intersects(st_endpoint(geom), g) and model = model_name
+        and not id = link_id and ___.bloc.shape = 'LineString') loop 
+            insert into ___.link (up, down) values (ups, link_id);
+        end loop;
     end if;
+
 end;
 $$;
 
