@@ -4,10 +4,13 @@ Main cycle menu
 
 import os
 from pathlib import Path
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel
+from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction
 from ...project import Project
 from ...qgis_utilities import QGisProjectManager
+from ..forms.create_bloc_form import CreateBlocWidget
+from ...database import reset_project
 #from qgis.core import (
 #    QgsProcessingContext,
 #    QgsProcessingAlgRunnerTask,
@@ -22,7 +25,18 @@ from ...qgis_utilities import QGisProjectManager
 def tr(msg):
     return QCoreApplication.translate('@default', msg)
 
+_plugin_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
+_icons_dir = os.path.join(_plugin_dir, "ressources", "svg")
+
 class CycleToolbar(QToolBar):
+    
+    def __add_action_button(self, name, icon, action, togglable = False):
+        action_button = QAction(QIcon(os.path.join(_icons_dir, icon)), tr(name), self)
+        action_button.triggered.connect(action)
+        self.addAction(action_button)
+        action_button.setCheckable(togglable)
+        return action_button
+    
     def __init__(self, log_manager, parent=None):
         QToolBar.__init__(self, tr("Cycle toolbar"), parent)
         self.__parent = parent
@@ -42,6 +56,9 @@ class CycleToolbar(QToolBar):
 
         project = Project(QGisProjectManager.project_name(), self.__log_manager)
         self.__config_menu.setText(project.current_config or self.tr('Default'))
+        
+        self.__add_bloc_button = self.__add_action_button(tr('Add bloc'), 'add_bloc.svg', self.__add_bloc)
+        self.__reset_db_button = self.__add_action_button(tr('Reset database'), 'reset_db.svg', self.__reset_db)
 
         # self.__scn_menu = QToolButton()
         # self.__scn_menu.setMenu(QMenu())
@@ -101,3 +118,9 @@ class CycleToolbar(QToolBar):
         project.current_config = self.sender().text() if self.sender().text() != self.tr('Default') else None
         self.__config_menu.setText(project.current_config or self.tr('Default'))
         QGisProjectManager.refresh_layers()
+
+    def __add_bloc(self):
+        CreateBlocWidget(QGisProjectManager.project_name(), self.__log_manager)
+    
+    def __reset_db(self):
+        reset_project(QGisProjectManager.project_name(), 2154)

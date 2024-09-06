@@ -1,24 +1,29 @@
 import os 
 from qgis.PyQt import uic 
-from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem
-from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, QgsVectorLayer
+from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem, QDialogButtonBox
+from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, QgsVectorLayer, QgsDefaultValue
 from ...service import get_service
 from ...database.version import __version__
+from ...database.create_bloc import write_sql_bloc, load_custom
+from ...qgis_utilities import tr
+from ...project import Project
 
 Formules_de_base = ['CO2 = CO2']
-Input_de_base = {'CO2' : 'real'}
+Input_de_base = {'co2' : 'real'}
 
 class CreateBlocWidget(QDialog):
     
-    def __init__(self, project_filename, parent=None):
+    def __init__(self, project_name, log_manager, parent=None):
         QDialog.__init__(self, parent)
         current_dir = os.path.dirname(__file__)
         uic.loadUi(os.path.join(current_dir, "create_bloc.ui"), self)
         
-        self.__project_filename = project_filename
+        self.__log_manager = log_manager
+        self.__project = Project(project_name, self.__log_manager)
+        self.__project_name = project_name
         
-        self.geom.addItems(['Point', 'Line', 'Polygon'])
-        types = ['real', 'integer', 'string', 'list'] # On pourra ajouter les types de la base de donnée aussi 
+        self.geom.addItems(['Point', 'LineString', 'Polygon'])
+        types = ['real', 'integer', 'string', 'list'] # On pourra ajouter les types de la base de donnée aussi       
         self.entree_type.addItems(types)
         # 2 = output
         self.sortie_type.addItems(types)
@@ -28,17 +33,8 @@ class CreateBlocWidget(QDialog):
         self.input = Input_de_base
         self.output = {}
         self.formula = Formules_de_base
-        
-        """
-        En terme de design on a : 
-        bloc name et geometryr type où ça change rien pour le moment 
-        puis un tabWidget avec 3 onglets : Input, Output, Formula
-        
-        Dans Input et Output, on rentre name, type, default value et si type = list, on rentre les valeurs de la liste dans possible_values 
-        Puis on appuie sur le bouton add pour ajouter la colonne à la table
-        
-        Dans Formula, on rentre la formule, on vérifie si elle est correcte et on l'ajoute à la table
-        """
+        self.default_values = {}
+        self.possible_values = {}
         
         # Input tab
         self.entree_type.currentIndexChanged.connect(self.__update_entree_type)
@@ -65,6 +61,9 @@ class CreateBlocWidget(QDialog):
         self.delete_formula.clicked.connect(self.__delete_formula)
         
         # Ok button
+        self.bloc_name.textChanged.connect(self.enable_ok_button)
+        self.ok_button = self.buttons.button(QDialogButtonBox.Ok)
+        self.ok_button.setEnabled(False)   
         self.ok_button.clicked.connect(self.__create_bloc)
         
         self.exec_()
@@ -100,13 +99,17 @@ class CreateBlocWidget(QDialog):
     def __add_input(self):
         name = self.entree_name.text()
         type_ = self.entree_type.currentText()
-        self.input[name] = type_
         default_value = self.entree_default_value.text()
         if self.entree_type.currentText() == 'list':
             possible_values = self.possible_values.text()
+            self.possible_values[name] = possible_values
         else : possible_values = ''
         name, type_, default_value, possible_values, verified = self.verify_input(name, type_, default_value, possible_values)
         if verified:
+            self.input[name.strip().lower()] = type_
+            self.default_values[name] = default_value
+            self.possible_values[name] = possible_values
+            
             self.table_input.setRowCount(len(self.input))
             self.table_input.setItem(len(self.input)-1, 0, QTableWidgetItem(name))
             self.table_input.setItem(len(self.input)-1, 1, QTableWidgetItem(type_))
@@ -142,7 +145,7 @@ class CreateBlocWidget(QDialog):
     def __add_output(self):
         name = self.sortie_name.text()
         type_ = self.sortie_type.currentText()
-        self.output[name] = type_
+        self.output[name.strip.lower()] = type_
         default_value = self.sortie_default_value.text()
         if self.sortie_type.currentText() == 'list':
             possible_values = self.possible_values_2.text()
@@ -166,33 +169,65 @@ class CreateBlocWidget(QDialog):
             selected_row = self.table_output.row(items[0])
             del self.output[self.table_output.item(selected_row, 0).text()]
             self.table_output.removeRow(selected_row)
+    
+    def enable_ok_button(self) : 
+        bloc_name = self.bloc_name.text()
+        bloc_exists = self.__project.fetchone(f"select exists(select 1 from information_schema.tables where table_name='{bloc_name}_bloc' and table_schema='api')")
+        if bloc_exists[0]:
+            self.warning_bloc.setText('This bloc already exists')
+            self.warning_bloc.setStyleSheet("color: red")
+            self.ok_button.setEnabled(False)    
+        elif bloc_name != '' : 
+            self.warning_bloc.clear()
+            self.ok_button.setEnabled(True)
+        elif bloc_name == '' : 
+            self.warning_bloc.setText('Enter a name for the bloc')
+            self.warning_bloc.setStyleSheet("color: orange")
+            self.ok_button.setEnabled(False)
             
+        
     def __create_bloc(self):
         
-        layer_name = self.bloc_name.text()
+        self.default_values['shape'] = self.geom.currentText()
+        layer_name = tr(self.bloc_name.text())
         
         # create db bloc and load it
+        rows = dict(self.input, **self.output)
+        
+        query = write_sql_bloc(self.__project_name, layer_name, self.geom.currentText(), rows, self.default_values, 
+                       self.possible_values, f'{layer_name}_bloc', self.formula)
+        
+        load_custom(self.__project_name, query=query)
+        
         
         # add layer to qgis
         # Faudra tester tout ça dans un script à part je pense 
-        project = QgsProject()
-        project.clear()
-        project.read(self.__project_filename)
-        if project.readEntry('cycle', 'version', '')[0] != __version__:
-            project_name = project.baseName()
-            project.writeEntry('cycle', 'project', project_name)
-            project.writeEntry('cycle', 'version', __version__)
-            project.writeEntry('cycle', 'service', get_service())
-        
+        project = QgsProject.instance()
         root = project.layerTreeRoot()
+        grp = self.group.text()
+        if grp == '' : g = root 
+        else : g = root.findGroup(grp) or root.insertGroup(0, grp) # On changera sûrement l'index plus tard
         
-        uri = f'''dbname='{project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" ''' + (' (geom)' if grp != tr('Settings') and layer_name!=tr('Measure') else '')
+        sch, tbl, key = "api", f'{layer_name}_bloc', 'name'
+        uri = f'''dbname='{self.__project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" ''' + (' (geom)' if grp != tr('Settings') and layer_name!=tr('Measure') else '')
+        print(uri)
         layer = QgsVectorLayer(uri, layer_name, "postgres")
-        root.addLayer(layer)
+        project.addMapLayer(layer, False)
+        g.addLayer(layer)
         if not layer.isValid():
-                    raise RuntimeError(f'layer {layer_name} is invalid')
+            raise RuntimeError(f'layer {layer_name} is invalid')
         
         # load qml styling file to the layer and rearrange the style with the entrees and sorties
+        qml_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'ressources', 'qml')
+        if self.geom.currentText() == 'Point':
+            qml_file = os.path.join(qml_dir, 'point.qml')
+        elif self.geom.currentText() == 'LineString':
+            qml_file = os.path.join(qml_dir, 'linestring.qml')
+        elif self.geom.currentText() == 'Polygon':
+            qml_file = os.path.join(qml_dir, 'polygon.qml')
+
+        layer.loadNamedStyle(qml_file)
+        
         fields = layer.fields()
         config = layer.editFormConfig()
         config.setLayout(config.EditorLayout(1))
@@ -201,12 +236,20 @@ class CreateBlocWidget(QDialog):
         output_tab = tabs[-1]
         idx = 0
         for field in fields:
-            if field.name() in self.input:
-                attrfield(field.name(), idx, input_tab) # à vérifier sur la doc si c'est bien comme ça
-            elif field.name() in self.output:
-                attrfield(field.name(), idx, output_tab)
+            defval = QgsDefaultValue()
+            fieldname = field.name()
+            default_query = self.__project.fetchone(f"select column_default from information_schema.columns where table_schema='api' and table_name='{layer_name}_bloc' and column_name='{fieldname}';")
+            print(default_query)
+            default = self.__project.fetchone('select ' + str(default_query[0])) if default_query[0] else [None]
+            defval.setExpression(str(default[0]))
+            layer.setDefaultValueDefinition(idx, defval)
+            if field.name().strip().lower() in self.input:
+                input_tab.addChildElement(attrfield(field.name(), idx, input_tab)) # à vérifier sur la doc si c'est bien comme ça
+            elif field.name().strip().lower() in self.output:
+                output_tab.addChildElement(attrfield(field.name(), idx, output_tab))
             idx+=1
-        
+        layer.setEditFormConfig(config)
+        self.__log_manager.notice(f"bloc {layer_name} created")
         
 if __name__ == '__main__':
     app = CreateBlocWidget()

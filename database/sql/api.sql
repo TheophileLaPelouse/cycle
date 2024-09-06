@@ -598,6 +598,8 @@ $$;
 select template.bloc_view('test', 'bloc', 'Polygon') ; 
 
 select template.bloc_view('piptest', 'bloc', 'LineString') ;
+
+select template.basic_view('sorties');
 ------------------------------------------------------------------------------------------------
 -- Metadata
 ------------------------------------------------------------------------------------------------
@@ -653,4 +655,5 @@ begin
     return 'Bloc ' || concrete || '_' || abstract || ' already exists';
 end; 
 $$;
+
 

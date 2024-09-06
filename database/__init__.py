@@ -15,6 +15,7 @@ from ..utility.string import normalized_name
 from .version import __version__
 from ..service import get_service
 from qgis.core import QgsMessageLog
+
 __current_dir = os.path.dirname(__file__)
 
 CYCLE_DIR = os.path.join(os.path.expanduser('~'), ".cycle")
@@ -174,9 +175,19 @@ def reset_project(project_name, srid, debug=False):
             cur.execute(f.read())
         with open(os.path.join(__current_dir, 'sql', 'api.sql')) as f:
             cur.execute(f.read())
+        # Custom blocs 
+        custom_sql = os.path.join(CYCLE_DIR, project_name, 'custom_blocs.sql')
+        if os.path.exists(custom_sql):
+            with open(custom_sql) as f:
+                try : cur.execute(f.read())
+                except psycopg2.ProgrammingError : pass # Empty file
+                
         # default srid in cycle extension is already set to 2154
         cur.execute(f"update api.metadata set srid={srid} where {srid}!=2154;")
-    
+
+def refresh_db(project_name):
+    # Pour plus tard en fait 
+    return
 
 def is_cycle_db(dbname):
     try:

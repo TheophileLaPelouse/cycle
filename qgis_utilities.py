@@ -423,6 +423,7 @@ class QGisProjectManager(QObject):
             g = root.addGroup(grp) if grp != "" else root
             for layer_name, sch, tbl, key in layers:
                 uri = f'''dbname='{project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" ''' + (' (geom)' if grp != tr('Settings') and layer_name!=tr('Measure') else '')
+                print(uri)
                 layer = QgsVectorLayer(uri, layer_name, "postgres")
                 project.addMapLayer(layer, False)
                 n = g.addLayer(layer)

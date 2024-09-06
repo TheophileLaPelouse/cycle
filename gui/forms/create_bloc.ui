@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>687</width>
-    <height>777</height>
+    <width>643</width>
+    <height>783</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,15 +16,15 @@
   <widget class="QWidget" name="gridLayoutWidget_5">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>40</y>
+     <x>10</x>
+     <y>10</y>
      <width>621</width>
-     <height>721</height>
+     <height>761</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="3" column="0">
-     <widget class="QDialogButtonBox" name="buttonBox">
+     <widget class="QDialogButtonBox" name="buttons">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -36,9 +36,9 @@
     <item row="2" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="input_page" native="true">
+      <widget class="QWidget" name="input_page">
        <attribute name="title">
         <string>Input</string>
        </attribute>
@@ -314,7 +314,7 @@
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="output_page" native="true">
+      <widget class="QWidget" name="output_page">
        <attribute name="title">
         <string>Output</string>
        </attribute>
@@ -552,7 +552,7 @@
         </widget>
        </widget>
       </widget>
-      <widget class="QWidget" name="formula_page" native="true">
+      <widget class="QWidget" name="formula_page">
        <attribute name="title">
         <string>Formula</string>
        </attribute>
@@ -708,30 +708,11 @@
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="1" column="2">
-       <widget class="QComboBox" name="geom"/>
-      </item>
-      <item row="1" column="1">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>10</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="warning_bloc">
         <property name="text">
-         <string>Geometry type</string>
+         <string/>
         </property>
        </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="lineEdit"/>
       </item>
       <item row="0" column="1">
        <spacer name="horizontalSpacer">
@@ -752,6 +733,55 @@
          <string>Bloc name</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QComboBox" name="geom"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="bloc_name"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Geometry type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>10</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Layer group</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <spacer name="horizontalSpacer_9">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>10</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLineEdit" name="group"/>
       </item>
      </layout>
     </item>
@@ -777,7 +807,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>buttons</sender>
    <signal>accepted()</signal>
    <receiver>Dialog</receiver>
    <slot>accept()</slot>
@@ -793,7 +823,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>buttons</sender>
    <signal>rejected()</signal>
    <receiver>Dialog</receiver>
    <slot>reject()</slot>
