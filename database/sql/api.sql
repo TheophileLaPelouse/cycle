@@ -269,16 +269,16 @@ $$
 declare
     s varchar;
 begin
-    --raise notice '%', template.view_statement(table_name, additional_columns => additional_columns, additional_join => additional_join, additional_union => additional_union, specific_geom => specific_geom, specific_columns => specific_columns);
+    raise notice '%', template.view_statement(table_name, additional_columns => additional_columns, additional_join => additional_join, additional_union => additional_union, specific_geom => specific_geom, specific_columns => specific_columns);
     execute template.view_statement(table_name, additional_columns => additional_columns, additional_join => additional_join, additional_union => additional_union, specific_geom => specific_geom, specific_columns => specific_columns);
     for s in select * from template.view_default_statement(table_name) loop
-        -- raise notice '%', s;
+        raise notice '%', s;
         execute s;
     end loop;
     if with_trigger then
-        -- raise notice '%', template.basic_function_statement(table_name, cannot_delete=>cannot_delete);
+        raise notice '%', template.basic_function_statement(table_name, cannot_delete=>cannot_delete);
         execute template.basic_function_statement(table_name, cannot_delete=>cannot_delete, start_section=>start_section);
-        -- raise notice '%', template.trigger_statement(table_name);
+        raise notice '%', template.trigger_statement(table_name);
         execute template.trigger_statement(table_name);
     end if;
 

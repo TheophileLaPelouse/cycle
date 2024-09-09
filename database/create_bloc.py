@@ -40,6 +40,8 @@ def write_sql_bloc(project_name, name, shape, entrees, default_values = {}, poss
     
     query = f"""
 
+alter type ___.bloc_type add value '{name}' ;
+
 create sequence ___.{name}_bloc_name_seq ;     
 
 {types}

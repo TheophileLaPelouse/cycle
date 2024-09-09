@@ -46,6 +46,7 @@ insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(-1
 
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 2, 2 2, 2 1, 1 1))', 2154), 'test_model');
 
+
 -- select api.update_links(4, 'LineString'::___.geo_type, st_geomfromtext('LineString(-1 -1, 1 1)', 2154), 'test_model');
 -- select * from ___.model;
 -- select id, sur_bloc, ss_blocs from api.test_bloc;
@@ -57,3 +58,4 @@ insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 
 -- select * from ___.bloc ; 
 -- select column_name from information_schema.columns where table_name = 'test_bloc' and table_schema = '___';
 
+select attribute_name, data_type from information_schema.attributes where udt_schema = '___' and udt_name = 'bloc_type'; 

@@ -64,6 +64,8 @@ insert into ___.metadata default values;
 -- On crée les types où on peut énumérer des trucs genre pour les données d'entrées                                                                                      --
 ------------------------------------------------------------------------------------------------
 
+create type ___.bloc_type as enum ('') ; -- Permet de reconnaitre de quel bloc on parle dans ___.bloc 
+
 create type ___.zone as enum ('urban', 'rural') ; 
 
 create type ___.geo_type as enum('Point', 'LineString', 'Polygon') ; 
@@ -98,6 +100,7 @@ create table ___.bloc(
     geom geometry not null ,
     ss_blocs integer[] default array[]::integer[],
     sur_bloc integer default null, -- Pas sûr qu'on garde les surs blocs
+    _type ___.bloc_type not null default '',
     -- est ce qu'il faudrait pas des checks ? 
     unique (name, id, model), 
     unique (name, id, shape), 
@@ -134,6 +137,8 @@ insert into ___.sorties (liste_sorties) values (array['Q', 'DBO5']::varchar[]);
 -- Les Blocs que nous allons manipuler dans le logiciel
 ------------------------------------------------------------------------------------------------
 
+alter type ___.bloc_type add value 'test' ;
+
 create table ___.test_bloc(
     id integer primary key,
     shape ___.geo_type not null default 'Polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
@@ -145,6 +150,8 @@ create table ___.test_bloc(
     foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
     unique (name, id)
 );
+
+alter type ___.bloc_type add value 'piptest' ;
 
 create table ___.piptest_bloc(
     id integer primary key, 
