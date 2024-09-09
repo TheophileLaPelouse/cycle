@@ -1,0 +1,8 @@
+{
+    "" : {
+        "bloc" : ["Test Block", "api", "test_bloc", "name"],
+        "tuyeaux" : {
+            "bloc" : ["Piptest", "api", "piptest_bloc", "name"]
+        } 
+    }
+}

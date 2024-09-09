@@ -7,6 +7,7 @@ from ...database.version import __version__
 from ...database.create_bloc import write_sql_bloc, load_custom
 from ...qgis_utilities import tr
 from ...project import Project
+from ...utility.json_utils import open_json, get_propertie, save_to_json
 
 Formules_de_base = ['CO2 = CO2']
 Input_de_base = {'co2' : 'real'}
@@ -184,18 +185,26 @@ class CreateBlocWidget(QDialog):
             self.warning_bloc.setText('Enter a name for the bloc')
             self.warning_bloc.setStyleSheet("color: orange")
             self.ok_button.setEnabled(False)
-            
-        
+      
+          
+    def normalize_name(self, name):
+        # Faudra normaliser le nom pour éviter les problèmes
+        char_to_remove = ["'", '"', '(', ')', '[', ']', '{', '}', '<', '>', '!', '?', '.', ',', ';', ':', '/', '\\', '|', '@', '#', '$', '%', '^', '&', '*', '+', '=', '~', '`']
+        return name.lower().replace(' ', '_').translate(None, ''.join(char_to_remove))
+    
     def __create_bloc(self):
-        
+        # Pour que ce soit plus jolie faudra différencier layer_name et layer_name_bloc.
         self.default_values['shape'] = self.geom.currentText()
-        layer_name = tr(self.bloc_name.text())
+        
+        layer_name = self.bloc_name.text()
+        
+        norm_name = self.normalize_name(self.bloc_name.text())
         
         # create db bloc and load it
         rows = dict(self.input, **self.output)
         
         query = write_sql_bloc(self.__project_name, layer_name, self.geom.currentText(), rows, self.default_values, 
-                       self.possible_values, f'{layer_name}_bloc', self.formula)
+                       self.possible_values, f'{norm_name}_bloc', self.formula)
         
         load_custom(self.__project_name, query=query)
         
@@ -204,11 +213,19 @@ class CreateBlocWidget(QDialog):
         # Faudra tester tout ça dans un script à part je pense 
         project = QgsProject.instance()
         root = project.layerTreeRoot()
-        grp = self.group.text()
-        if grp == '' : g = root 
+        
+        grp_path = self.group.text()
+        grps = grp_path.split('/')
+        grp = ''
+        while grp == '' and grps:
+            grp = grps.pop(-1)
+        
+        if grps : root = root.findGroup(grps[-1]) 
+        
+        if grp == '' : g = root
         else : g = root.findGroup(grp) or root.insertGroup(0, grp) # On changera sûrement l'index plus tard
         
-        sch, tbl, key = "api", f'{layer_name}_bloc', 'name'
+        sch, tbl, key = "api", f'{norm_name}_bloc', 'name'
         uri = f'''dbname='{self.__project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" ''' + (' (geom)' if grp != tr('Settings') and layer_name!=tr('Measure') else '')
         print(uri)
         layer = QgsVectorLayer(uri, layer_name, "postgres")
@@ -241,6 +258,7 @@ class CreateBlocWidget(QDialog):
             default_query = self.__project.fetchone(f"select column_default from information_schema.columns where table_schema='api' and table_name='{layer_name}_bloc' and column_name='{fieldname}';")
             print(default_query)
             default = self.__project.fetchone('select ' + str(default_query[0])) if default_query[0] else [None]
+            # Amélioration possible tout faire dans une seule query
             defval.setExpression(str(default[0]))
             layer.setDefaultValueDefinition(idx, defval)
             if field.name().strip().lower() in self.input:
@@ -249,6 +267,30 @@ class CreateBlocWidget(QDialog):
                 output_tab.addChildElement(attrfield(field.name(), idx, output_tab))
             idx+=1
         layer.setEditFormConfig(config)
+        
+        # add bloc in the custom layertree json
+        path_layertree = os.path.join(self.__project.directory, 'layertree_custom.json')
+        try :
+            layertree = open_json(path_layertree)
+        except FileNotFoundError : 
+            layertree = {}
+
+        branch = get_propertie(grp, layertree)
+        if not branch:
+            branch = layertree
+            grp_final = grp
+            for grp in grps:
+                try : 
+                    branch = branch[grp]
+                except KeyError :
+                    pass
+            branch[grp_final] = {"bloc" : [layer_name, "api", f'{norm_name}_bloc', "name"]}
+        else:
+            branch[layer_name] = {'type' : 'bloc', 'path' : f'{norm_name}_bloc'}
+        
+        save_to_json(layertree, path_layertree)
+        # Faudra vérifier qu'il ne se passe pas de dingz avec le fait que le json soit pas le même que l'autre non custom.
+        
         self.__log_manager.notice(f"bloc {layer_name} created")
         
 if __name__ == '__main__':
