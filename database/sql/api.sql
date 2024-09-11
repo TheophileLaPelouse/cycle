@@ -346,7 +346,7 @@ DECLARE
     query text;
 begin 
     query := E'select template.inherited_view(''' || concrete || ''', ''' || abstract || ''', specific_geom => ' ||
-    E'''ST_Force2D(a.geom)::geometry('|| shape ||',' || (select srid from ___.metadata) || ')'',' ||
+    E'''c.geom::geometry('|| shape ||',' || (select srid from ___.metadata) || ')'',' ||
     E'after_update_section => $$\n' ||
     E'    if not St_equals(old.geom, new.geom) then\n' ||
     E'        update ___.link set geom = st_setpoint(geom, 0, new.geom) where up = new.id;\n' ||
@@ -359,8 +359,9 @@ begin
     E'start_section => $$\n' ||
     E'    if tg_op = ''INSERT'' or tg_op = ''UPDATE'' then\n' ||
     E'        new.b_type := '''||concrete||'''::___.bloc_type ;' ||
-    E'        new.ss_blocs := api.find_ss_blocs(new.id, new.geom, new.model);\n' ||
-    E'        new.sur_bloc := api.find_sur_bloc(new.id, new.geom, new.model);\n' ||
+    E'        new.geom_ref := api.make_polygon(new.geom, '''||shape||''');' ||
+    E'        new.ss_blocs := api.find_ss_blocs(new.id, new.geom_ref, new.model);\n' ||
+    E'        new.sur_bloc := api.find_sur_bloc(new.id, new.geom_ref, new.model);\n' ||
     E'    end if;\n' ||
     E'    if tg_op = ''DELETE'' then\n' ||
     E'        update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- remove the bloc from the list of sub-blocs of the sur-bloc\n' ||
@@ -501,6 +502,25 @@ select create_template();
 drop schema if exists api cascade;
 create schema api;
 
+-- fonction pour créer un polygon dans la table bloc qui correspond au point, à la ligne ou polygon dans table concrete
+create or replace function api.make_polygon(g geometry, shape ___.geo_type)
+returns geometry('POLYGON', 2154)
+language plpgsql
+as $$
+declare 
+    poly_text varchar ;
+begin
+    if shape = 'Point' then
+        poly_text := 'POLYGON(('||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||'))';
+        return st_geomfromtext(poly_text, 2154);
+    elsif shape = 'LineString' then
+        poly_text := 'POLYGON(('||st_x(st_startpoint(g))||' '||st_y(st_startpoint(g))||', '||st_x(st_endpoint(g))||' '||st_y(st_endpoint(g))||', '||st_x(st_endpoint(g))||' '||st_y(st_endpoint(g))||', '||st_x(st_startpoint(g))||' '||st_y(st_startpoint(g))||'))';
+        return st_geomfromtext(poly_text, 2154);
+    elsif shape = 'Polygon' then
+        return g;
+    end if;
+end;
+$$;
 
 -- fonction pour trouver les sous-blocs d'un bloc
 create or replace function api.find_ss_blocs(id_sur_bloc integer, g geometry, model_name varchar)
@@ -512,7 +532,7 @@ declare
 Begin 
     select array_agg(id) into ss_blocs_array
     from ___.bloc
-    where st_within(___.bloc.geom, g) and ___.bloc.model = model_name ;
+    where st_within(___.bloc.geom_ref, g) and ___.bloc.model = model_name ;
 
     -- On enlève les sous-blocs de sous-blocs
     ss_blocs_array := array(
@@ -545,8 +565,8 @@ declare
 begin
     select id into sur_bloc_id
     from ___.bloc
-    where st_within(g, ___.bloc.geom) and ___.bloc.model = model_name
-    order by st_area(___.bloc.geom) asc
+    where st_within(g, ___.bloc.geom_ref) and ___.bloc.model = model_name
+    order by st_area(___.bloc.geom_ref) asc
     limit 1;
     update ___.bloc set ss_blocs = array_append(ss_blocs, id_ss_bloc) where id = sur_bloc_id; 
     return sur_bloc_id;
@@ -566,24 +586,24 @@ begin
     if shape = 'LineString' then
         point_up := st_startpoint(g);
         point_down := st_endpoint(g);
-        for ups in (select id from ___.bloc where st_intersects(geom, point_up) 
+        for ups in (select id from ___.bloc where st_intersects(geom_ref, point_up) 
             and model = model_name and not id = link_id) 
             loop
             insert into ___.link (up, down, model) values (ups, link_id, model_name);
         end loop;
-        for downs in (select id from ___.bloc where st_intersects(geom, point_down) 
+        for downs in (select id from ___.bloc where st_intersects(geom_ref, point_down) 
             and model = model_name and not id = link_id) 
             loop
             insert into ___.link (up, down, model) values (link_id, downs, model_name);
         end loop;
     else 
         for downs in (select id
-        from ___.bloc where st_intersects(st_startpoint(geom), g) and model = model_name 
+        from ___.bloc where st_intersects(st_startpoint(geom_ref), g) and model = model_name 
         and not id = link_id and ___.bloc.shape = 'LineString') loop 
             insert into ___.link (up, down, model) values (link_id, downs, model_name);
         end loop;
         for ups in (select id
-        from ___.bloc where st_intersects(st_endpoint(geom), g) and model = model_name
+        from ___.bloc where st_intersects(st_endpoint(geom_ref), g) and model = model_name
         and not id = link_id and ___.bloc.shape = 'LineString') loop 
             insert into ___.link (up, down, model) values (ups, link_id, model_name);
         end loop;

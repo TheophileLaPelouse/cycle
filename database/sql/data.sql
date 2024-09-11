@@ -103,7 +103,8 @@ create table ___.bloc(
     name varchar not null check(not name~' '), 
     model varchar not null references ___.model(name) on update cascade on delete cascade,
     shape ___.geo_type not null,
-    geom geometry not null ,
+    -- geom geometry not null , 
+    geom_ref geometry('POLYGON', 2154) not null,
     ss_blocs integer[] default array[]::integer[],
     sur_bloc integer default null, -- Pas sûr qu'on garde les surs blocs
     b_type ___.bloc_type not null default '',
@@ -113,7 +114,7 @@ create table ___.bloc(
     unique (id)
 );
 
-create index bloc_geomidx on ___.bloc using gist(geom);
+create index bloc_geomidx on ___.bloc using gist(geom_ref);
 
 create table ___.link(
     -- Peut être que ça va changer mais pour l'instant un lien c'est juste un objet abstrait et tous les blocs sont des noueuds 
@@ -148,6 +149,7 @@ create table ___.test_bloc(
     id integer primary key,
     shape ___.geo_type not null default 'Polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
     name varchar not null default ___.unique_name('test_bloc', abbreviation=>'test_bloc'),
+    geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
     DBO5 real default null, 
     Q real default null, 
     EH integer default null,
@@ -161,6 +163,7 @@ insert into ___.input_output values ('test'::___.bloc_type, array['Q', 'DBO5', '
 create table ___.piptest_bloc(
     id integer primary key, 
     shape ___.geo_type not null default 'LineString',
+    geom geometry('LINESTRING', 2154) not null check(ST_IsValid(geom)),
     name varchar not null default ___.unique_name('piptest_bloc', abbreviation=>'piptest_bloc'),
     Q real default null, 
     formula varchar[] default array['CO2 = Q']::varchar[],

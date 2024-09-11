@@ -350,18 +350,12 @@ class QGisProjectManager(QObject):
 
             layer_name, sch, tbl, key = bloc
             uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"''' + (' (geom)' if (grp != tr('Settings') and layer_name!=tr('Measure')) else '')
-            if not len(project.mapLayersByName(layer_name)):
-                layer = QgsVectorLayer(uri, layer_name, "postgres")
-                project.addMapLayer(layer, False)
-                n = g.addLayer(layer)
-                name_id_map[layer_name] = layer.id()
-                if not layer.isValid():
-                    raise RuntimeError(f'layer {layer_name} is invalid')
-            else:
-                # check and fix uri
-                layer = project.mapLayersByName(layer_name)[0]
-                if uri != layer.dataProvider().dataSourceUri():
-                    layer.setDataSource(uri, layer_name, "postgres")
+            layer = QgsVectorLayer(uri, layer_name, "postgres")
+            project.addMapLayer(layer, False)
+            n = g.addLayer(layer)
+            name_id_map[layer_name] = layer.id()
+            if not layer.isValid():
+                raise RuntimeError(f'layer {layer_name} is invalid')
 
         if _svg_dir not in QSettings().value('svg/searchPathsForSVG', []):
             path = QSettings().value('svg/searchPathsForSVG', []) + [_svg_dir]
