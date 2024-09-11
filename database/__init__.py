@@ -158,9 +158,10 @@ def reset_project(project_name, srid, debug=False):
     # /!\ change connection to project DB
     with autoconnection(project_name, debug=debug) as con, con.cursor() as cur:
         #print(f"create {project_name} with version {__version__}")
+        print("où1")
         cur.execute("drop schema if exists api cascade")
         cur.execute("drop schema if exists ___ cascade")
-
+        print("où2")
         cur.execute(f"""
             create or replace function cycle_version()
             returns varchar
@@ -170,20 +171,24 @@ def reset_project(project_name, srid, debug=False):
             $$
             ;
             """)
-
+        print("où3")
         with open(os.path.join(__current_dir, 'sql', 'data.sql')) as f:
             cur.execute(f.read())
+        print("où4")
         with open(os.path.join(__current_dir, 'sql', 'api.sql')) as f:
             cur.execute(f.read())
+        print("où5")
         # Custom blocs 
         custom_sql = os.path.join(CYCLE_DIR, project_name, 'custom_blocs.sql')
         if os.path.exists(custom_sql):
             with open(custom_sql) as f:
                 try : cur.execute(f.read())
                 except psycopg2.ProgrammingError : pass # Empty file
+        print("où6")
                 
         # default srid in cycle extension is already set to 2154
         cur.execute(f"update api.metadata set srid={srid} where {srid}!=2154;")
+        print("où7")
 
 def refresh_db(project_name):
     # Pour plus tard en fait 

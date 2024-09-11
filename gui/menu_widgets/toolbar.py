@@ -11,6 +11,7 @@ from ...project import Project
 from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
 from ...database import reset_project
+from ...compute.bloc import get_sur_blocs, get_links
 #from qgis.core import (
 #    QgsProcessingContext,
 #    QgsProcessingAlgRunnerTask,
@@ -59,7 +60,8 @@ class CycleToolbar(QToolBar):
         
         self.__add_bloc_button = self.__add_action_button(tr('Add bloc'), 'add_bloc.svg', self.__add_bloc)
         self.__reset_db_button = self.__add_action_button(tr('Reset database'), 'reset_db.svg', self.__reset_db)
-
+        self.__print_sur_blocs_button = self.__add_action_button(tr('Print sur_blocs'), 'sur_blocs.svg', self.__print_sur_blocs)
+        self.__print_links_button = self.__add_action_button(tr('Print links'), 'links.svg', self.__print_links)
         # self.__scn_menu = QToolButton()
         # self.__scn_menu.setMenu(QMenu())
         # self.__scn_menu.menu().aboutToShow.connect(self.__refresh_scn_menu)
@@ -124,3 +126,12 @@ class CycleToolbar(QToolBar):
     
     def __reset_db(self):
         reset_project(QGisProjectManager.project_name(), 2154)
+    
+    def __print_sur_blocs(self):
+        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        print("bonjour")
+        print(get_sur_blocs(project))
+        
+    def __print_links(self):
+        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        print(get_links(project))

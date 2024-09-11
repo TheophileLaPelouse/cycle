@@ -9,7 +9,7 @@ _custom_sql_dir = os.path.join(_cycle_dir, 'sql')
 if not os.path.exists(_custom_sql_dir):
     os.makedirs(_custom_sql_dir) 
 
-def write_sql_bloc(project_name, name, shape, entrees, default_values = {}, possible_values = {}, abbreviation = '', formula = [], path = os.path.join(_custom_sql_dir, 'custom_bloc.sql')):
+def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], path = os.path.join(_custom_sql_dir, 'custom_bloc.sql')):
     """
     Crée un nouveau bloc dans la base de donnée en écrivant de base dans un fichier sql local,
     sûrement que plus tard on pourra le faire sur une base de donnée en ligne 
@@ -26,9 +26,11 @@ def write_sql_bloc(project_name, name, shape, entrees, default_values = {}, poss
     
     type_table = {'real' : 'real', 'integer' : 'integer', 'string' : 'varchar', 'list' : 'varchar[]'}
     
+    rows = dict(entrees, **sorties)
+    
     types = ''
     columns = ''
-    for key, value in entrees.items(): 
+    for key, value in rows.items(): 
         if value == list :
             types += f"\ncreate type ___.{key}_type as enum({', '.join(possible_values[key])});\n"
             line = f"{key} ___.{key}_type"
@@ -38,9 +40,14 @@ def write_sql_bloc(project_name, name, shape, entrees, default_values = {}, poss
         line += ',\n'
         columns += line     
     
+    to_insert_entrees = "array"  + str([key for key in entrees]) + "::varchar[]"
+    to_insert_sorties = "array"  + str([key for key in sorties]) + "::varchar[]"
+    
     query = f"""
 
 alter type ___.bloc_type add value '{name}' ;
+commit ; 
+insert into ___.input_output values ('{name}', {to_insert_entrees}, {to_insert_sorties}) ;
 
 create sequence ___.{name}_bloc_name_seq ;     
 

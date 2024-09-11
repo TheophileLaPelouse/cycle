@@ -189,7 +189,7 @@ class QGisProjectManager(QObject):
         print("layertree : ", layertree_custom)
         properties, paths = get_all_properties("bloc", layertree)
         print(get_all_properties("bloc", layertree_custom))
-        prop2, paths2 = get_all_properties("bloc", layertree_custom)
+        prop2, paths2 = get_all_properties("bloc", layertree_custom) if layertree_custom else ([], [])
         print("bonjour")
         print(properties, paths, prop2, paths2) 
         properties += prop2
@@ -204,6 +204,7 @@ class QGisProjectManager(QObject):
             
             layer_name, sch, tbl, key = bloc
             uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"''' + (' (geom)' if (grp != tr('Settings') and layer_name!=tr('Measure')) else '')
+            print(uri)
             if not len(project.mapLayersByName(layer_name)):
                 layer = QgsVectorLayer(uri, layer_name, "postgres")
                 project.addMapLayer(layer, False)

@@ -1,3 +1,4 @@
+import re
 import os 
 from qgis.PyQt import uic 
 from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem, QDialogButtonBox
@@ -190,7 +191,9 @@ class CreateBlocWidget(QDialog):
     def normalize_name(self, name):
         # Faudra normaliser le nom pour éviter les problèmes
         char_to_remove = ["'", '"', '(', ')', '[', ']', '{', '}', '<', '>', '!', '?', '.', ',', ';', ':', '/', '\\', '|', '@', '#', '$', '%', '^', '&', '*', '+', '=', '~', '`']
-        return name.lower().replace(' ', '_').translate(None, ''.join(char_to_remove))
+        #return name.lower().replace(' ', '_').translate(None, ''.join(char_to_remove))
+        rx = '[' + re.escape(''.join(char_to_remove)) + ']'
+        return re.sub(rx, '', name).strip().lower().replace(' ', '_')
     
     def __create_bloc(self):
         # Pour que ce soit plus jolie faudra différencier layer_name et layer_name_bloc.
@@ -201,9 +204,8 @@ class CreateBlocWidget(QDialog):
         norm_name = self.normalize_name(self.bloc_name.text())
         
         # create db bloc and load it
-        rows = dict(self.input, **self.output)
         
-        query = write_sql_bloc(self.__project_name, layer_name, self.geom.currentText(), rows, self.default_values, 
+        query = write_sql_bloc(self.__project_name, layer_name, self.geom.currentText(), self.input, self.output, self.default_values, 
                        self.possible_values, f'{norm_name}_bloc', self.formula)
         
         load_custom(self.__project_name, query=query)
@@ -267,6 +269,13 @@ class CreateBlocWidget(QDialog):
                 output_tab.addChildElement(attrfield(field.name(), idx, output_tab))
             idx+=1
         layer.setEditFormConfig(config)
+        
+        custom_qml_dir = os.path.join(self.__project.directory, 'qml')
+        if not os.path.exists(custom_qml_dir):
+            os.makedirs(custom_qml_dir)
+        qml_path = os.path.join(custom_qml_dir, f'{norm_name}_bloc.qml')
+        # Faudra vérifier que les noms sont cohérents avec qgies utilities 
+        layer.saveNamedStyle(qml_path)
         
         # add bloc in the custom layertree json
         path_layertree = os.path.join(self.__project.directory, 'layertree_custom.json')

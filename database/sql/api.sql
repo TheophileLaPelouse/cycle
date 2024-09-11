@@ -204,8 +204,8 @@ returns varchar
 language plpgsql stable as
 $$
 begin
-    raise notice '%', template.insert_statement(concrete||'_'||abstract||'_config', concrete);
-    raise notice '%', template.update_statement(concrete||'_'||abstract||'_config');
+    -- raise notice '%', template.insert_statement(concrete||'_'||abstract||'_config', concrete);
+    -- raise notice '%', template.update_statement(concrete||'_'||abstract||'_config');
     return 'create function api.'||concrete||'_'||abstract||E'_instead_fct()\n'||
     E'returns trigger \n'||
     E'language plpgsql volatile security definer as\n'||
@@ -269,16 +269,16 @@ $$
 declare
     s varchar;
 begin
-    raise notice '%', template.view_statement(table_name, additional_columns => additional_columns, additional_join => additional_join, additional_union => additional_union, specific_geom => specific_geom, specific_columns => specific_columns);
+    -- raise notice '%', template.view_statement(table_name, additional_columns => additional_columns, additional_join => additional_join, additional_union => additional_union, specific_geom => specific_geom, specific_columns => specific_columns);
     execute template.view_statement(table_name, additional_columns => additional_columns, additional_join => additional_join, additional_union => additional_union, specific_geom => specific_geom, specific_columns => specific_columns);
     for s in select * from template.view_default_statement(table_name) loop
-        raise notice '%', s;
+        -- raise notice '%', s;
         execute s;
     end loop;
     if with_trigger then
-        raise notice '%', template.basic_function_statement(table_name, cannot_delete=>cannot_delete);
+        -- raise notice '%', template.basic_function_statement(table_name, cannot_delete=>cannot_delete);
         execute template.basic_function_statement(table_name, cannot_delete=>cannot_delete, start_section=>start_section);
-        raise notice '%', template.trigger_statement(table_name);
+        -- raise notice '%', template.trigger_statement(table_name);
         execute template.trigger_statement(table_name);
     end if;
 
@@ -358,6 +358,7 @@ begin
     E'$$, \n' ||
     E'start_section => $$\n' ||
     E'    if tg_op = ''INSERT'' or tg_op = ''UPDATE'' then\n' ||
+    E'        new.b_type := '''||concrete||'''::___.bloc_type ;' ||
     E'        new.ss_blocs := api.find_ss_blocs(new.id, new.geom, new.model);\n' ||
     E'        new.sur_bloc := api.find_sur_bloc(new.id, new.geom, new.model);\n' ||
     E'    end if;\n' ||
@@ -568,23 +569,23 @@ begin
         for ups in (select id from ___.bloc where st_intersects(geom, point_up) 
             and model = model_name and not id = link_id) 
             loop
-            insert into ___.link (up, down) values (ups, link_id);
+            insert into ___.link (up, down, model) values (ups, link_id, model_name);
         end loop;
         for downs in (select id from ___.bloc where st_intersects(geom, point_down) 
             and model = model_name and not id = link_id) 
             loop
-            insert into ___.link (up, down) values (link_id, downs);
+            insert into ___.link (up, down, model) values (link_id, downs, model_name);
         end loop;
     else 
         for downs in (select id
         from ___.bloc where st_intersects(st_startpoint(geom), g) and model = model_name 
         and not id = link_id and ___.bloc.shape = 'LineString') loop 
-            insert into ___.link (up, down) values (link_id, downs);
+            insert into ___.link (up, down, model) values (link_id, downs, model_name);
         end loop;
         for ups in (select id
         from ___.bloc where st_intersects(st_endpoint(geom), g) and model = model_name
         and not id = link_id and ___.bloc.shape = 'LineString') loop 
-            insert into ___.link (up, down) values (ups, link_id);
+            insert into ___.link (up, down, model) values (ups, link_id, model_name);
         end loop;
     end if;
 
@@ -600,6 +601,12 @@ select template.bloc_view('test', 'bloc', 'Polygon') ;
 select template.bloc_view('piptest', 'bloc', 'LineString') ;
 
 select template.basic_view('sorties');
+
+select template.basic_view('link');
+
+select template.basic_view('bloc');
+
+select template.basic_view('input_output') ;
 ------------------------------------------------------------------------------------------------
 -- Metadata
 ------------------------------------------------------------------------------------------------
@@ -656,4 +663,34 @@ begin
 end; 
 $$;
 
+------------------------------------------------------------------------------------------------
+-- For calculation 
+------------------------------------------------------------------------------------------------
 
+create or replace function api.get_up_to_down(model_name varchar)
+returns jsonb as $$
+declare 
+    result jsonb := '[]' ; 
+    link record ; 
+    up_outputs jsonb ; 
+    down_inputs jsonb ;
+begin 
+    for link in 
+        select up, down from api.link where model = model_name 
+    loop 
+        select jsonb_agg(outputs) into up_outputs
+        from api.input_output 
+        where b_type = (select b.b_type from api.bloc as b where id = link.up) ;
+
+        select jsonb_agg(inputs) into down_inputs
+        from api.input_output 
+        where b_type = (select b.b_type from api.bloc as b where id = link.down) ;
+
+        result := result || jsonb_build_object(
+            'up', jsonb_build_object(link.up, up_outputs),
+            'down', jsonb_build_object(link.down, down_inputs)
+        );
+    end loop ;
+    return result ;
+end ;
+$$ language plpgsql ;

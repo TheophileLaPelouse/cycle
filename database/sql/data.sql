@@ -64,7 +64,7 @@ insert into ___.metadata default values;
 -- On crée les types où on peut énumérer des trucs genre pour les données d'entrées                                                                                      --
 ------------------------------------------------------------------------------------------------
 
-create type ___.bloc_type as enum ('') ; -- Permet de reconnaitre de quel bloc on parle dans ___.bloc 
+create type ___.bloc_type as enum ('', 'test', 'piptest') ; -- Permet de reconnaitre de quel bloc on parle dans ___.bloc 
 
 create type ___.zone as enum ('urban', 'rural') ; 
 
@@ -91,6 +91,12 @@ create table ___.model(
 -- Les tables abstaites sont les tables qui représentent les conceptes généraux : liens, noeuds, blocs.
 ------------------------------------------------------------------------------------------------
 
+create table ___.input_output(
+    b_type ___.bloc_type not null default '',
+    inputs varchar[], 
+    outputs varchar[], 
+    unique (b_type)
+) ;
 
 create table ___.bloc(
     id serial primary key,
@@ -100,7 +106,7 @@ create table ___.bloc(
     geom geometry not null ,
     ss_blocs integer[] default array[]::integer[],
     sur_bloc integer default null, -- Pas sûr qu'on garde les surs blocs
-    _type ___.bloc_type not null default '',
+    b_type ___.bloc_type not null default '',
     -- est ce qu'il faudrait pas des checks ? 
     unique (name, id, model), 
     unique (name, id, shape), 
@@ -113,6 +119,7 @@ create table ___.link(
     -- Peut être que ça va changer mais pour l'instant un lien c'est juste un objet abstrait et tous les blocs sont des noueuds 
     id serial primary key,
     name varchar not null default ___.unique_name('link', abbreviation=>'link'),
+    model varchar not null references ___.model(name) on update cascade on delete cascade,
     up integer not null references ___.bloc(id) on update cascade on delete cascade,
     down integer not null references ___.bloc(id) on update cascade on delete cascade, 
     -- up_to_down varchar[] not null, -- Pas de check donc faudra faire gaffe dans l'api avec des triggers 
@@ -137,8 +144,6 @@ insert into ___.sorties (liste_sorties) values (array['Q', 'DBO5']::varchar[]);
 -- Les Blocs que nous allons manipuler dans le logiciel
 ------------------------------------------------------------------------------------------------
 
-alter type ___.bloc_type add value 'test' ;
-
 create table ___.test_bloc(
     id integer primary key,
     shape ___.geo_type not null default 'Polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
@@ -151,7 +156,7 @@ create table ___.test_bloc(
     unique (name, id)
 );
 
-alter type ___.bloc_type add value 'piptest' ;
+insert into ___.input_output values ('test'::___.bloc_type, array['Q', 'DBO5', 'EH'], array['Q', 'DBO5', 'EH']);
 
 create table ___.piptest_bloc(
     id integer primary key, 
@@ -163,6 +168,8 @@ create table ___.piptest_bloc(
     unique (name, id)
 
 ) ;
+
+insert into ___.input_output values ('piptest', array['Q'], array['Q']);
 
 ------------------------------------------------------------------------------------------------
 -- Config 
