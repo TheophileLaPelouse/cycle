@@ -23,9 +23,9 @@ declare
 begin
     tab := concrete||coalesce('_'||abstract, '');
     seq := tab||'_name_seq';
-    raise notice 'seq := %', seq;
+    -- raise notice 'seq := %', seq;
     nxt := nextval('___.'||seq);
-    raise notice 'nxt := %', nxt;
+    -- raise notice 'nxt := %', nxt;
     -- nxt := 1;
     execute format('with substrings as (
                         select substring(name from ''%2$s_(.*)'') as s

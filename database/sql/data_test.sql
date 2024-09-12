@@ -47,21 +47,27 @@ insert into ___.model(name) values ('test_model');
 -- select st_astext(api.make_polygon(st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'Polygon'::___.geo_type)) ;
 -- select st_within(api.make_polygon(st_geomfromtext('point(0 0)', 2154), 'Point'::___.geo_type), api.make_polygon(st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'Polygon'::___.geo_type)) ;
 insert into api.test_bloc(geom, model, name) values (st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 'bloc1');
-insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.1 0.1, 0.9 0.1, 0.1 0.1))', 2154), 'test_model');
-select name, sur_bloc, ss_blocs from api.test_bloc;
+ 
+insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model');
+-- select name, sur_bloc, ss_blocs from api.test_bloc;
+
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
+
 -- -- select schemaname as schema,  sequencename as sequence, last_value from pg_sequences ;
+insert into api.test_bloc (geom, model) values (st_geomfromtext('polygon((2 2, 2 3, 3 3, 3 2, 2 2))', 2154), 'test_model');
+select name, id from api.bloc ; 
+insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(0.5 0.5, 2.5 2.5)', 2154), 'test_model');
 
-insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(-1 -1, 1 1)', 2154), 'test_model');
-
-insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 2, 2 2, 2 1, 1 1))', 2154), 'test_model');
-insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(1 1, 2 2)', 2154), 'test_model');
+select * from api.link ; 
+insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 2.8, 2.8 2.8, 2.8 1, 1 1))', 2154), 'test_model');
+select * from api.link ; 
+-- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(1 1, 2 2)', 2154), 'test_model');
 
 -- select * from api.bloc ; 
-
+-- select * from api.link ; 
 -- select api.update_links(4, 'LineString'::___.geo_type, st_geomfromtext('LineString(-1 -1, 1 1)', 2154), 'test_model');
 -- select * from ___.model;
-select id, sur_bloc, ss_blocs from api.test_bloc;
+-- select id, sur_bloc, ss_blocs from api.test_bloc;
 -- select * from ___.test_bloc;
 -- select * from ___.bloc;
 
@@ -71,6 +77,7 @@ select id, sur_bloc, ss_blocs from api.test_bloc;
 -- select column_name from information_schema.columns where table_name = 'test_bloc' and table_schema = '___';
 
 -- select attribute_name, data_type from information_schema.attributes where udt_schema = '___' and udt_name = 'bloc_type'; 
+
 
 -- ------------------------------------------------------------------------------------------------
 -- -- tests select for calculation

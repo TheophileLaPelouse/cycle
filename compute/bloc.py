@@ -5,9 +5,9 @@ def get_sur_blocs(project, model_name = None, bloc = None) :
         model_name = project.current_model
     if bloc : 
         query = f"""
-        select id, sur_bloc from api.bloc 
+        select id, sur_bloc from api.bloc as sur_b
         where model = '{model_name}' 
-        and st_within(geom, (select geom from api.bloc where name = '{bloc}'));
+        and st_within(sur_b.geom_ref, (select b.geom_ref from api.bloc as b where name = '{bloc}'));
         """
         return project.fetchall(query)
     else : 
@@ -38,5 +38,7 @@ class Bloc:
             self.originale = origin
         self.gen = 0
         self.ges = {}
+        
+    def add_b(self, name, entrees, sorties, formules) : 
         
         
