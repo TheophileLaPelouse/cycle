@@ -88,6 +88,10 @@ select * from api.link ;
 -- select id from api.bloc where sur_bloc is null ; 
 -- -- Or select id from api.bloc where sur_bloc = 3 ; for example 
 
+
+select id, sur_bloc, name, formula, inputs, outputs from api.bloc, api.input_output where model = 'test_model' 
+and api.bloc.b_type = api.input_output.b_type ;
+
 -- -- We do this until there are no results left and we stock the results in the class bloc, so recursively or while loop 
 
 -- -- For it to simplier, we will select all the ids and sur_bloc and use python to do the rest
@@ -104,6 +108,8 @@ select * from api.link ;
 -- -- select inputs from api.input_output where b_type =  type ; 
 
 
-
+LINESTRING(-101068.30116898331 954869.959378198,121002.49898858764 852717.3913057153,286815.36310624063 780174.2632542421)
+POLYGON((67705.50695077062 981518.4553971065,301620.08311674534 987440.3434013084,29213.23492345831 678021.6951817595,67705.50695077062 981518.4553971065))
+POLYGON((439303.9792144393 963752.7913845008,454108.699224944 682463.1111849109,659894.3073709598 821627.4792836554,439303.9792144393 963752.7913845008))
 -- select api.get_up_to_down('test_model') ;
 -- -- Step 3 : Calculation mais là c'est plus que du python.
