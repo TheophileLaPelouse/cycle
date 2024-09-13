@@ -114,7 +114,7 @@ create table ___.bloc(
     unique (id)
 );
 
-create index bloc_geomidx on ___.bloc using gist(geom_ref);
+-- create index bloc_geomidx on ___.bloc using gist(geom_ref);
 
 create table ___.link(
     -- Peut être que ça va changer mais pour l'instant un lien c'est juste un objet abstrait et tous les blocs sont des noueuds 

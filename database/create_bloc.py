@@ -55,6 +55,7 @@ create sequence ___.{name}_bloc_name_seq ;
 create table ___.{name}_bloc(
 id serial primary key,
 shape ___.geo_type not null default '{default_values['shape']}',
+geom geometry('{default_values['shape'].upper()}', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('{name}_bloc', abbreviation=>'{name + "_bloc" if not abbreviation else abbreviation}'),
 formula varchar[] default array{formula}::varchar[],
 {columns}

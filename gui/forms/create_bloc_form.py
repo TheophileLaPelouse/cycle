@@ -207,9 +207,9 @@ class CreateBlocWidget(QDialog):
         
         query = write_sql_bloc(self.__project_name, layer_name, self.geom.currentText(), self.input, self.output, self.default_values, 
                        self.possible_values, f'{norm_name}_bloc', self.formula)
-        
+        print("bonjour1")
         load_custom(self.__project_name, query=query)
-        
+        print("bonjour 2")
         
         # add layer to qgis
         # Faudra tester tout ça dans un script à part je pense 

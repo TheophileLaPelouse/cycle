@@ -19,7 +19,7 @@ select ___.current_config();
 
 -- select ___.unique_name('test_bloc', abbreviation=>'test_bloc');
 
-insert into ___.model (comment) values ('model for testing');
+-- insert into ___.model (comment) values ('model for testing');
 
 insert into ___.model(name) values ('test_model');
 
@@ -49,7 +49,7 @@ insert into ___.model(name) values ('test_model');
 insert into api.test_bloc(geom, model, name) values (st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 'bloc1');
  
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model');
--- select name, sur_bloc, ss_blocs from api.test_bloc;
+select name, sur_bloc, ss_blocs from api.test_bloc;
 
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
 
@@ -61,6 +61,8 @@ insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(0.
 select * from api.link ; 
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 2.8, 2.8 2.8, 2.8 1, 1 1))', 2154), 'test_model');
 select * from api.link ; 
+
+select api.get_blocs('test_model') ;  
 -- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(1 1, 2 2)', 2154), 'test_model');
 
 -- select * from api.bloc ; 
@@ -89,8 +91,8 @@ select * from api.link ;
 -- -- Or select id from api.bloc where sur_bloc = 3 ; for example 
 
 
-select id, sur_bloc, name, formula, inputs, outputs from api.bloc, api.input_output where model = 'test_model' 
-and api.bloc.b_type = api.input_output.b_type ;
+-- select id, sur_bloc, name, formula, inputs, outputs from api.bloc b, api.input_output i_o where model = 'test_model' 
+-- and api.bloc.b_type = api.input_output.b_type ;
 
 -- -- We do this until there are no results left and we stock the results in the class bloc, so recursively or while loop 
 
@@ -108,8 +110,89 @@ and api.bloc.b_type = api.input_output.b_type ;
 -- -- select inputs from api.input_output where b_type =  type ; 
 
 
-LINESTRING(-101068.30116898331 954869.959378198,121002.49898858764 852717.3913057153,286815.36310624063 780174.2632542421)
-POLYGON((67705.50695077062 981518.4553971065,301620.08311674534 987440.3434013084,29213.23492345831 678021.6951817595,67705.50695077062 981518.4553971065))
-POLYGON((439303.9792144393 963752.7913845008,454108.699224944 682463.1111849109,659894.3073709598 821627.4792836554,439303.9792144393 963752.7913845008))
+-- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('LINESTRING(-101068 954869,121002 852717,286815 780174)', 2154), 'test_model');
+-- insert into api.test_bloc(geom, model) values (st_geomfromtext('POLYGON((67705 981518,301620 987440,29213 678021,67705 981518))', 2154), 'test_model');
+-- insert into api.test_bloc(geom, model) values (st_geomfromtext('POLYGON((439303 963752,454108 682463,659894 821627,439303 963752))', 2154), 'test_model');
+-- with dumps as (select id, st_dump(st_points(geom_ref)) as dp
+--         from ___.bloc where shape = 'LineString'
+--         ),
+--         startpoints as (select id, (dp).geom as geo from dumps where (dp).path[1] = 1
+--         )
+-- select api.bloc.id, st_astext(geo) from startpoints, api.bloc where st_intersects(geo, geom_ref) ; 
+
+
 -- select api.get_up_to_down('test_model') ;
 -- -- Step 3 : Calculation mais là c'est plus que du python.
+
+-- insert into ___.bloc(name, model, shape, geom_ref) values ('test_bloc', 'a', 'Polygon', st_geomfromtext('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', 2154));
+
+-- insert into ___.model(name) values ('a');
+
+-- create or replace function api.test_bloc_instead_fct()
+-- returns trigger
+-- language plpgsql volatile security definer as
+-- $fct$
+-- declare
+--     overloaded_geom geometry; -- used in start_section to modify geom type
+-- begin
+
+--     if tg_op = 'INSERT' or tg_op = 'UPDATE' then
+--         new.b_type := 'test'::___.bloc_type ;        new.geom_ref := api.make_polygon(new.geom, 'Polygon');        new.ss_blocs := api.find_ss_blocs(new.id, new.geom_ref, new.model);
+--         new.sur_bloc := api.find_sur_bloc(new.id, new.geom_ref, new.model);
+--     end if;
+--     if tg_op = 'DELETE' then
+--         update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- remove the bloc from the list of sub-blocs of the sur-bloc
+--         update ___.bloc set sur_bloc = api.find_sur_bloc(old.id, old.geom, old.model) where sur_bloc = old.id; -- update the sur-bloc
+--     end if;
+--     if tg_op = 'INSERT' then
+--         raise notice '%, %, %, %, %, %, %, %' , new.id, new.shape, new.name, new.geom, new.dbo5, new.q, new.eh, new.formula;
+--         insert into ___.bloc(id, name, model, shape, geom_ref, ss_blocs, sur_bloc, b_type) values (new.id, new.name, new.model, new.shape, new.geom_ref, new.ss_blocs, new.sur_bloc, new.b_type) ;
+--         raise notice 'bonjour bloc' ;
+--         insert into ___.test_bloc(id, shape, name, geom, dbo5, q, eh, formula) values (new.id, new.shape, new.name, new.geom, new.dbo5, new.q, new.eh, new.formula) ;
+--         raise notice 'bonjour test_bloc' ; 
+--       perform api.update_links(new.id, 'Polygon', new.geom, new.model);        return new;
+--     elsif tg_op = 'UPDATE' then
+--         update ___.bloc set id=new.id, name=new.name, model=new.model, shape=new.shape, geom_ref=new.geom_ref, ss_blocs=new.ss_blocs, sur_bloc=new.sur_bloc, b_type=new.b_type where id=old.id;
+--         if ___.current_config() is null then
+--             update ___.test_bloc set id=new.id, shape=new.shape, name=new.name, geom=new.geom, dbo5=new.dbo5, q=new.q, eh=new.eh, formula=new.formula where id=old.id;
+--         else
+--             insert into ___.test_bloc_config(id, shape, name, geom, dbo5, q, eh, formula, config) values (new.id, new.shape, new.name, new.geom, new.dbo5, new.q, new.eh, new.formula, api.current_config())             on conflict on constraint test_bloc_config_pkey do
+--             update set id=new.id, shape=new.shape, name=new.name, geom=new.geom, dbo5=new.dbo5, q=new.q, eh=new.eh, formula=new.formula;
+--         end if;
+
+--     if not St_equals(old.geom, new.geom) then
+--         update ___.link set geom = st_setpoint(geom, 0, new.geom) where up = new.id;
+--         update ___.link set geom = st_setpoint(geom, -1, new.geom) where down = new.id;
+--     end if;
+--         return new;
+--     elsif tg_op = 'DELETE' then
+--         delete from ___.bloc where id=old.id;
+--         delete from ___.test_bloc where id=old.id;
+--         return old;
+--     end if;
+-- end;
+-- $fct$ ;
+
+
+
+-- INSERT INTO "api"."test_bloc"(
+--     "geom", "name", "id", "shape", "dbo5", "q", "eh", "formula", "ss_blocs", "b_type", "geom_ref", "sur_bloc", "model"
+-- ) VALUES (
+--     ST_GeomFromWKB('\x01030000000100000005000000aea116058add02c11401c3dc8b53294150318e5c115c03c1440a4e6a8b8e244150e428341532f440ebe7c8b6907b244114296a1bcf5ef6400433a4a7abe12841aea116058add02c11401c3dc8b532941'::bytea, 2154),
+--     'test_bloc_2',
+--     2,
+--     'Polygon',
+--     NULL,
+--     NULL,
+--     NULL,
+--     E'{"Q = 2*EH"}',
+--     E'{}',
+--     '',
+--     NULL,
+--     NULL,
+--     'a'
+-- ) RETURNING "name";
+
+-- INSERT INTO "api"."test_bloc"("geom","name","id","shape","dbo5","q","eh","formula","ss_blocs","b_type","geom_ref","sur_bloc","model") VALUES 
+-- (st_geomfromwkb('\x0103000000010000000500000078bd940b739304416caedee02b442b41447f92ae67b40a41cac0f4fb2aba214134a0b76cf0ce20415db46569b65b2341fe20122a49931c41df1e9e0969cc2c4178bd940b739304416caedee02b442b41'::bytea,2154),
+-- 'test_bloc_3',1,'Polygon',NULL,NULL,NULL,E'{"Q = 2*EH"}',E'{}','',NULL,NULL,'a') RETURNING "name" ;

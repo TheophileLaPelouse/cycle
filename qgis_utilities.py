@@ -379,7 +379,7 @@ class QGisProjectManager(QObject):
         project.setCrs(target_crs)
 
         # speed up loading by not checking extend and pk unicity
-        project.setTrustLayerMetadata(True)
+        # project.setTrustLayerMetadata(True)
 
         project.write()
 

@@ -29,6 +29,7 @@ create function template.view_statement(
     additional_union varchar default null,
     specific_geom varchar default null,
     specific_columns json default '{}'::json
+
     )
 returns varchar
 language sql stable as
@@ -75,7 +76,7 @@ $$
         as column_name from concrete_cols
         union all
         select case
-            when column_name = 'geom' then coalesce(specific_geom||' as geom', 'a.geom')
+            when column_name = 'geom' then coalesce(specific_geom||' as geom', 'c.geom')
             else 'a.'||column_name end as column_name from abstract_cols ) t
     cross join pk
     group by whr, _id
@@ -326,7 +327,8 @@ begin
         -- raise notice '%', s;
         execute s;
     end loop;
-    -- raise notice '%', template.inherited_function_statement(concrete, abstract);
+    -- raise notice '%', template.inherited_function_statement(concrete, abstract, start_section=>start_section,
+     after_update_section=>after_update_section, after_insert_section=>after_insert_section);
     execute template.inherited_function_statement(concrete, abstract, start_section=>start_section,
      after_update_section=>after_update_section, after_insert_section=>after_insert_section);
     -- raise notice '%', template.trigger_statement(concrete, abstract);
@@ -337,7 +339,7 @@ end;
 $$
 ;
 
-create or replace function template.bloc_view(concrete varchar, abstract varchar, shape varchar)
+create or replace function template.bloc_view(concrete varchar, abstract varchar, shape varchar, additional_columns varchar[] default '{}'::varchar[])
 returns varchar
 language plpgsql as
 $fonction$
@@ -510,6 +512,7 @@ as $$
 declare 
     poly_text varchar ;
 begin
+    -- raise notice 'making polygon';
     if shape = 'Point' then
         poly_text := 'POLYGON(('||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||'))';
         return st_geomfromtext(poly_text, 2154);
@@ -519,6 +522,7 @@ begin
     elsif shape = 'Polygon' then
         return g;
     end if;
+    -- raise notice 'polygon made';
 end;
 $$;
 
@@ -530,6 +534,7 @@ as $$
 declare
     ss_blocs_array integer[];
 Begin 
+    -- raise notice 'finding ss_blocs';
     select array_agg(id) into ss_blocs_array
     from ___.bloc
     where st_within(___.bloc.geom_ref, g) and ___.bloc.model = model_name ;
@@ -550,8 +555,9 @@ Begin
     );
     -- raise notice 'ss_blocs_array := %', ss_blocs_array;
     update ___.bloc set sur_bloc = id_sur_bloc where id = any(ss_blocs_array);
-
+    -- raise notice 'ss_blocs found';
     return ss_blocs_array;
+    
 end ;
 $$; 
 
@@ -563,12 +569,14 @@ as $$
 declare
     sur_bloc_id integer;
 begin
+    -- raise notice 'finding sur_bloc';
     select id into sur_bloc_id
     from ___.bloc
     where st_within(g, ___.bloc.geom_ref) and ___.bloc.model = model_name
     order by st_area(___.bloc.geom_ref) asc
     limit 1;
     update ___.bloc set ss_blocs = array_append(ss_blocs, id_ss_bloc) where id = sur_bloc_id; 
+    -- raise notice 'sur_bloc found';
     return sur_bloc_id;
 end;
 $$;
@@ -584,6 +592,7 @@ declare
     point_up geometry;
     point_down geometry;
 begin 
+    -- raise notice 'updating links';
     if shape = 'LineString' then
         point_up := st_startpoint(g);
         point_down := st_endpoint(g);
@@ -637,7 +646,7 @@ begin
     end loop;    
 
     end if;
-
+    -- raise notice 'links updated';
 end;
 $$;
 
@@ -646,6 +655,8 @@ $$;
 ------------------------------------------------------------------------------------------------
 
 select template.bloc_view('test', 'bloc', 'Polygon') ; 
+
+-- select template.basic_view('test_bloc') ;
 
 select template.bloc_view('piptest', 'bloc', 'LineString') ;
 
@@ -715,6 +726,95 @@ $$;
 ------------------------------------------------------------------------------------------------
 -- For calculation 
 ------------------------------------------------------------------------------------------------
+
+
+-- select id, sur_bloc, name, formula, inputs, outputs from api.thing_bloc, api.input_output
+--         where model = '{model_name}' and api.bloc.b_type = api.input_output.b_type
+--         and st_within(sur_b.geom_ref, (select b.geom_ref from api.bloc as b where name = '{bloc}'));
+-- but formula is not in bloc nor input_output but in "thing"_bloc where "thing" is b_type
+-- create or replace function api.get_blocs(model_name varchar, bloc varchar default null)
+-- returns varchar 
+-- language plpgsql as
+-- $$
+-- declare 
+--     b_types text ;
+--     query text ;
+-- begin
+--     for b_types in (select b_type from api.input_output)
+--     loop
+--         query := 'select id, sur_bloc, name, formula, inputs, outputs from api.'|| b_types ||'_bloc, api.input_output ' ||
+--         E'where model = '''|| model_name ||''' '||  
+--         coalesce(E'shape = ''Polygon'' and st_within(geom, select(geom from api.'||b_types||'_bloc where name='''||bloc||''')));', '') ;
+--         raise notice '%', query;
+--         execute query ;
+--     end loop;
+--     return 'ok';
+-- end ; 
+-- $$;
+create or replace function api.get_blocs(model_name varchar, bloc varchar default null)
+returns table (
+    id integer,
+    sur_bloc integer,
+    name varchar,
+    formula varchar[],
+    inputs varchar[],
+    outputs varchar[], 
+    inp_val jsonb,
+    out_val jsonb
+) 
+language plpgsql as
+$$
+declare 
+    b_types text;
+    ids integer;
+    ins varchar[];
+    outs varchar[];
+    query text;
+begin
+    -- Create a temporary table to store the results
+    create temporary table temp_results (
+        id integer,
+        sur_bloc integer,
+        name varchar,
+        formula varchar[],
+        inputs varchar[],
+        outputs varchar[],
+        inp_val jsonb,
+        out_val jsonb
+    ) on commit drop;
+
+    for b_types in (select b_type from api.input_output)
+    loop
+        query := 'insert into temp_results(id, sur_bloc, name, formula, inputs, outputs) select id, sur_bloc, name, formula, inputs, outputs from api.' || b_types || '_bloc, api.input_output ' ||
+        E'where model = ''' || model_name || ''' ' ||  
+        coalesce(E'and shape = ''Polygon'' and st_within(geom, (select geom from api.' || b_types || '_bloc where name=''' || bloc || '''))', '') || ';';
+        raise notice '%', query;
+        execute query;
+    end loop;
+
+    -- Return the results from the temporary table
+    return query select * from temp_results;
+
+    for b_types, ins, outs in (select b_type, api.input_output.inputs, api.input_output.outputs from api.input_output)
+    loop    
+        for ids in (select api.bloc.id from api.bloc where b_type = b_types::___.bloc_type)
+        loop
+            query := 'with inp as (' ||
+                'select ' || array_to_string(ins, ', ') || ' as inp_value ' ||
+                'from api.' || b_types || '_bloc where id = ' || ids || '), ' ||
+                'out as (' ||
+                'select ' || array_to_string(outs, ', ') || ' as out_value ' ||
+                'from api.' || b_types || '_bloc where id = ' || ids || ') ' ||
+                'update temp_results set inp_val = json_agg(inp.inp_value), out_val = json_agg(out.out_value) ' ||
+                'from inp, out where temp_results.id = ' || ids || ';';
+            raise notice '%', query;
+            execute query;
+        end loop; 
+    end loop; 
+end; 
+$$;
+
+
 
 create or replace function api.get_up_to_down(model_name varchar)
 returns jsonb as $$

@@ -6,23 +6,23 @@ def get_sur_blocs(project, model_name = None, bloc = None) :
     
     if bloc : 
         query = f"""
-        select id, sur_bloc, name, formula, inputs, outputs from api.bloc, api.input_output
+        select id, sur_bloc, name, inputs, outputs from api.bloc, api.input_output
         where model = '{model_name}' and api.bloc.b_type = api.input_output.b_type
         and st_within(sur_b.geom_ref, (select b.geom_ref from api.bloc as b where name = '{bloc}'));
         """
         l_sur_bloc = project.fetchall(query)
     else : 
         query = f"""
-        select id, sur_bloc, name, formula, inputs, outputs from api.bloc, api.input_output 
-        where model = {model_name} and api.bloc.b_type = api.input_output.b_type ;
+        select id, sur_bloc, name, inputs, outputs from api.bloc, api.input_output 
+        where model = '{model_name}' and api.bloc.b_type = api.input_output.b_type ;
         """
         l_sur_bloc = project.fetchall(query)
-    
+        print(l_sur_bloc)
     d_sb, d_name, d_formula, d_i, d_o = {}, {}, {}, {}, {}
-    for Id, sur_bloc, name, formula, inputs, outputs in l_sur_bloc :
+    for Id, sur_bloc, name, inputs, outputs in l_sur_bloc :
         d_sb[Id] = sur_bloc
         d_name[Id] = name
-        d_formula[Id] = formula
+        # d_formula[Id] = formula
         d_i[Id] = inputs
         d_o[Id] = outputs
     return d_sb, d_name, d_formula, d_i, d_o
