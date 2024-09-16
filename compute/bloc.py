@@ -31,17 +31,18 @@ def get_sur_blocs(project, model_name = None, bloc = None) :
             dico = {}
             for s in string : 
                 s = s.split(':')
-                if s[1].strip() == 'null' : 
-                    s[1] = None
-                else :
-                    try : 
-                        s[1] = int(s[1])
-                    except :
+                if len(s) > 1 : 
+                    if s[1].strip() == 'null' : 
+                        s[1] = None
+                    else :
                         try : 
-                            s[1] = float(s[1])
-                        except : 
-                            s[1] = s[1].strip()
-                dico[s[0].strip()] = s[1]
+                            s[1] = int(s[1])
+                        except :
+                            try : 
+                                s[1] = float(s[1])
+                            except : 
+                                s[1] = s[1].strip()
+                    dico[s[0].strip()] = s[1]
             return dico
         inputs = to_dico(inputs)
         outputs = to_dico(outputs)
@@ -62,8 +63,11 @@ def get_links(project, model_name = None) :
     l_links = project.fetchall(f"select api.get_links('{model_name}')")
     l_links = l_links[0][0]
     d_links = {}
-    for key in l_links : 
-        d_links[int(key)] = l_links[key]
+    if l_links : 
+        for key in l_links : 
+            if l_links[key] is None :
+                d_links[int(key)] = {}
+            else : d_links[int(key)] = l_links[key]
     return d_links
 
 Input_Output = {}
@@ -94,14 +98,14 @@ class Bloc:
         
         new_bloc.entrees = entrees.copy()  
         new_bloc.sorties = sorties.copy() # Faudra faire gaffe au copy dans le doute 
-        
+        new_bloc.formules = formules[:]
         new_bloc.links_up = link_up.copy()
         
         self.ss_blocs[name] = new_bloc
         
         return new_bloc
 
-    def add_from_sur_bloc(self, dico_sur_bloc, names, Entrees, Sorties, Formules, links) : 
+    def add_from_sur_bloc(self, dico_sur_bloc, names, Formules, Entrees, Sorties, links) : 
         """
         On crée une file d'ajout de blocs, on part de l_surbloc de la forme [(id, sur_bloc), ...]
         on la transforme en un dictionnaire de la forme {id : sur_bloc},
@@ -109,7 +113,13 @@ class Bloc:
         """
         if self.originale != self : 
             return 
-        
+        print("bonjour")
+        print("sur_bloc", dico_sur_bloc)
+        print("name", names)
+        print("entree", Entrees)
+        print("sorties", Sorties)
+        print("formules", Formules)
+        print(links)
         treated = {Id : False for Id in dico_sur_bloc}
         stack = []
         for Id in dico_sur_bloc :
@@ -137,6 +147,7 @@ class Bloc:
         couplé à aux données nécessaire au calcul.
         Et on va parcourir les formules pour les calculer dans l'ordre afin d'avoir toutes les données nécessaires
         """
+        print("euh", self.entrees, self.sorties)
         inp_out = dict(self.entrees, **self.sorties)
         self.recup_entree()
         bilan = {}
@@ -149,7 +160,10 @@ class Bloc:
             else : 
                 bilan[sides[0].strip()] = read_formula(sides[1], inp_out)
                 formulas[sides[0].strip()] = f
+        print("bilan", bilan)
+        print("formulas", formulas)
         known_data = {name : inp_out[name] is not None for name in inp_out}
+        print("known_data", known_data)
         for data in bilan : 
             stack = []
             treatment_stack = []
@@ -158,11 +172,12 @@ class Bloc:
             while stack : 
                 to_calc = stack.pop()
                 treatment_stack.append(to_calc)
-                known_data[to_calc] = True
                 if (not to_calc in known_data) or (not known_data[to_calc]) : 
+                    known_data[to_calc] = True
                     for d in bilan[to_calc] : 
                         if known_data[d] :
                             stack.append(d)     
+            print("treatment_stack", treatment_stack)
             while treatment_stack :
                 to_calc = treatment_stack.pop(-1)
                 try : 
@@ -185,8 +200,9 @@ class Bloc:
         """
         result = {}
         def parcours_rec(bloc) : 
+            bloc.calculate_bloc()
             for name, sb in bloc.ss_blocs.items() : 
-                result[name] = b.ges
+                result[name] = bloc.ges
                 parcours_rec(sb)
             return
         parcours_rec(self)

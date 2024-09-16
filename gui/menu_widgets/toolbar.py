@@ -3,10 +3,12 @@ Main cycle menu
 """
 
 import os
+import warnings
 from pathlib import Path
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction
+from qgis.utils import iface
 from ...project import Project
 from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
@@ -28,6 +30,13 @@ def tr(msg):
 
 _plugin_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 _icons_dir = os.path.join(_plugin_dir, "ressources", "svg")
+
+def is_comitting() : 
+    layer = iface.activeLayer()
+    if layer.editBuffer() : 
+        return layer.editBuffer().isModified()
+    else :
+        return False
 
 class CycleToolbar(QToolBar):
     
@@ -123,6 +132,9 @@ class CycleToolbar(QToolBar):
         QGisProjectManager.refresh_layers()
 
     def __add_bloc(self):
+        if is_comitting() : 
+            warnings.warn("You must save your edits before adding a bloc")
+            return
         CreateBlocWidget(QGisProjectManager.project_name(), self.__log_manager)
     
     def __reset_db(self):
@@ -138,13 +150,15 @@ class CycleToolbar(QToolBar):
         print(get_links(project))
         
     def __run(self) : 
+        if is_comitting() : 
+            warnings.warn("You have not saved your edits")
         project = Project(QGisProjectManager.project_name(), self.__log_manager)
         model = project.current_model
         name = QGisProjectManager.project_name()
-        dico_sur_bloc, names, Entrees, Sorties, Formules = get_sur_blocs(project)
+        dico_sur_bloc, names, Formules, Entrees, Sorties = get_sur_blocs(project)
         links = get_links(project)
         bloc = Bloc(project, model, name, True)
-        bloc.add_from_sur_bloc(dico_sur_bloc, names, Entrees, Sorties, Formules, links)
+        bloc.add_from_sur_bloc(dico_sur_bloc, names, Formules, Entrees, Sorties, links)
         result = bloc.calculate()
         print(result)
         

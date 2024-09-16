@@ -59,7 +59,7 @@ class CreateBlocWidget(QDialog):
         # Formula tab
         self.add_formula.clicked.connect(self.__add_formula)
         self.warning_formula.setStyleSheet("color: orange")
-        self.warning_formula.setText('Enter the formula in the form of "A = B [+-*/^] 10*C==\'elem of list\' ..." where A, B, C are the names of the input or output')
+        self.warning_formula.setText('Enter the formula in the form of "A = B [+-*/^] 10*C==\'elem of list\' ..." \n where A, B, C are the names of the input or output')
         self.delete_formula.clicked.connect(self.__delete_formula)
         
         # Ok button
@@ -262,10 +262,12 @@ class CreateBlocWidget(QDialog):
             default = self.__project.fetchone('select ' + str(default_query[0])) if default_query[0] else [None]
             # Amélioration possible tout faire dans une seule query
             defval.setExpression(str(default[0]))
+            if fieldname.strip().lower() == 'model' : 
+                defval.setExpression('@current_model')
             layer.setDefaultValueDefinition(idx, defval)
-            if field.name().strip().lower() in self.input:
+            if fieldname.strip().lower() in self.input:
                 input_tab.addChildElement(attrfield(field.name(), idx, input_tab)) # à vérifier sur la doc si c'est bien comme ça
-            elif field.name().strip().lower() in self.output:
+            elif fieldname.strip().lower() in self.output:
                 output_tab.addChildElement(attrfield(field.name(), idx, output_tab))
             idx+=1
         layer.setEditFormConfig(config)
@@ -292,10 +294,10 @@ class CreateBlocWidget(QDialog):
                 try : 
                     branch = branch[grp]
                 except KeyError :
-                    pass
+                    branch[grp] = {}
             branch[grp_final] = {"bloc" : [layer_name, "api", f'{norm_name}_bloc', "name"]}
         else:
-            branch[layer_name] = {'type' : 'bloc', 'path' : f'{norm_name}_bloc'}
+            branch[layer_name] = {'bloc' : [layer_name, "api", f'{norm_name}_bloc', "name"]}
         
         save_to_json(layertree, path_layertree)
         # Faudra vérifier qu'il ne se passe pas de dingz avec le fait que le json soit pas le même que l'autre non custom.

@@ -833,10 +833,20 @@ language plpgsql as
 $$
 declare 
     links jsonb ; 
+    downs integer;
+    ups jsonb ; 
 begin
-    with arrays as (select down, jsonb_agg(up) as ups from api.link where model = model_name group by down)
-    select jsonb_object_agg(api.bloc.id, ups) into links from api.bloc, arrays
-    where model = model_name and api.bloc.id = arrays.down;
+    -- contruction of a jsonb object with all the ids and null values 
+    select jsonb_object_agg(api.bloc.id, null) into links from api.bloc where model = model_name;
+
+    -- update the jsonb object with the links
+    for downs, ups in (select down, jsonb_agg(up) from api.link where model = model_name group by down)
+    loop
+       links := jsonb_set(links, array[downs::text], ups);
+    end loop ;
+    -- with arrays as (select down, jsonb_agg(up) as ups from api.link where model = model_name group by down)
+    -- select jsonb_object_agg(api.bloc.id, ups) into links from api.bloc, arrays
+    -- where model = model_name and api.bloc.id = arrays.down;
     return links;
 end;
 $$;
