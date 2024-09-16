@@ -328,7 +328,7 @@ begin
         execute s;
     end loop;
     -- raise notice '%', template.inherited_function_statement(concrete, abstract, start_section=>start_section,
-     after_update_section=>after_update_section, after_insert_section=>after_insert_section);
+    --  after_update_section=>after_update_section, after_insert_section=>after_insert_section);
     execute template.inherited_function_statement(concrete, abstract, start_section=>start_section,
      after_update_section=>after_update_section, after_insert_section=>after_insert_section);
     -- raise notice '%', template.trigger_statement(concrete, abstract);
@@ -757,8 +757,6 @@ returns table (
     sur_bloc integer,
     name varchar,
     formula varchar[],
-    inputs varchar[],
-    outputs varchar[], 
     inp_val jsonb,
     out_val jsonb
 ) 
@@ -770,6 +768,8 @@ declare
     ins varchar[];
     outs varchar[];
     query text;
+    ins_json text;
+    outs_json text;
 begin
     -- Create a temporary table to store the results
     create temporary table temp_results (
@@ -777,69 +777,66 @@ begin
         sur_bloc integer,
         name varchar,
         formula varchar[],
-        inputs varchar[],
-        outputs varchar[],
         inp_val jsonb,
         out_val jsonb
     ) on commit drop;
 
     for b_types in (select b_type from api.input_output)
     loop
-        query := 'insert into temp_results(id, sur_bloc, name, formula, inputs, outputs) select id, sur_bloc, name, formula, inputs, outputs from api.' || b_types || '_bloc, api.input_output ' ||
+        query := 'insert into temp_results(id, sur_bloc, name, formula) select id, sur_bloc, name, formula from api.' || b_types || '_bloc ' ||
         E'where model = ''' || model_name || ''' ' ||  
         coalesce(E'and shape = ''Polygon'' and st_within(geom, (select geom from api.' || b_types || '_bloc where name=''' || bloc || '''))', '') || ';';
         raise notice '%', query;
         execute query;
     end loop;
 
-    -- Return the results from the temporary table
-    return query select * from temp_results;
+    
 
     for b_types, ins, outs in (select b_type, api.input_output.inputs, api.input_output.outputs from api.input_output)
     loop    
-        for ids in (select api.bloc.id from api.bloc where b_type = b_types::___.bloc_type)
+        for ids in (select api.bloc.id from api.bloc 
+            where b_type = b_types::___.bloc_type and model = model_name)
         loop
+            ins_json := 'jsonb_build_object(' || array_to_string(array(
+                select quote_literal(elem) || ', ' || elem
+                from unnest(ins) as elem
+                ), ', ') || ')';
+
+            -- Construct the jsonb_build_object call for outputs
+            outs_json := 'jsonb_build_object(' || array_to_string(array(
+                select quote_literal(elem) || ', ' || elem
+                from unnest(outs) as elem
+                ), ', ') || ')';
+
             query := 'with inp as (' ||
-                'select ' || array_to_string(ins, ', ') || ' as inp_value ' ||
+                'select ' || ins_json || ' as inp_value ' ||
                 'from api.' || b_types || '_bloc where id = ' || ids || '), ' ||
                 'out as (' ||
-                'select ' || array_to_string(outs, ', ') || ' as out_value ' ||
+                'select ' || outs_json || ' as out_value ' ||
                 'from api.' || b_types || '_bloc where id = ' || ids || ') ' ||
-                'update temp_results set inp_val = json_agg(inp.inp_value), out_val = json_agg(out.out_value) ' ||
+                'update temp_results set inp_val = (select inp_value from inp), out_val = (select out_value from out) ' ||
                 'from inp, out where temp_results.id = ' || ids || ';';
-            raise notice '%', query;
+            -- raise notice '%', query;
             execute query;
         end loop; 
     end loop; 
+
+    -- Return the results from the temporary table
+    return query select * from temp_results;
 end; 
 $$;
 
 
-
-create or replace function api.get_up_to_down(model_name varchar)
-returns jsonb as $$
+create or replace function api.get_links(model_name varchar)
+returns jsonb 
+language plpgsql as
+$$
 declare 
-    result jsonb := '[]' ; 
-    link record ; 
-    up_outputs jsonb ; 
-    down_inputs jsonb ;
-begin 
-    for link in 
-        select up, down from api.link where model = model_name 
-    loop 
-        select jsonb_agg(outputs) into up_outputs
-        from api.input_output 
-        where b_type = (select b.b_type from api.bloc as b where id = link.up) ;
-
-        select jsonb_agg(inputs) into down_inputs
-        from api.input_output 
-        where b_type = (select b.b_type from api.bloc as b where id = link.down) ;
-
-        result := result || jsonb_build_object(
-            'up', jsonb_build_object(link.up, up_outputs),
-            'down', jsonb_build_object(link.down, down_inputs)
-        );
-    end loop ;
-    return result ;
-end ;
-$$ language plpgsql ;
+    links jsonb ; 
+begin
+    with arrays as (select down, jsonb_agg(up) as ups from api.link where model = model_name group by down)
+    select jsonb_object_agg(api.bloc.id, ups) into links from api.bloc, arrays
+    where model = model_name and api.bloc.id = arrays.down;
+    return links;
+end;
+$$;

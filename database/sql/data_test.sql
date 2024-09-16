@@ -63,6 +63,8 @@ insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 
 select * from api.link ; 
 
 select api.get_blocs('test_model') ;  
+
+select api.get_links('test_model') ;    
 -- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(1 1, 2 2)', 2154), 'test_model');
 
 -- select * from api.bloc ; 
@@ -86,6 +88,8 @@ select api.get_blocs('test_model') ;
 -- ------------------------------------------------------------------------------------------------
 
 -- -- Step 1 : sur_blocs, ss_blocs 
+
+
 
 -- select id from api.bloc where sur_bloc is null ; 
 -- -- Or select id from api.bloc where sur_bloc = 3 ; for example 

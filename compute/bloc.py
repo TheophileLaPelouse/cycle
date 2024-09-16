@@ -1,28 +1,54 @@
 from ..utility.formula import calculate_formula, read_formula, ErrorNotEnoughData
+import re
 
 def get_sur_blocs(project, model_name = None, bloc = None) : 
     if not model_name : 
         model_name = project.current_model
-    
+    if not model_name : 
+        raise ValueError('No model name given')
     if bloc : 
-        query = f"""
-        select id, sur_bloc, name, inputs, outputs from api.bloc, api.input_output
-        where model = '{model_name}' and api.bloc.b_type = api.input_output.b_type
-        and st_within(sur_b.geom_ref, (select b.geom_ref from api.bloc as b where name = '{bloc}'));
-        """
-        l_sur_bloc = project.fetchall(query)
+        l_sur_bloc = project.fetchall(f"select api.get_blocs('{model_name}', '{bloc}')")
     else : 
-        query = f"""
-        select id, sur_bloc, name, inputs, outputs from api.bloc, api.input_output 
-        where model = '{model_name}' and api.bloc.b_type = api.input_output.b_type ;
-        """
-        l_sur_bloc = project.fetchall(query)
+        l_sur_bloc = project.fetchall(f"select api.get_blocs('{model_name}')")
         print(l_sur_bloc)
     d_sb, d_name, d_formula, d_i, d_o = {}, {}, {}, {}, {}
-    for Id, sur_bloc, name, inputs, outputs in l_sur_bloc :
+    for val in l_sur_bloc :
+        # val is a tuple of the form ('(Id, sur_bloc, name, formula, inputs, outputs)',)
+        val = val[0]
+        val = val.replace('"', '')
+        pattern = r',\s*(?![^{}]*\})'
+        val = re.split(pattern, val[1:-1])
+        Id, sur_bloc, name, formula, inputs, outputs = val 
+        Id = int(Id)
+        try : 
+            sur_bloc = int(sur_bloc)
+        except : 
+            sur_bloc = None
+        formula = formula[1:-1].split(',')
+        
+        def to_dico(string) : 
+            string = string[1:-1].split(',')
+            dico = {}
+            for s in string : 
+                s = s.split(':')
+                if s[1].strip() == 'null' : 
+                    s[1] = None
+                else :
+                    try : 
+                        s[1] = int(s[1])
+                    except :
+                        try : 
+                            s[1] = float(s[1])
+                        except : 
+                            s[1] = s[1].strip()
+                dico[s[0].strip()] = s[1]
+            return dico
+        inputs = to_dico(inputs)
+        outputs = to_dico(outputs)
+        
         d_sb[Id] = sur_bloc
         d_name[Id] = name
-        # d_formula[Id] = formula
+        d_formula[Id] = formula
         d_i[Id] = inputs
         d_o[Id] = outputs
     return d_sb, d_name, d_formula, d_i, d_o
@@ -31,9 +57,14 @@ def get_sur_blocs(project, model_name = None, bloc = None) :
 def get_links(project, model_name = None) : 
     if not model_name : 
         model_name = project.current_model
-    l_links = project.fetchall("select api.get_up_to_down('{model_name}')")
+    if not model_name :
+        raise ValueError('No model name given')
+    l_links = project.fetchall(f"select api.get_links('{model_name}')")
+    l_links = l_links[0][0]
     d_links = {}
-    return l_links
+    for key in l_links : 
+        d_links[int(key)] = l_links[key]
+    return d_links
 
 Input_Output = {}
 
@@ -90,6 +121,7 @@ class Bloc:
                 treatment_stack.append(Id2)
                 if dico_sur_bloc[Id2] : 
                     stack.append(dico_sur_bloc[Id2])
+            print(treatment_stack)
             while treatment_stack : 
                 to_add = treatment_stack.pop(-1)
                 if not treated[to_add] : 
