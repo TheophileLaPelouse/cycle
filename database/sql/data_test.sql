@@ -65,6 +65,8 @@ select * from api.link ;
 select api.get_blocs('test_model') ;  
 
 select api.get_links('test_model') ;    
+
+select api.add_new_formula('Delamgie', 'CO2=E', 'C''est vraiment de la magie') ;
 -- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(1 1, 2 2)', 2154), 'test_model');
 
 -- select * from api.bloc ; 

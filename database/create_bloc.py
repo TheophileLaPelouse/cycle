@@ -45,7 +45,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     
     to_insert_formulas = ""
     for f in formula_description :
-        to_insert_formulas += f"select api.add_formula('{formula_description[f][0]}'::varchar, '{f}'::varchar, '{formula_description[f][1]}'::text) ;\n"
+        to_insert_formulas += f"select api.add_new_formula('{formula_description[f][0]}'::varchar, '{f}'::varchar, '{formula_description[f][1]}'::text) ;\n"
     
     query = f"""
 
@@ -78,7 +78,7 @@ select api.add_new_bloc('{name}', 'bloc', '{shape}') ;
 
 {to_insert_formulas}
 """
-    
+    print(query)
     with open(path, 'a') as f :
         f.write(query)
         f.write('\n\n')

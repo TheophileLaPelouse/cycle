@@ -27,11 +27,12 @@ class CreateBlocWidget(QDialog):
         
         self.geom.addItems(['Point', 'LineString', 'Polygon'])
         types = ['real', 'integer', 'string', 'list'] # On pourra ajouter les types de la base de donnée aussi       
+        
         self.entree_type.addItems(types)
         # 2 = output
         self.sortie_type.addItems(types)
-        self.possible_values.setEnabled(False)
-        self.possible_values_2.setEnabled(False)
+        self.possible_values_text.setEnabled(False)
+        self.possible_values_text2.setEnabled(False)
         
         self.input = Input_de_base
         self.output = {}
@@ -68,6 +69,16 @@ class CreateBlocWidget(QDialog):
         self.formula_text.setCompleter(self.completer)
         self.completer.setFilterMode(Qt.MatchContains)
         
+        # Group line edit
+        path_layertree = os.path.join(self.__project.directory, 'layertree_custom.json')
+        try :
+            layertree = open_json(path_layertree)
+            self.group_completer = GrpCompleter(list(layertree.keys()), layertree)
+            self.group.setCompleter(self.group_completer)
+            self.group.textChanged.connect(lambda : self.group_completer.update_completions(self.group.text()))
+        except FileNotFoundError : 
+            pass
+        
         
         # Ok button
         self.bloc_name.textChanged.connect(self.enable_ok_button)
@@ -84,7 +95,7 @@ class CreateBlocWidget(QDialog):
             self.table_formula.setItem(len(self.formula)-1, 0, QTableWidgetItem(formula))
             self.table_formula.setItem(len(self.formula)-1, 1, QTableWidgetItem(self.description.text()))
             self.formula.append(formula)
-            self.formula_description[formula] = [self.description.text(), self.comment.text()]
+            self.formula_description[formula] = [self.description.text(), self.comment.toPlainText()]
             self.formula_text.clear()
             self.description.clear()
             self.comment.clear()
@@ -102,11 +113,11 @@ class CreateBlocWidget(QDialog):
     
     def __update_entree_type(self):
         if self.entree_type.currentText() == 'list':
-            self.possible_values.setEnabled(True)
+            self.possible_values_text.setEnabled(True)
             self.warning_input.setText('Enter the possible values separated by a semicolon')
             self.warning_input.setStyleSheet("color: orange; font-weight: bold")
         else:
-            self.possible_values.setEnabled(False)
+            self.possible_values_text.setEnabled(False)
             self.warning_input.clear()
             
     def __add_input(self):
@@ -114,7 +125,7 @@ class CreateBlocWidget(QDialog):
         type_ = self.entree_type.currentText()
         default_value = self.entree_default_value.text()
         if self.entree_type.currentText() == 'list':
-            possible_values = self.possible_values.text()
+            possible_values = self.possible_values_text.text()
             self.possible_values[name] = possible_values
         else : possible_values = ''
         name, type_, default_value, possible_values, verified = self.verify_input(name, type_, default_value, possible_values)
@@ -134,7 +145,7 @@ class CreateBlocWidget(QDialog):
             # clear the input fields
             self.entree_name.clear()
             self.entree_default_value.clear()
-            self.possible_values.clear()
+            self.possible_values_text.clear()
     
     def verify_input(self, name, type_, default_value, possible_values):
         # Faudra vérifier le format des données rentrées pour éviter tout problème 
@@ -152,11 +163,11 @@ class CreateBlocWidget(QDialog):
 
     def __update_sortie_type(self):
         if self.sortie_type.currentText() == 'list':
-            self.possible_values_2.setEnabled(True)
+            self.possible_values_text2.setEnabled(True)
             self.warning_output.setText('Enter the possible values separated by a semicolon')
             self.warning_output.setStyleSheet("color: orange; font-weight: bold")
         else:
-            self.possible_values_2.setEnabled(False)
+            self.possible_values_text2.setEnabled(False)
             self.warning_output.clear()
     
     def __add_output(self):
@@ -165,7 +176,7 @@ class CreateBlocWidget(QDialog):
         self.output[name.strip.lower()] = type_
         default_value = self.sortie_default_value.text()
         if self.sortie_type.currentText() == 'list':
-            possible_values = self.possible_values_2.text()
+            possible_values = self.possible_values_text2.text()
         else : possible_values = ''
         name, type_, default_value, possible_values, verified = self.verify_input(name, type_, default_value, possible_values)
         if verified:
@@ -180,7 +191,7 @@ class CreateBlocWidget(QDialog):
             # clear the input fields
             self.sortie_name.clear()
             self.sortie_default_value.clear()
-            self.possible_values_2.clear()
+            self.possible_values_text2.clear()
     
     def __delete_output(self):
         items = self.table_output.selectedItems()
@@ -356,6 +367,42 @@ class WordCompleter(QCompleter):
         # Update the model with the new list of words
         self.mod.setStringList(new_words)
         self.setModel(self.mod)
-                
+
+class GrpCompleter(QCompleter):
+    def __init__(self, words, layertree, parent=None):
+        print("init", words)
+        super().__init__(words, parent)
+        self.layertree = layertree
+        self.setFilterMode(Qt.MatchContains)
+        self.setCompletionMode(QCompleter.PopupCompletion)
+        self.mod = self.model()
+        self.mod.setStringList(words)
+        self.setModel(self.mod)
+            
+    def splitPath(self, path):
+        print("split", path)
+        print(self.model().stringList())
+        return path.split('/')
+    
+    def pathFromIndex(self, index) :
+        current_text = self.widget().text()
+        parts = current_text.split('/')
+        completed = index.data()
+        if len(parts) > 1:
+            return '/'.join(parts[:-1]) + '/' + completed
+        else:
+            return completed
+        
+    def update_completions(self, path):
+        parts = path.split('/')
+        if len(parts) > 1:
+            branch = get_propertie(parts[-2], self.layertree)
+            if isinstance(branch, dict):
+                completions = list(branch.keys())
+            else:
+                completions = []
+            self.mod.setStringList(completions)
+            print("bonjour", completions)
+        
 if __name__ == '__main__':
     app = CreateBlocWidget()

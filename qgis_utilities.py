@@ -231,8 +231,8 @@ class QGisProjectManager(QObject):
         # material_layer_id = project.mapLayersByName(tr('Material'))[0].id()
         # fluid_layer_id = project.mapLayersByName(tr('Fluid properties'))[0].id()
 
-        # locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
-        # lang = '' if locale == 'en' else '_fr'
+        locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
+        lang = '' if locale == 'en' else '_fr'
         lang = ''
         for layer_name, tbl in QGisProjectManager.layers().items():
             found_layers = project.mapLayersByName(layer_name)
@@ -252,74 +252,11 @@ class QGisProjectManager(QObject):
                     # remove relations
                     while referencedLayers.childNodes().count():
                         referencedLayers.removeChild(referencedLayers.firstChild())
-                    # adds necessary relation
-                    # relation_field_id_map = {}
-                    # for n, r in project.relationManager().relations().items():
-                    #     if r.name() in layer_relations:
-                    #         r.writeXml(referencedLayers, doc)
-                    #         relation_field_id_map[layer_relations[r.name()]] = r
-                    # fieldConfiguration = root.firstChildElement('fieldConfiguration')
-                    # for i in range(fieldConfiguration.childNodes().count()):
-                    #     field = fieldConfiguration.childNodes().item(i).toElement().attribute('name')
-                    #     config = fieldConfiguration.childNodes().item(i).toElement().firstChildElement('editWidget').firstChildElement('config').firstChildElement('Option')
-                    #     # Comme des xpath quand on vole des données sur internet
-                    #     for j in range(config.childNodes().count()):
-                    #         e = config.childNodes().item(j).toElement()
-                    #         if e.attribute('name') == 'Relation':
-                    #             e.setAttribute('value', relation_field_id_map[field].id())
-                    #         if e.attribute('name') == 'ReferencedLayerName':
-                    #             e.setAttribute('value', relation_field_id_map[field].referencedLayer().name())
-                    #         if e.attribute('name') == 'ReferencedLayerDataSource':
-                    #             e.setAttribute('value', relation_field_id_map[field].referencedLayer().dataProvider().dataSourceUri())
-                    #         if e.attribute('name') == 'ReferencedLayerId':
-                    #             e.setAttribute('value', relation_field_id_map[field].referencedLayer().id())
-                    #         #if e.attribute
-
-                    # change referenced layers in default values expressions
-                    # defaults = root.firstChildElement('defaults')
-                    # for i in range(defaults.childNodes().count()):
-                    #     e = defaults.childNodes().item(i).toElement()
-                    #     if e.attribute('expression').find('layer:=') != -1:
-                    #         field = e.attribute('field')
-                    #         if field == '_model':
-                    #             e.setAttribute('expression',
-                    #                     re.sub("layer:='[^']+'",
-                    #                     f"layer:='{all_nodes_layer_id}'",
-                    #                     e.attribute('expression')))
-                    #         elif field == '_sector':
-                    #             e.setAttribute('expression',
-                    #                     re.sub("layer:='[^']+'",
-                    #                     f"layer:='{sector_layer_id}'",
-                    #                     e.attribute('expression')))
-                    #         elif field in ('_roughness_mm', '_elasticity_n_m2'):
-                    #             e.setAttribute('expression',
-                    #                     re.sub("layer:='[^']+'",
-                    #                     f"layer:='{material_layer_id}'",
-                    #                     e.attribute('expression')))
-                    #         elif field == '_celerity':
-                    #             e.setAttribute('expression',
-                    #                     re.sub("layer:='[^']+'",
-                    #                     f"layer:='{fluid_layer_id}'",
-                    #                     e.attribute('expression')))
-                    #         else:
-                    #             e.setAttribute('expression',
-                    #                     re.sub("layer:='[^']+'",
-                    #                     f"layer:='{relation_field_id_map[field].referencedLayer().id()}'",
-                    #                     e.attribute('expression')))
-                    # On enlèvera le commentaire le jour où on aura des expressions intéressantes dans cetaines tables.
-                    # En gros faut définir les références qui nous seront utiles avant ça.
 
                     # save to tmp file
                     tmp_qml = os.path.join(tempfile.gettempdir(), qml_basename)
                     with open(tmp_qml, 'w', encoding='utf-8') as o:
                         o.write(doc.toString(2))
-
-
-                    #with open(qml) as src, open(tmp_qml, 'w') as dst:
-                    #    data = src.read()
-                    #    for n, i in layer_id.items():
-                    #        data = re.sub(f"layer:='{n}_[^']+'", f"layer:='{i}'", data, flags=re.IGNORECASE)
-                    #    dst.write(data)
 
                     layer.loadNamedStyle(tmp_qml)
 

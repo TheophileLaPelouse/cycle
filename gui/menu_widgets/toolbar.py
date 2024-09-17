@@ -33,7 +33,7 @@ _icons_dir = os.path.join(_plugin_dir, "ressources", "svg")
 
 def is_comitting() : 
     layer = iface.activeLayer()
-    if layer.editBuffer() : 
+    if layer and layer.editBuffer() : 
         return layer.editBuffer().isModified()
     else :
         return False
