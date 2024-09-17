@@ -10,7 +10,7 @@ def get_sur_blocs(project, model_name = None, bloc = None) :
         l_sur_bloc = project.fetchall(f"select api.get_blocs('{model_name}', '{bloc}')")
     else : 
         l_sur_bloc = project.fetchall(f"select api.get_blocs('{model_name}')")
-        print(l_sur_bloc)
+        # print(l_sur_bloc)
     d_sb, d_name, d_formula, d_i, d_o = {}, {}, {}, {}, {}
     for val in l_sur_bloc :
         # val is a tuple of the form ('(Id, sur_bloc, name, formula, inputs, outputs)',)
@@ -184,6 +184,7 @@ class Bloc:
                     result = calculate_formula(formulas[to_calc], inp_out)
                 except ErrorNotEnoughData : 
                     results = None
+                print("result", result)
                 results[to_calc] = result 
                 if to_calc in inp_out : 
                     inp_out[to_calc] = result
@@ -191,7 +192,7 @@ class Bloc:
                     self.sorties[to_calc] = result
                 if to_calc in self.entrees :
                     self.entrees[to_calc] = result
-        
+        print("results", results)
         self.ges = results
     
     def calculate(self) : 
@@ -202,8 +203,10 @@ class Bloc:
         def parcours_rec(bloc) : 
             bloc.calculate_bloc()
             for name, sb in bloc.ss_blocs.items() : 
-                result[name] = bloc.ges
                 parcours_rec(sb)
+                result[name] = sb.ges
+                print("result calculate", result)
+                
             return
         parcours_rec(self)
         return(result)

@@ -1,7 +1,8 @@
 import re
 import os 
 from qgis.PyQt import uic 
-from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem, QDialogButtonBox
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem, QDialogButtonBox, QCompleter
 from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, QgsVectorLayer, QgsDefaultValue
 from ...service import get_service
 from ...database.version import __version__
@@ -35,6 +36,7 @@ class CreateBlocWidget(QDialog):
         self.input = Input_de_base
         self.output = {}
         self.formula = Formules_de_base
+        self.formula_description = {}
         self.default_values = {}
         self.possible_values = {}
         
@@ -61,6 +63,11 @@ class CreateBlocWidget(QDialog):
         self.warning_formula.setStyleSheet("color: orange")
         self.warning_formula.setText('Enter the formula in the form of "A = B [+-*/^] 10*C==\'elem of list\' ..." \n where A, B, C are the names of the input or output')
         self.delete_formula.clicked.connect(self.__delete_formula)
+        self.completer_list = list(self.input.keys()) + list(self.output.keys())
+        self.completer = WordCompleter(self.completer_list)
+        self.formula_text.setCompleter(self.completer)
+        self.completer.setFilterMode(Qt.MatchContains)
+        
         
         # Ok button
         self.bloc_name.textChanged.connect(self.enable_ok_button)
@@ -75,8 +82,12 @@ class CreateBlocWidget(QDialog):
         if self.verify_formula(formula):
             self.table_formula.setRowCount(len(self.formula))
             self.table_formula.setItem(len(self.formula)-1, 0, QTableWidgetItem(formula))
+            self.table_formula.setItem(len(self.formula)-1, 1, QTableWidgetItem(self.description.text()))
             self.formula.append(formula)
+            self.formula_description[formula] = [self.description.text(), self.comment.text()]
             self.formula_text.clear()
+            self.description.clear()
+            self.comment.clear()
     
     def verify_formula(self, formula):
         # Faudra vérifier les formules sur le point de vue synthax et le point de vue sécurité.
@@ -108,7 +119,9 @@ class CreateBlocWidget(QDialog):
         else : possible_values = ''
         name, type_, default_value, possible_values, verified = self.verify_input(name, type_, default_value, possible_values)
         if verified:
-            self.input[name.strip().lower()] = type_
+            self.completer_list.append(name)
+            self.completer.update_words(self.completer_list)
+            self.input[name] = type_
             self.default_values[name] = default_value
             self.possible_values[name] = possible_values
             
@@ -124,8 +137,8 @@ class CreateBlocWidget(QDialog):
             self.possible_values.clear()
     
     def verify_input(self, name, type_, default_value, possible_values):
-        # Faudra vérifier le format des données rentrées pour éviter tout problème de sécurité genre injection sql
-        return name, type_, default_value, possible_values, True
+        # Faudra vérifier le format des données rentrées pour éviter tout problème 
+        return name.strip().lower(), type_, default_value, possible_values, True
     
     
     def __delete_input(self):
@@ -133,6 +146,8 @@ class CreateBlocWidget(QDialog):
         if len(items)>0:
             selected_row = self.table_input.row(items[0])
             del self.input[self.table_input.item(selected_row, 0).text()]
+            self.completer_list.remove(self.table_input.item(selected_row, 0).text())
+            self.completer.update_words(self.completer_list)
             self.table_input.removeRow(selected_row)
 
     def __update_sortie_type(self):
@@ -154,6 +169,8 @@ class CreateBlocWidget(QDialog):
         else : possible_values = ''
         name, type_, default_value, possible_values, verified = self.verify_input(name, type_, default_value, possible_values)
         if verified:
+            self.completer_list.append(name)
+            self.completer.update_words(self.completer_list)
             self.table_output.setRowCount(len(self.output))
             self.table_output.setItem(len(self.output)-1, 0, QTableWidgetItem(name))
             self.table_output.setItem(len(self.output)-1, 1, QTableWidgetItem(type_))
@@ -170,6 +187,8 @@ class CreateBlocWidget(QDialog):
         if len(items)>0:
             selected_row = self.table_output.row(items[0])
             del self.output[self.table_output.item(selected_row, 0).text()]
+            self.completer_list.remove(self.table_output.item(selected_row, 0).text())
+            self.completer.update_words(self.completer_list)
             self.table_output.removeRow(selected_row)
     
     def enable_ok_button(self) : 
@@ -206,7 +225,7 @@ class CreateBlocWidget(QDialog):
         # create db bloc and load it
         
         query = write_sql_bloc(self.__project_name, layer_name, self.geom.currentText(), self.input, self.output, self.default_values, 
-                       self.possible_values, f'{norm_name}_bloc', self.formula)
+                       self.possible_values, f'{norm_name}_bloc', self.formula, self.formula_description)
         print("bonjour1")
         load_custom(self.__project_name, query=query)
         print("bonjour 2")
@@ -304,5 +323,33 @@ class CreateBlocWidget(QDialog):
         
         self.__log_manager.notice(f"bloc {layer_name} created")
         
+class WordCompleter(QCompleter):
+    def __init__(self, words, parent=None):
+        super().__init__(words, parent)
+        self.setFilterMode(Qt.MatchContains)
+        self.setCompletionMode(QCompleter.PopupCompletion)
+        self.pattern = '[' + re.escape('+-/*^= ()') + ']'
+        self.mod = self.model()
+
+    def splitPath(self, path):
+        # Split the input text into words
+        return [re.split(self.pattern, path)[-1]]
+
+    def pathFromIndex(self, index):
+        # Get the current text from the widget
+        current_text = self.widget().text()
+        # Split the current text into words
+        last = re.split(self.pattern, current_text)[-1]
+        symbol = current_text[-len(last)-1]
+        # Replace the last word with the completion
+        new_last = index.data()
+        # Join the words back into a single string
+        return current_text[:-len(last)-1] + symbol + new_last
+    
+    def update_words(self, new_words):
+        # Update the model with the new list of words
+        self.mod.setStringList(new_words)
+        self.setModel(self.mod)
+                
 if __name__ == '__main__':
     app = CreateBlocWidget()

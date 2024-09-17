@@ -98,6 +98,15 @@ create table ___.input_output(
     unique (b_type)
 ) ;
 
+create table ___.formulas(
+    id serial primary key,
+    name varchar default ___.unique_name('formula', abbreviation=>'formula'),
+    formula varchar not null, 
+    comment text default null,
+    unique (id),
+    unique (name)
+) ; 
+
 create table ___.bloc(
     id serial primary key,
     name varchar not null check(not name~' '), 

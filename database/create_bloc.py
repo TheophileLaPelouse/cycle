@@ -9,7 +9,7 @@ _custom_sql_dir = os.path.join(_cycle_dir, 'sql')
 if not os.path.exists(_custom_sql_dir):
     os.makedirs(_custom_sql_dir) 
 
-def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], path = os.path.join(_custom_sql_dir, 'custom_bloc.sql')):
+def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], formula_description = {}, path = os.path.join(_custom_sql_dir, 'custom_bloc.sql')):
     """
     Crée un nouveau bloc dans la base de donnée en écrivant de base dans un fichier sql local,
     sûrement que plus tard on pourra le faire sur une base de donnée en ligne 
@@ -43,6 +43,10 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     to_insert_entrees = "array"  + str([key for key in entrees]) + "::varchar[]"
     to_insert_sorties = "array"  + str([key for key in sorties]) + "::varchar[]"
     
+    to_insert_formulas = ""
+    for f in formula_description :
+        to_insert_formulas += f"select api.add_formula('{formula_description[f][0]}'::varchar, '{f}'::varchar, '{formula_description[f][1]}'::text) ;\n"
+    
     query = f"""
 
 alter type ___.bloc_type add value '{name}' ;
@@ -71,11 +75,9 @@ create table ___.{name}_bloc_config(
 ) ; 
 
 select api.add_new_bloc('{name}', 'bloc', '{shape}') ;
+
+{to_insert_formulas}
 """
-    
-    # print(query)
-    
-    # print(path)
     
     with open(path, 'a') as f :
         f.write(query)

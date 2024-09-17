@@ -673,6 +673,8 @@ select template.basic_view('input_output') ;
 
 select template.basic_view('metadata');
 
+select template.basic_view('formulas');
+
 ------------------------------------------------------------------------------------------------
 -- MODELS                                                                                     --
 ------------------------------------------------------------------------------------------------
@@ -722,6 +724,23 @@ begin
     return 'Bloc ' || concrete || '_' || abstract || ' already exists';
 end; 
 $$;
+
+create or replace function api.add_new_formula(formula_name varchar, f varchar, com text default null)
+returns varchar
+language plpgsql as
+$$
+begin
+    if not exists (
+        select 1
+        from api.formulas
+        where name = formula_name )
+    then
+        insert into api.formulas(name, formula, comment) values (formula_name, f, com);
+        return 'Formula ' || formula_name || ' added';
+    end if;
+end ;
+$$; 
+
 
 ------------------------------------------------------------------------------------------------
 -- For calculation 
