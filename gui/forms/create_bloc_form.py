@@ -340,12 +340,18 @@ class WordCompleter(QCompleter):
         current_text = self.widget().text()
         # Split the current text into words
         last = re.split(self.pattern, current_text)[-1]
-        symbol = current_text[-len(last)-1]
+        if len(current_text) > len(last) + 1: 
+            symbol = current_text[-len(last)-1]
+        else : 
+            symbol = ''
         # Replace the last word with the completion
         new_last = index.data()
         # Join the words back into a single string
-        return current_text[:-len(last)-1] + symbol + new_last
-    
+        if len(current_text) > len(last) + 1:
+            return current_text[:-len(last)-1] + symbol + new_last
+        else :
+            return new_last
+        
     def update_words(self, new_words):
         # Update the model with the new list of words
         self.mod.setStringList(new_words)
