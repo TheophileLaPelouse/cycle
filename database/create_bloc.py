@@ -20,7 +20,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
         default_values (list): Liste des valeurs par défaut des colonnes
         path (str): Chemin du fichier où écrire le bloc
     """
-    
+    print("possible_values", possible_values)
     if project_name : 
         path = os.path.join(_cycle_dir, project_name, 'custom_blocs.sql')
     
@@ -28,17 +28,35 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     
     rows = dict(entrees, **sorties)
     
-    types = ''
+    table_types = ''
+    table_types_view = ''
+    view_join = "additional_join => 'left"
+    view_col = "additional_columns => '{"
     columns = ''
     for key, value in rows.items(): 
-        if value == list :
-            types += f"\ncreate type ___.{key}_type as enum({', '.join(possible_values[key])});\n"
-            line = f"{key} ___.{key}_type"
+        print("value", value)
+        if value == "list" :
+        # Dans le cas où on une liste de valeur, nous allons créer un nouveau tableau pour stocker les valeurs possibles
+        # Donc on doit en plus ajouter une colonne qui y fait référence dans le bloc
+        # Ainsi que les colonnes additionnelles et les jointures dans le bloc.
+            table_types += f"create table ___.{key}_type_table(name varchar primary key, FE real, description text);\n"
+            for k in possible_values[key] : 
+                table_types += f"insert into ___.{key}_type_table(name) values ('{k}') ;\n"
+            table_types_view += f"select template.basic_view('{key}_type_table') ;\n"
+            
+            view_col += f"{key}_type_table.FE as {key}_FE, {key}_type_table.description as {key}_description, "
+            # à la fin on enlèvera la dernière virgule et on mettre une acolade fermante
+            view_join += f" join ___.{key}_type_table on {key}_type_table.name = c.{key} "
+            
+            line = f"{key} varchar not null default '{possible_values[key][0]}' references ___.{key}_type_table(name)"
         else : line = f"{key} {type_table[value]}"
         if default_values.get(key) : 
             line += f" default {default_values[key]}"
         line += ',\n'
         columns += line     
+    
+    view_col = view_col[:-2] + "}'"
+    view_join += "'"
     
     to_insert_entrees = "array"  + str([key for key in entrees]) + "::varchar[]"
     to_insert_sorties = "array"  + str([key for key in sorties]) + "::varchar[]"
@@ -46,6 +64,8 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     to_insert_formulas = ""
     for f in formula_description :
         to_insert_formulas += f"select api.add_new_formula('{formula_description[f][0]}'::varchar, '{f}'::varchar, '{formula_description[f][1]}'::text) ;\n"
+    
+    print("bonjour", table_types)
     
     query = f"""
 
@@ -55,7 +75,9 @@ insert into ___.input_output values ('{name}', {to_insert_entrees}, {to_insert_s
 
 create sequence ___.{name}_bloc_name_seq ;     
 
-{types}
+
+{table_types}
+{table_types_view}
 create table ___.{name}_bloc(
 id serial primary key,
 shape ___.geo_type not null default '{default_values['shape']}',
@@ -74,7 +96,9 @@ create table ___.{name}_bloc_config(
     primary key (id, config)
 ) ; 
 
-select api.add_new_bloc('{name}', 'bloc', '{shape}') ;
+select api.add_new_bloc('{name}', 'bloc', '{shape}', 
+    {view_col},
+    {view_join}) ;
 
 {to_insert_formulas}
 """

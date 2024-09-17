@@ -15,6 +15,10 @@ create extension if not exists postgis;
 -- insert and select tests
 ------------------------------------------------------------------------------------------------
 
+select api.add_new_bloc('pointest', 'bloc', 'Point',
+    additional_columns => '{t.FE as FE, t.description as description}',
+    additional_join => 'left join ___.zone_type_table as t on t.name=c.zon') ;
+
 select ___.current_config();
 
 -- select ___.unique_name('test_bloc', abbreviation=>'test_bloc');
@@ -83,6 +87,7 @@ select api.add_new_formula('Delamgie', 'CO2=E', 'C''est vraiment de la magie') ;
 -- select column_name from information_schema.columns where table_name = 'test_bloc' and table_schema = '___';
 
 -- select attribute_name, data_type from information_schema.attributes where udt_schema = '___' and udt_name = 'bloc_type'; 
+
 
 
 -- ------------------------------------------------------------------------------------------------

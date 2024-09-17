@@ -126,7 +126,6 @@ class CreateBlocWidget(QDialog):
         default_value = self.entree_default_value.text()
         if self.entree_type.currentText() == 'list':
             possible_values = self.possible_values_text.text()
-            self.possible_values[name] = possible_values
         else : possible_values = ''
         name, type_, default_value, possible_values, verified = self.verify_input(name, type_, default_value, possible_values)
         if verified:
@@ -140,7 +139,7 @@ class CreateBlocWidget(QDialog):
             self.table_input.setItem(len(self.input)-1, 0, QTableWidgetItem(name))
             self.table_input.setItem(len(self.input)-1, 1, QTableWidgetItem(type_))
             self.table_input.setItem(len(self.input)-1, 2, QTableWidgetItem(default_value))
-            self.table_input.setItem(len(self.input)-1, 3, QTableWidgetItem(possible_values))
+            self.table_input.setItem(len(self.input)-1, 3, QTableWidgetItem(str(possible_values)))
         
             # clear the input fields
             self.entree_name.clear()
@@ -149,6 +148,8 @@ class CreateBlocWidget(QDialog):
     
     def verify_input(self, name, type_, default_value, possible_values):
         # Faudra vérifier le format des données rentrées pour éviter tout problème 
+        possible_values = possible_values.split(';')
+        possible_values = [value.strip() for value in possible_values]
         return name.strip().lower(), type_, default_value, possible_values, True
     
     
@@ -173,7 +174,6 @@ class CreateBlocWidget(QDialog):
     def __add_output(self):
         name = self.sortie_name.text()
         type_ = self.sortie_type.currentText()
-        self.output[name.strip.lower()] = type_
         default_value = self.sortie_default_value.text()
         if self.sortie_type.currentText() == 'list':
             possible_values = self.possible_values_text2.text()
@@ -182,11 +182,16 @@ class CreateBlocWidget(QDialog):
         if verified:
             self.completer_list.append(name)
             self.completer.update_words(self.completer_list)
+            
+            self.default_values[name] = default_value
+            self.possible_values[name] = possible_values
+            self.output[name] = type_
+            
             self.table_output.setRowCount(len(self.output))
             self.table_output.setItem(len(self.output)-1, 0, QTableWidgetItem(name))
             self.table_output.setItem(len(self.output)-1, 1, QTableWidgetItem(type_))
             self.table_output.setItem(len(self.output)-1, 2, QTableWidgetItem(default_value))
-            self.table_output.setItem(len(self.output)-1, 3, QTableWidgetItem(possible_values))
+            self.table_output.setItem(len(self.output)-1, 3, QTableWidgetItem(str(possible_values)))
         
             # clear the input fields
             self.sortie_name.clear()

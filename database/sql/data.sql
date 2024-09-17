@@ -183,6 +183,27 @@ create table ___.piptest_bloc(
 
 insert into ___.input_output values ('piptest', array['Q'], array['Q']);
 
+create table ___.zone_type_table(
+    name varchar primary key,
+    FE real,
+    description text
+) ;
+
+insert into ___.zone_type_table values ('urban', 0.5, 'Zone urbaine');
+insert into ___.zone_type_table values ('rural', 0.1, 'Zone rurale');
+
+create table ___.pointest_bloc(
+    id integer primary key,
+    shape ___.geo_type not null default 'Point',
+    geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
+    name varchar not null default ___.unique_name('pointest_bloc', abbreviation=>'pointest_bloc'),
+    zon varchar not null default 'urban' references ___.zone_type_table(name),
+    Q real default null, 
+    formula varchar[] default array['CO2 = Q']::varchar[],
+    foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
+    unique (name, id)
+) ;
+
 ------------------------------------------------------------------------------------------------
 -- Config 
 ------------------------------------------------------------------------------------------------
@@ -211,6 +232,13 @@ create table ___.piptest_bloc_config(
     foreign key (id, name) references ___.piptest_bloc(id, name) on delete cascade on update cascade,
     primary key (id, config)
 ) ; 
+
+create table ___.pointest_bloc_config(
+    like ___.pointest_bloc,
+    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+    foreign key (id, name) references ___.pointest_bloc(id, name) on delete cascade on update cascade,
+    primary key (id, config)
+) ;
 
 create or replace function ___.current_config()
 returns varchar

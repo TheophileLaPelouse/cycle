@@ -339,7 +339,8 @@ end;
 $$
 ;
 
-create or replace function template.bloc_view(concrete varchar, abstract varchar, shape varchar, additional_columns varchar[] default '{}'::varchar[])
+create or replace function template.bloc_view(concrete varchar, abstract varchar, shape varchar, 
+additional_columns varchar default null, additional_join varchar default null)
 returns varchar
 language plpgsql as
 $fonction$
@@ -349,6 +350,8 @@ DECLARE
 begin 
     query := E'select template.inherited_view(''' || concrete || ''', ''' || abstract || ''', specific_geom => ' ||
     E'''c.geom::geometry('|| shape ||',' || (select srid from ___.metadata) || ')'',' ||
+    coalesce(E'additional_columns => '''||additional_columns||''',', '') ||
+    coalesce(E'additional_join => '''||additional_join||''',', '') ||
     E'after_update_section => $$\n' ||
     E'    if not St_equals(old.geom, new.geom) then\n' ||
     E'        update ___.link set geom = st_setpoint(geom, 0, new.geom) where up = new.id;\n' ||
@@ -660,6 +663,8 @@ select template.bloc_view('test', 'bloc', 'Polygon') ;
 
 select template.bloc_view('piptest', 'bloc', 'LineString') ;
 
+
+
 select template.basic_view('sorties');
 
 select template.basic_view('link');
@@ -707,7 +712,8 @@ $$
 -- Add future bloc 
 ------------------------------------------------------------------------------------------------
 
-create or replace function api.add_new_bloc(concrete varchar, abstract varchar, shape varchar)
+create or replace function api.add_new_bloc(concrete varchar, abstract varchar, shape varchar, 
+additional_columns varchar default null, additional_join varchar default null)
 returns varchar
 language plpgsql as 
 $$
@@ -718,7 +724,7 @@ begin
         where table_schema = 'api' 
         and table_name = concrete || '_' || abstract
     ) then 
-        perform template.bloc_view(concrete, abstract, shape);
+        perform template.bloc_view(concrete, abstract, shape, additional_columns, additional_join);
         return 'Bloc ' || concrete || '_' || abstract || ' added';
     end if;
     return 'Bloc ' || concrete || '_' || abstract || ' already exists';
@@ -741,6 +747,25 @@ begin
 end ;
 $$; 
 
+-- create or replace function api.select_enum_types()
+-- returns table(enum_type text) 
+-- language plpgsql as
+-- $$
+-- begin
+--     return query
+--     select 
+--         t.typname::text AS enum_type
+--     FROM 
+--         pg_type t
+--     JOIN 
+--         pg_namespace n ON t.typnamespace = n.oid
+--     JOIN 
+--         pg_enum e ON t.oid = e.enumtypid
+--     WHERE 
+--         n.nspname = '___'
+--     group by t.typname;
+-- end;
+-- $$ ;
 
 ------------------------------------------------------------------------------------------------
 -- For calculation 
