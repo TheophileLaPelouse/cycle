@@ -540,7 +540,7 @@ Begin
     -- raise notice 'finding ss_blocs';
     select array_agg(id) into ss_blocs_array
     from ___.bloc
-    where st_within(___.bloc.geom_ref, g) and ___.bloc.model = model_name ;
+    where st_within(___.bloc.geom_ref, g) and ___.bloc.model = model_name and not ___.bloc.id = id_sur_bloc;
 
     -- On enlève les sous-blocs de sous-blocs
     ss_blocs_array := array(
@@ -575,7 +575,7 @@ begin
     -- raise notice 'finding sur_bloc';
     select id into sur_bloc_id
     from ___.bloc
-    where st_within(g, ___.bloc.geom_ref) and ___.bloc.model = model_name
+    where st_within(g, ___.bloc.geom_ref) and ___.bloc.model = model_name and not ___.bloc.id = id_ss_bloc
     order by st_area(___.bloc.geom_ref) asc
     limit 1;
     update ___.bloc set ss_blocs = array_append(ss_blocs, id_ss_bloc) where id = sur_bloc_id; 
@@ -842,15 +842,34 @@ begin
             where b_type = b_types::___.bloc_type and model = model_name)
         loop
             ins_json := 'jsonb_build_object(' || array_to_string(array(
-                select quote_literal(elem) || ', ' || elem
-                from unnest(ins) as elem
-                ), ', ') || ')';
+            select quote_literal(elem) || ', ' || elem
+            from unnest(ins) as elem
+            union all
+            select quote_literal(elem || '_fe') || ', ' || elem || '_fe'
+            from unnest(ins) as elem
+            where exists (
+                select 1
+                from information_schema.columns
+                where table_schema = 'api'
+                and table_name = b_types || '_bloc'
+                and column_name = elem || '_fe'
+            )
+        ), ', ') || ')';
 
-            -- Construct the jsonb_build_object call for outputs
-            outs_json := 'jsonb_build_object(' || array_to_string(array(
-                select quote_literal(elem) || ', ' || elem
-                from unnest(outs) as elem
-                ), ', ') || ')';
+        outs_json := 'jsonb_build_object(' || array_to_string(array(
+            select quote_literal(elem) || ', ' || elem
+            from unnest(outs) as elem
+            union all
+            select quote_literal(elem || '_fe') || ', ' || elem || '_fe'
+            from unnest(outs) as elem
+            where exists (
+                select 1
+                from information_schema.columns
+                where table_schema = 'api'
+                and table_name = b_types || '_bloc'
+                and column_name = elem || '_fe'
+            )
+        ), ', ') || ')';
 
             query := 'with inp as (' ||
                 'select ' || ins_json || ' as inp_value ' ||

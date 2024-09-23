@@ -3,7 +3,7 @@ import os
 from qgis.PyQt import uic 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem, QDialogButtonBox, QCompleter
-from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, QgsVectorLayer, QgsDefaultValue
+from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, QgsVectorLayer, QgsDefaultValue, QgsAttributeEditorContainer
 from ...service import get_service
 from ...database.version import __version__
 from ...database.create_bloc import write_sql_bloc, load_custom
@@ -11,8 +11,8 @@ from ...qgis_utilities import tr
 from ...project import Project
 from ...utility.json_utils import open_json, get_propertie, save_to_json
 
-Formules_de_base = ['CO2 = CO2']
-Input_de_base = {'co2' : 'real'}
+Formules_de_base = []
+Input_de_base = {}
 
 class CreateBlocWidget(QDialog):
     
@@ -34,9 +34,9 @@ class CreateBlocWidget(QDialog):
         self.possible_values_text.setEnabled(False)
         self.possible_values_text2.setEnabled(False)
         
-        self.input = Input_de_base
+        self.input = {key : Input_de_base[key] for key in Input_de_base}
         self.output = {}
-        self.formula = Formules_de_base
+        self.formula = Formules_de_base[:]
         self.formula_description = {}
         self.default_values = {}
         self.possible_values = {}
@@ -85,17 +85,21 @@ class CreateBlocWidget(QDialog):
         self.ok_button = self.buttons.button(QDialogButtonBox.Ok)
         self.ok_button.setEnabled(False)   
         self.ok_button.clicked.connect(self.__create_bloc)
-        
+        print(self.__dict__)
         self.exec_()
     
     def __add_formula(self):
         formula = self.formula_text.text()
+        description = self.description.text()
+        detail = self.detail_level.value()
         if self.verify_formula(formula):
-            self.table_formula.setRowCount(len(self.formula))
-            self.table_formula.setItem(len(self.formula)-1, 0, QTableWidgetItem(formula))
-            self.table_formula.setItem(len(self.formula)-1, 1, QTableWidgetItem(self.description.text()))
             self.formula.append(formula)
-            self.formula_description[formula] = [self.description.text(), self.comment.toPlainText()]
+            self.formula_description[formula] = [self.description.text(), self.comment.toPlainText(), detail]
+            self.table_formula.setRowCount(len(self.formula))
+            print(formula, description)
+            self.table_formula.setItem(len(self.formula)-1, 0, QTableWidgetItem(formula))
+            self.table_formula.setItem(len(self.formula)-1, 2, QTableWidgetItem(description))
+            self.table_formula.setItem(len(self.formula)-1, 1, QTableWidgetItem(str(detail)))
             self.formula_text.clear()
             self.description.clear()
             self.comment.clear()
@@ -148,9 +152,10 @@ class CreateBlocWidget(QDialog):
     
     def verify_input(self, name, type_, default_value, possible_values):
         # Faudra vérifier le format des données rentrées pour éviter tout problème 
-        possible_values = possible_values.split(';')
-        possible_values = [value.strip() for value in possible_values]
-        return name.strip().lower(), type_, default_value, possible_values, True
+        if possible_values :
+            possible_values = possible_values.split(';')
+            possible_values = [value.strip() for value in possible_values]
+        return name.strip(), type_, default_value, possible_values, True
     
     
     def __delete_input(self):
@@ -226,9 +231,9 @@ class CreateBlocWidget(QDialog):
     def normalize_name(self, name):
         # Faudra normaliser le nom pour éviter les problèmes
         char_to_remove = ["'", '"', '(', ')', '[', ']', '{', '}', '<', '>', '!', '?', '.', ',', ';', ':', '/', '\\', '|', '@', '#', '$', '%', '^', '&', '*', '+', '=', '~', '`']
-        #return name.lower().replace(' ', '_').translate(None, ''.join(char_to_remove))
+        #return name.replace(' ', '_').translate(None, ''.join(char_to_remove))
         rx = '[' + re.escape(''.join(char_to_remove)) + ']'
-        return re.sub(rx, '', name).strip().lower().replace(' ', '_')
+        return re.sub(rx, '', name).strip().replace(' ', '_')
     
     def __create_bloc(self):
         # Pour que ce soit plus jolie faudra différencier layer_name et layer_name_bloc.
@@ -240,7 +245,7 @@ class CreateBlocWidget(QDialog):
         
         # create db bloc and load it
         
-        query = write_sql_bloc(self.__project_name, layer_name, self.geom.currentText(), self.input, self.output, self.default_values, 
+        query = write_sql_bloc(self.__project_name, norm_name, self.geom.currentText(), self.input, self.output, self.default_values, 
                        self.possible_values, f'{norm_name}_bloc', self.formula, self.formula_description)
         print("bonjour1")
         load_custom(self.__project_name, query=query)
@@ -292,18 +297,28 @@ class CreateBlocWidget(QDialog):
         for field in fields:
             defval = QgsDefaultValue()
             fieldname = field.name()
-            default_query = self.__project.fetchone(f"select column_default from information_schema.columns where table_schema='api' and table_name='{layer_name}_bloc' and column_name='{fieldname}';")
+            default_query = self.__project.fetchone(f"select column_default from information_schema.columns where table_schema='api' and table_name='{norm_name}_bloc' and column_name='{fieldname}';")
+            print(f"select column_default from information_schema.columns where table_schema='api' and table_name='{norm_name}_bloc' and column_name='{fieldname}';")
             print(default_query)
-            default = self.__project.fetchone('select ' + str(default_query[0])) if default_query[0] else [None]
+            if default_query :
+                default = self.__project.fetchone('select ' + str(default_query[0])) if default_query[0] else [None]
+            else : default = [None]
             # Amélioration possible tout faire dans une seule query
             defval.setExpression(str(default[0]))
-            if fieldname.strip().lower() == 'model' : 
+            if fieldname.strip() == 'model' : 
                 defval.setExpression('@current_model')
-            layer.setDefaultValueDefinition(idx, defval)
-            if fieldname.strip().lower() in self.input:
-                input_tab.addChildElement(attrfield(field.name(), idx, input_tab)) # à vérifier sur la doc si c'est bien comme ça
-            elif fieldname.strip().lower() in self.output:
-                output_tab.addChildElement(attrfield(field.name(), idx, output_tab))
+            layer.setDefaultValueDefinition(idx, defval) 
+                
+            if fieldname.strip() in self.input:
+                if fieldname.strip() in self.possible_values and self.possible_values[fieldname.strip()]:
+                    CreateBlocWidget.add_list_container(input_tab, fieldname, idx, fields)
+                else :
+                    input_tab.addChildElement(attrfield(field.name(), idx, input_tab)) # à vérifier sur la doc si c'est bien comme ça
+            elif fieldname.strip() in self.output :
+                if fieldname.strip() in self.possible_values and self.possible_values[fieldname.strip()]:
+                    CreateBlocWidget.add_list_container(output_tab, fieldname, idx, fields)
+                else : 
+                    output_tab.addChildElement(attrfield(field.name(), idx, output_tab))
             idx+=1
         layer.setEditFormConfig(config)
         
@@ -339,6 +354,17 @@ class CreateBlocWidget(QDialog):
         
         self.__log_manager.notice(f"bloc {layer_name} created")
         
+    @staticmethod
+    def add_list_container(tab, fieldname, idx, fields):
+        container = QgsAttributeEditorContainer(fieldname.upper(), tab)
+        container.setColumnCount(2)
+        container.addChildElement(attrfield(fieldname, idx, container))
+        container.addChildElement(attrfield(fieldname+"_fe", fields.indexOf(fieldname+"_fe"), container))
+        defval = QgsDefaultValue()
+        # default = self.pro
+        tab.addChildElement(container)
+        
+            
 class WordCompleter(QCompleter):
     def __init__(self, words, parent=None):
         super().__init__(words, parent)
@@ -408,6 +434,7 @@ class GrpCompleter(QCompleter):
                 completions = []
             self.mod.setStringList(completions)
             print("bonjour", completions)
-        
+
+
 if __name__ == '__main__':
     app = CreateBlocWidget()

@@ -87,7 +87,7 @@ def read_expr(expr, dico) :
         elif term == '^' :
             sgn = '^'
         else :
-            term = term if isinstance(term, float) else dico[term.lower()]
+            term = term if isinstance(term, float) else dico[term]
             if term is None : 
                 raise ErrorNotEnoughData('Not Enough data to calculate %s' % expr)
             if sgn == '*' : 

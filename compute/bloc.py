@@ -74,6 +74,7 @@ Input_Output = {}
 
 class Bloc: 
     def __init__(self, project, model, name, origin) : 
+        print('BONJOUR')
         self.project = project
         self.name = name
         self.model = model
@@ -148,8 +149,9 @@ class Bloc:
         Et on va parcourir les formules pour les calculer dans l'ordre afin d'avoir toutes les données nécessaires
         """
         print("euh", self.entrees, self.sorties)
-        inp_out = dict(self.entrees, **self.sorties)
         self.recup_entree()
+        inp_out = dict(self.entrees, **self.sorties)
+        
         bilan = {}
         results = {}
         formulas = {}
@@ -168,18 +170,24 @@ class Bloc:
             stack = []
             treatment_stack = []
             stack.append(data)
-            
-            while stack : 
+            c= 0
+            while stack and c < 1000 : 
+                c+=1
+                print("stack", stack)
                 to_calc = stack.pop()
-                treatment_stack.append(to_calc)
+                print(to_calc)
                 if (not to_calc in known_data) or (not known_data[to_calc]) : 
+                    treatment_stack.append(to_calc)
                     known_data[to_calc] = True
                     for d in bilan[to_calc] : 
                         if known_data[d] :
                             stack.append(d)     
-            print("treatment_stack", treatment_stack)
-            while treatment_stack :
+            c=0
+            while treatment_stack and c < 1000:
+                c+=1
+                print("treatment_stack", treatment_stack)
                 to_calc = treatment_stack.pop(-1)
+                print(to_calc)
                 try : 
                     result = calculate_formula(formulas[to_calc], inp_out)
                 except ErrorNotEnoughData : 
@@ -203,9 +211,10 @@ class Bloc:
         def parcours_rec(bloc) : 
             bloc.calculate_bloc()
             for name, sb in bloc.ss_blocs.items() : 
-                parcours_rec(sb)
-                result[name] = sb.ges
-                print("result calculate", result)
+                if sb != bloc :
+                    parcours_rec(sb)
+                    result[name] = sb.ges
+                    print("result calculate", result)
                 
             return
         parcours_rec(self)
@@ -217,7 +226,13 @@ class Bloc:
         """
         for link, bloc in self.links_up.items() :
             for name, data in bloc.sorties.items() : 
-                if name in self.entrees : 
+                if name[-2:] == '_s' : 
+                    if name[:-2] in self.entrees :
+                        self.entrees[name[:-2]] = data
+                    elif name[:-2] + '_e' in self.entrees : 
+                        self.entrees[name[:-2] + '_e'] = data
+                # Comme ça on peut appeler un attribut truc_s et truc_e pour entrées et sorties et les différencier.
+                if name in self.entrees :
                     self.entrees[name] = data
         
             
@@ -231,7 +246,7 @@ if __name__ =='__main__' :
     Formules = {i : [] for i in range(1, 12)}
     links = {i : [] for i in range(1, 12)}
     b = Bloc(None, 'test', 'test_bloc', True)
-    b.add_from_sur_bloc(dict(l_sur_bloc), names, Entrees, Sorties, Formules, links)
+    b.add_from_sur_bloc(dict(l_sur_bloc), names, Formules, Entrees, Sorties, links)
     # ça à l'air de fonctionner jusqu'ici
     
     # Test formules
