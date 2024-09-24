@@ -3,7 +3,7 @@ import os
 from qgis.PyQt import uic 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem, QDialogButtonBox, QCompleter
-from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, QgsVectorLayer, QgsDefaultValue, QgsAttributeEditorContainer
+from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, QgsVectorLayer, QgsDefaultValue, QgsAttributeEditorContainer, QgsRelation, QgsRelationContext
 from ...service import get_service
 from ...database.version import __version__
 from ...database.create_bloc import write_sql_bloc, load_custom
@@ -268,7 +268,7 @@ class CreateBlocWidget(QDialog):
         else : g = root.findGroup(grp) or root.insertGroup(0, grp) # On changera sûrement l'index plus tard
         
         sch, tbl, key = "api", f'{norm_name}_bloc', 'name'
-        uri = f'''dbname='{self.__project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" ''' + (' (geom)' if grp != tr('Settings') and layer_name!=tr('Measure') else '')
+        uri = f'''dbname='{self.__project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" ''' + ' (geom)'
         print(uri)
         layer = QgsVectorLayer(uri, layer_name, "postgres")
         project.addMapLayer(layer, False)
@@ -294,29 +294,23 @@ class CreateBlocWidget(QDialog):
         input_tab = tabs[-2]
         output_tab = tabs[-1]
         idx = 0
+        default_values = self.__project.fetchone(f"select jsonb_object_agg(column_name, column_default) from information_schema.columns where table_schema='api' and table_name='{norm_name}_bloc'")[0]
+        dico_ref = {}
         for field in fields:
             defval = QgsDefaultValue()
             fieldname = field.name()
-            default_query = self.__project.fetchone(f"select column_default from information_schema.columns where table_schema='api' and table_name='{norm_name}_bloc' and column_name='{fieldname}';")
-            print(f"select column_default from information_schema.columns where table_schema='api' and table_name='{norm_name}_bloc' and column_name='{fieldname}';")
-            print(default_query)
-            if default_query :
-                default = self.__project.fetchone('select ' + str(default_query[0])) if default_query[0] else [None]
-            else : default = [None]
-            # Amélioration possible tout faire dans une seule query
-            defval.setExpression(str(default[0]))
             if fieldname.strip() == 'model' : 
                 defval.setExpression('@current_model')
-            layer.setDefaultValueDefinition(idx, defval) 
+                layer.setDefaultValueDefinition(idx, defval) 
                 
             if fieldname.strip() in self.input:
                 if fieldname.strip() in self.possible_values and self.possible_values[fieldname.strip()]:
-                    CreateBlocWidget.add_list_container(input_tab, fieldname, idx, fields)
+                    dico_ref[fieldname] = self.add_list_container(layer, input_tab, fieldname, idx, fields, default_values)
                 else :
                     input_tab.addChildElement(attrfield(field.name(), idx, input_tab)) # à vérifier sur la doc si c'est bien comme ça
             elif fieldname.strip() in self.output :
                 if fieldname.strip() in self.possible_values and self.possible_values[fieldname.strip()]:
-                    CreateBlocWidget.add_list_container(output_tab, fieldname, idx, fields)
+                    dico_ref[fieldname] = self.add_list_container(layer, output_tab, fieldname, idx, fields, default_values)
                 else : 
                     output_tab.addChildElement(attrfield(field.name(), idx, output_tab))
             idx+=1
@@ -345,24 +339,69 @@ class CreateBlocWidget(QDialog):
                     branch = branch[grp]
                 except KeyError :
                     branch[grp] = {}
-            branch[grp_final] = {"bloc" : [layer_name, "api", f'{norm_name}_bloc', "name"]}
+            branch[grp_final][layer_name] = {"bloc" : [layer_name, "api", f'{norm_name}_bloc', "name"]}
         else:
             branch[layer_name] = {'bloc' : [layer_name, "api", f'{norm_name}_bloc', "name"]}
         
+        if not layertree.get('Properties'):
+            layertree['Properties'] = {}
+        for fieldname in dico_ref:
+            layertree['Properties'][fieldname] = dico_ref[fieldname][0]
+            layertree['Properties'][fieldname+'__ref'] = dico_ref[fieldname][1]
         save_to_json(layertree, path_layertree)
         # Faudra vérifier qu'il ne se passe pas de dingz avec le fait que le json soit pas le même que l'autre non custom.
         
         self.__log_manager.notice(f"bloc {layer_name} created")
         
-    @staticmethod
-    def add_list_container(tab, fieldname, idx, fields):
+    def add_list_container(self, layer, tab, fieldname, idx, fields, default_values):
+        # Create the container in the attribute form
         container = QgsAttributeEditorContainer(fieldname.upper(), tab)
         container.setColumnCount(2)
         container.addChildElement(attrfield(fieldname, idx, container))
         container.addChildElement(attrfield(fieldname+"_fe", fields.indexOf(fieldname+"_fe"), container))
         defval = QgsDefaultValue()
-        # default = self.pro
+        default = self.__project.fetchone(f"select {default_values[fieldname]}") 
+        if default : default = default[0]
+        defval.setExpression(str(default))
+        layer.setDefaultValueDefinition(idx, defval) 
+        # The first part will be saved in the qml file
+        
+        # Add the propertie layer to the project 
+        project = QgsProject.instance()
+        root = project.layerTreeRoot()
+        g = root.findGroup('Properties') or root.insertGroup(0, 'Properties')
+        
+        sch, tbl, key = "api", f'{fieldname}_type_table', 'val'
+        layer_name = f'{fieldname}'
+        uri = f'''dbname='{self.__project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" '''
+        prop_layer = QgsVectorLayer(uri, layer_name, "postgres")
+        prop_layer.setDisplayExpression('val')
+        project.addMapLayer(prop_layer, False)
+        g.addLayer(prop_layer)
+        if not prop_layer.isValid():
+            raise RuntimeError(f'layer {layer_name} is invalid')
+        
+        default_fe = f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
+        defval.setExpression(default_fe)
+        layer.setDefaultValueDefinition(fields.indexOf(fieldname+"_fe"), defval) # saved in the qml file
+        
         tab.addChildElement(container)
+        name = 'ref_' + fieldname
+        referencedLayer, referencedField = prop_layer.id(), 'val'
+        referencingLayer, referencingField = layer.id(), fieldname
+        relation = QgsRelation(QgsRelationContext(project))
+        relation.setName(name)
+        relation.setReferencedLayer(referencedLayer)
+        relation.setReferencingLayer(referencingLayer)
+        relation.addFieldPair(referencingField, referencedField)
+        relation.setStrength(QgsRelation.Association)
+        relation.updateRelationStatus()
+        relation.generateId()
+        # assert(relation.isValid())
+        project.relationManager().addRelation(relation)
+        
+        return ([prop_layer.name(), sch, tbl, key], [name, referencedLayer, referencedField, referencingLayer, referencingField])
+        
         
             
 class WordCompleter(QCompleter):

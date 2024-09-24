@@ -196,7 +196,7 @@ class Bloc:
                             if not known_data[d] :
                                 stack.append(d)   
             if c == 1000 : 
-                raise ValueError('Trop de calculs')  
+                raise RuntimeError('Trop de calculs')  
             c=0
             while treatment_stack and c < 1000:
                 c+=1
@@ -219,7 +219,7 @@ class Bloc:
                 if to_calc in self.entrees :
                     self.entrees[to_calc] = max(results[to_calc], key=lambda x : x[1])[0]
             if c == 1000 : 
-                raise ValueError('Trop de calculs') 
+                raise RuntimeError('Trop de calculs') 
         print("results", results)
         self.ges = results
     
