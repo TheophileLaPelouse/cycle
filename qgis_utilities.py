@@ -195,7 +195,7 @@ class QGisProjectManager(QObject):
         properties += prop2
         paths += paths2
         for bloc, path in zip(properties, paths):
-            grps = path.split('/')
+            grps = path.split('/')[:-1]
             g = root
             for grp in grps:
                 if grp != '':
@@ -218,19 +218,48 @@ class QGisProjectManager(QObject):
                 if uri != layer.dataProvider().dataSourceUri():
                     layer.setDataSource(uri, layer_name, "postgres")
 
-
-            QGisProjectManager.load_qml(project)
-            project.write()
-
-
+        # add table layer and their relations
+        properties = layertree['Properties']
+        for key, val in layertree_custom.items():
+            if key not in properties:
+                properties[key] = val
+        for field in properties : 
+            if not field.endswith('__ref') and properties.get(field+'__ref') :
+                prop_layer = QGisProjectManager.create_prop_layer(project, project_name, properties[field])
+                name, referencedField, referencingLayer, referencingField = properties[field+'__ref']
+                referencedLayer = prop_layer.id()
+                referencingLayer = project.mapLayersByName(referencingLayer)[0].id()
+                relation = QgsRelation(QgsRelationContext(project))
+                relation.setName(name)
+                relation.setReferencedLayer(referencedLayer)
+                relation.setReferencingLayer(referencingLayer)
+                relation.addFieldPair(referencingField, referencedField)
+                relation.setStrength(QgsRelation.Association)
+                relation.updateRelationStatus()
+                relation.generateId()
+                assert(relation.isValid())
+                project.relationManager().addRelation(relation)
+        
+        QGisProjectManager.load_qml(project)
+        project.write()
 
     @staticmethod
+    def create_prop_layer(project, project_name, field_properties) : 
+        layer_name, sch, tbl, key = field_properties
+        uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
+        prop_layer = QgsVectorLayer(uri, layer_name, "postgres")
+        prop_layer.setDisplayExpression('val')
+        project.addMapLayer(prop_layer, False)
+        
+        root = project.layerTreeRoot()
+        g = root.findGroup('Properties') or root.insertGroup(-1, 'Properties')
+        g.addLayer(prop_layer)
+        if not prop_layer.isValid():
+            raise RuntimeError(f'layer {layer_name} is invalid')
+        return prop_layer
+        
+    @staticmethod
     def load_qml(project):
-        # all_nodes_layer_id = project.mapLayersByName(tr('All nodes'))[0].id()
-        # sector_layer_id = project.mapLayersByName(tr('Water delivery sector'))[0].id()
-        # material_layer_id = project.mapLayersByName(tr('Material'))[0].id()
-        # fluid_layer_id = project.mapLayersByName(tr('Fluid properties'))[0].id()
-
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         lang = '' if locale == 'en' else '_fr'
         lang = ''
@@ -242,23 +271,8 @@ class QGisProjectManager(QObject):
                 qml = os.path.join(_custom_qml_dir, qml_basename)
                 if not os.path.exists(qml):
                     qml = os.path.join(_qml_dir, qml_basename)
-                if os.path.exists(qml):
-                    # we need to update expressions and relational references
-
-                    doc = QDomDocument()
-                    doc.setContent(QFile(qml))
-                    root = doc.documentElement()
-                    referencedLayers = root.firstChildElement('referencedLayers')
-                    # remove relations
-                    while referencedLayers.childNodes().count():
-                        referencedLayers.removeChild(referencedLayers.firstChild())
-
-                    # save to tmp file
-                    tmp_qml = os.path.join(tempfile.gettempdir(), qml_basename)
-                    with open(tmp_qml, 'w', encoding='utf-8') as o:
-                        o.write(doc.toString(2))
-
-                    layer.loadNamedStyle(tmp_qml)
+                
+                layer.loadNamedStyle(qml)
 
     @staticmethod
     def create_project(project_filename, srid):

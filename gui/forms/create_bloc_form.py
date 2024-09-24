@@ -369,7 +369,7 @@ class CreateBlocWidget(QDialog):
         # Add the propertie layer to the project 
         project = QgsProject.instance()
         root = project.layerTreeRoot()
-        g = root.findGroup('Properties') or root.insertGroup(0, 'Properties')
+        g = root.findGroup('Properties') or root.insertGroup(-1, 'Properties')
         
         sch, tbl, key = "api", f'{fieldname}_type_table', 'val'
         layer_name = f'{fieldname}'
@@ -400,7 +400,7 @@ class CreateBlocWidget(QDialog):
         # assert(relation.isValid())
         project.relationManager().addRelation(relation)
         
-        return ([prop_layer.name(), sch, tbl, key], [name, referencedLayer, referencedField, referencingLayer, referencingField])
+        return ([prop_layer.name(), sch, tbl, key], [name, layer.name(), referencingLayer, referencingField])
         
         
             
