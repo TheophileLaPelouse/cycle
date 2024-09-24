@@ -73,7 +73,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     
     to_insert_formulas = ""
     for f in formula_description :
-        to_insert_formulas += f"select api.add_new_formula('{formula_description[f][0]}'::varchar, '{f}'::varchar, '{formula_description[f][1]}'::text) ;\n"
+        to_insert_formulas += f"select api.add_new_formula('{formula_description[f][0]}'::varchar, '{f}'::varchar, {formula_description[f][2]}, '{formula_description[f][1]}'::text) ;\n"
     
     print("bonjour", table_types)
     
@@ -89,11 +89,12 @@ create sequence ___.{name}_bloc_name_seq ;
 {table_types}
 {table_types_view}
 create table ___.{name}_bloc(
-id serial primary key,
+id integer primary key,
 shape ___.geo_type not null default '{default_values['shape']}',
 geom geometry('{default_values['shape'].upper()}', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('{name}_bloc', abbreviation=>'{name + "_bloc" if not abbreviation else abbreviation}'),
 formula varchar[] default array{formula}::varchar[],
+formula_name varchar[] default array{[formula_description[f][0] for f in formula_description]}::varchar[],
 {columns}
 foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
 unique (name, id)

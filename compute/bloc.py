@@ -18,13 +18,14 @@ def get_sur_blocs(project, model_name = None, bloc = None) :
         val = val.replace('"', '')
         pattern = r',\s*(?![^{}]*\})'
         val = re.split(pattern, val[1:-1])
-        Id, sur_bloc, name, formula, inputs, outputs = val 
+        Id, sur_bloc, name, formula_name, inputs, outputs, formula_details = val
+        print("formula_details", formula_details)
         Id = int(Id)
         try : 
             sur_bloc = int(sur_bloc)
         except : 
             sur_bloc = None
-        formula = formula[1:-1].split(',')
+        # formula = formula[1:-1].split(',')
         
         def to_dico(string) : 
             string = string[1:-1].split(',')
@@ -46,6 +47,13 @@ def get_sur_blocs(project, model_name = None, bloc = None) :
             return dico
         inputs = to_dico(inputs)
         outputs = to_dico(outputs)
+        formula = to_dico(formula_details)
+        for key in inputs :
+            if key + '_fe' in inputs :
+                inputs[key] = inputs[key + '_fe']
+        for key in outputs :
+            if key + '_fe' in outputs :
+                outputs[key] = outputs[key + '_fe']
         
         d_sb[Id] = sur_bloc
         d_name[Id] = name
@@ -99,7 +107,7 @@ class Bloc:
         
         new_bloc.entrees = entrees.copy()  
         new_bloc.sorties = sorties.copy() # Faudra faire gaffe au copy dans le doute 
-        new_bloc.formules = formules[:]
+        new_bloc.formules = formules.copy()
         new_bloc.links_up = link_up.copy()
         
         self.ss_blocs[name] = new_bloc
@@ -160,8 +168,12 @@ class Bloc:
             if len(sides) > 2 : 
                 print('Erreur, trop de =')
             else : 
-                bilan[sides[0].strip()] = read_formula(sides[1], inp_out)
-                formulas[sides[0].strip()] = f
+                side0 = sides[0].strip()
+                if not bilan.get(side0) : 
+                    bilan[side0] = []
+                    formulas[side0] = [] 
+                bilan[side0].append((read_formula(sides[1], inp_out), self.formules[f]))
+                formulas[side0].append((f, self.formules[f]))
         print("bilan", bilan)
         print("formulas", formulas)
         known_data = {name : inp_out[name] is not None for name in inp_out}
@@ -179,27 +191,35 @@ class Bloc:
                 if (not to_calc in known_data) or (not known_data[to_calc]) : 
                     treatment_stack.append(to_calc)
                     known_data[to_calc] = True
-                    for d in bilan[to_calc] : 
-                        if known_data[d] :
-                            stack.append(d)     
+                    for bil in bilan[to_calc] : 
+                        for d in bil[0] : 
+                            if not known_data[d] :
+                                stack.append(d)   
+            if c == 1000 : 
+                raise ValueError('Trop de calculs')  
             c=0
             while treatment_stack and c < 1000:
                 c+=1
                 print("treatment_stack", treatment_stack)
                 to_calc = treatment_stack.pop(-1)
                 print(to_calc)
-                try : 
-                    result = calculate_formula(formulas[to_calc], inp_out)
-                except ErrorNotEnoughData : 
-                    results = None
-                print("result", result)
-                results[to_calc] = result 
+                if not results.get(to_calc) :
+                    results[to_calc] = [] 
+                for f in formulas[to_calc] :
+                    try : 
+                        result = (calculate_formula(f[0], inp_out), f[1])
+                    except ErrorNotEnoughData : 
+                        result = (None, f[1])
+                    print("result", result)
+                    results[to_calc].append(result) 
                 if to_calc in inp_out : 
-                    inp_out[to_calc] = result
+                    inp_out[to_calc] = max(results[to_calc], key=lambda x : x[1])[0] 
                 if to_calc in self.sorties : 
-                    self.sorties[to_calc] = result
+                    self.sorties[to_calc] = max(results[to_calc], key=lambda x : x[1])[0]
                 if to_calc in self.entrees :
-                    self.entrees[to_calc] = result
+                    self.entrees[to_calc] = max(results[to_calc], key=lambda x : x[1])[0]
+            if c == 1000 : 
+                raise ValueError('Trop de calculs') 
         print("results", results)
         self.ges = results
     
@@ -243,7 +263,7 @@ if __name__ =='__main__' :
     names = {i : '%d' % i for i in range(1, 12)}
     Entrees = {i : {} for i in range(1, 12)}
     Sorties = {i : {} for i in range(1, 12)}
-    Formules = {i : [] for i in range(1, 12)}
+    Formules = {i : {} for i in range(1, 12)}
     links = {i : [] for i in range(1, 12)}
     b = Bloc(None, 'test', 'test_bloc', True)
     b.add_from_sur_bloc(dict(l_sur_bloc), names, Formules, Entrees, Sorties, links)
@@ -260,5 +280,5 @@ if __name__ =='__main__' :
     #test calculate_bloc
     b.entrees = {'B' : 1, 'U' : 3, 'D' : 3, 'C' : 4, 'I' : 2}
     b.sorties = {'A' : None}
-    b.formules = ['A = B*U/D+ C - I^2']
+    b.formules = {'A = B*U/D+ C - I^2': 1, 'A = 5' : 3}
     b.calculate_bloc()

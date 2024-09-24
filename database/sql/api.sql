@@ -731,7 +731,7 @@ begin
 end; 
 $$;
 
-create or replace function api.add_new_formula(formula_name varchar, f varchar, com text default null)
+create or replace function api.add_new_formula(formula_name varchar, f varchar, detail integer, com text default null)
 returns varchar
 language plpgsql as
 $$
@@ -741,7 +741,7 @@ begin
         from api.formulas
         where name = formula_name )
     then
-        insert into api.formulas(name, formula, comment) values (formula_name, f, com);
+        insert into api.formulas(name, formula, detail_level, comment) values (formula_name, f, detail, com);
         return 'Formula ' || formula_name || ' added';
     end if;
 end ;
@@ -802,7 +802,8 @@ returns table (
     name varchar,
     formula varchar[],
     inp_val jsonb,
-    out_val jsonb
+    out_val jsonb, 
+    formula_details jsonb
 ) 
 language plpgsql as
 $$
@@ -820,14 +821,15 @@ begin
         id integer,
         sur_bloc integer,
         name varchar,
-        formula varchar[],
+        formula_name varchar[],
         inp_val jsonb,
-        out_val jsonb
+        out_val jsonb, 
+        formula_details jsonb
     ) on commit drop;
 
     for b_types in (select b_type from api.input_output)
     loop
-        query := 'insert into temp_results(id, sur_bloc, name, formula) select id, sur_bloc, name, formula from api.' || b_types || '_bloc ' ||
+        query := 'insert into temp_results(id, sur_bloc, name, formula_name) select id, sur_bloc, name, formula_name from api.' || b_types || '_bloc ' ||
         E'where model = ''' || model_name || ''' ' ||  
         coalesce(E'and shape = ''Polygon'' and st_within(geom, (select geom from api.' || b_types || '_bloc where name=''' || bloc || '''))', '') || ';';
         raise notice '%', query;
@@ -884,6 +886,12 @@ begin
         end loop; 
     end loop; 
 
+    update temp_results
+    set formula_details = (
+        select jsonb_object_agg(f.formula, f.detail_level)
+        from api.formulas f
+        where f.name = any(temp_results.formula_name)
+    );
     -- Return the results from the temporary table
     return query select * from temp_results;
 end; 

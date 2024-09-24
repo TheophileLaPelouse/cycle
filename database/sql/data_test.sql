@@ -66,11 +66,13 @@ select * from api.link ;
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 2.8, 2.8 2.8, 2.8 1, 1 1))', 2154), 'test_model');
 select * from api.link ; 
 
+select api.add_new_formula('Q = 2*EH', 'Q = 2*EH', '2', 'hmm') ;
+
 select api.get_blocs('test_model') ;  
 
 select api.get_links('test_model') ;    
 
-select api.add_new_formula('Delamgie', 'CO2=E', 'C''est vraiment de la magie') ;
+select api.add_new_formula('Delamgie', 'CO2=E', 2, 'C''est vraiment de la magie') ;
 -- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(1 1, 2 2)', 2154), 'test_model');
 
 -- select * from api.bloc ; 

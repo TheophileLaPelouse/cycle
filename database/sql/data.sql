@@ -102,6 +102,7 @@ create table ___.formulas(
     id serial primary key,
     name varchar default ___.unique_name('formula', abbreviation=>'formula'),
     formula varchar not null, 
+    detail_level integer default 1,
     comment text default null,
     unique (id),
     unique (name)
@@ -163,6 +164,7 @@ create table ___.test_bloc(
     Q real default null, 
     EH integer default null,
     formula varchar[] default array['Q = 2*EH']::varchar[],
+    formula_name varchar[] default array['Q = 2*EH']::varchar[],
     foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
     unique (name, id)
 );
@@ -176,6 +178,7 @@ create table ___.piptest_bloc(
     name varchar not null default ___.unique_name('piptest_bloc', abbreviation=>'piptest_bloc'),
     Q real default null, 
     formula varchar[] default array['CO2 = Q']::varchar[],
+    formula_name varchar[] default array['yo']::varchar[],
     foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
     unique (name, id)
 
@@ -200,6 +203,7 @@ create table ___.pointest_bloc(
     zon varchar not null default 'urban' references ___.zone_type_table(name),
     Q real default null, 
     formula varchar[] default array['CO2 = Q']::varchar[],
+    formula_name varchar[] default array['ça fait réfléchir']::varchar[],
     foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
     unique (name, id)
 ) ;
