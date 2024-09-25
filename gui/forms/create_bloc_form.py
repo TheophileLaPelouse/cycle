@@ -13,6 +13,9 @@ from ...utility.json_utils import open_json, get_propertie, save_to_json
 
 Formules_de_base = []
 Input_de_base = {}
+_custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
+if not os.path.exists(_custom_qml_dir):
+    os.makedirs(_custom_qml_dir)
 
 class CreateBlocWidget(QDialog):
     
@@ -316,10 +319,7 @@ class CreateBlocWidget(QDialog):
             idx+=1
         layer.setEditFormConfig(config)
         
-        custom_qml_dir = os.path.join(self.__project.directory, 'qml')
-        if not os.path.exists(custom_qml_dir):
-            os.makedirs(custom_qml_dir)
-        qml_path = os.path.join(custom_qml_dir, f'{norm_name}_bloc.qml')
+        qml_path = os.path.join(_custom_qml_dir, f'{norm_name}_bloc.qml')
         # Faudra vérifier que les noms sont cohérents avec qgies utilities 
         layer.saveNamedStyle(qml_path)
         
@@ -339,6 +339,8 @@ class CreateBlocWidget(QDialog):
                     branch = branch[grp]
                 except KeyError :
                     branch[grp] = {}
+            if not branch.get(grp_final):
+                branch[grp_final] = {}
             branch[grp_final][layer_name] = {"bloc" : [layer_name, "api", f'{norm_name}_bloc', "name"]}
         else:
             branch[layer_name] = {'bloc' : [layer_name, "api", f'{norm_name}_bloc', "name"]}
@@ -383,6 +385,7 @@ class CreateBlocWidget(QDialog):
         
         default_fe = f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
         defval.setExpression(default_fe)
+        defval.setApplyOnUpdate(True)
         layer.setDefaultValueDefinition(fields.indexOf(fieldname+"_fe"), defval) # saved in the qml file
         
         tab.addChildElement(container)
@@ -400,7 +403,7 @@ class CreateBlocWidget(QDialog):
         # assert(relation.isValid())
         project.relationManager().addRelation(relation)
         
-        return ([prop_layer.name(), sch, tbl, key], [name, layer.name(), referencingLayer, referencingField])
+        return ([prop_layer.name(), sch, tbl, key], [name, 'val', layer.name(), referencingField])
         
         
             

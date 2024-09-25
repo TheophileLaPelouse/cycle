@@ -94,9 +94,10 @@ class QGisProjectManager(QObject):
             return {}
     
     @staticmethod
-    def layers():
+    def layers(project_filename):
         layertree = QGisProjectManager.layertree()
-        blocs = get_all_properties("bloc", layertree)[0]
+        layertree_custom = QGisProjectManager.layertree_custom(project_filename)
+        blocs = get_all_properties("bloc", layertree)[0] + get_all_properties("bloc", layertree_custom)[0]
         return {bloc[0] : bloc[2] for bloc in blocs}
 
     @staticmethod
@@ -195,7 +196,10 @@ class QGisProjectManager(QObject):
         properties += prop2
         paths += paths2
         for bloc, path in zip(properties, paths):
-            grps = path.split('/')[:-1]
+            grps = path.split('/')
+            if len(grps) > 1 : 
+                grps = grps[:-2]
+            print(grps)
             g = root
             for grp in grps:
                 if grp != '':
@@ -219,15 +223,38 @@ class QGisProjectManager(QObject):
                     layer.setDataSource(uri, layer_name, "postgres")
 
         # add table layer and their relations
-        properties = layertree['Properties']
-        for key, val in layertree_custom.items():
+        try :
+            properties = layertree['Properties']
+        except KeyError:
+            properties = {}
+        try : 
+            properties_custom = layertree_custom['Properties']
+        except KeyError:
+            properties_custom = {}
+        for key, val in properties_custom.items():
             if key not in properties:
                 properties[key] = val
+        print(properties)
         for field in properties : 
             if not field.endswith('__ref') and properties.get(field+'__ref') :
-                prop_layer = QGisProjectManager.create_prop_layer(project, project_name, properties[field])
+                prop_layers = project.mapLayersByName(properties[field][0])
+                if not prop_layers:
+                    layer_name, sch, tbl, key = properties[field]
+                    uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
+                    prop_layer = QgsVectorLayer(uri, layer_name, "postgres")
+                    prop_layer.setDisplayExpression('val')
+                    project.addMapLayer(prop_layer, False)
+                    
+                    root = project.layerTreeRoot()
+                    g = root.findGroup('Properties') or root.insertGroup(-1, 'Properties')
+                    g.addLayer(prop_layer)
+                    if not prop_layer.isValid():
+                        raise RuntimeError(f'layer {layer_name} is invalid')
+                else : 
+                    prop_layer = prop_layers[0]
                 name, referencedField, referencingLayer, referencingField = properties[field+'__ref']
                 referencedLayer = prop_layer.id()
+                print(referencingLayer)
                 referencingLayer = project.mapLayersByName(referencingLayer)[0].id()
                 relation = QgsRelation(QgsRelationContext(project))
                 relation.setName(name)
@@ -240,38 +267,24 @@ class QGisProjectManager(QObject):
                 assert(relation.isValid())
                 project.relationManager().addRelation(relation)
         
-        QGisProjectManager.load_qml(project)
+        QGisProjectManager.load_qml(project, project_filename)
         project.write()
-
-    @staticmethod
-    def create_prop_layer(project, project_name, field_properties) : 
-        layer_name, sch, tbl, key = field_properties
-        uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
-        prop_layer = QgsVectorLayer(uri, layer_name, "postgres")
-        prop_layer.setDisplayExpression('val')
-        project.addMapLayer(prop_layer, False)
-        
-        root = project.layerTreeRoot()
-        g = root.findGroup('Properties') or root.insertGroup(-1, 'Properties')
-        g.addLayer(prop_layer)
-        if not prop_layer.isValid():
-            raise RuntimeError(f'layer {layer_name} is invalid')
-        return prop_layer
         
     @staticmethod
-    def load_qml(project):
+    def load_qml(project, project_filename):
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         lang = '' if locale == 'en' else '_fr'
         lang = ''
-        for layer_name, tbl in QGisProjectManager.layers().items():
+        for layer_name, tbl in QGisProjectManager.layers(project_filename).items():
             found_layers = project.mapLayersByName(layer_name)
             if len(found_layers):
                 layer = found_layers[0]
                 qml_basename = tbl+lang+'.qml'
                 qml = os.path.join(_custom_qml_dir, qml_basename)
                 if not os.path.exists(qml):
+                    print('qml not found', qml)
                     qml = os.path.join(_qml_dir, qml_basename)
-                
+                print('founded qml', qml)
                 layer.loadNamedStyle(qml)
 
     @staticmethod
