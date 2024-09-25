@@ -90,7 +90,7 @@ select api.add_new_formula('Delamgie', 'CO2=E', 2, 'C''est vraiment de la magie'
 
 -- select attribute_name, data_type from information_schema.attributes where udt_schema = '___' and udt_name = 'bloc_type'; 
 
-
+select jsonb_build_object(b_types, jsonb_object_agg(f.formula, f.detail_level)) from api.input_output i_o join api.formulas f on f.name = any(i_o.default_formulas) group by b_types;
 
 -- ------------------------------------------------------------------------------------------------
 -- -- tests select for calculation

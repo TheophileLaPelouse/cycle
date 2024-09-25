@@ -20,6 +20,7 @@ from ...qgis_utilities import MessageBarLogger, QGisProjectManager
 from ...utility.string import normalized_name
 from ...service import get_service, set_service, services
 from qgis import processing
+from qgis.core import QgsProject
 
 _bold = QFont()
 _bold.setWeight(QFont.Bold)
@@ -154,6 +155,25 @@ class ProjectManager(QDialog):
         #         return
 
         QGisProjectManager.open_project(project.qgs, project.srid)
+        
+        raw_inp_out = project.fetchall('select * from api.input_output')
+        input_output = {elem[0] : {'inp' : elem[1], 'out' : elem[2]} for elem in raw_inp_out}
+        query = """
+        select jsonb_build_object(b_type, jsonb_object_agg(f.formula, f.detail_level)) 
+        from api.input_output i_o 
+        join api.formulas f on f.name = any(i_o.default_formulas) 
+        group by b_type;
+        """
+        list_f_details = project.fetchall(query)
+        f_details = {}
+        for elem in list_f_details:
+            if elem[0] : 
+                for key, value in elem[0].items():
+                    f_details[key] = value
+        
+        print(f_details)
+        QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output) 
+        
         if model_name is not None:
             project.current_model = model_name
 

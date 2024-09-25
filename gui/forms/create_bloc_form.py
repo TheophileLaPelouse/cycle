@@ -158,7 +158,7 @@ class CreateBlocWidget(QDialog):
         if possible_values :
             possible_values = possible_values.split(';')
             possible_values = [value.strip() for value in possible_values]
-        return name.strip(), type_, default_value, possible_values, True
+        return name.lower().strip(), type_, default_value, possible_values, True
     
     
     def __delete_input(self):
@@ -315,6 +315,7 @@ class CreateBlocWidget(QDialog):
                 if fieldname.strip() in self.possible_values and self.possible_values[fieldname.strip()]:
                     dico_ref[fieldname] = self.add_list_container(layer, output_tab, fieldname, idx, fields, default_values)
                 else : 
+                    print("on y passe ?")
                     output_tab.addChildElement(attrfield(field.name(), idx, output_tab))
             idx+=1
         layer.setEditFormConfig(config)

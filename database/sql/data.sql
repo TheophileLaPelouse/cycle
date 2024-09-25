@@ -95,6 +95,7 @@ create table ___.input_output(
     b_type ___.bloc_type not null default '',
     inputs varchar[], 
     outputs varchar[], 
+    default_formulas varchar[],
     unique (b_type)
 ) ;
 

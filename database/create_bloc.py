@@ -81,7 +81,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
 
 alter type ___.bloc_type add value '{name}' ;
 commit ; 
-insert into ___.input_output values ('{name}', {to_insert_entrees}, {to_insert_sorties}) ;
+insert into ___.input_output values ('{name}', {to_insert_entrees}, {to_insert_sorties}, array{[formula_description[f][0] for f in formula_description]}::varchar[]) ;
 
 create sequence ___.{name}_bloc_name_seq ;     
 

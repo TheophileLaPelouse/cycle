@@ -91,7 +91,7 @@ class Bloc:
         self.entrees = {}
         self.sorties = {}
         self.formules = []
-        self.links_up = {}
+        self.links_up = []
                 
         if origin == True: 
             self.all_blocs = {self.name : self}
@@ -148,6 +148,7 @@ class Bloc:
                     treated[to_add] = True
                 else :
                     bloc = bloc.ss_blocs[names[to_add]]
+        print("allblocs", self.originale.all_blocs)
         return
     
     def calculate_bloc(self) :
@@ -228,12 +229,13 @@ class Bloc:
         Si on est sur un sur_bloc et que les résultats des sous blocs sont disponibles on privilégie ceux là
         """
         result = {}
-        def parcours_rec(bloc) : 
+        def parcours_rec(bloc, result = {}) : 
             bloc.calculate_bloc()
             for name, sb in bloc.ss_blocs.items() : 
                 if sb != bloc :
-                    parcours_rec(sb)
-                    result[name] = sb.ges
+                    result[name] = {}
+                    parcours_rec(sb, result[name])
+                    result[name]['values'] = sb.ges
                     print("result calculate", result)
                 
             return
@@ -244,7 +246,8 @@ class Bloc:
         """
         Permet de récupérer les données d'entrées d'un bloc à partir des données de sorties des blocs qui ont un lien avec celui-ci
         """
-        for link, bloc in self.links_up.items() :
+        for bloc in self.links_up :
+            bloc = self.originale.all_blocs[bloc]
             for name, data in bloc.sorties.items() : 
                 if name[-2:] == '_s' : 
                     if name[:-2] in self.entrees :

@@ -27,7 +27,7 @@ import os
 from pathlib import Path
 import re
 import tempfile
-from qgis.core import Qgis, QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsRelation, QgsRelationContext, QgsSettings, QgsSnappingConfig, QgsTolerance, qgsfunction, QgsMessageLog, QgsMeshLayer
+from qgis.core import Qgis, QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsRelation, QgsRelationContext, QgsSettings, QgsSnappingConfig, QgsTolerance, qgsfunction, QgsMessageLog, QgsMeshLayer, QgsAttributeEditorContainer, QgsAttributeEditorField as attrfield
 from qgis.utils import iface
 from qgis.gui import QgsEditorWidgetFactory, QgsEditorWidgetWrapper, QgsEditorConfigWidget
 from qgis.PyQt.QtCore import QObject, QSettings, QCoreApplication, QFile
@@ -36,6 +36,7 @@ from qgis.PyQt.QtXml import QDomDocument
 from .service import get_service
 from .database.version import __version__ 
 from .utility.json_utils import open_json, save_to_json, get_propertie, add_dico, get_all_properties
+from .utility.formula import read_formula
 
 def tr(msg):
     return QCoreApplication.translate('@default', msg)
@@ -97,7 +98,9 @@ class QGisProjectManager(QObject):
     def layers(project_filename):
         layertree = QGisProjectManager.layertree()
         layertree_custom = QGisProjectManager.layertree_custom(project_filename)
-        blocs = get_all_properties("bloc", layertree)[0] + get_all_properties("bloc", layertree_custom)[0]
+        blocs = get_all_properties("bloc", layertree)[0]
+        try : blocs +=  get_all_properties("bloc", layertree_custom)[0]
+        except : pass
         return {bloc[0] : bloc[2] for bloc in blocs}
 
     @staticmethod
@@ -169,16 +172,18 @@ class QGisProjectManager(QObject):
 
 
     @staticmethod
-    def update_project(project_filename):
-        project = QgsProject()
-        project.clear()
-        project.read(project_filename)
-        # if project.readEntry('cycle', 'version', '')[0] != __version__:
+    def update_project(project_filename, project = None):
+        
+        if not project : 
+            project = QgsProject()
+            project.clear()
+            project.read(project_filename)
+            # if project.readEntry('cycle', 'version', '')[0] != __version__:
+            project_name = project.baseName()
+            project.writeEntry('cycle', 'project', project_name)
+            project.writeEntry('cycle', 'version', __version__)
+            project.writeEntry('cycle', 'service', get_service())
         project_name = project.baseName()
-        project.writeEntry('cycle', 'project', project_name)
-        project.writeEntry('cycle', 'version', __version__)
-        project.writeEntry('cycle', 'service', get_service())
-
         # todo vérifier que les layers et les relations sont déjà là sinon les ajouter
 
         # add layers if they are not already there
@@ -286,7 +291,86 @@ class QGisProjectManager(QObject):
                     qml = os.path.join(_qml_dir, qml_basename)
                 print('founded qml', qml)
                 layer.loadNamedStyle(qml)
+    
+    @staticmethod
+    def update_qml(project, project_filename, f_details, inp_outs) : 
+        # Pour l'instant on appelle à chaque ouverture de projet mais on pourrait vouloir ne pas toujours l'appeler
+        locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
+        lang = '' if locale == 'en' else '_fr'
+        lang = ''
+        for layer_name, tbl in QGisProjectManager.layers(project_filename).items():
+            found_layers = project.mapLayersByName(layer_name)
+            if len(found_layers):
+                layer = found_layers[0]
+                qml_basename = tbl+lang+'.qml'
+                qml = os.path.join(_custom_qml_dir, qml_basename)
+                if not os.path.exists(qml):
+                    print('qml not found', qml)
+                    qml = os.path.join(_qml_dir, qml_basename)
+            
+                if tbl.endswith('_bloc') : 
+                    b_types = tbl[:-5]
+                    if f_details.get(b_types) :
+                        config = layer.editFormConfig()
+                        input_tab = None
+                        output_tab = None
+                        for tab in config.tabs() :
+                            if tab.name() == 'Donnée sortie' :
+                                output_tab = tab 
+                            elif tab.name() == "Donnée d'entrées" :
+                                input_tab = tab
+                        print(layer.name())
+                        print('inp et out', input_tab, output_tab)
+                        if input_tab and output_tab :
+                            input_tab.clear()
+                            output_tab.clear()
+                            in2tab = {'inp' : {k : False for k in range(5)}, 'out' : {k : False for k in range(5)}}
+                            level_container = {'inp' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, input_tab) for k in range(5)}, 
+                                            'out' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, output_tab) for k in range(5)}}
+                            fieldnames = [f.name() for f in layer.fields()]
+                            field_fe = {}
+                            for name in fieldnames :
+                                if name.endswith('_fe') :
+                                    field_fe[name[:-3]] = True
 
+                            def treat_formula(formulas, lvl, in_or_out) :
+                                sides = formulas.split('=')
+                                if len(sides) == 2 : 
+                                    group_field = read_formula(sides[1],  inp_outs[b_types][in_or_out])
+                                for val in group_field : 
+                                    idx = layer.fields().indexFromName(val)
+                                    if field_fe.get(val) :
+                                        container = QgsAttributeEditorContainer(val.upper(), level_container[in_or_out][lvl])
+                                        container.setColumnCount(2)
+                                        container.addChildElement(attrfield(val, idx, container))
+                                        container.addChildElement(attrfield(val+"_fe", layer.fields().indexOf(val+"_fe"), container))
+                                        # indexOf = indexFromName d'après la doc
+                                        level_container[in_or_out][lvl].addChildElement(container)
+                                    else :    
+                                        level_container[in_or_out][lvl].addChildElement(attrfield(val, idx, level_container[in_or_out][lvl]))
+                                    in2tab[in_or_out][lvl] = True
+                                return
+                            print(f_details)
+                            for formulas, lvl in f_details[b_types].items() : 
+                                treat_formula(formulas, lvl, 'inp')
+                                treat_formula(formulas, lvl, 'out')
+                            
+                            for in_or_out in in2tab : 
+                                for lvl in in2tab[in_or_out] : 
+                                    if in2tab[in_or_out][lvl] :
+                                        if in_or_out == 'inp' :
+                                            input_tab.addChildElement(level_container[in_or_out][lvl])
+                                        else :
+                                            output_tab.addChildElement(level_container[in_or_out][lvl])
+                            print(layer.name(), config.tabs()[-1].children())
+                            layer.setEditFormConfig(config)
+                            layer.saveNamedStyle(qml)
+                            
+                        
+                            
+                    
+                    
+                    
     @staticmethod
     def create_project(project_filename, srid):
         project = QgsProject()
@@ -298,34 +382,10 @@ class QGisProjectManager(QObject):
         project.writeEntry('cycle', 'project', project_name)
         project.writeEntry('cycle', 'version', __version__)
         project.writeEntry('cycle', 'service', get_service())
-        root = project.layerTreeRoot()
-
-        name_id_map = {}
-
-        # create layertree
-        layertree = QGisProjectManager.layertree()
-        properties, paths = get_all_properties("bloc", layertree)
-        for bloc, path in zip(properties, paths):
-            grps = path.split('/')
-            g = root
-            for grp in grps:
-                if grp != '':
-                    g = g.findGroup(grp) or g.insertGroup(-1, grp)
-
-            layer_name, sch, tbl, key = bloc
-            uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"''' + (' (geom)' if (grp != tr('Settings') and layer_name!=tr('Measure')) else '')
-            layer = QgsVectorLayer(uri, layer_name, "postgres")
-            project.addMapLayer(layer, False)
-            n = g.addLayer(layer)
-            name_id_map[layer_name] = layer.id()
-            if not layer.isValid():
-                raise RuntimeError(f'layer {layer_name} is invalid')
 
         if _svg_dir not in QSettings().value('svg/searchPathsForSVG', []):
             path = QSettings().value('svg/searchPathsForSVG', []) + [_svg_dir]
             QSettings().setValue('svg/searchPathsForSVG', path)
-
-        QGisProjectManager.load_qml(project)
 
         snap_config = QgsSnappingConfig()
         snap_config.setEnabled(True)
@@ -345,7 +405,7 @@ class QGisProjectManager(QObject):
         # speed up loading by not checking extend and pk unicity
         # project.setTrustLayerMetadata(True)
 
-        project.write()
+        QGisProjectManager.update_project(project_filename, project)
 
     @staticmethod
     def save_custom_qml():

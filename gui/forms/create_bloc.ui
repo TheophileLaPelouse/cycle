@@ -645,7 +645,7 @@
            <x>20</x>
            <y>20</y>
            <width>531</width>
-           <height>251</height>
+           <height>315</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
@@ -766,14 +766,14 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_20">
             <property name="text">
-             <string>Description</string>
+             <string>Name</string>
             </property>
            </widget>
           </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_17">
             <property name="text">
-             <string>Comment</string>
+             <string>Description</string>
             </property>
            </widget>
           </item>

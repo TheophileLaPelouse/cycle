@@ -157,6 +157,9 @@ class CycleToolbar(QToolBar):
         name = QGisProjectManager.project_name()
         dico_sur_bloc, names, Formules, Entrees, Sorties = get_sur_blocs(project)
         links = get_links(project)
+        for elem in links : 
+            if links[elem] : 
+                links[elem] = [names[Id] for Id in links[elem]]
         bloc = Bloc(project, model, name, True)
         bloc.add_from_sur_bloc(dico_sur_bloc, names, Formules, Entrees, Sorties, links)
         result = bloc.calculate()
