@@ -519,18 +519,18 @@ begin
     if shape = 'Point' then
         -- poly_text := 'POLYGON(('||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||', '||st_x(g)||' '||st_y(g)||'))';
         -- return st_geomfromtext(poly_text, 2154);
-        return st_buffer(g, 0.000001)
+        return st_buffer(g, 0.000001) ;
     elsif shape = 'LineString' then
         -- poly_text := 'POLYGON(('||st_x(st_startpoint(g))||' '||st_y(st_startpoint(g))||', '||st_x(st_endpoint(g))||' '||st_y(st_endpoint(g))||', '||st_x(st_endpoint(g))||' '||st_y(st_endpoint(g))||', '||st_x(st_startpoint(g))||' '||st_y(st_startpoint(g))||'))';
         -- return st_geomfromtext(poly_text, 2154);
-        return st_buffer(g, 0.000001)
+        return st_buffer(g, 0.000001) ;
     elsif shape = 'Polygon' then
         return g;
     end if;
     -- raise notice 'polygon made';
 end;
 $$;
-ST_MinimumBoundingCircle
+
 -- fonction pour trouver les sous-blocs d'un bloc
 create or replace function api.find_ss_blocs(id_sur_bloc integer, g geometry, model_name varchar)
 returns integer[]
