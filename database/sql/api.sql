@@ -655,6 +655,117 @@ begin
 end;
 $$;
 
+-- Maintenant on ajoute les fonctions qui vont adapter input_output comme il faut 
+-- On veut que quand on ajoute une formules, les données de input_output soient adaptées + ajouter des colonnes dans les blocs
+
+create or replace function api.add_formula_to_input_output(b_type_arg ___.bloc_type, formula_name varchar)
+returns boolean
+language plpgsql
+as $$
+declare
+    f_inputs varchar[];
+    f varchar;
+    f_name varchar[] ;
+    flag_alreadyin boolean;
+    flag boolean;
+    query text;
+begin 
+
+    select default_formulas into f_name
+    from api.input_output
+    where b_type = b_type_arg;
+
+    select into flag_alreadyin exists (
+        select 1
+        from api.input_output
+        where b_type = b_type_arg and formula_name = any(default_formulas)
+    );
+
+    if not exists (
+        select 1
+        from api.formulas
+        where name = formula_name )
+    then
+        raise notice 'formula % not found', formula_name;
+        flag = false ; 
+    elseif flag_alreadyin then 
+        raise notice 'formula % already in', formula_name;
+        flag = false ;
+    else 
+        select formula into f
+        from api.formulas
+        where name = formula_name;
+-- operators = ['+', '-', '*', '/', '^', '(', ')']
+-- pat = '['+re.escape(''.join(operators))+']'
+        select array_agg(trim(both ' ' from elem))
+        into f_inputs
+        from unnest(
+            regexp_split_to_array(
+                regexp_replace(f, '^[^=]*=', ''), 
+                '[\+\-\*\/\^\(\)]'
+            )
+        ) as elem;
+
+        -- Update input_output entrees (donc si on ajoute ou change une formule et que ça rajoute des valeurs ce ne sera pas des sorties (ce qui fait sens en vrai))
+        with old_inputs as (
+            select inputs
+            from api.input_output
+            where b_type = b_type_arg
+        ), 
+        old_outputs as (
+            select outputs
+            from api.input_output
+            where b_type = b_type_arg
+        ),
+        inp_out as (
+            select array_cat(inputs, outputs) as olds from old_inputs, old_outputs
+        ),
+        new_inputs as (
+            select count(inp) as c from unnest(f_inputs) as inp
+            where inp not in (select unnest(olds) from inp_out)
+        )
+        select c=0 into flag from new_inputs; 
+
+    end if;
+    if flag then 
+        update ___.input_output
+        set default_formulas = array_append(default_formulas, formula_name)
+        where b_type = b_type_arg;
+
+        -- On rajoute la formule dans les blocs 
+        query := 'update ___.'||b_type_arg||'_bloc set formula_name = array_append(formula_name, '''||formula_name||''')';
+        execute query;
+        -- On change les valeurs par défaults de la colonne formula_name
+        query := 'alter view api.'||b_type_arg||'_bloc alter column formula_name set default array['||coalesce(array_to_string(f_name, ',') || ',', '')||' '''||formula_name||''']';
+        -- raise notice '%', query;
+        execute query;
+    end if ;
+    return flag ; 
+end ; 
+$$;
+
+create or replace function api.trigger_add_formula_to_input_output()
+returns trigger 
+language plpgsql
+as $$
+declare 
+    formula_to_add varchar[] ; 
+    formula varchar ;
+begin
+    if old.default_formulas is distinct from new.default_formulas 
+    and (old.b_type = new.b_type or new.b_type is null) then
+        select array_agg(elem) into formula_to_add from unnest(new.default_formulas) as elem
+        where elem not in (select unnest(old.default_formulas));
+
+        foreach formula in array formula_to_add
+        loop
+            perform api.add_formula_to_input_output(old.b_type, formula);
+        end loop;
+    end if;
+    return null;
+end;
+$$;
+
 ------------------------------------------------------------------------------------------------
 -- Views on blocs
 ------------------------------------------------------------------------------------------------
@@ -673,7 +784,15 @@ select template.basic_view('link');
 
 select template.basic_view('bloc');
 
-select template.basic_view('input_output') ;
+-- select template.basic_view('input_output') ;
+
+create view api.input_output as 
+select * from ___.input_output ; 
+
+create trigger before_update_input_output
+instead of update on api.input_output
+for each row execute function api.trigger_add_formula_to_input_output();
+
 ------------------------------------------------------------------------------------------------
 -- Metadata
 ------------------------------------------------------------------------------------------------

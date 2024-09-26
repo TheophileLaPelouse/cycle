@@ -73,6 +73,9 @@ select api.get_blocs('test_model') ;
 select api.get_links('test_model') ;    
 
 select api.add_new_formula('Delamgie', 'CO2=E', 2, 'C''est vraiment de la magie') ;
+
+update api.input_output set default_formulas = array_append(default_formulas, 'Delamgie') where b_type = 'test' ;
+-- select api.add_formula_to_input_output('test', 'Delamgie') ; 
 -- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(1 1, 2 2)', 2154), 'test_model');
 
 -- select * from api.bloc ; 
@@ -90,7 +93,7 @@ select api.add_new_formula('Delamgie', 'CO2=E', 2, 'C''est vraiment de la magie'
 
 -- select attribute_name, data_type from information_schema.attributes where udt_schema = '___' and udt_name = 'bloc_type'; 
 
-select jsonb_build_object(b_types, jsonb_object_agg(f.formula, f.detail_level)) from api.input_output i_o join api.formulas f on f.name = any(i_o.default_formulas) group by b_types;
+-- select jsonb_build_object(b_types, jsonb_object_agg(f.formula, f.detail_level)) from api.input_output i_o join api.formulas f on f.name = any(i_o.default_formulas) group by b_types;
 
 -- ------------------------------------------------------------------------------------------------
 -- -- tests select for calculation

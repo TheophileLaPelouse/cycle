@@ -272,18 +272,34 @@ class QGisProjectManager(QObject):
                 assert(relation.isValid())
                 project.relationManager().addRelation(relation)
         
-        g = root.insertGroup(-1, tr('Formulas'))
+        g = root.findGroup(tr('Formulas')) or root.insertGroup(-1, tr('Formulas'))
         layer_name, sch, tbl, key = tr('Bloc recap'), 'api', 'input_output', 'b_type'
-        uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
-        layer = QgsVectorLayer(uri, layer_name, "postgres")
-        project.addMapLayer(layer, False)
-        g.addLayer(layer)
+        if not len(project.mapLayersByName(layer_name)):
+            uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
+            layer = QgsVectorLayer(uri, layer_name, "postgres")
+            project.addMapLayer(layer, False)
+            g.addLayer(layer)
+            config = layer.editFormConfig()
+            c = 0
+            for f in layer.fields() : 
+                if f.name() != 'default_formulas' :  
+                    config.setReadOnly(c, True)
+                c+=1
+            layer.setEditFormConfig(config)
         
         layer_name, sch, tbl, key = tr('Formulas'), 'api', 'formulas', 'id'
-        uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
-        layer = QgsVectorLayer(uri, layer_name, "postgres")
-        project.addMapLayer(layer, False)
-        g.addLayer(layer)
+        if not len(project.mapLayersByName(layer_name)):
+            uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
+            layer = QgsVectorLayer(uri, layer_name, "postgres")
+            project.addMapLayer(layer, False)
+            g.addLayer(layer)
+            config = layer.editFormConfig()
+            c = 0
+            for f in layer.fields() : 
+                if f.name() in ['id', 'name'] :
+                    config.setReadOnly(c, True)
+                c+=1
+            layer.setEditFormConfig(config)
         
         QGisProjectManager.load_qml(project, project_filename)
         project.write()
