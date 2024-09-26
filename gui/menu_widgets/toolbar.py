@@ -12,6 +12,7 @@ from qgis.utils import iface
 from ...project import Project
 from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
+from ..forms.add_formula import AddFormula
 from ...database import reset_project
 from ...compute.bloc import get_sur_blocs, get_links, Bloc
 #from qgis.core import (
@@ -72,6 +73,7 @@ class CycleToolbar(QToolBar):
         self.__print_sur_blocs_button = self.__add_action_button(tr('Print sur_blocs'), 'sur_blocs.svg', self.__print_sur_blocs)
         self.__print_links_button = self.__add_action_button(tr('Print links'), 'links.svg', self.__print_links)
         self.__run_button = self.__add_action_button(tr('Run computation'), 'run.svg', self.__run)
+        self.__add_formula_button = self.__add_action_button(tr('Add formula'), 'add_formula.svg', self.__add_formula)
         # self.__scn_menu = QToolButton()
         # self.__scn_menu.setMenu(QMenu())
         # self.__scn_menu.menu().aboutToShow.connect(self.__refresh_scn_menu)
@@ -136,6 +138,12 @@ class CycleToolbar(QToolBar):
             warnings.warn("You must save your edits before adding a bloc")
             return
         CreateBlocWidget(QGisProjectManager.project_name(), self.__log_manager)
+    
+    def __add_formula(self):
+        if is_comitting() : 
+            warnings.warn("You must save your edits before adding a formula")
+            return
+        AddFormula(QGisProjectManager.project_name(), self.__log_manager)
     
     def __reset_db(self):
         reset_project(QGisProjectManager.project_name(), 2154)

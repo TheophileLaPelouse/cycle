@@ -10,6 +10,7 @@ from ...database.create_bloc import write_sql_bloc, load_custom
 from ...qgis_utilities import tr
 from ...project import Project
 from ...utility.json_utils import open_json, get_propertie, save_to_json
+from ...utility.string import normalized_name
 
 Formules_de_base = []
 Input_de_base = {}
@@ -68,7 +69,7 @@ class CreateBlocWidget(QDialog):
         self.warning_formula.setText('Enter the formula in the form of "A = B [+-*/^] 10*C==\'elem of list\' ..." \n where A, B, C are the names of the input or output')
         self.delete_formula.clicked.connect(self.__delete_formula)
         self.completer_list = list(self.input.keys()) + list(self.output.keys())
-        self.completer = WordCompleter(self.completer_list)
+        self.completer = FormulaCompleter(self.completer_list)
         self.formula_text.setCompleter(self.completer)
         self.completer.setFilterMode(Qt.MatchContains)
         
@@ -231,12 +232,12 @@ class CreateBlocWidget(QDialog):
             self.ok_button.setEnabled(False)
       
           
-    def normalize_name(self, name):
-        # Faudra normaliser le nom pour éviter les problèmes
-        char_to_remove = ["'", '"', '(', ')', '[', ']', '{', '}', '<', '>', '!', '?', '.', ',', ';', ':', '/', '\\', '|', '@', '#', '$', '%', '^', '&', '*', '+', '=', '~', '`']
-        #return name.replace(' ', '_').translate(None, ''.join(char_to_remove))
-        rx = '[' + re.escape(''.join(char_to_remove)) + ']'
-        return re.sub(rx, '', name).strip().replace(' ', '_')
+    # def normalize_name(self, name):
+    #     # Faudra normaliser le nom pour éviter les problèmes
+    #     char_to_remove = ["'", '"', '(', ')', '[', ']', '{', '}', '<', '>', '!', '?', '.', ',', ';', ':', '/', '\\', '|', '@', '#', '$', '%', '^', '&', '*', '+', '=', '~', '`']
+    #     #return name.replace(' ', '_').translate(None, ''.join(char_to_remove))
+    #     rx = '[' + re.escape(''.join(char_to_remove)) + ']'
+    #     return re.sub(rx, '', name).strip().replace(' ', '_')
     
     def __create_bloc(self):
         # Pour que ce soit plus jolie faudra différencier layer_name et layer_name_bloc.
@@ -244,7 +245,7 @@ class CreateBlocWidget(QDialog):
         
         layer_name = self.bloc_name.text()
         
-        norm_name = self.normalize_name(self.bloc_name.text())
+        norm_name = normalized_name(self.bloc_name.text())
         
         # create db bloc and load it
         
@@ -408,7 +409,7 @@ class CreateBlocWidget(QDialog):
         
         
             
-class WordCompleter(QCompleter):
+class FormulaCompleter(QCompleter):
     def __init__(self, words, parent=None):
         super().__init__(words, parent)
         self.setFilterMode(Qt.MatchContains)
