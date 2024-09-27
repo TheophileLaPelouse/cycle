@@ -27,7 +27,7 @@ import os
 from pathlib import Path
 import re
 import tempfile
-from qgis.core import Qgis, QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsRelation, QgsRelationContext, QgsSettings, QgsSnappingConfig, QgsTolerance, qgsfunction, QgsMessageLog, QgsMeshLayer, QgsAttributeEditorContainer, QgsAttributeEditorField as attrfield
+from qgis.core import Qgis, QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsRelation, QgsRelationContext, QgsSettings, QgsSnappingConfig, QgsTolerance, qgsfunction, QgsMessageLog, QgsMeshLayer, QgsAttributeEditorContainer, QgsAttributeEditorField as attrfield, QgsDefaultValue
 from qgis.utils import iface
 from qgis.gui import QgsEditorWidgetFactory, QgsEditorWidgetWrapper, QgsEditorConfigWidget
 from qgis.PyQt.QtCore import QObject, QSettings, QCoreApplication, QFile
@@ -48,6 +48,9 @@ _svg_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), 'ressources'
 _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
 
+Alias = {'ngl' : 'NGL (kgNGL/an)', 'oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'milieu' : 'Milieu', 
+         'q' : 'Débit (m3/s)', 'eh' : 'Equivalent Habitants', 'tbhaut' : 'Tonne de boue en amont (t/an)', 'eh_fe' : ' ', 'w' : 'Welec (kWh/an)',
+         'dco_elim' : 'DCO éliminée (kgDCO/an)'}
 
 class MessageBarLogger:
     def __init__(self, message_bar):
@@ -323,6 +326,8 @@ class QGisProjectManager(QObject):
     
     @staticmethod
     def update_qml(project, project_filename, f_details, inp_outs) : 
+        import time 
+        tic = time.time()
         # Pour l'instant on appelle à chaque ouverture de projet mais on pourrait vouloir ne pas toujours l'appeler
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         lang = '' if locale == 'en' else '_fr'
@@ -344,18 +349,19 @@ class QGisProjectManager(QObject):
                         input_tab = None
                         output_tab = None
                         for tab in config.tabs() :
-                            if tab.name() == 'Donnée sortie' :
+                            if re.match('Donnée.*so', tab.name()) :
                                 output_tab = tab 
-                            elif tab.name() == "Donnée d'entrées" :
+                            elif re.match('Donnée.*en', tab.name()) :
                                 input_tab = tab
                         print(layer.name())
                         print('inp et out', input_tab, output_tab)
                         if input_tab and output_tab :
                             input_tab.clear()
                             output_tab.clear()
-                            in2tab = {'inp' : {k : False for k in range(5)}, 'out' : {k : False for k in range(5)}}
-                            level_container = {'inp' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, input_tab) for k in range(5)}, 
-                                            'out' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, output_tab) for k in range(5)}}
+                            in2tab = {'inp' : {k : False for k in range(6)}, 'out' : {k : False for k in range(6)}}
+                            level_container = {'inp' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, input_tab) for k in range(6)}, 
+                                            'out' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, output_tab) for k in range(6)}}
+                            level_container_children = {'inp' : {k : [] for k in range(6)}, 'out' : {k : [] for k in range(6)}}
                             fieldnames = [f.name() for f in layer.fields()]
                             field_fe = {}
                             for name in fieldnames :
@@ -372,11 +378,33 @@ class QGisProjectManager(QObject):
                                         container = QgsAttributeEditorContainer(val.upper(), level_container[in_or_out][lvl])
                                         container.setColumnCount(2)
                                         container.addChildElement(attrfield(val, idx, container))
-                                        container.addChildElement(attrfield(val+"_fe", layer.fields().indexOf(val+"_fe"), container))
+                                        fe_idx = layer.fields().indexFromName(val+'_fe')
+                                        container.addChildElement(attrfield(val+"_fe", fe_idx, container))
+                                        # alias 
+                                        layer.setFieldAlias(fe_idx, Alias.get(val+"_fe", ''))
+                                        layer.setFieldAlias(idx, Alias.get(val, ''))
+                                        
+                                        # default value
+                                        defval = QgsDefaultValue()
+                                        prop_layer = project.mapLayersByName(val)[0]
+                                        default_fe = layer.defaultValueDefinition(fe_idx)
+                                        default_fe = default_fe.expression()
+                                        #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
+                                        
+                                        default_fe = re.sub("layer:='[^']+'", f"layer:='{prop_layer.id()}'", default_fe)
+                                        defval.setExpression(default_fe)
+                                        defval.setApplyOnUpdate(True)
+                                        layer.setDefaultValueDefinition(fe_idx, defval)
                                         # indexOf = indexFromName d'après la doc
-                                        level_container[in_or_out][lvl].addChildElement(container)
+                                        # On va faire un test pas opti : 
+                                        if val.upper() not in level_container_children[in_or_out][lvl] :
+                                            level_container[in_or_out][lvl].addChildElement(container)
+                                            level_container_children[in_or_out][lvl].append(val.upper())  
                                     else :    
-                                        level_container[in_or_out][lvl].addChildElement(attrfield(val, idx, level_container[in_or_out][lvl]))
+                                        if val not in level_container_children[in_or_out][lvl] :
+                                            level_container[in_or_out][lvl].addChildElement(attrfield(val, idx, level_container[in_or_out][lvl]))
+                                            level_container_children[in_or_out][lvl].append(val)
+                                            layer.setFieldAlias(idx, Alias.get(val, ''))
                                     in2tab[in_or_out][lvl] = True
                                 return
                             print(f_details)
@@ -394,7 +422,7 @@ class QGisProjectManager(QObject):
                             print(layer.name(), config.tabs()[-1].children())
                             layer.setEditFormConfig(config)
                             layer.saveNamedStyle(qml)
-                            
+        print('temps', time.time()-tic)
                         
                             
                     
@@ -437,17 +465,16 @@ class QGisProjectManager(QObject):
         QGisProjectManager.update_project(project_filename, project)
 
     @staticmethod
-    def save_custom_qml():
+    def save_custom_qml(project_filename):
         if not os.path.isdir(_custom_qml_dir):
             os.mkdir(_custom_qml_dir)
 
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         lang = '' if locale == 'en' else '_fr'
 
-        for grp, layers in QGisProjectManager.layertree():
-            for layer_name, sch, tbl, key in layers:
-                for layer in QgsProject.instance().mapLayersByName(layer_name):
-                    layer.saveNamedStyle(os.path.join(_custom_qml_dir, tbl+lang+'.qml'))
+        for layer_name, tbl in QGisProjectManager.layers(project_filename).items():
+            for layer in QgsProject.instance().mapLayersByName(layer_name):
+                layer.saveNamedStyle(os.path.join(_custom_qml_dir, tbl+lang+'.qml'))
 
     @staticmethod
     def is_cycle_project():

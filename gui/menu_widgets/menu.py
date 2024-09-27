@@ -63,7 +63,9 @@ class CycleMenu(QMenu):
     def __save_layer_styles(self):
         confirm = QMessageBox(QMessageBox.Question, self.tr("Save custom layers styles"), self.tr("This will overwrite all your custom layer styles"), QMessageBox.Ok | QMessageBox.Cancel).exec_()
         if confirm == QMessageBox.Ok:
-            QGisProjectManager.save_custom_qml()
+            if QGisProjectManager.project_name() != '':
+                project = Project(QGisProjectManager.project_name(), self.__log_manager)
+                QGisProjectManager.save_custom_qml(project.qgs)
 
     def __manage_projects(self):
         self.pm and self.pm.setParent(None)

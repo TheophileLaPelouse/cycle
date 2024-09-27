@@ -189,7 +189,7 @@ class Bloc:
                 print("stack", stack)
                 to_calc = stack.pop()
                 print(to_calc)
-                if (not to_calc in known_data) or (not known_data[to_calc]) : 
+                if ((not to_calc in known_data) or (not known_data[to_calc])) and to_calc in bilan : 
                     treatment_stack.append(to_calc)
                     known_data[to_calc] = True
                     for bil in bilan[to_calc] : 
@@ -208,6 +208,7 @@ class Bloc:
                     results[to_calc] = [] 
                 for f in formulas[to_calc] :
                     try : 
+                        print("f", f)
                         result = (calculate_formula(f[0], inp_out), f[1])
                     except ErrorNotEnoughData : 
                         result = (None, f[1])
@@ -228,7 +229,7 @@ class Bloc:
         """
         Si on est sur un sur_bloc et que les résultats des sous blocs sont disponibles on privilégie ceux là
         """
-        result = {}
+  
         def parcours_rec(bloc, result = {}) : 
             bloc.calculate_bloc()
             for name, sb in bloc.ss_blocs.items() : 
@@ -236,10 +237,10 @@ class Bloc:
                     result[name] = {}
                     parcours_rec(sb, result[name])
                     result[name]['values'] = sb.ges
-                    print("result calculate", result)
+                    # print("result calculate", result)
                 
-            return
-        parcours_rec(self)
+            return result
+        result = parcours_rec(self)
         return(result)
         
     def recup_entree(self) : 
@@ -248,6 +249,9 @@ class Bloc:
         """
         for bloc in self.links_up :
             bloc = self.originale.all_blocs[bloc]
+            if not bloc.sorties:
+                for name in bloc.links_up : 
+                    self.links_up.append(name)
             for name, data in bloc.sorties.items() : 
                 if name[-2:] == '_s' : 
                     if name[:-2] in self.entrees :

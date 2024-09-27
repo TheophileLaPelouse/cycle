@@ -37,7 +37,7 @@ def calculate_formula(formula, dico):
     k = 0
     for expr in parenthesis : 
         if len(expr) > 0 and expr[0] == '(' : 
-            parenthesis[k] = str(read_formula(expr[1:-1], dico))
+            parenthesis[k] = str(calculate_formula(expr[1:-1], dico))
             parenthesis.pop(k+1) # k+1 correspond à la même chaîne que k	
         k += 1
     
@@ -71,7 +71,6 @@ def read_expr(expr, dico) :
     On va lire une expression
     """
     toprod = re.split('([\*/^])', expr)
-    
     s = 1
     sgn = '*'
     for term in toprod : 

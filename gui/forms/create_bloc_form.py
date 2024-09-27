@@ -7,7 +7,7 @@ from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, Qg
 from ...service import get_service
 from ...database.version import __version__
 from ...database.create_bloc import write_sql_bloc, load_custom
-from ...qgis_utilities import tr
+from ...qgis_utilities import tr, Alias
 from ...project import Project
 from ...utility.json_utils import open_json, get_propertie, save_to_json
 from ...utility.string import normalized_name
@@ -312,6 +312,7 @@ class CreateBlocWidget(QDialog):
                     dico_ref[fieldname] = self.add_list_container(layer, input_tab, fieldname, idx, fields, default_values)
                 else :
                     input_tab.addChildElement(attrfield(field.name(), idx, input_tab)) # à vérifier sur la doc si c'est bien comme ça
+                    layer.setFieldAlias(idx, Alias.get(fieldname, ''))
             elif fieldname.strip() in self.output :
                 if fieldname.strip() in self.possible_values and self.possible_values[fieldname.strip()]:
                     dico_ref[fieldname] = self.add_list_container(layer, output_tab, fieldname, idx, fields, default_values)

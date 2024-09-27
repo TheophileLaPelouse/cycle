@@ -59,5 +59,36 @@ def save_to_json(dico, path) :
         json.dump(dico, f)
         
 if __name__ == '__main__' : 
-    layertree = open_json('..\layertree.json')
-    blocs, paths = get_all_properties("bloc", layertree)
+    import unittest
+    from json_utils import add_dico
+    
+    class TestAddDico(unittest.TestCase):
+        def test_add_dico_non_overlapping(self):
+            dico1 = {'a': 1, 'b': 2}
+            dico2 = {'c': 3, 'd': 4}
+            expected = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+            result = add_dico(dico1, dico2)
+            self.assertEqual(result, expected)
+    
+        def test_add_dico_overlapping(self):
+            dico1 = {'a': 1, 'b': {'x': 10}}
+            dico2 = {'b': {'y': 20}, 'c': 3}
+            expected = {'a': 1, 'b': {'x': 10, 'y': 20}, 'c': 3}
+            result = add_dico(dico1, dico2)
+            self.assertEqual(result, expected)
+    
+        def test_add_dico_nested(self):
+            dico1 = {'a': {'b': {'c': 1}}}
+            dico2 = {'a': {'b': {'d': 2}}}
+            expected = {'a': {'b': {'c': 1, 'd': 2}}}
+            result = add_dico(dico1, dico2)
+            self.assertEqual(result, expected)
+    
+        def test_add_dico_empty(self):
+            dico1 = {}
+            dico2 = {'a': 1}
+            expected = {'a': 1}
+            result = add_dico(dico1, dico2)
+            self.assertEqual(result, expected)
+    
+    unittest.main()
