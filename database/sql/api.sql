@@ -864,6 +864,8 @@ begin
     then
         insert into api.formulas(name, formula, detail_level, comment) values (formula_name, f, detail, com);
         return 'Formula ' || formula_name || ' added';
+    else 
+        return 'Formula ' || formula_name || ' already exists';
     end if;
 end ;
 $$; 

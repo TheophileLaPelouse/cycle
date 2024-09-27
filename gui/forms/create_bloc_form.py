@@ -411,6 +411,7 @@ class CreateBlocWidget(QDialog):
             
 class FormulaCompleter(QCompleter):
     def __init__(self, words, parent=None):
+        words += ['co2_c', 'co2_e', 'no2_e', 'ch4_e']
         super().__init__(words, parent)
         self.setFilterMode(Qt.MatchContains)
         self.setCompletionMode(QCompleter.PopupCompletion)
