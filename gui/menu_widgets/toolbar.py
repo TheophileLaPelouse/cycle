@@ -9,6 +9,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction
 from qgis.utils import iface
+from qgis.core import QgsProject
 from ...project import Project
 from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
@@ -143,5 +144,9 @@ class CycleToolbar(QToolBar):
         custom_layertree = QGisProjectManager.layertree_custom(project.qgs)
         layertree = QGisProjectManager.layertree()
         new_layertree = add_dico(layertree, custom_layertree)
+        if os.path.exists(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json')):
+            os.remove(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json'))
+        os.rename(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree.json'), os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json'))
         save_to_json(new_layertree, os.path.join(os.path.dirname(__file__), '..', '..', 'layertree.json'))
-        save_to_json(layertree, os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json'))
+        
+        QGisProjectManager.save_qml2ressource(QgsProject.instance(), new_layertree)

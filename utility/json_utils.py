@@ -47,6 +47,10 @@ def get_all_properties(name, dico):
 
 def add_dico(dico1, dico2) : 
     # Servira pour rentrer le custom json dans l'admin json
+    if not isinstance(dico2, dict) :
+        return dico1
+    if not isinstance(dico1, dict) : 
+        return dico2
     for key in dico2 : 
         if key not in dico1 : 
             dico1[key] = dico2[key]

@@ -160,7 +160,7 @@ class Bloc:
         """
         print("euh", self.entrees, self.sorties)
         self.recup_entree()
-        print("apres recup", self.entrees, self.sorties)
+        # print("apres recup", self.entrees, self.sorties)
         inp_out = {key : self.entrees[key] for key in self.entrees}
         for key in self.sorties : 
             if not inp_out.get(key) : 
@@ -263,10 +263,7 @@ class Bloc:
                     self.links_up.append(name)
             for name, data in bloc.sorties.items() : 
                 if name[-2:] == '_s' : 
-                    print("BONCHOUR", self.name)
-                    print(self.entrees)
                     if name[:-2] in self.entrees :
-                        print("ALORS ?", name[:-2], data)
                         self.entrees[name[:-2]] = data
                     elif name[:-2] + '_e' in self.entrees : 
                         self.entrees[name[:-2] + '_e'] = data
@@ -283,22 +280,39 @@ class Bloc:
         keys = ['co2_e', 'co2_c', 'ch4_e', 'ch4_c', 'n2o_e', 'n2o_c']
         def rec(bloc) :
             current_result = {}
+            intrant_result = {}
             for key in keys :
+                intrant = None
                 if isinstance(bloc.ges[key], (float, int)) :
                     val = 0 # Cas où la valeur n'a pas été calculée (de base 0)
+                
                 else :
                     bloc.ges[key].sort(key=lambda x : x[1]) # On trie en fonction du niveau de détails
+                    print("bloc.ges[key] avant ", bloc.ges[key])
+                    if bloc.ges[key][-1][1] == 6 : # On changera sûrement ce niveau d'intrant
+                        # Intrant level
+                        intrant = bloc.ges[key].pop(-1)[0]       
+                        # On doit traiter les intrants et les autres à part parce que les intrants ont leur
+                        # propre formule et niveau de détail pour les mêmes types d'émissions                 
+                    print("bloc.ges[key] après", bloc.ges[key])
                     val = bloc.ges[key][-1][0]
                 if val is not None: 
                     current_result[key] = val
                 else : 
                     current_result[key] = None
+                if intrant is not None : 
+                    intrant_result[key] = intrant
+                else : 
+                    intrant_result[key] = None
             if not bloc.ss_blocs : 
-                return current_result
+                return (current_result, intrant_result)
             else : 
                 sum_res = {key : 0 for key in keys}
+                sum_intrant = {key : 0 for key in keys}
                 for name, sb in bloc.ss_blocs.items() : 
-                    res = rec(sb)
+                    res, intr = rec(sb)
+                    print("res", res)
+                    print("intr", intr)
                     print("name", name)
                     print("bonjour", res)
                     for key in sum_res :
@@ -306,12 +320,22 @@ class Bloc:
                             sum_res[key] = current_result[key]
                         else : 
                             sum_res[key] += res[key]
+                        if intr[key] is None : 
+                            sum_intrant[key] = intrant_result[key]
+                        else :
+                            sum_intrant[key] += intr[key]
                 
-                return sum_res
+                return sum_res, sum_intrant
         # Dans l'idéal on pourrait dérécursivé la fonction avec des stack
         # mais c'est pas si simple pour être sûr d'aller au bout (ça se fait quand même)
-        
-        return(rec(self))
+        sum_res, sum_intrant = rec(self)
+        for key in sum_res : 
+            if sum_res[key] is not None and sum_intrant[key] is not None : 
+                sum_res[key] += sum_intrant[key]
+            elif sum_res[key] is None :
+                sum_res[key] = sum_intrant[key]
+        # Faudra voir si on additionne comme ça où si on veut différencier les intrants et les autres
+        return(sum_res)
                     
     def show_results(self, edgecolor = 'grey', color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) : 
         to_plot = {'co2_e' : [], 'co2_c' : [], 'ch4_e' : [], 'ch4_c' : [], 'n2o_e' : [], 'n2o_c' : []}

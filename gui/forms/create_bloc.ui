@@ -36,7 +36,7 @@
     <item row="2" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="input_page">
        <attribute name="title">
@@ -783,7 +783,7 @@
               <number>1</number>
              </property>
              <property name="maximum">
-              <number>5</number>
+              <number>6</number>
              </property>
             </widget>
            </item>

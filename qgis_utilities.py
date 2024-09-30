@@ -325,6 +325,25 @@ class QGisProjectManager(QObject):
                 layer.loadNamedStyle(qml)
     
     @staticmethod
+    def save_qml2ressource(project, layertree) : 
+        locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
+        lang = '' if locale == 'en' else '_fr'
+        lang = ''
+        blocs = get_all_properties("bloc", layertree)[0]
+        layers = {bloc[0] : bloc[2] for bloc in blocs}
+        for layer_name, tbl in layers.items() : 
+            found_layers = project.mapLayersByName(layer_name)
+            if len(found_layers):
+                layer = found_layers[0]
+                qml_basename = tbl+lang+'.qml'
+                qml = os.path.join(_qml_dir, qml_basename)
+                custom_qml = os.path.join(_custom_qml_dir, qml_basename)
+                if not os.path.exists(qml) and os.path.exists(custom_qml):
+                    layer.saveNamedStyle(qml)
+                    
+        
+        
+    @staticmethod
     def update_qml(project, project_filename, f_details, inp_outs) : 
         import time 
         tic = time.time()
@@ -358,10 +377,11 @@ class QGisProjectManager(QObject):
                         if input_tab and output_tab :
                             input_tab.clear()
                             output_tab.clear()
-                            in2tab = {'inp' : {k : False for k in range(6)}, 'out' : {k : False for k in range(6)}}
-                            level_container = {'inp' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, input_tab) for k in range(6)}, 
-                                            'out' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, output_tab) for k in range(6)}}
-                            level_container_children = {'inp' : {k : [] for k in range(6)}, 'out' : {k : [] for k in range(6)}}
+                            lvlmax = 6
+                            in2tab = {'inp' : {k : False for k in range(lvlmax+1)}, 'out' : {k : False for k in range(lvlmax+1)}}
+                            level_container = {'inp' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, input_tab) for k in range(lvlmax+1)}, 
+                                            'out' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, output_tab) for k in range(lvlmax+1)}}
+                            level_container_children = {'inp' : {k : [] for k in range(lvlmax+1)}, 'out' : {k : [] for k in range(lvlmax+1)}}
                             fieldnames = [f.name() for f in layer.fields()]
                             field_fe = {}
                             for name in fieldnames :
