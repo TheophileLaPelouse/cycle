@@ -131,6 +131,7 @@ class CycleToolbar(QToolBar):
         bloc.add_from_sur_bloc(dico_sur_bloc, names, Formules, Entrees, Sorties, links)
         result = bloc.calculate()
         print(result)
+        bloc.show_results()
         
     def __to_admin_mode(self) : 
         self.__print_sur_blocs_button = self.__add_action_button(tr('Print sur_blocs'), 'sur_blocs.svg', self.__print_sur_blocs)

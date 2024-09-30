@@ -178,6 +178,9 @@ def reset_project(project_name, srid, debug=False):
         with open(os.path.join(__current_dir, 'sql', 'api.sql')) as f:
             cur.execute(f.read())
         print("où5")
+        with open(os.path.join(__current_dir, 'sql', 'blocs.sql')) as f:
+            cur.execute(f.read())
+        print("où5.2")
         # Custom blocs 
         custom_sql = os.path.join(CYCLE_DIR, project_name, 'custom_blocs.sql')
         if os.path.exists(custom_sql):

@@ -1,5 +1,6 @@
 from ..utility.formula import calculate_formula, read_formula, ErrorNotEnoughData
 import re
+import matplotlib.pyplot as plt
 
 def get_sur_blocs(project, model_name = None, bloc = None) : 
     if not model_name : 
@@ -99,7 +100,7 @@ class Bloc:
         else : 
             self.originale = origin
         self.gen = 0
-        self.ges = {}
+        self.ges = {'co2_e' : 0, 'co2_c' : 0, 'ch4_e' : 0, 'ch4_c' : 0, 'n2o_e' : 0, 'n2o_c' : 0}
         
     def add_blank_b(self, name, link_up, entrees, sorties, formules, origin = False) : 
         new_bloc = Bloc(self.project, self.model, name, origin)
@@ -159,7 +160,11 @@ class Bloc:
         """
         print("euh", self.entrees, self.sorties)
         self.recup_entree()
-        inp_out = dict(self.entrees, **self.sorties)
+        print("apres recup", self.entrees, self.sorties)
+        inp_out = {key : self.entrees[key] for key in self.entrees}
+        for key in self.sorties : 
+            if not inp_out.get(key) : 
+                inp_out[key] = self.sorties[key]
         
         bilan = {}
         results = {}
@@ -224,6 +229,10 @@ class Bloc:
                 raise RuntimeError('Trop de calculs') 
         print("results", results)
         self.ges = results
+        none_results = {'co2_e' : 0, 'co2_c' : 0, 'ch4_e' : 0, 'ch4_c' : 0, 'n2o_e' : 0, 'n2o_c' : 0}
+        for key in none_results :
+            if not results.get(key) :
+                results[key] = none_results[key]
     
     def calculate(self) : 
         """
@@ -254,14 +263,94 @@ class Bloc:
                     self.links_up.append(name)
             for name, data in bloc.sorties.items() : 
                 if name[-2:] == '_s' : 
+                    print("BONCHOUR", self.name)
+                    print(self.entrees)
                     if name[:-2] in self.entrees :
+                        print("ALORS ?", name[:-2], data)
                         self.entrees[name[:-2]] = data
                     elif name[:-2] + '_e' in self.entrees : 
                         self.entrees[name[:-2] + '_e'] = data
                 # Comme ça on peut appeler un attribut truc_s et truc_e pour entrées et sorties et les différencier.
                 if name in self.entrees :
                     self.entrees[name] = data
+                    
+    def get_result_from_ssbloc(self) :
+        """
+        On va chercher le résultat d'un bloc à partir de ses sous blocs.
+        Pour se faire, on parcourt les sous blocs de manière récusive, à chaque étage,
+        on fait la somme des résultats des sous blocs, si ça vaut None on ne retient pas l'étage.
+        """
+        keys = ['co2_e', 'co2_c', 'ch4_e', 'ch4_c', 'n2o_e', 'n2o_c']
+        def rec(bloc) :
+            current_result = {}
+            for key in keys :
+                if isinstance(bloc.ges[key], (float, int)) :
+                    val = 0 # Cas où la valeur n'a pas été calculée (de base 0)
+                else :
+                    bloc.ges[key].sort(key=lambda x : x[1]) # On trie en fonction du niveau de détails
+                    val = bloc.ges[key][-1][0]
+                if val is not None: 
+                    current_result[key] = val
+                else : 
+                    current_result[key] = None
+            if not bloc.ss_blocs : 
+                return current_result
+            else : 
+                sum_res = {key : 0 for key in keys}
+                for name, sb in bloc.ss_blocs.items() : 
+                    res = rec(sb)
+                    print("name", name)
+                    print("bonjour", res)
+                    for key in sum_res :
+                        if res[key] is None : 
+                            sum_res[key] = current_result[key]
+                        else : 
+                            sum_res[key] += res[key]
+                
+                return sum_res
+        # Dans l'idéal on pourrait dérécursivé la fonction avec des stack
+        # mais c'est pas si simple pour être sûr d'aller au bout (ça se fait quand même)
         
+        return(rec(self))
+                    
+    def show_results(self, edgecolor = 'grey', color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) : 
+        to_plot = {'co2_e' : [], 'co2_c' : [], 'ch4_e' : [], 'ch4_c' : [], 'n2o_e' : [], 'n2o_c' : []}
+        names = []
+        fig_c, ax_c = plt.subplots()
+        fig_e, ax_e = plt.subplots()
+        for name, bloc in self.ss_blocs.items() : 
+            print(name)
+            print(bloc.ges)
+            print('---------------------')
+            names.append(name)
+            result = bloc.get_result_from_ssbloc()
+            for key in to_plot :
+                to_plot[key].append(result[key])
+        r = range(len(names))
+        print('len r', len(r))
+        print('len to_plot', len(to_plot['co2_e']))
+        def create_ax(ax, title, c_or_e) : 
+            ax.bar(r, to_plot['co2_'+c_or_e], 
+                     color = color['co2'], edgecolor=edgecolor,  label = 'co2_'+c_or_e)
+            ax.bar(r, to_plot['ch4_'+c_or_e], 
+                    bottom = to_plot['co2_'+c_or_e], 
+                    color = color['ch4'], edgecolor=edgecolor, label = 'ch4_'+c_or_e)
+            ax.bar(r, to_plot['n2o_'+c_or_e], 
+                    bottom = [x + y for x, y in zip(to_plot['co2_'+c_or_e], to_plot['ch4_'+c_or_e])], 
+                    color = color['n2o'], edgecolor=edgecolor, label = 'n2o_'+c_or_e)
+            
+            ax.set_title(title)
+            ax.set_xticks(r, names)
+            ax.set_ylabel('kg de GES émis par an' if c_or_e == 'e' else 'kg de GES émis')
+            ax.set_xlabel('Sous-blocs de %s' % self.name)
+            ax.legend()
+        
+        create_ax(ax_c, 'Gaz à effets de serre émis lors de la construction', 'c')
+        create_ax(ax_e, "Gaz à effets de serre émis lors de l'exploitation", 'e')
+        plt.show()
+        return fig_c, fig_e
+        
+            
             
             
 if __name__ =='__main__' : 
