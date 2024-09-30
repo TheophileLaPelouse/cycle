@@ -54,9 +54,11 @@ class AddFormula(QDialog) :
         
         query = f"select api.add_new_formula('{description}'::varchar, '{formula}'::varchar, {detail}, '{comment}'::text) ;\n"
         self.__project.execute(query)
-        query = f"update api.input_output set default_formulas = array_append(default_formulas, '{description}') where b_type = '{b_type}' ;"
-        self.__project.execute(query)      
-        
+        query2 = f"update api.input_output set default_formulas = array_append(default_formulas, '{description}') where b_type = '{b_type}' ;"
+        self.__project.execute(query2)      
+        _custom_qml_path = os.path.join(self.__project.directory, 'custom_bloc.sql')
+        with open(_custom_qml_path, 'a') as f : 
+            f.write(query + '\n' + query2 + '\n')
         self.__log_manager.notice('formula %s added' % description)
         # Faudra qu'on regarde si on peut savoir si la formula à bien été ajoutée
         

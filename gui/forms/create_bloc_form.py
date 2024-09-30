@@ -159,7 +159,7 @@ class CreateBlocWidget(QDialog):
         if possible_values :
             possible_values = possible_values.split(';')
             possible_values = [value.strip() for value in possible_values]
-        return name.lower().strip(), type_, default_value, possible_values, True
+        return normalized_name(name).strip(), type_, default_value, possible_values, True
     
     
     def __delete_input(self):

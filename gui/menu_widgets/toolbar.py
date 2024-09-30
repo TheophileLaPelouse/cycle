@@ -17,6 +17,7 @@ from ..forms.add_formula import AddFormula
 from ...database import reset_project
 from ...compute.bloc import get_sur_blocs, get_links, Bloc
 from ...utility.json_utils import save_to_json, add_dico
+import time 
 
 def tr(msg):
     return QCoreApplication.translate('@default', msg)
@@ -123,16 +124,25 @@ class CycleToolbar(QToolBar):
         project = Project(QGisProjectManager.project_name(), self.__log_manager)
         model = project.current_model
         name = QGisProjectManager.project_name()
+        tic = time.time()
         dico_sur_bloc, names, Formules, Entrees, Sorties = get_sur_blocs(project)
         links = get_links(project)
+        tac = time.time()
+        print("get db", tac-tic)
         for elem in links : 
             if links[elem] : 
                 links[elem] = [names[Id] for Id in links[elem]]
         bloc = Bloc(project, model, name, True)
         bloc.add_from_sur_bloc(dico_sur_bloc, names, Formules, Entrees, Sorties, links)
+        tic = time.time()
+        print("add from sur_bloc", tic-tac)
         result = bloc.calculate()
-        print(result)
+        tac = time.time()
+        # print(result)
+        print("calculate", tac-tic)
         bloc.show_results()
+        tic = time.time()
+        print("show results", tic-tac)
         
     def __to_admin_mode(self) : 
         self.__print_sur_blocs_button = self.__add_action_button(tr('Print sur_blocs'), 'sur_blocs.svg', self.__print_sur_blocs)
@@ -150,3 +160,5 @@ class CycleToolbar(QToolBar):
         save_to_json(new_layertree, os.path.join(os.path.dirname(__file__), '..', '..', 'layertree.json'))
         
         QGisProjectManager.save_qml2ressource(QgsProject.instance(), new_layertree)
+        
+        # Ajouter une fonction qui update les tableaux dans properties. 

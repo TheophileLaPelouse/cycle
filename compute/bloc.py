@@ -83,7 +83,6 @@ Input_Output = {}
 
 class Bloc: 
     def __init__(self, project, model, name, origin) : 
-        print('BONJOUR')
         self.project = project
         self.name = name
         self.model = model
@@ -123,13 +122,13 @@ class Bloc:
         """
         if self.originale != self : 
             return 
-        print("bonjour")
-        print("sur_bloc", dico_sur_bloc)
-        print("name", names)
-        print("entree", Entrees)
-        print("sorties", Sorties)
-        print("formules", Formules)
-        print(links)
+        # print("bonjour")
+        # print("sur_bloc", dico_sur_bloc)
+        # print("name", names)
+        # print("entree", Entrees)
+        # print("sorties", Sorties)
+        # print("formules", Formules)
+        # print(links)
         treated = {Id : False for Id in dico_sur_bloc}
         stack = []
         for Id in dico_sur_bloc :
@@ -141,7 +140,7 @@ class Bloc:
                 treatment_stack.append(Id2)
                 if dico_sur_bloc[Id2] : 
                     stack.append(dico_sur_bloc[Id2])
-            print(treatment_stack)
+            # print(treatment_stack)
             while treatment_stack : 
                 to_add = treatment_stack.pop(-1)
                 if not treated[to_add] : 
@@ -149,7 +148,7 @@ class Bloc:
                     treated[to_add] = True
                 else :
                     bloc = bloc.ss_blocs[names[to_add]]
-        print("allblocs", self.originale.all_blocs)
+        # print("allblocs", self.originale.all_blocs)
         return
     
     def calculate_bloc(self) :
@@ -158,7 +157,7 @@ class Bloc:
         couplé à aux données nécessaire au calcul.
         Et on va parcourir les formules pour les calculer dans l'ordre afin d'avoir toutes les données nécessaires
         """
-        print("euh", self.entrees, self.sorties)
+        # print("euh", self.entrees, self.sorties)
         self.recup_entree()
         # print("apres recup", self.entrees, self.sorties)
         inp_out = {key : self.entrees[key] for key in self.entrees}
@@ -180,10 +179,10 @@ class Bloc:
                     formulas[side0] = [] 
                 bilan[side0].append((read_formula(sides[1], inp_out), self.formules[f]))
                 formulas[side0].append((f, self.formules[f]))
-        print("bilan", bilan)
-        print("formulas", formulas)
+        # print("bilan", bilan)
+        # print("formulas", formulas)
         known_data = {name : inp_out[name] is not None for name in inp_out}
-        print("known_data", known_data)
+        # print("known_data", known_data)
         for data in bilan : 
             stack = []
             treatment_stack = []
@@ -191,9 +190,9 @@ class Bloc:
             c= 0
             while stack and c < 1000 : 
                 c+=1
-                print("stack", stack)
+                # print("stack", stack)
                 to_calc = stack.pop()
-                print(to_calc)
+                # print(to_calc)
                 if ((not to_calc in known_data) or (not known_data[to_calc])) and to_calc in bilan : 
                     treatment_stack.append(to_calc)
                     known_data[to_calc] = True
@@ -206,18 +205,18 @@ class Bloc:
             c=0
             while treatment_stack and c < 1000:
                 c+=1
-                print("treatment_stack", treatment_stack)
+                # print("treatment_stack", treatment_stack)
                 to_calc = treatment_stack.pop(-1)
-                print(to_calc)
+                # print(to_calc)
                 if not results.get(to_calc) :
                     results[to_calc] = [] 
                 for f in formulas[to_calc] :
                     try : 
-                        print("f", f)
+                        # print("f", f)
                         result = (calculate_formula(f[0], inp_out), f[1])
                     except ErrorNotEnoughData : 
                         result = (None, f[1])
-                    print("result", result)
+                    # print("result", result)
                     results[to_calc].append(result) 
                 if to_calc in inp_out : 
                     inp_out[to_calc] = max(results[to_calc], key=lambda x : x[1])[0] 
@@ -227,7 +226,7 @@ class Bloc:
                     self.entrees[to_calc] = max(results[to_calc], key=lambda x : x[1])[0]
             if c == 1000 : 
                 raise RuntimeError('Trop de calculs') 
-        print("results", results)
+        # print("results", results)
         self.ges = results
         none_results = {'co2_e' : 0, 'co2_c' : 0, 'ch4_e' : 0, 'ch4_c' : 0, 'n2o_e' : 0, 'n2o_c' : 0}
         for key in none_results :
@@ -288,13 +287,13 @@ class Bloc:
                 
                 else :
                     bloc.ges[key].sort(key=lambda x : x[1]) # On trie en fonction du niveau de détails
-                    print("bloc.ges[key] avant ", bloc.ges[key])
+                    # print("bloc.ges[key] avant ", bloc.ges[key])
                     if bloc.ges[key][-1][1] == 6 : # On changera sûrement ce niveau d'intrant
                         # Intrant level
                         intrant = bloc.ges[key].pop(-1)[0]       
                         # On doit traiter les intrants et les autres à part parce que les intrants ont leur
                         # propre formule et niveau de détail pour les mêmes types d'émissions                 
-                    print("bloc.ges[key] après", bloc.ges[key])
+                    # print("bloc.ges[key] après", bloc.ges[key])
                     val = bloc.ges[key][-1][0]
                 if val is not None: 
                     current_result[key] = val
@@ -311,10 +310,10 @@ class Bloc:
                 sum_intrant = {key : 0 for key in keys}
                 for name, sb in bloc.ss_blocs.items() : 
                     res, intr = rec(sb)
-                    print("res", res)
-                    print("intr", intr)
-                    print("name", name)
-                    print("bonjour", res)
+                    # print("res", res)
+                    # print("intr", intr)
+                    # print("name", name)
+                    # print("bonjour", res)
                     for key in sum_res :
                         if res[key] is None : 
                             sum_res[key] = current_result[key]
@@ -351,8 +350,8 @@ class Bloc:
             for key in to_plot :
                 to_plot[key].append(result[key])
         r = range(len(names))
-        print('len r', len(r))
-        print('len to_plot', len(to_plot['co2_e']))
+        # print('len r', len(r))
+        # print('len to_plot', len(to_plot['co2_e']))
         def create_ax(ax, title, c_or_e) : 
             ax.bar(r, to_plot['co2_'+c_or_e], 
                      color = color['co2'], edgecolor=edgecolor,  label = 'co2_'+c_or_e)
