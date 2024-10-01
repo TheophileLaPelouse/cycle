@@ -166,7 +166,7 @@ returns varchar
 language plpgsql stable as
 $$
 begin
-    return 'create function api.'||table_name||E'_instead_fct()\n'||
+    return 'create or replace function api.'||table_name||E'_instead_fct()\n'||
     E'returns trigger \n'||
     E'language plpgsql volatile security definer as\n'||
     E'$fct$\n'||
@@ -207,7 +207,7 @@ $$
 begin
     -- raise notice '%', template.insert_statement(concrete||'_'||abstract||'_config', concrete);
     -- raise notice '%', template.update_statement(concrete||'_'||abstract||'_config');
-    return 'create function api.'||concrete||'_'||abstract||E'_instead_fct()\n'||
+    return 'create or replace function api.'||concrete||'_'||abstract||E'_instead_fct()\n'||
     E'returns trigger \n'||
     E'language plpgsql volatile security definer as\n'||
     E'$fct$\n'||
@@ -870,6 +870,46 @@ begin
 end ;
 $$; 
 
+create or replace function api.insert_inp_out(b_type ___.bloc_type, col_name varchar, col_type varchar, col_default varchar, modif varchar, inp_or_out varchar)
+returns varchar
+language plpgsql as
+$$
+declare 
+    query text;
+begin 
+    case 
+    when modif = 'added' then
+        query = 'update  ___.input_output set ' || inp_or_out || 's = array_append('|| inp_or_out ||'s, '''|| col_name || ''') where b_type = '''|| b_type || ''';';
+        raise notice '%', query;
+        execute query;
+        query = 'alter table ___.'|| b_type ||'_bloc add column ' || col_name || ' ' || col_type || ' default ' || col_default || ';';
+        raise notice '%', query;
+        execute query;
+        query = 'alter table ___.'|| b_type ||'_bloc_config add column ' || col_name || ' ' || col_type || ' default ' || col_default || ';';
+        raise notice '%', query;
+        execute query;
+    when modif = 'remove' then
+        query = 'update ___.input_output set ' || inp_or_out || 's = array_remove('|| inp_or_out ||'s, '''|| col_name || ''') where b_type = '''|| b_type || ''';'; 
+        execute query;
+        query = 'alter table ___.'|| b_type ||'_bloc drop column ' || col_name || ';';
+        execute query;
+        query = 'alter table ___.'|| b_type ||'_bloc_config drop column ' || col_name || ';';
+        execute query;
+    when modif = 'modif' then
+        query = 'alter table ___.'|| b_type ||'_bloc drop column ' || col_name || ';';
+        execute query;
+        query = 'alter table ___.'|| b_type ||'_bloc_config drop column ' || col_name || ';';
+        execute query;
+        query = 'alter table ___.'|| b_type ||'_bloc add column ' || col_name || ' ' || col_type || ' default ' || col_default || ';';
+        execute query;
+        query = 'alter table ___.'|| b_type ||'_bloc_config add column ' || col_name || ' ' || col_type || ' default ' || col_default ||';';
+        execute query;
+    else 
+        return 'not the write modif';
+    end case ;
+    return 'Column ' || col_name || ' ' || modif || ' to ' || b_type;
+end;
+$$;
 -- create or replace function api.select_enum_types()
 -- returns table(enum_type text) 
 -- language plpgsql as

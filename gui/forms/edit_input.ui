@@ -548,7 +548,7 @@
      <widget class="QComboBox" name="bloc_select"/>
     </item>
     <item row="2" column="2">
-     <widget class="QDialogButtonBox" name="buttonBox">
+     <widget class="QDialogButtonBox" name="buttons">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -586,7 +586,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>buttons</sender>
    <signal>rejected()</signal>
    <receiver>Dialog</receiver>
    <slot>reject()</slot>
@@ -602,7 +602,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>buttons</sender>
    <signal>accepted()</signal>
    <receiver>Dialog</receiver>
    <slot>accept()</slot>

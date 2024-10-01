@@ -184,6 +184,7 @@ class Bloc:
         known_data = {name : inp_out[name] is not None for name in inp_out}
         # print("known_data", known_data)
         for data in bilan : 
+            # stack est une file en fait (fifo) alors que treatment_stack est une pile (lifo)
             stack = []
             treatment_stack = []
             stack.append(data)

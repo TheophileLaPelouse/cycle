@@ -30,7 +30,7 @@ class CreateBlocWidget(QDialog):
         self.__project_name = project_name
         
         self.geom.addItems(['Point', 'LineString', 'Polygon'])
-        types = ['real', 'integer', 'string', 'list'] # On pourra ajouter les types de la base de donnée aussi       
+        types = ['real', 'integer', 'list'] # On pourra ajouter les types de la base de donnée aussi       
         
         self.entree_type.addItems(types)
         # 2 = output

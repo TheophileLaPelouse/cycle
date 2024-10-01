@@ -14,6 +14,7 @@ from ...project import Project
 from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
 from ..forms.add_formula import AddFormula
+from ..forms.edit_input import EditInputOutput
 from ...database import reset_project
 from ...compute.bloc import get_sur_blocs, get_links, Bloc
 from ...utility.json_utils import save_to_json, add_dico
@@ -104,7 +105,7 @@ class CycleToolbar(QToolBar):
         if is_comitting() : 
             warnings.warn("You must save your edits before adding an input")
             return
-        print("Work in progress")
+        EditInputOutput(QGisProjectManager.project_name(), self.__log_manager)
     
     def __reset_db(self):
         reset_project(QGisProjectManager.project_name(), 2154)

@@ -75,6 +75,12 @@ select api.get_links('test_model') ;
 select api.add_new_formula('Delamgie', 'CO2=E', 2, 'C''est vraiment de la magie') ;
 
 update api.input_output set default_formulas = array_append(default_formulas, 'Delamgie') where b_type = 'test' ;
+
+select api.insert_inp_out('test', 'lol', 'real', 'null', 'added', 'input') ;
+select api.insert_inp_out('test', 'lol', 'integer', 'null', 'modif', 'input') ;
+select api.insert_inp_out('test', 'lol', '', 'null', 'remove', 'input') ;
+drop view api.test_bloc ;
+select template.bloc_view('test', 'bloc', 'Polygon') ; 
 -- select api.add_formula_to_input_output('test', 'Delamgie') ; 
 -- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(1 1, 2 2)', 2154), 'test_model');
 
@@ -94,6 +100,92 @@ update api.input_output set default_formulas = array_append(default_formulas, 'D
 -- select attribute_name, data_type from information_schema.attributes where udt_schema = '___' and udt_name = 'bloc_type'; 
 
 -- select jsonb_build_object(b_types, jsonb_object_agg(f.formula, f.detail_level)) from api.input_output i_o join api.formulas f on f.name = any(i_o.default_formulas) group by b_types;
+
+create or replace function api.pop(fifo table, lifo_or_fifo boolean default false) 
+language plpgsql
+returns varchar as
+$$
+declare 
+    idx_m integer ; 
+    val varchar ;
+begin
+    if not lifo_or_fifo then
+        select min(id) into idx_m from fifo ; 
+    else 
+        select max(id) into idx_m from fifo ;
+    select min(id) into idx_m from fifo ; 
+    select value into val from fifo where id = idx_m ; 
+    delete from fifo where id = idx_m ; 
+    return val ; 
+end ;
+$$ ; 
+
+
+create or replace function api.calculate_bloc(id_bloc integer, model text)
+language plpgsql
+return jsonb as
+$$
+declare  
+    b_typ ___.bloc_type ;
+    to_calc varchar ;
+    data_ varchar ; 
+    bil varchar ;
+    args varchar[] ; 
+    f varchar ;
+    detail integer ;
+    c integer ; 
+    result real ;
+    json_result jsonb ;
+    colnames varchar[] ;
+begin 
+    select api.recup_entree(id, model) ;
+    select into b_typ b_type from api.bloc where id = id and model = model ;
+    
+    create temp table inp_out(name varchar, val real) ; 
+    select column_name into colnames from information_schema.columns, api.input_output  
+    where table_name = b_typ||'_bloc' and table_schema = 'api' and 
+    b_type = b_typ and (column_name = any(inputs) or column_name = any(outputs)) ;
+    query := 'insert into inp_out(name, val) select quote_elem(unnest(colnames)), unnest(colnames) from api.'||b_typ||'_bloc where id = id_bloc' ; 
+    execute query ;
+    -- à tester  
+
+    create temp table bilan(leftside varchar, calc_with varchar[], formula varchar, detail_level integer) on commit drop;
+    
+    with bloc_formula as (select formula, detail_level from api.formulas where name = any((select default_formulas from api.input_output where b_type = b_typ)))
+    insert into bilan(leftside, calc_with, formula, detail_level) 
+    select split_part(formula, '=', 1), api.read_formula(split_part(formula, '=', 2)), formula, detail_level from bloc_formula ;
+
+    create temp table known_data(leftside varchar, known boolean default false) on commit drop;
+    insert into known_data(leftside) select unnest(inp_out) ;
+
+    create temp table results(name varchar, detail_level integer, val real) on commit drop ; 
+
+    for data_, args in (select lefside, calc_with from bilan) loop
+        create temp fifo(id serial primary key, value varchar) ; 
+        create temp treatment_lifo(id serial primary key, value varchar) ; 
+
+        insert into fifo(value) values (data_) ;
+        c := 0 ; 
+        while c < 10000 and (select count(*) from fifo) > 0 loop
+            c := c + 1 ;
+            to_calc := api.pop(fifo) ;
+            if to_calc in (select leftside from known_data where known = false) and to_calc in (select leftside from bilan) then 
+                insert into treatment_lifo(value) values (to_calc) ;
+                update known_data set known = true where leftside = to_calc ;
+                insert into fifo(value) select unnest(calc_with) where unnest(calc_with) not in (select leftside from known_data where known = true) ;
+            end if ;
+        end loop ;
+        if c = 10000 then 
+            raise exception 'Too many iterations' ;
+        end if ;
+        c := 0 ; 
+        while c < 10000 and (select count(*) from treatment_lifo) > 0 loop
+            c := c + 1 ;
+            to_calc := api.pop(treatment_lifo, true) ;
+            for f, detail in (select formula, detail_level from bilan where leftside = to_calc) loop
+                result := api.calculate_formula(f, inp_out) ;
+                insert into results(name, detail_level, val) values (to_calc, detail, result) ;
+            end loop ;
 
 -- ------------------------------------------------------------------------------------------------
 -- -- tests select for calculation
