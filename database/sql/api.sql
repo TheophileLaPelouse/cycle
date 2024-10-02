@@ -357,9 +357,12 @@ begin
     E'        update ___.link set geom = st_setpoint(geom, 0, new.geom) where up = new.id;\n' ||
     E'        update ___.link set geom = st_setpoint(geom, -1, new.geom) where down = new.id;\n' ||
     E'    end if;\n' ||
+    E'    perform api.calculate_bloc(new.id, new.model);' ||
     E'$$, \n' ||
     E'after_insert_section => $$\n' ||
     E'      perform api.update_links(new.id, ''' || shape || ''', new.geom, new.model);' ||
+    E'      perform api.update_calc_bloc(new.id, new.model);' ||
+    E'      perform api.calculate_bloc(new.id, new.model);' ||
     E'$$, \n' ||
     E'start_section => $$\n' ||
     E'    if tg_op = ''INSERT'' or tg_op = ''UPDATE'' then\n' ||
@@ -369,8 +372,9 @@ begin
     E'        new.sur_bloc := api.find_sur_bloc(new.id, new.geom_ref, new.model);\n' ||
     E'    end if;\n' ||
     E'    if tg_op = ''DELETE'' then\n' ||
+    E'        perform api.update_calc_bloc(new.id, new.model, true);' ||
     E'        update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- remove the bloc from the list of sub-blocs of the sur-bloc\n' ||
-    E'        update ___.bloc set sur_bloc = api.find_sur_bloc(old.id, old.geom, old.model) where sur_bloc = old.id; -- update the sur-bloc\n' ||
+    E'        update ___.bloc set sur_bloc = api.find_sur_bloc(old.id, old.geom, old.model) where sur_bloc = old.id; -- update the sur-bloc\n' || 
     E'    end if;\n' ||
     E'$$);';
     -- raise notice '%', query;
@@ -801,7 +805,7 @@ select template.basic_view('metadata');
 
 select template.basic_view('formulas');
 
-select tempalte.basic_view('results') ;
+select template.basic_view('results') ;
 
 ------------------------------------------------------------------------------------------------
 -- MODELS                                                                                     --
@@ -1116,7 +1120,7 @@ end ;
 $$ ; 
 
 create or replace function api.recup_entree(id_bloc integer, model_bloc text)
-returns void
+returns boolean
 language plpgsql as
 $$
 declare
@@ -1128,11 +1132,15 @@ declare
     col varchar ;
     inp_col real ;
     up integer ;
+    flag boolean := false ;
 begin 
-    select into b_typ_fils b_type from api.bloc where id = id_bloc ;
+    select into b_typ_fils b_type from ___.bloc where id = id_bloc ;
     select into links_up array_agg(api.link.up) from api.link where down = id_bloc and model = model_bloc ;    
+    if array_length(links_up, 1) = 0 or links_up is null then 
+        return false ;
+    else 
     foreach up in array links_up loop
-        select into b_typ b_type from api.bloc where id = up ;
+        select into b_typ b_type from ___.bloc where id = up ;
 
         select array_agg(column_name) into colnames from information_schema.columns, api.input_output  
         where table_name = b_typ||'_bloc' and table_schema = 'api' and 
@@ -1142,23 +1150,35 @@ begin
             select into links_up array_cat(links_up, array_agg(api.link.up)) from api.link where down = up and model = model_bloc ;
         end if ;
         foreach col in array colnames loop
-            query = 'select '||col||' from api.'||b_typ||'_bloc where id = $1 ;' ;
+            query = 'select '||col||' from ___.'||b_typ||'_bloc where id = $1 ;' ;
             execute query into inp_col using up ;
             raise notice 'inp_col = %', inp_col ;
             if inp_col is not null then 
                 if col like '%_s' then 
                     if left(col, -2) in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then 
-                        update inp_out set val = inp_col where name = left(col, -2) ;
+                        update inp_out set val = inp_col where name = left(col, -2) and val is null ;
+                        if found then 
+                            flag := true ;
+                        end if ;
                     elseif left(col, -2)||'_e' in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then 
-                        update inp_out set val = inp_col where name = left(col, -2)||'_e' ;
+                        update inp_out set val = inp_col where name = left(col, -2)||'_e' and val is null;
+                        if found then 
+                            flag := true ;
+                        end if ;
                     end if ;
                 end if ;
                 if col in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then
-                    update inp_out set val = inp_col where name = col ;
+                    update inp_out set val = inp_col where name = col and val is null;
+                    if found then 
+                        flag := true ;
+                    end if ;
+
                 end if ;
             end if ;
         end loop ;
     end loop ;
+    end if ;
+    return flag ;
 end ;
 $$ ;
 
@@ -1198,10 +1218,11 @@ declare
     flag boolean := true ;
     result real ;
     unknowns varchar[] := array[]::varchar[] ; 
+    formul text ;
 begin
-    formula := replace(formula, ' ', '') ;
-    raise notice 'formula = %', formula ;
-    rightside := split_part(formula, '=', 2) ;
+    formul := replace(formula, ' ', '') ;
+    raise notice 'formula = %', formul ;
+    rightside := split_part(formul, '=', 2) ;
     select into operators array_agg(match[1]) from regexp_matches(rightside,  '(\s*[\+\-\*\/\^\(\)]\s*)', 'g') as match ;
     raise notice 'operators = %', operators ;
     select into args regexp_split_to_array(rightside, pat) ;
@@ -1211,7 +1232,11 @@ begin
     select into unknowns array_agg(name) from inp_out where val is null and name in (select unnest(args)) ;
     raise notice 'unknowns = %', unknowns ;
     if array_length(unknowns, 1) > 0 then
-        insert into ___.results(id, name, detail_level, formula, unknowns) values (id_bloc, to_calc, detail_level, formula, unknowns) ;
+        if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then
+            update ___.results set unknowns = unknowns where name = to_calc and ___.results.formula = formul and id = id_bloc ;
+        else 
+            insert into ___.results(id, name, detail_level, formula, unknowns) values (id_bloc, to_calc, detail_level, formul, unknowns) ;
+        end if ; 
     else 
         for i in 1..array_length(args, 1) loop
             select into val_arg val from inp_out where name = args[i] ;
@@ -1224,13 +1249,17 @@ begin
         end loop ;
         raise notice 'query = %', query ;
         execute 'select '||query into result ;
-        insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail_level, result, formula) ;
+        if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then 
+            update ___.results set val = result, unknowns = null where name = to_calc and ___.results.formula = formul and id = id_bloc ;
+        else
+            insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail_level, result, formul) ;
+        end if ; 
     end if ;
     return ;
 end ;
 $$ ;
 
-create or replace function api.calculate_bloc(id_bloc integer, model_bloc text)
+create or replace function api.calculate_bloc(id_bloc integer, model_bloc text, on_update boolean default false)
 returns varchar
 language plpgsql as
 $$
@@ -1248,14 +1277,18 @@ declare
     col varchar ; 
     query text ;
     items record ; 
+    flag boolean := true ;
 begin 
-    select into b_typ b_type from api.bloc where id = id and model = model_bloc ;
+    select into b_typ b_type from ___.bloc where id = id and model = model_bloc ;
     create temp table inp_out(name varchar, val real) on commit drop; 
+    raise notice 'b_typ = %', b_typ ;
+    raise notice 'input_output = %', (select inputs from api.input_output where b_type = b_typ) ;
     select array_agg(column_name) into colnames from information_schema.columns, api.input_output  
-    where table_name = b_typ||'_bloc' and table_schema = 'api' and 
+    where table_name = b_typ||'_bloc' and table_schema = '___' and 
     b_type = b_typ and (column_name = any(inputs) or column_name = any(outputs)) ;
+    raise notice 'colnames = %', colnames ;
     foreach col in array colnames loop
-        query := 'select '''||col||''' as name, '||col||'::real as val from api.'||b_typ||'_bloc where id = $1 ; '  ; 
+        query := 'select '''||col||''' as name, '||col||'::real as val from ___.'||b_typ||'_bloc where id = $1 ; '  ; 
         execute query into items using id_bloc ;
         if items.val is null then 
             insert into inp_out(name) values (col) ;
@@ -1263,15 +1296,16 @@ begin
             insert into inp_out(name, val) values (items.name, items.val) ;
         end if ;
     end loop ;
-    -- à tester  
+    flag := api.recup_entree(id_bloc, model_bloc) ;
+    if not flag and on_update then
+        return 'No new entry' ;
+    end if ;  
 
     create temp table bilan(leftside varchar, calc_with varchar[], formula varchar, detail_level integer) on commit drop;
     
     with bloc_formula as (select formula, detail_level from api.formulas where name in (select unnest(default_formulas) from api.input_output where b_type = b_typ))
     insert into bilan(leftside, calc_with, formula, detail_level) 
     select split_part(formula, '=', 1), api.read_formula(split_part(formula, '=', 2), colnames), formula, detail_level from bloc_formula ;
-    
-    perform api.recup_entree(id_bloc, model_bloc) ;
 
     create temp table known_data(leftside varchar, known boolean default false) on commit drop;
     insert into known_data(leftside, known) select name, val is not null from inp_out ;
@@ -1323,5 +1357,38 @@ begin
         end if ;
     end loop ;
     return 'Calculation done' ;
+end ;
+$$ ;
+
+create or replace function api.update_calc_bloc(id_bloc integer, model_name varchar, deleted boolean default false)
+returns void
+language plpgsql
+as $$
+declare
+    downs integer ;
+    new_up integer ; 
+begin
+    create temp table fifo2(id serial primary key, val integer) on commit drop;
+    for downs in (select down from api.link where up = id_bloc and model = model_name)
+    loop
+        insert into fifo2(link_up) values (downs) ;
+    end loop;
+    if deleted then
+        delete from api.link where up = id_bloc and model = model_name ;
+    end if ;
+    while (select count(*) from fifo2) > 0
+    loop
+        new_up := api.pop('fifo2', true) ;
+        if deleted then 
+            perform api.calculate_bloc(new_up, model_name, false) ; 
+        else 
+            perform api.calculate_bloc(new_up, model_name, true) ;
+        end if ;
+        for downs in (select down from api.link where up = new_up and model = model_name)
+        loop
+            insert into fifo2(val) values (downs) ;
+        end loop ;
+    end loop ;
+    drop table fifo2 ; 
 end ;
 $$ ;

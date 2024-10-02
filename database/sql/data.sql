@@ -109,15 +109,6 @@ create table ___.formulas(
     unique (name)
 ) ; 
 
-create table ___.results(
-    id integer references ___.bloc(id) on update cascade on delete cascade,
-    name varchar, 
-    val real, 
-    detail_level integer, 
-    formula varchar, 
-    unknowns varchar[]
-) ;
-
 create table ___.bloc(
     id serial primary key,
     name varchar not null check(not name~' '), 
@@ -133,6 +124,17 @@ create table ___.bloc(
     unique (name, id, shape), 
     unique (id)
 );
+
+
+create table ___.results(
+    id integer references ___.bloc(id) on update cascade on delete cascade,
+    name varchar, 
+    val real, 
+    detail_level integer, 
+    formula varchar, 
+    unknowns varchar[], 
+    unique(name, id, formula)
+) ;
 
 -- create index bloc_geomidx on ___.bloc using gist(geom_ref);
 
