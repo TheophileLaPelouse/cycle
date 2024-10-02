@@ -53,26 +53,26 @@ insert into ___.model(name) values ('test_model');
 insert into api.test_bloc(geom, model, name) values (st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 'bloc1');
  
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model');
-select name, sur_bloc, ss_blocs from api.test_bloc;
+-- select name, sur_bloc, ss_blocs from api.test_bloc;
 
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
 
 -- -- select schemaname as schema,  sequencename as sequence, last_value from pg_sequences ;
 insert into api.test_bloc (geom, model) values (st_geomfromtext('polygon((2 2, 2 3, 3 3, 3 2, 2 2))', 2154), 'test_model');
-select name, id from api.bloc ; 
+-- select name, id from api.bloc ; 
 insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(0.5 0.5, 2.5 2.5)', 2154), 'test_model');
 
-select * from api.link ; 
+-- select * from api.link ; 
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 2.8, 2.8 2.8, 2.8 1, 1 1))', 2154), 'test_model');
-select * from api.link ; 
+-- select * from api.link ; 
 
-select api.add_new_formula('Q = 2*EH', 'Q = 2*EH', '2', 'hmm') ;
+select api.add_new_formula('q = 2*eh', 'co2_c = 2*eh+q', '2', 'hmm') ;
 
-select api.get_blocs('test_model') ;  
+-- select api.get_blocs('test_model') ;  
 
-select api.get_links('test_model') ;    
+-- select api.get_links('test_model') ;    
 
-select api.add_new_formula('Delamgie', 'CO2=E', 2, 'C''est vraiment de la magie') ;
+select api.add_new_formula('Delamgie', 'co2_e=eh - q', 2, 'C''est vraiment de la magie') ;
 
 update api.input_output set default_formulas = array_append(default_formulas, 'Delamgie') where b_type = 'test' ;
 
@@ -101,91 +101,12 @@ select template.bloc_view('test', 'bloc', 'Polygon') ;
 
 -- select jsonb_build_object(b_types, jsonb_object_agg(f.formula, f.detail_level)) from api.input_output i_o join api.formulas f on f.name = any(i_o.default_formulas) group by b_types;
 
-create or replace function api.pop(fifo table, lifo_or_fifo boolean default false) 
-language plpgsql
-returns varchar as
-$$
-declare 
-    idx_m integer ; 
-    val varchar ;
-begin
-    if not lifo_or_fifo then
-        select min(id) into idx_m from fifo ; 
-    else 
-        select max(id) into idx_m from fifo ;
-    select min(id) into idx_m from fifo ; 
-    select value into val from fifo where id = idx_m ; 
-    delete from fifo where id = idx_m ; 
-    return val ; 
-end ;
-$$ ; 
+select api.read_formula('Q= 2* EH', array['Q', 'EH']) ;
 
 
-create or replace function api.calculate_bloc(id_bloc integer, model text)
-language plpgsql
-return jsonb as
-$$
-declare  
-    b_typ ___.bloc_type ;
-    to_calc varchar ;
-    data_ varchar ; 
-    bil varchar ;
-    args varchar[] ; 
-    f varchar ;
-    detail integer ;
-    c integer ; 
-    result real ;
-    json_result jsonb ;
-    colnames varchar[] ;
-begin 
-    select api.recup_entree(id, model) ;
-    select into b_typ b_type from api.bloc where id = id and model = model ;
-    
-    create temp table inp_out(name varchar, val real) ; 
-    select column_name into colnames from information_schema.columns, api.input_output  
-    where table_name = b_typ||'_bloc' and table_schema = 'api' and 
-    b_type = b_typ and (column_name = any(inputs) or column_name = any(outputs)) ;
-    query := 'insert into inp_out(name, val) select quote_elem(unnest(colnames)), unnest(colnames) from api.'||b_typ||'_bloc where id = id_bloc' ; 
-    execute query ;
-    -- à tester  
+update api.test_bloc set q = 10, eh = 5 where id = 1  ;
+select api.calculate_bloc(5, 'test_model') ;
 
-    create temp table bilan(leftside varchar, calc_with varchar[], formula varchar, detail_level integer) on commit drop;
-    
-    with bloc_formula as (select formula, detail_level from api.formulas where name = any((select default_formulas from api.input_output where b_type = b_typ)))
-    insert into bilan(leftside, calc_with, formula, detail_level) 
-    select split_part(formula, '=', 1), api.read_formula(split_part(formula, '=', 2)), formula, detail_level from bloc_formula ;
-
-    create temp table known_data(leftside varchar, known boolean default false) on commit drop;
-    insert into known_data(leftside) select unnest(inp_out) ;
-
-    create temp table results(name varchar, detail_level integer, val real) on commit drop ; 
-
-    for data_, args in (select lefside, calc_with from bilan) loop
-        create temp fifo(id serial primary key, value varchar) ; 
-        create temp treatment_lifo(id serial primary key, value varchar) ; 
-
-        insert into fifo(value) values (data_) ;
-        c := 0 ; 
-        while c < 10000 and (select count(*) from fifo) > 0 loop
-            c := c + 1 ;
-            to_calc := api.pop(fifo) ;
-            if to_calc in (select leftside from known_data where known = false) and to_calc in (select leftside from bilan) then 
-                insert into treatment_lifo(value) values (to_calc) ;
-                update known_data set known = true where leftside = to_calc ;
-                insert into fifo(value) select unnest(calc_with) where unnest(calc_with) not in (select leftside from known_data where known = true) ;
-            end if ;
-        end loop ;
-        if c = 10000 then 
-            raise exception 'Too many iterations' ;
-        end if ;
-        c := 0 ; 
-        while c < 10000 and (select count(*) from treatment_lifo) > 0 loop
-            c := c + 1 ;
-            to_calc := api.pop(treatment_lifo, true) ;
-            for f, detail in (select formula, detail_level from bilan where leftside = to_calc) loop
-                result := api.calculate_formula(f, inp_out) ;
-                insert into results(name, detail_level, val) values (to_calc, detail, result) ;
-            end loop ;
 
 -- ------------------------------------------------------------------------------------------------
 -- -- tests select for calculation

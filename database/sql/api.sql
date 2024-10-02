@@ -794,12 +794,14 @@ instead of update on api.input_output
 for each row execute function api.trigger_add_formula_to_input_output();
 
 ------------------------------------------------------------------------------------------------
--- Metadata
+-- Information
 ------------------------------------------------------------------------------------------------
 
 select template.basic_view('metadata');
 
 select template.basic_view('formulas');
+
+select tempalte.basic_view('results') ;
 
 ------------------------------------------------------------------------------------------------
 -- MODELS                                                                                     --
@@ -1084,3 +1086,242 @@ begin
     return links;
 end;
 $$;
+
+------------------------------------------------------------------------------------------------
+-- Computation 
+------------------------------------------------------------------------------------------------
+
+create or replace function api.pop(fifo varchar, lifo_or_fifo boolean default false) 
+returns varchar 
+language plpgsql as
+$$
+declare 
+    idx_m integer ; 
+    val varchar ;
+    query text ;
+begin
+    if not lifo_or_fifo then
+        query := 'select min(id) from '||fifo||';' ;
+        execute query into idx_m ;
+    else 
+        query := 'select max(id) from '||fifo||';' ;
+        execute query into idx_m ;
+    end if ; 
+    query := 'select value from '||fifo||' where id = '||idx_m||' ;' ;
+    execute query into val; 
+    query := 'delete from '||fifo||' where id = '||idx_m||' ;' ;
+    execute query ; 
+    return val ; 
+end ;
+$$ ; 
+
+create or replace function api.recup_entree(id_bloc integer, model_bloc text)
+returns void
+language plpgsql as
+$$
+declare
+    links_up integer[] ;
+    b_typ_fils ___.bloc_type ; 
+    b_typ ___.bloc_type ;
+    query text ;
+    colnames varchar[] ;
+    col varchar ;
+    inp_col real ;
+    up integer ;
+begin 
+    select into b_typ_fils b_type from api.bloc where id = id_bloc ;
+    select into links_up array_agg(api.link.up) from api.link where down = id_bloc and model = model_bloc ;    
+    foreach up in array links_up loop
+        select into b_typ b_type from api.bloc where id = up ;
+
+        select array_agg(column_name) into colnames from information_schema.columns, api.input_output  
+        where table_name = b_typ||'_bloc' and table_schema = 'api' and 
+        b_type = b_typ and column_name = any(outputs) ;
+
+        if b_typ::varchar = 'lien' or b_typ::varchar = 'link' then 
+            select into links_up array_cat(links_up, array_agg(api.link.up)) from api.link where down = up and model = model_bloc ;
+        end if ;
+        foreach col in array colnames loop
+            query = 'select '||col||' from api.'||b_typ||'_bloc where id = $1 ;' ;
+            execute query into inp_col using up ;
+            raise notice 'inp_col = %', inp_col ;
+            if inp_col is not null then 
+                if col like '%_s' then 
+                    if left(col, -2) in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then 
+                        update inp_out set val = inp_col where name = left(col, -2) ;
+                    elseif left(col, -2)||'_e' in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then 
+                        update inp_out set val = inp_col where name = left(col, -2)||'_e' ;
+                    end if ;
+                end if ;
+                if col in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then
+                    update inp_out set val = inp_col where name = col ;
+                end if ;
+            end if ;
+        end loop ;
+    end loop ;
+end ;
+$$ ;
+
+create or replace function api.read_formula(formula text, colnames varchar[])
+returns varchar[]
+language plpgsql as
+$$
+declare 
+    list varchar[] ;
+    to_return varchar[] ;
+    pat text ;
+begin
+    pat := '[\+\-\*\/\^\(\)]' ; 
+    formula := replace(formula, ' ', '') ;
+    list := regexp_split_to_array(formula, pat) ;
+    select into to_return array_agg(elem) from unnest(list) as elem where elem = any(colnames) ;
+    return to_return ;
+end ;
+$$ ;
+
+
+
+create or replace function api.calculate_formula(formula text, id_bloc integer, detail_level integer, to_calc varchar)
+returns void
+language plpgsql as
+$$
+declare 
+    pat varchar := '[\+\-\*\/\^\(\)]' ;
+    rightside text ; 
+    operators varchar[] ;
+    op varchar ;
+    args varchar[] ;
+    arg varchar ;
+    query text ;
+    val_arg real ;
+    i integer ; 
+    flag boolean := true ;
+    result real ;
+    unknowns varchar[] := array[]::varchar[] ; 
+begin
+    formula := replace(formula, ' ', '') ;
+    raise notice 'formula = %', formula ;
+    rightside := split_part(formula, '=', 2) ;
+    select into operators array_agg(match[1]) from regexp_matches(rightside,  '(\s*[\+\-\*\/\^\(\)]\s*)', 'g') as match ;
+    raise notice 'operators = %', operators ;
+    select into args regexp_split_to_array(rightside, pat) ;
+    raise notice 'args = %', args ;
+
+    query := '' ;
+    select into unknowns array_agg(name) from inp_out where val is null and name in (select unnest(args)) ;
+    raise notice 'unknowns = %', unknowns ;
+    if array_length(unknowns, 1) > 0 then
+        insert into ___.results(id, name, detail_level, formula, unknowns) values (id_bloc, to_calc, detail_level, formula, unknowns) ;
+    else 
+        for i in 1..array_length(args, 1) loop
+            select into val_arg val from inp_out where name = args[i] ;
+            if not i=1 then 
+                op := operators[i-1] ; 
+            else 
+                op := '' ; 
+            end if ;
+            query := query||op||val_arg ;
+        end loop ;
+        raise notice 'query = %', query ;
+        execute 'select '||query into result ;
+        insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail_level, result, formula) ;
+    end if ;
+    return ;
+end ;
+$$ ;
+
+create or replace function api.calculate_bloc(id_bloc integer, model_bloc text)
+returns varchar
+language plpgsql as
+$$
+declare  
+    b_typ ___.bloc_type ;
+    to_calc varchar ;
+    data_ varchar ; 
+    bil varchar ;
+    args varchar[] ; 
+    f varchar ;
+    detail integer ;
+    c integer ; 
+    result real ;
+    colnames varchar[] ;
+    col varchar ; 
+    query text ;
+    items record ; 
+begin 
+    select into b_typ b_type from api.bloc where id = id and model = model_bloc ;
+    create temp table inp_out(name varchar, val real) on commit drop; 
+    select array_agg(column_name) into colnames from information_schema.columns, api.input_output  
+    where table_name = b_typ||'_bloc' and table_schema = 'api' and 
+    b_type = b_typ and (column_name = any(inputs) or column_name = any(outputs)) ;
+    foreach col in array colnames loop
+        query := 'select '''||col||''' as name, '||col||'::real as val from api.'||b_typ||'_bloc where id = $1 ; '  ; 
+        execute query into items using id_bloc ;
+        if items.val is null then 
+            insert into inp_out(name) values (col) ;
+        else
+            insert into inp_out(name, val) values (items.name, items.val) ;
+        end if ;
+    end loop ;
+    -- à tester  
+
+    create temp table bilan(leftside varchar, calc_with varchar[], formula varchar, detail_level integer) on commit drop;
+    
+    with bloc_formula as (select formula, detail_level from api.formulas where name in (select unnest(default_formulas) from api.input_output where b_type = b_typ))
+    insert into bilan(leftside, calc_with, formula, detail_level) 
+    select split_part(formula, '=', 1), api.read_formula(split_part(formula, '=', 2), colnames), formula, detail_level from bloc_formula ;
+    
+    perform api.recup_entree(id_bloc, model_bloc) ;
+
+    create temp table known_data(leftside varchar, known boolean default false) on commit drop;
+    insert into known_data(leftside, known) select name, val is not null from inp_out ;
+
+    -- create temp table results(name varchar, detail_level integer, val real) on commit drop ; 
+
+    for data_, args in (select leftside, calc_with from bilan) loop
+        create temp table fifo(id serial primary key, value varchar) ; 
+        create temp table treatment_lifo(id serial primary key, value varchar) ; 
+
+        insert into fifo(value) values (data_) ;
+        c := 0 ; 
+        while c < 10000 and (select count(*) from fifo) > 0 loop
+            c := c + 1 ;
+            to_calc := api.pop('fifo') ;
+            raise notice 'to_calc = %', to_calc ;
+            raise notice 'known_data = %', (select known from known_data where leftside = to_calc) ;
+            if (to_calc not in (select leftside from known_data where known = true)) and (to_calc in (select leftside from bilan)) then 
+                insert into treatment_lifo(value) values (to_calc) ;
+                update known_data set known = true where leftside = to_calc ;
+                insert into fifo(value) select elem from unnest(args) as elem where elem not in (select leftside from known_data where known = true) ;
+            end if ;
+        end loop ;
+        if c = 10000 then 
+            raise exception 'Too many iterations' ;
+        end if ;
+        c := 0 ; 
+        while c < 10000 and (select count(*) from treatment_lifo) > 0 loop
+            c := c + 1 ;
+            to_calc := api.pop('treatment_lifo', true) ;
+            for f, detail in (select formula, detail_level from bilan where leftside = to_calc) loop
+                perform api.calculate_formula(f, id_bloc, detail, to_calc) ;
+                -- raise notice 'result = %', result ;
+                -- insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail, result, f) ;
+            end loop ;
+            with max_detail as (select max(detail_level) as max_detail from ___.results where name = to_calc and id = id_bloc)
+            update inp_out set val = ___.results.val from ___.results, max_detail 
+            where inp_out.name = to_calc and ___.results.id = id_bloc and detail = max_detail ; 
+        end loop ;
+        if c = 10000 then 
+            raise exception 'Too many iterations' ;
+        end if ;
+        drop table fifo ;
+        drop table treatment_lifo ;
+    end loop ;
+    foreach to_calc in array array['co2_e', 'co2_c', 'ch4_e', 'ch4_c', 'n2o_e', 'n2o_c']::varchar[] loop
+        if to_calc not in (select name from ___.results where id = id_bloc) then
+            insert into ___.results(id, name, val) values (id_bloc, to_calc, 0) ;
+        end if ;
+    end loop ;
+    return 'Calculation done' ;
+end ;
+$$ ;

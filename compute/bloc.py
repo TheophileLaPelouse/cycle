@@ -258,7 +258,7 @@ class Bloc:
         """
         for bloc in self.links_up :
             bloc = self.originale.all_blocs[bloc]
-            if not bloc.sorties:
+            if not bloc.sorties and not bloc.entrees:
                 for name in bloc.links_up : 
                     self.links_up.append(name)
             for name, data in bloc.sorties.items() : 

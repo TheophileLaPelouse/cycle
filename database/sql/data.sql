@@ -109,6 +109,15 @@ create table ___.formulas(
     unique (name)
 ) ; 
 
+create table ___.results(
+    id integer references ___.bloc(id) on update cascade on delete cascade,
+    name varchar, 
+    val real, 
+    detail_level integer, 
+    formula varchar, 
+    unknowns varchar[]
+) ;
+
 create table ___.bloc(
     id serial primary key,
     name varchar not null check(not name~' '), 
@@ -170,7 +179,7 @@ create table ___.test_bloc(
     unique (name, id)
 );
 
-insert into ___.input_output values ('test'::___.bloc_type, array['Q', 'DBO5', 'EH'], array['Q', 'DBO5', 'EH']);
+insert into ___.input_output values ('test'::___.bloc_type, array['q', 'dbo5', 'eh'], array['q', 'dbo5', 'eh']);
 
 create table ___.piptest_bloc(
     id integer primary key, 
@@ -185,7 +194,7 @@ create table ___.piptest_bloc(
 
 ) ;
 
-insert into ___.input_output values ('piptest', array['Q'], array['Q']);
+insert into ___.input_output values ('piptest', array['q'], array['q']);
 
 create table ___.zone_type_table(
     name varchar primary key,
