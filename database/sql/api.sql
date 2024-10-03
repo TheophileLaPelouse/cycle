@@ -809,10 +809,23 @@ select template.basic_view('metadata');
 
 select template.basic_view('formulas');
 
-select template.basic_view('results') ;
+-- select template.basic_view('results') ;
 
-
-
+create view api.results as
+select ___.results.id, model, jsonb_build_object(
+    'data', jsonb_agg(
+        jsonb_build_object(
+            'name', ___.results.name,
+            'formula', ___.results.formula,
+            'result', result_ss_blocs, 
+            'detail', ___.results.detail_level, 
+            'unknown', unknowns)
+        )
+    ) as res
+from ___.results
+join ___.bloc on ___.bloc.id = ___.results.id
+where formula is not null 
+group by ___.results.id, model;
 ------------------------------------------------------------------------------------------------
 -- MODELS                                                                                     --
 ------------------------------------------------------------------------------------------------
@@ -1427,6 +1440,7 @@ declare
     flag boolean := true ;
     flag_intrant boolean := false ;
     detail_l integer ; 
+    details integer[] ; 
     n_sb boolean;
 begin   
     foreach k in array keys loop
@@ -1436,14 +1450,25 @@ begin
         else
             s := 0 ;
             for sb in (select unnest(ss_blocs) from ___.bloc where id = id_bloc) loop 
-                for f in (select formula from ___.results where name =k and id = sb) loop
-                    select into item val, result_ss_blocs, detail_level from ___.results where name = k and id = sb and formula = f ;
+                select into details array_agg(detail_level)
+                from (
+                    select detail_level
+                    from ___.results
+                    where name = k and id = sb
+                    order by detail_level desc
+                    limit 2
+                ) subquery;
+                if details[1] < 6 then
+                    details := array[6] ;
+                end if ;
+                foreach detail_l in array details loop
+                    select into item val, result_ss_blocs from ___.results where name = k and id = sb and detail_level = detail_l ;
                     if item.val is not null and item.result_ss_blocs is null then 
                         perform api.get_results_ss_bloc(sb) ;
                         -- Normalement pas de problème parce que si on a cette situation on l'a bien pour toutes les clés 
-                        select into item val, result_ss_blocs from ___.results where name = k and id = sb and formula = f ;
+                        select into item val, result_ss_blocs from ___.results where name = k and id = sb and detail_level = detail_l ;
                     end if ;
-                    if item.detail_level > 6 then -- 6 est le niveua de détail des intrants
+                    if detail_l > 6 then -- 6 est le niveua de détail des intrants
                         flag_intrant := true ;
                     end if ;
                     if item.result_ss_blocs is not null then 

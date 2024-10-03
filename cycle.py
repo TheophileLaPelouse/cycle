@@ -21,10 +21,10 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QObject, QTranslator, QCoreApplication
+from qgis.PyQt.QtCore import QObject, QTranslator, QCoreApplication, Qt
+from qgis.PyQt.QtWidgets import QAction, QDockWidget
 from qgis.core import QgsProject, QgsSettings
 from qgis.gui import QgsGui
-
 
 from .qgis_utilities import QGisLogger, QGisProjectManager #, ArrayWidgetFactory
 from .gui.menu_widgets.menu import CycleMenu
@@ -102,7 +102,7 @@ class Cycle(QObject):
         self.__iface.mainWindow().menuBar().addMenu(self.__menu)
         # QgsGui.editorWidgetRegistry().registerWidget("Array", ArrayWidgetFactory())
         self.__project_loaded()
-
+        self.__create_docks()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -130,3 +130,7 @@ class Cycle(QObject):
             self.__toolbar = CycleToolbar(self.__log_manager)
             self.__iface.addToolBar(self.__toolbar)
             QgsProject.instance().customVariablesChanged.connect(self.__toolbar.variables_changed)
+
+    def __create_docks(self):
+        self.__iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.visu_results_dock())
+        self.__iface.mainWindow().tabifyDockWidget(self.__iface.mainWindow().findChildren(QDockWidget, "Browser")[0], self.visu_results_dock())
