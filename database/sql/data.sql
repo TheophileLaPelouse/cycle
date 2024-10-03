@@ -133,6 +133,7 @@ create table ___.results(
     detail_level integer, 
     formula varchar, 
     unknowns varchar[], 
+    result_ss_blocs real,
     unique(name, id, formula)
 ) ;
 

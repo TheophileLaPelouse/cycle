@@ -326,8 +326,6 @@ class Bloc:
                             sum_intrant[key] += intr[key]
                 
                 return sum_res, sum_intrant
-        # Dans l'idéal on pourrait dérécursivé la fonction avec des stack
-        # mais c'est pas si simple pour être sûr d'aller au bout (ça se fait quand même)
         sum_res, sum_intrant = rec(self)
         for key in sum_res : 
             if sum_res[key] is not None and sum_intrant[key] is not None : 

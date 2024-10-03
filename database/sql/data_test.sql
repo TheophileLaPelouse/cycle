@@ -57,15 +57,21 @@ update api.input_output set default_formulas = array_append(default_formulas, 'D
 insert into api.test_bloc(geom, model, name) values (st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 'bloc1');
 update api.test_bloc set q = 10, eh = 5 where id = 1  ;
 
--- insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model');
+-- select api.get_results_ss_bloc(1) ; 
+
+insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model');
 -- select name, sur_bloc, ss_blocs from api.test_bloc;
 
--- insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
+insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
+select name, sur_bloc, ss_blocs from api.test_bloc;
+-- delete from api.test_bloc where name = 'bloc1'
+
+update api.test_bloc set q = 10, eh = 11 where id = 2  ;
 
 -- -- select schemaname as schema,  sequencename as sequence, last_value from pg_sequences ;
--- insert into api.test_bloc (geom, model) values (st_geomfromtext('polygon((2 2, 2 3, 3 3, 3 2, 2 2))', 2154), 'test_model');
+insert into api.test_bloc (geom, model, eh) values (st_geomfromtext('polygon((2 2, 2 3, 3 3, 3 2, 2 2))', 2154), 'test_model', 12);
 -- select name, id from api.bloc ; 
--- insert into api.piptest_bloc(geom, model) values (st_geomfromtext('lineString(0.5 0.5, 2.5 2.5)', 2154), 'test_model');
+insert into api.piptest_bloc(geom, model, q) values (st_geomfromtext('lineString(0.5 0.5, 2.5 2.5)', 2154), 'test_model', 10);
 
 -- select * from api.link ; 
 -- insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((1 1, 1 2.8, 2.8 2.8, 2.8 1, 1 1))', 2154), 'test_model');
