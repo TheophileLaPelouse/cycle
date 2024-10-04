@@ -124,7 +124,7 @@ create table ___.bloc(
     unique (name, id, shape), 
     unique (id)
 );
-
+create index bloc_geomidx on ___.bloc using gist(geom_ref);
 
 create table ___.results(
     id integer references ___.bloc(id) on update cascade on delete cascade,
@@ -134,10 +134,30 @@ create table ___.results(
     formula varchar, 
     unknowns varchar[], 
     result_ss_blocs real,
+    co2_eq real,
     unique(name, id, formula)
 ) ;
 
--- create index bloc_geomidx on ___.bloc using gist(geom_ref);
+create or replace function ___.calculate_co2_eq() returns trigger as $$
+begin
+    case 
+    when new.name like 'ch4%' then
+        new.co2_eq := new.result_ss_blocs * 28; -- Multiplication par le PRG sur 100 ans 
+    when new.name like 'n2o%' then
+        new.co2_eq := new.result_ss_blocs * 265;
+    when new.name like 'co2%' then
+        new.co2_eq := new.result_ss_blocs;
+    end case;
+    return new;
+end;
+$$ language plpgsql;
+
+create trigger calculate_co2_eq_trigger
+before insert or update on ___.results
+for each row
+execute function ___.calculate_co2_eq();
+
+
 
 create table ___.link(
     -- Peut être que ça va changer mais pour l'instant un lien c'est juste un objet abstrait et tous les blocs sont des noueuds 

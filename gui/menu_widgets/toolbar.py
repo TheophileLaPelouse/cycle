@@ -6,7 +6,7 @@ import os
 import warnings
 from pathlib import Path
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction
 from qgis.utils import iface
 from qgis.core import QgsProject
@@ -34,6 +34,7 @@ def is_comitting() :
         return False
 
 class CycleToolbar(QToolBar):
+    model_updated = pyqtSignal(str)
     
     def __add_action_button(self, name, icon, action, togglable = False):
         action_button = QAction(QIcon(os.path.join(_icons_dir, icon)), tr(name), self)
@@ -70,6 +71,8 @@ class CycleToolbar(QToolBar):
         self.addWidget(QLabel(self.tr('Current model:')))
         self.addWidget(self.__model_menu)
 
+        # self.__model
+        
         self.variables_changed()
         self.__log_manager.notice(self.tr("toolbar created"))
 
@@ -88,7 +91,8 @@ class CycleToolbar(QToolBar):
 
     def __set_curent_model(self):
         QGisProjectManager.set_qgis_variable('current_model', self.sender().text() or '')
-
+        # self.model_updated.emit("")
+        
     def __add_bloc(self):
         if is_comitting() : 
             warnings.warn("You must save your edits before adding a bloc")

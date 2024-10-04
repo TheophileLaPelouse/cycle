@@ -59,6 +59,7 @@ class Cycle(QObject):
         self.__log_manager = LogManager(QGisLogger(self.__iface), "Cycle")
         self.__toolbar = None
         self.__menu = None
+        self.__dock_results = None
 
         self.__iface.projectRead.connect(self.__project_loaded)
         self.__iface.newProjectCreated.connect(self.__project_loaded)
@@ -128,9 +129,19 @@ class Cycle(QObject):
         if QGisProjectManager.is_cycle_project():
             set_service(QgsProject.instance().readEntry('cycle', 'service', 'cycle')[0] )
             self.__toolbar = CycleToolbar(self.__log_manager)
+            # self.__toolbar.model_updated.connect()
             self.__iface.addToolBar(self.__toolbar)
             QgsProject.instance().customVariablesChanged.connect(self.__toolbar.variables_changed)
 
     def __create_docks(self):
         self.__iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.visu_results_dock())
         self.__iface.mainWindow().tabifyDockWidget(self.__iface.mainWindow().findChildren(QDockWidget, "Browser")[0], self.visu_results_dock())
+        
+    def visu_results_dock(self):
+        from .gui.menu_widgets.resume_resultat import RecapResults
+        if self.__dock_results is None and QGisProjectManager.is_cycle_project(): 
+            self.__dock_results = RecapResults(None, QGisProjectManager.project_name(), self.__log_manager)
+            self.__dock_results.show()
+        return self.__dock_results
+            
+        

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1133</width>
+    <width>654</width>
     <height>861</height>
    </rect>
   </property>
@@ -47,78 +47,64 @@
            <height>711</height>
           </rect>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4" rowstretch="10,20,20,0,0">
+         <layout class="QGridLayout" name="gridLayout_4" rowstretch="10,0,0,0,0,0,0,0,0">
           <property name="verticalSpacing">
            <number>7</number>
           </property>
-          <item row="2" column="0">
-           <widget class="QFrame" name="histo">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
+          <item row="8" column="0" colspan="2">
+           <widget class="QTableWidget" name="table_recap">
+            <column>
+             <property name="text">
+              <string>Name</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Unknowns</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Exploitation (kgCO2eq/an)</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Construction (kgCO2eq)</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Detail level</string>
+             </property>
+            </column>
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="model_label">
             <property name="text">
              <string>TextLabel</string>
             </property>
            </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QTableWidget" name="tableWidget"/>
           </item>
           <item row="1" column="0">
-           <widget class="QFrame" name="frame">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+           <widget class="QWidget" name="pie_chart_e" native="true"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="recap_label">
+            <property name="text">
+             <string>Récapitulatif</string>
             </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <widget class="QWidget" name="gridLayoutWidget_2">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>421</width>
-               <height>191</height>
-              </rect>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_3">
-              <item row="0" column="0">
-               <widget class="QFrame" name="pie_chart_e">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QFrame" name="pie_chart_c">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
+          <item row="2" column="0" colspan="2">
+           <widget class="QWidget" name="bar_chart_e" native="true"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QWidget" name="pie_chart_c" native="true"/>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QWidget" name="bar_chart_c" native="true"/>
           </item>
          </layout>
         </widget>

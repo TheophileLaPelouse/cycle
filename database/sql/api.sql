@@ -812,20 +812,104 @@ select template.basic_view('formulas');
 -- select template.basic_view('results') ;
 
 create view api.results as
-select ___.results.id, model, jsonb_build_object(
+with ranked_results as (
+    select id, formula, name, detail_level, result_ss_blocs, co2_eq,
+           row_number() over (partition by id, name order by detail_level desc) as rank,
+           max(detail_level) over (partition by id) as max_detail_level
+    from ___.results
+    where formula is not null
+),
+in_use as (
+    select id, formula, name, detail_level, result_ss_blocs, co2_eq
+    from ranked_results
+    where (max_detail_level < 6 and rank = 1) or (max_detail_level = 6 and rank <= 2)
+),
+exploit as (select name, id, co2_eq from in_use where name like '%_e'),
+constr as (select name, id, co2_eq from in_use where name like '%_c')
+select ___.results.id, ___.bloc.name, model, jsonb_build_object(
     'data', jsonb_agg(
         jsonb_build_object(
             'name', ___.results.name,
             'formula', ___.results.formula,
-            'result', result_ss_blocs, 
+            'result', ___.results.result_ss_blocs,
+            'co2_eq', ___.results.co2_eq, 
             'detail', ___.results.detail_level, 
-            'unknown', unknowns)
+            'unknown', ___.results.unknowns,
+            'in use', case when ___.results.id = in_use.id and ___.results.name = in_use.name 
+            and ___.results.detail_level = in_use.detail_level then true else false end
         )
-    ) as res
+        )
+    ) as res, 
+    sum(exploit.co2_eq) as co2_eq_e, sum(constr.co2_eq) as co2_eq_c
 from ___.results
 join ___.bloc on ___.bloc.id = ___.results.id
-where formula is not null 
-group by ___.results.id, model;
+left join in_use on ___.results.id = in_use.id and 
+___.results.name = in_use.name and ___.results.detail_level = in_use.detail_level
+left join exploit on ___.results.id = exploit.id and ___.results.name = exploit.name
+left join constr on ___.results.id = constr.id and ___.results.name = constr.name
+where ___.results.formula is not null 
+group by ___.results.id, model, ___.bloc.name;
+
+create or replace function api.get_histo_data(p_model varchar, id_bloc integer default null)
+returns jsonb 
+language plpgsql
+as $$
+declare
+    query text;
+    res jsonb := '{}';
+    sur_blocs integer[];
+    names varchar[] := array['no2_c', 'no2_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
+    bloc_name varchar;
+    sum_values jsonb;
+    id_loop integer;
+    total_values jsonb;
+begin
+    if id_bloc is null then
+        select into sur_blocs array_agg(id) from ___.bloc where model = p_model and sur_bloc is null;
+    else 
+        select into sur_blocs array_agg(id) from ___.bloc where model = p_model and sur_bloc = id_bloc;
+    end if;
+
+    -- Loop through each bloc id
+    foreach id_loop in array sur_blocs loop
+        -- Get the bloc name
+        select into bloc_name name from ___.bloc where id = id_loop;
+
+        if bloc_name != 'link' or bloc_name != 'lien' then 
+            -- Calculate the sum of the values for the specified names
+            select into sum_values jsonb_build_object(
+                'no2_c', coalesce(sum(case when name = 'no2_c' then result_ss_blocs end), 0),
+                'no2_e', coalesce(sum(case when name = 'no2_e' then result_ss_blocs end), 0),
+                'ch4_c', coalesce(sum(case when name = 'ch4_c' then result_ss_blocs end), 0),
+                'ch4_e', coalesce(sum(case when name = 'ch4_e' then result_ss_blocs end), 0),
+                'co2_c', coalesce(sum(case when name = 'co2_c' then result_ss_blocs end), 0),
+                'co2_e', coalesce(sum(case when name = 'co2_e' then result_ss_blocs end), 0),
+                'co2_e_eq', coalesce(sum(case when name like '%_e' then co2_eq end), 0),
+                'co2_c_eq', coalesce(sum(case when name like '%_c' then co2_eq end), 0)
+            ) from ___.results where id = id_loop;
+
+            -- Add the result to the JSONB object
+            res := jsonb_set(res, array[bloc_name], sum_values, true);
+        end if;
+    end loop;
+
+    select into total_values jsonb_build_object(
+        'no2_c', coalesce(sum(case when name = 'no2_c' then result_ss_blocs end), 0),
+        'no2_e', coalesce(sum(case when name = 'no2_e' then result_ss_blocs end), 0),
+        'ch4_c', coalesce(sum(case when name = 'ch4_c' then result_ss_blocs end), 0),
+        'ch4_e', coalesce(sum(case when name = 'ch4_e' then result_ss_blocs end), 0),
+        'co2_c', coalesce(sum(case when name = 'co2_c' then result_ss_blocs end), 0),
+        'co2_e', coalesce(sum(case when name = 'co2_e' then result_ss_blocs end), 0),
+        'co2_e_eq', coalesce(sum(case when name like '%_e' then co2_eq end), 0),
+        'co2_c_eq', coalesce(sum(case when name like '%_c' then co2_eq end), 0)
+    ) from ___.results where id = any(sur_blocs);
+
+    -- Add the total values to the JSONB object
+    res := jsonb_set(res, array['total'], total_values, true);
+
+    return res;
+end;
+$$;
 ------------------------------------------------------------------------------------------------
 -- MODELS                                                                                     --
 ------------------------------------------------------------------------------------------------
@@ -1226,15 +1310,20 @@ returns void
 language plpgsql as
 $$
 declare 
-    pat varchar := '[\+\-\*\/\^\(\)]' ;
+    pat varchar := '[\+\-\*\/\^\(\)\>\<]' ;
     rightside text ; 
     operators varchar[] ;
     op varchar ;
     args varchar[] ;
     arg varchar ;
+    queries text[] := array['', '', '', '', '', '']::text[] ;
+    len integer ;
+    to_cast boolean[] := array[false, false, false, false, false]::boolean[] ;
+    idx integer ;
     query text ;
     val_arg real ;
     i integer ; 
+    j integer := 1 ;
     flag boolean := true ;
     result real ;
     notnowns varchar[] := array[]::varchar[] ; 
@@ -1244,13 +1333,16 @@ declare
 begin
     formul := replace(formula, ' ', '') ;
     -- raise notice 'formula = %', formul ;
-    rightside := split_part(formul, '=', 2) ;
-    select into operators array_agg(match[1]) from regexp_matches(rightside,  '(\s*[\+\-\*\/\^\(\)]\s*)', 'g') as match ;
-    -- raise notice 'operators = %', operators ;
-    select into args regexp_split_to_array(rightside, pat) ;
-    -- raise notice 'args = %', args ;
-
+    rightside := '('||split_part(formul, '=', 2)||')' ;
+    -- On met entre parenthèse parce que le code parcours la formule en fonction des parenthèses
+    select into operators array_agg(match[1]) from regexp_matches(rightside,  '(\s*[\+\-\*\/\^\(\)\>\<]\s*)', 'g') as match ;
+    raise notice 'operators = %', operators ;
+    raise notice 'rightside = %', rightside ;
+    select into args array_remove(regexp_split_to_array(rightside, pat), '') ;
+    raise notice 'args = %', args ;
+    idx := 1 ;
     query := '' ;
+    len := array_length(queries, 1) ;
     select into notnowns array_agg(name) from inp_out where val is null and name in (select unnest(args)) ;
     -- raise notice 'unknowns = %', notnowns ;
     if array_length(notnowns, 1) > 0 then
@@ -1260,16 +1352,41 @@ begin
             insert into ___.results(id, name, detail_level, formula, unknowns) values (id_bloc, to_calc, detail_level, formul, notnowns) ;
         end if ; 
     else 
-        for i in 1..array_length(args, 1) loop
-            select into val_arg val from inp_out where name = args[i] ;
-            if not i=1 then 
-                op := operators[i-1] ; 
-            else 
-                op := '' ; 
-            end if ;
-            query := query||op||val_arg ;
+        for i in 1..array_length(operators, 1) loop
+            raise notice 'i = %, j = %', i, j ;
+            raise notice 'query = %', query ;
+            raise notice 'queries = %', queries ;
+            select into val_arg val from inp_out where name = args[j] ;
+            op = operators[i] ;
+            case 
+            when op = '(' then 
+                if idx > len then 
+                    queries := array_append(queries, '') ;
+                    to_cast := array_append(to_cast, false) ;
+                end if ; 
+                queries[idx] := query ; 
+                query := op||val_arg ;
+                j := j + 1 ;
+                idx := idx + 1 ;
+            when op = '>' or op = '<' then 
+                query := query||op||val_arg ; 
+                j := j + 1 ;
+                to_cast[idx] := true ;
+            when op = ')' then
+                query := query||op ;
+                if to_cast[idx] then 
+                    query := query||'::real' ;
+                    to_cast[idx] := false ;
+                end if ;
+                idx := idx - 1 ;
+                query := queries[idx]||query ;
+            else
+                
+                query := query||op||val_arg ;
+                j := j + 1 ;
+            end case ;
         end loop ;
-        -- raise notice 'query = %', query ;
+        raise notice 'query = %', query ;
         execute 'select '||query into result ;
         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then 
             update ___.results set val = result, unknowns = null where name = to_calc and ___.results.formula = formul and id = id_bloc ;
