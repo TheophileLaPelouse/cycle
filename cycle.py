@@ -63,7 +63,7 @@ class Cycle(QObject):
 
         self.__iface.projectRead.connect(self.__project_loaded)
         self.__iface.newProjectCreated.connect(self.__project_loaded)
-
+    
         # initialize locale
         locale = QgsSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -103,7 +103,9 @@ class Cycle(QObject):
         self.__iface.mainWindow().menuBar().addMenu(self.__menu)
         # QgsGui.editorWidgetRegistry().registerWidget("Array", ArrayWidgetFactory())
         self.__project_loaded()
-        self.__create_docks()
+        self.__edit_action = self.__iface.mainWindow().findChild(QAction, "mActionToggleEditing")
+        self.__edit_action.triggered.connect(self.__toggle_edit_mode)
+        # self.__create_docks()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -133,6 +135,17 @@ class Cycle(QObject):
             self.__iface.addToolBar(self.__toolbar)
             QgsProject.instance().customVariablesChanged.connect(self.__toolbar.variables_changed)
 
+    def __toggle_edit_mode(self, checked):
+        if not checked :
+            self.__update_docks()
+    
+    def __update_docks(self):
+        if self.__dock_results is None : 
+            self.__create_docks()
+        elif QGisProjectManager.is_cycle_project():
+            self.__dock_results.update_model_list()
+            
+    
     def __create_docks(self):
         self.__iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.visu_results_dock())
         self.__iface.mainWindow().tabifyDockWidget(self.__iface.mainWindow().findChildren(QDockWidget, "Browser")[0], self.visu_results_dock())
@@ -140,7 +153,9 @@ class Cycle(QObject):
     def visu_results_dock(self):
         from .gui.menu_widgets.resume_resultat import RecapResults
         if self.__dock_results is None and QGisProjectManager.is_cycle_project(): 
-            self.__dock_results = RecapResults(None, QGisProjectManager.project_name(), self.__log_manager)
+            model = QgsProject.instance().customVariables().get('current_model')
+            print("bonjour", model)
+            self.__dock_results = RecapResults(model, Project(QGisProjectManager.project_name(), self.__log_manager))
             self.__dock_results.show()
         return self.__dock_results
             

@@ -858,7 +858,7 @@ declare
     query text;
     res jsonb := '{}';
     sur_blocs integer[];
-    names varchar[] := array['no2_c', 'no2_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
+    names varchar[] := array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
     bloc_name varchar;
     sum_values jsonb;
     id_loop integer;
@@ -871,6 +871,10 @@ begin
     end if;
 
     -- Loop through each bloc id
+    if array_length(sur_blocs, 1) = 0 then
+        return '{"total": {"ch4_c": 0, "ch4_e": 0, "co2_c": 0, "co2_e": 0, "n2o_c": 0, "n2o_e": 0, "co2_eq_c": 0, "co2_eq_e": 0}';
+    end if;
+
     foreach id_loop in array sur_blocs loop
         -- Get the bloc name
         select into bloc_name name from ___.bloc where id = id_loop;
@@ -878,14 +882,14 @@ begin
         if bloc_name != 'link' or bloc_name != 'lien' then 
             -- Calculate the sum of the values for the specified names
             select into sum_values jsonb_build_object(
-                'no2_c', coalesce(sum(case when name = 'no2_c' then result_ss_blocs end), 0),
-                'no2_e', coalesce(sum(case when name = 'no2_e' then result_ss_blocs end), 0),
+                'n2o_c', coalesce(sum(case when name = 'n2o_c' then result_ss_blocs end), 0),
+                'n2o_e', coalesce(sum(case when name = 'n2o_e' then result_ss_blocs end), 0),
                 'ch4_c', coalesce(sum(case when name = 'ch4_c' then result_ss_blocs end), 0),
                 'ch4_e', coalesce(sum(case when name = 'ch4_e' then result_ss_blocs end), 0),
                 'co2_c', coalesce(sum(case when name = 'co2_c' then result_ss_blocs end), 0),
                 'co2_e', coalesce(sum(case when name = 'co2_e' then result_ss_blocs end), 0),
-                'co2_e_eq', coalesce(sum(case when name like '%_e' then co2_eq end), 0),
-                'co2_c_eq', coalesce(sum(case when name like '%_c' then co2_eq end), 0)
+                'co2_eq_e', coalesce(sum(case when name like '%_e' then co2_eq end), 0),
+                'co2_eq_c', coalesce(sum(case when name like '%_c' then co2_eq end), 0)
             ) from ___.results where id = id_loop;
 
             -- Add the result to the JSONB object
@@ -894,14 +898,14 @@ begin
     end loop;
 
     select into total_values jsonb_build_object(
-        'no2_c', coalesce(sum(case when name = 'no2_c' then result_ss_blocs end), 0),
-        'no2_e', coalesce(sum(case when name = 'no2_e' then result_ss_blocs end), 0),
+        'n2o_c', coalesce(sum(case when name = 'n2o_c' then result_ss_blocs end), 0),
+        'n2o_e', coalesce(sum(case when name = 'n2o_e' then result_ss_blocs end), 0),
         'ch4_c', coalesce(sum(case when name = 'ch4_c' then result_ss_blocs end), 0),
         'ch4_e', coalesce(sum(case when name = 'ch4_e' then result_ss_blocs end), 0),
         'co2_c', coalesce(sum(case when name = 'co2_c' then result_ss_blocs end), 0),
         'co2_e', coalesce(sum(case when name = 'co2_e' then result_ss_blocs end), 0),
-        'co2_e_eq', coalesce(sum(case when name like '%_e' then co2_eq end), 0),
-        'co2_c_eq', coalesce(sum(case when name like '%_c' then co2_eq end), 0)
+        'co2_eq_e', coalesce(sum(case when name like '%_e' then co2_eq end), 0),
+        'co2_eq_c', coalesce(sum(case when name like '%_c' then co2_eq end), 0)
     ) from ___.results where id = any(sur_blocs);
 
     -- Add the total values to the JSONB object
@@ -1356,7 +1360,11 @@ begin
             raise notice 'i = %, j = %', i, j ;
             raise notice 'query = %', query ;
             raise notice 'queries = %', queries ;
-            select into val_arg val from inp_out where name = args[j] ;
+            if regexp_matches(args[j], '^[0-9]+(\.[0-9]+)?$') is not null then 
+                val_arg := args[j]::real ;
+            else
+                select into val_arg val from inp_out where name = args[j] ;
+            end if ; 
             op = operators[i] ;
             case 
             when op = '(' then 
@@ -1447,7 +1455,7 @@ begin
     
     with bloc_formula as (select formula, detail_level from api.formulas where name in (select unnest(default_formulas) from api.input_output where b_type = b_typ))
     insert into bilan(leftside, calc_with, formula, detail_level) 
-    select split_part(formula, '=', 1), api.read_formula(split_part(formula, '=', 2), colnames), formula, detail_level from bloc_formula ;
+    select trim(both ' ' from split_part(formula, '=', 1)), api.read_formula(split_part(formula, '=', 2), colnames), formula, detail_level from bloc_formula ;
 
     create temp table known_data(leftside varchar, known boolean default false) on commit drop;
     insert into known_data(leftside, known) select name, val is not null from inp_out ;

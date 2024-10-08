@@ -27,12 +27,15 @@ _plugin_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir,
 _icons_dir = os.path.join(_plugin_dir, "ressources", "svg")
 
 def is_comitting() : 
-    layer = iface.activeLayer()
-    if layer and layer.editBuffer() : 
-        return layer.editBuffer().isModified()
-    else :
-        return False
-
+    project = QgsProject.instance()
+    layers = project.mapLayers()
+    flag = False 
+    for layer in layers.values() :
+        if layer and layer.editBuffer() : 
+            flag = layer.editBuffer().isModified()
+            if flag :
+                break
+    return flag
 class CycleToolbar(QToolBar):
     model_updated = pyqtSignal(str)
     

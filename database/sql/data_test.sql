@@ -50,7 +50,7 @@ insert into ___.model(name) values ('test_model');
 -- select st_astext(api.make_polygon(st_geomfromtext('point(0 0)', 2154), 'Point'::___.geo_type)) ;
 -- select st_astext(api.make_polygon(st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'Polygon'::___.geo_type)) ;
 -- select st_within(api.make_polygon(st_geomfromtext('point(0 0)', 2154), 'Point'::___.geo_type), api.make_polygon(st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'Polygon'::___.geo_type)) ;
-select api.add_new_formula('Delamgie', 'co2_e=eh - q', 2, 'C''est vraiment de la magie') ;
+select api.add_new_formula('Delamgie', 'co2_e=eh - q + 20', 2, 'C''est vraiment de la magie') ;
 
 update api.input_output set default_formulas = array_append(default_formulas, 'Delamgie') where b_type = 'test' ;
 
