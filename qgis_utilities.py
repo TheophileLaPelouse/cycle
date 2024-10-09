@@ -47,7 +47,7 @@ if QgsApplication.prefixPath() == '':
 _svg_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), 'ressources', 'svg'))
 _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
-
+_columns_to_hide = set(['shape', 'formula', 'b_type', 'geom_ref'])
 Alias = {'ngl' : 'NGL (kgNGL/an)', 'oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'milieu' : 'Milieu', 
          'q' : 'Débit (m3/s)', 'eh' : 'Equivalent Habitants', 'tbhaut' : 'Tonne de boue en amont (t/an)', 'eh_fe' : ' ', 'w' : 'Welec (kWh/an)',
          'dco_elim' : 'DCO éliminée (kgDCO/an)'}
@@ -215,7 +215,7 @@ class QGisProjectManager(QObject):
             
             
             layer_name, sch, tbl, key = bloc
-            uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"''' + (' (geom)' if (grp != tr('Settings') and layer_name!=tr('Measure')) else '')
+            uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"''' + (' (geom)' if grp != tr('Propriété') and grp != tr('Formules') else '')
             print(uri)
             if not len(project.mapLayersByName(layer_name)):
                 layer = QgsVectorLayer(uri, layer_name, "postgres")
@@ -229,7 +229,6 @@ class QGisProjectManager(QObject):
                 layer = project.mapLayersByName(layer_name)[0]
                 if uri != layer.dataProvider().dataSourceUri():
                     layer.setDataSource(uri, layer_name, "postgres")
-
         # add table layer and their relations
         try :
             properties = layertree['Properties']
@@ -245,16 +244,17 @@ class QGisProjectManager(QObject):
         print(properties)
         for field in properties : 
             if not field.endswith('__ref') and properties.get(field+'__ref') :
-                prop_layers = project.mapLayersByName(properties[field][0])
+                prop_layers = project.mapLayersByName(Alias[properties[field][0]])
                 if not prop_layers:
                     layer_name, sch, tbl, key = properties[field]
+                    layer_name = Alias[layer_name]
                     uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
                     prop_layer = QgsVectorLayer(uri, layer_name, "postgres")
                     prop_layer.setDisplayExpression('val')
                     project.addMapLayer(prop_layer, False)
                     
                     root = project.layerTreeRoot()
-                    g = root.findGroup('Properties') or root.insertGroup(-1, 'Properties')
+                    g = root.findGroup(tr('Propriétés')) or root.insertGroup(-1, tr('Propriétés'))
                     g.addLayer(prop_layer)
                     if not prop_layer.isValid():
                         raise RuntimeError(f'layer {layer_name} is invalid')
@@ -275,8 +275,8 @@ class QGisProjectManager(QObject):
                 assert(relation.isValid())
                 project.relationManager().addRelation(relation)
         
-        g = root.findGroup(tr('Formulas')) or root.insertGroup(-1, tr('Formulas'))
-        layer_name, sch, tbl, key = tr('Bloc recap'), 'api', 'input_output', 'b_type'
+        g = root.findGroup(tr('Formules')) or root.insertGroup(-1, tr('Formules'))
+        layer_name, sch, tbl, key = tr('Bloc recapitulatif'), 'api', 'input_output', 'b_type'
         if not len(project.mapLayersByName(layer_name)):
             uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
             layer = QgsVectorLayer(uri, layer_name, "postgres")
@@ -290,7 +290,7 @@ class QGisProjectManager(QObject):
                 c+=1
             layer.setEditFormConfig(config)
         
-        layer_name, sch, tbl, key = tr('Formulas'), 'api', 'formulas', 'id'
+        layer_name, sch, tbl, key = tr('Formules'), 'api', 'formulas', 'id'
         if not len(project.mapLayersByName(layer_name)):
             uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
             layer = QgsVectorLayer(uri, layer_name, "postgres")
@@ -306,7 +306,18 @@ class QGisProjectManager(QObject):
         
         QGisProjectManager.load_qml(project, project_filename)
         project.write()
+    
+    @staticmethod
+    def hide_columns(layer, columns) :
+        config = layer.attributeTableConfig()
+        cols = config.columns()
+        for col in cols : 
+            if col.name in columns :
+                col.hidden = True
+        config.setColumns(cols)
+        layer.setAttributeTableConfig(config)
         
+    
     @staticmethod
     def load_qml(project, project_filename):
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
@@ -323,6 +334,7 @@ class QGisProjectManager(QObject):
                     qml = os.path.join(_qml_dir, qml_basename)
                 print('founded qml', qml)
                 layer.loadNamedStyle(qml)
+                QGisProjectManager.hide_columns(layer, _columns_to_hide)  
     
     @staticmethod
     def save_qml2ressource(project, layertree) : 
@@ -406,7 +418,7 @@ class QGisProjectManager(QObject):
                                         
                                         # default value
                                         defval = QgsDefaultValue()
-                                        prop_layer = project.mapLayersByName(val)[0]
+                                        prop_layer = project.mapLayersByName(Alias[val])[0]
                                         default_fe = layer.defaultValueDefinition(fe_idx)
                                         default_fe = default_fe.expression()
                                         #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"

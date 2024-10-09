@@ -705,15 +705,21 @@ begin
         where name = formula_name;
 -- operators = ['+', '-', '*', '/', '^', '(', ')']
 -- pat = '['+re.escape(''.join(operators))+']'
-        select array_agg(trim(both ' ' from elem))
+        select array_agg(distinct trim(both ' ' from elem))
         into f_inputs
         from unnest(
             regexp_split_to_array(
                 regexp_replace(f, '^[^=]*=', ''), 
-                '[\+\-\*\/\^\(\)]'
+                '[\+\-\*\/\^\(\)\>\<]'
             )
         ) as elem;
-
+    -- raise notice 'f_inputs = %', f_inputs;
+        f_inputs := array_remove(f_inputs, '');
+        f_inputs := array(
+            select elem from unnest(f_inputs) as elem
+            where not (elem ~ '^[0-9]+$')
+        );
+        -- raise notice 'f_inputs = %', f_inputs;
         -- Update input_output entrees (donc si on ajoute ou change une formule et que ça rajoute des valeurs ce ne sera pas des sorties (ce qui fait sens en vrai))
         with old_inputs as (
             select inputs
@@ -1338,7 +1344,7 @@ declare
     tac timestamp ;
 begin
     formul := replace(formula, ' ', '') ;
-    -- raise notice 'formula = %', formul ;
+    raise notice 'formula = %', formul ;
     rightside := '('||split_part(formul, '=', 2)||')' ;
     -- On met entre parenthèse parce que le code parcours la formule en fonction des parenthèses
     select into operators array_agg(match[1]) from regexp_matches(rightside,  '(\s*[\+\-\*\/\^\(\)\>\<]\s*)', 'g') as match ;
@@ -1359,9 +1365,10 @@ begin
         end if ; 
     else 
         for i in 1..array_length(operators, 1) loop
-            raise notice 'i = %, j = %', i, j ;
             raise notice 'query = %', query ;
             raise notice 'queries = %', queries ;
+            raise notice 'i = %, j = %, op = %, arg = %', i, j, operators[i], args[j] ;
+            
             if regexp_matches(args[j], '^[0-9]+(\.[0-9]+)?$') is not null then 
                 val_arg := args[j]::real ;
             else
@@ -1378,15 +1385,19 @@ begin
                 query := op||val_arg ;
                 j := j + 1 ;
                 idx := idx + 1 ;
+            when operators[i+1] = '(' then 
+                query := query||op ;
             when op = '>' or op = '<' then 
                 query := query||op||val_arg ; 
                 j := j + 1 ;
                 to_cast[idx] := true ;
             when op = ')' then
+                raise notice 'query above here = %', query ;
                 query := query||op ;
                 if to_cast[idx] then 
-                    query := query||'::real' ;
+                    query := query||'::int::real' ; -- boolean to real
                     to_cast[idx] := false ;
+                raise notice 'query here = %', query ;
                 end if ;
                 idx := idx - 1 ;
                 query := queries[idx]||query ;
@@ -1459,6 +1470,7 @@ begin
     insert into bilan(leftside, calc_with, formula, detail_level) 
     select trim(both ' ' from split_part(formula, '=', 1)), api.read_formula(split_part(formula, '=', 2), colnames), formula, detail_level from bloc_formula ;
 
+
     create temp table known_data(leftside varchar, known boolean default false) on commit drop;
     insert into known_data(leftside, known) select name, val is not null from inp_out ;
 
@@ -1490,7 +1502,7 @@ begin
             to_calc := api.pop('treatment_lifo', true) ;
             for f, detail in (select formula, detail_level from bilan where leftside = to_calc) loop
                 perform api.calculate_formula(f, id_bloc, detail, to_calc) ;
-                -- raise notice 'result = %', result ;
+                raise notice 'result = %', result ;
                 -- insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail, result, f) ;
             end loop ;
             with max_detail as (select max(detail_level) as max_detail from ___.results where name = to_calc and id = id_bloc)

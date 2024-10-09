@@ -50,8 +50,12 @@ class RecapResults(QDockWidget) :
     
     def show_results(self, index_change, model_name = None) : 
         print(index_change)
+        if index_change == 0 : 
+            return
         if model_name is None :
             model_name = self.model_combo.currentText()
+        if model_name == '' :
+            return    
         print("wut ?")
         print('model', model_name)
         results = self.__project.fetchall(f"select name, res, co2_eq_e, co2_eq_c from api.results where model = '{model_name}'")

@@ -50,7 +50,7 @@ class GraphWidget(QWidget):
         # print("pie_color", list(color.values()))
         self.__ax.pie(data, autopct=autopct_format(data), colors=list(color.values()))
         self.fig.tight_layout(rect= [-0.05, -0.05, 1.05, 1.05])
-        self.__ax.legend(labels, loc='upper right', bbox_to_anchor=(1.2, 1))
+        self.__ax.legend(labels, loc='upper right', bbox_to_anchor=(1.1, 1))
         # self.__ax.set_title(title)
         self.__render()
         
