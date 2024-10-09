@@ -850,12 +850,13 @@ left join constr on ___.results.id = constr.id and ___.results.name = constr.nam
 where ___.results.formula is not null 
 group by ___.results.id, model, ___.bloc.name;
 
-create or replace function api.get_histo_data(p_model varchar, id_bloc integer default null)
+create or replace function api.get_histo_data(p_model varchar, bloc_name varchar default null)
 returns jsonb 
 language plpgsql
 as $$
 declare
     query text;
+    id_bloc integer;
     res jsonb := '{}';
     sur_blocs integer[];
     names varchar[] := array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
@@ -864,6 +865,7 @@ declare
     id_loop integer;
     total_values jsonb;
 begin
+    select into id_bloc id from api.bloc where name = 'bloc' limit 1; -- limit 1 normally useless
     if id_bloc is null then
         select into sur_blocs array_agg(id) from ___.bloc where model = p_model and sur_bloc is null;
     else 
@@ -871,7 +873,7 @@ begin
     end if;
 
     -- Loop through each bloc id
-    if array_length(sur_blocs, 1) = 0 then
+    if array_length(sur_blocs, 1) = 0 or sur_blocs is null then
         return '{"total": {"ch4_c": 0, "ch4_e": 0, "co2_c": 0, "co2_e": 0, "n2o_c": 0, "n2o_e": 0, "co2_eq_c": 0, "co2_eq_e": 0}';
     end if;
 

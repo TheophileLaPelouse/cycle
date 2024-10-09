@@ -11,6 +11,7 @@ from qgis.PyQt.QtWidgets import QMenu, QFileDialog, QMessageBox, QInputDialog
 from ...project import Project
 from ...qgis_utilities import QGisProjectManager
 from .project_manager import ProjectManager
+from .results import AllResults
 from .new_project_dialog import NewProjectDialog
 from .new_model_dialog import NewModelDialog
 #from .scenario_manager import ScenarioManager pour plus tard les scénarios
@@ -25,6 +26,7 @@ class CycleMenu(QMenu):
         self.setIcon(QIcon(os.path.join(_current_dir, '..', 'ressources', 'images', 'cycle_logo.png')))
         self.aboutToShow.connect(self.__refresh)
         self.pm = None
+        self.res_widget = None
 
     def __refresh(self):
         self.clear()
@@ -52,7 +54,7 @@ class CycleMenu(QMenu):
 
             # '''Creates the scenario menu'''
             # self.addAction(self.tr("&Scenarios")).triggered.connect(self.__scenario_manager) pour plus tard
-
+        self.addAction(self.tr("Show results")).triggered.connect(self.__show_results)
         self.addAction(self.tr("Save custom layer styles")).triggered.connect(self.__save_layer_styles)
         self.addAction(self.tr("&Help")).triggered.connect(self.__help)
         self.addAction(self.tr("About")).triggered.connect(self.__about)
@@ -95,7 +97,12 @@ class CycleMenu(QMenu):
             project = Project(QGisProjectManager.project_name(), self.__log_manager)
             project.delete_model(current_model)
 
-
+    def __show_results(self):
+        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        self.res_widget and self.res_widget.setParent(None)
+        self.res_widget = AllResults(project, self.parent())
+        self.res_widget.show()
+        
     # def __scenario_manager(self):
     #     project = Project(QGisProjectManager.project_name(), self.__log_manager)
     #     ScenarioManager(project).exec_()
