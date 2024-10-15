@@ -146,13 +146,14 @@ class QGisProjectManager(QObject):
         cv[var_name] = value
         QgsProject.instance().setCustomVariables(cv)
         if var_name=='current_model':
-            QGisProjectManager.refresh_layers()
+            QGisProjectManager.refresh_layers(value)
 
     @staticmethod
-    def refresh_layers():
+    def refresh_layers(model_name):
         if iface is not None:
             for layer in iface.mapCanvas().layers():
-                layer.triggerRepaint()
+                layer.setSubsetString(f"model = '{model_name}'")
+                
 
     # @staticmethod
     # def get_layer(table):
@@ -241,8 +242,11 @@ class QGisProjectManager(QObject):
         for key, val in properties_custom.items():
             if key not in properties:
                 properties[key] = val
+            elif key.endswith('__ref') :
+                properties[key] += val
         print(properties)
         for field in properties : 
+            print('YOOOO', field)
             if not field.endswith('__ref') and properties.get(field+'__ref') :
                 prop_layers = project.mapLayersByName(Alias[properties[field][0]])
                 if not prop_layers:
@@ -260,20 +264,22 @@ class QGisProjectManager(QObject):
                         raise RuntimeError(f'layer {layer_name} is invalid')
                 else : 
                     prop_layer = prop_layers[0]
-                name, referencedField, referencingLayer, referencingField = properties[field+'__ref']
-                referencedLayer = prop_layer.id()
-                print(referencingLayer)
-                referencingLayer = project.mapLayersByName(referencingLayer)[0].id()
-                relation = QgsRelation(QgsRelationContext(project))
-                relation.setName(name)
-                relation.setReferencedLayer(referencedLayer)
-                relation.setReferencingLayer(referencingLayer)
-                relation.addFieldPair(referencingField, referencedField)
-                relation.setStrength(QgsRelation.Association)
-                relation.updateRelationStatus()
-                relation.generateId()
-                assert(relation.isValid())
-                project.relationManager().addRelation(relation)
+                refs = properties[field+'__ref']
+                for ref in refs : 
+                    name, referencedField, referencingLayer, referencingField = ref
+                    referencedLayer = prop_layer.id()
+                    print(referencingLayer)
+                    referencingLayer = project.mapLayersByName(referencingLayer)[0].id()
+                    relation = QgsRelation(QgsRelationContext(project))
+                    relation.setName(name)
+                    relation.setReferencedLayer(referencedLayer)
+                    relation.setReferencingLayer(referencingLayer)
+                    relation.addFieldPair(referencingField, referencedField)
+                    relation.setStrength(QgsRelation.Association)
+                    relation.updateRelationStatus()
+                    relation.generateId()
+                    assert(relation.isValid())
+                    project.relationManager().addRelation(relation)
         
         g = root.findGroup(tr('Formules')) or root.insertGroup(-1, tr('Formules'))
         layer_name, sch, tbl, key = tr('Bloc recapitulatif'), 'api', 'input_output', 'b_type'
@@ -332,7 +338,7 @@ class QGisProjectManager(QObject):
                 if not os.path.exists(qml):
                     print('qml not found', qml)
                     qml = os.path.join(_qml_dir, qml_basename)
-                print('founded qml', qml)
+                
                 layer.loadNamedStyle(qml)
                 QGisProjectManager.hide_columns(layer, _columns_to_hide)  
     
@@ -372,7 +378,7 @@ class QGisProjectManager(QObject):
                 if not os.path.exists(qml):
                     print('qml not found', qml)
                     qml = os.path.join(_qml_dir, qml_basename)
-            
+                print('founded qml', qml)
                 if tbl.endswith('_bloc') : 
                     b_types = tbl[:-5]
                     if f_details.get(b_types) :

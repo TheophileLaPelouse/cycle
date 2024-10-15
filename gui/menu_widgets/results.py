@@ -37,6 +37,12 @@ class AllResults(QDialog) :
         self.resume2.setVisible(False)
         
         self.show_result_button.clicked.connect(self.show_results)
+        
+        self.close_button.clicked.connect(self.close)
+    
+    def close(self) :
+        # Y'aura peut être d'autres trucs ?
+        self.accept()
 
     def update_blocs(self, index) : 
         model = getattr(self, f'combo_mod{index}').currentText()

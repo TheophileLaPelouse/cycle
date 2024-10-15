@@ -9,7 +9,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction
 from qgis.utils import iface
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsVectorLayer
 from ...project import Project
 from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
@@ -31,7 +31,7 @@ def is_comitting() :
     layers = project.mapLayers()
     flag = False 
     for layer in layers.values() :
-        if layer and layer.editBuffer() : 
+        if layer and isinstance(layer, QgsVectorLayer) and layer.editBuffer() : 
             flag = layer.editBuffer().isModified()
             if flag :
                 break
@@ -156,6 +156,20 @@ class CycleToolbar(QToolBar):
         self.__print_sur_blocs_button = self.__add_action_button(tr('Print sur_blocs'), 'sur_blocs.svg', self.__print_sur_blocs)
         self.__print_links_button = self.__add_action_button(tr('Print links'), 'links.svg', self.__print_links)
         self.__from_custom_to_solid_button = self.__add_action_button(tr('From custom to solid'), 'from_custom_to_solid.svg', self.__from_custom_to_solid)
+        self.__save_properties_button = self.__add_action_button(tr('Save properties'), 'save_properties.svg', self.__save_properties)
+    
+    def __save_properties(self) : 
+        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        custom_sql = os.path.join(project.directory, 'custom_blocs.sql') 
+        type_tables = project.fetchall("select table_name from information_schema.tables where table_schema = 'api' and table_name like '%_type_table';")
+        for table in type_tables :
+            table = table[0]
+            val_descr = project.fetchall(f"select * from api.{table};") #val, fe, description
+            with open(custom_sql, 'a') as f :
+                for val in val_descr :
+                    f.write(f"update api.{table} set description = '{val[2] if val[2] else ''}', fe = {val[1]} where val = '{val[0]}';\n")
+        print("done")
+        
         
     def __from_custom_to_solid(self) :
         project = Project(QGisProjectManager.project_name(), self.__log_manager)

@@ -88,15 +88,6 @@ insert into ___.input_output values ('flottateur', array['dbo5_e', 'mes_e', 'tbh
 
 create sequence ___.flottateur_bloc_name_seq ;     
 
-create type ___.eh_type as enum ('< 10k', 'entre 10k et 100k', '> 100k');
-
-create table ___.eh_type_table(val ___.eh_type primary key, FE real, description text);
-insert into ___.eh_type_table(val) values ('< 10k') ;
-insert into ___.eh_type_table(val) values ('entre 10k et 100k') ;
-insert into ___.eh_type_table(val) values ('> 100k') ;
-
-select template.basic_view('eh_type_table') ;
-
 create table ___.flottateur_bloc(
 id integer primary key,
 shape ___.geo_type not null default 'Point',
@@ -107,7 +98,7 @@ formula_name varchar[] default array['flottateur construction boue amont']::varc
 dbo5_e real,
 mes_e real,
 tbhaut real,
-eh ___.eh_type not null default '< 10k' references ___.eh_type_table(val),
+eh real,
 dbo5_s real,
 mes_s real,
 tbhaut_s real,
@@ -124,8 +115,8 @@ create table ___.flottateur_bloc_config(
 ) ; 
 
 select api.add_new_bloc('flottateur', 'bloc', 'Point' 
-    ,additional_columns => '{eh_type_table.FE as eh_FE, eh_type_table.description as eh_description}'
-    ,additional_join => 'left join ___.eh_type_table on eh_type_table.val = c.eh ') ;
+
+) ;
 
 select api.add_new_formula('flottateur construction boue amont'::varchar, 'co2_c = eh*tbhaut'::varchar, 3, ''::text) ;
 
@@ -387,6 +378,11 @@ select api.add_new_bloc('lien', 'bloc', 'LineString'
     
     ) ;
 
+
+update api.oxi_type_table set description = 'kgNO2/kgNGL pour un milieu bien oxygéné (concentration en O2 supérieu à 3 mg/L)', fe = 3.03 where val = 'bien oxygéné';
+update api.oxi_type_table set description = 'kgNO2/kgNGL pour un milieu peu oxygéné (concentration en O2 entre 0.1 et 3 mg/L)', fe = 1.46 where val = 'peu oxygéné';
+update api.milieu_type_table set description = '', fe = 0.2682 where val = 'réserve,lac, estuaire';
+update api.milieu_type_table set description = '', fe = 1.4304 where val = 'autres';
 
 
 

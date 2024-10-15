@@ -1,0 +1,17 @@
+<svg width="1280" height="720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" overflow="hidden">
+  <defs>
+    <image width="8" height="9" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJBAMAAAD9fXAdAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAVUExURQAAAOoVIOcQKOcSJOcSJOgSJOYTI9MJ8WoAAAAHdFJOUwAYILfjOFAs1bB/AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGElEQVQY02NAB4wKQILZAUiwJqDKMDAAABAoAMovkfDsAAAAAElFTkSuQmCC" preserveAspectRatio="none" id="img0"></image>
+  </defs>
+  <g>
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <path d="M260.5 423C260.5 410.574 333.702 400.5 424 400.5 514.299 400.5 587.5 410.574 587.5 423 587.5 435.426 514.299 445.5 424 445.5 333.702 445.5 260.5 435.426 260.5 423Z" stroke="#000000" stroke-width="1.32283" stroke-miterlimit="8" fill="#000000" fill-rule="evenodd" fill-opacity="0.0509804"/>
+    <path d="M262.5 581C262.5 568.574 335.702 558.5 426 558.5 516.299 558.5 589.5 568.574 589.5 581 589.5 593.426 516.299 603.5 426 603.5 335.702 603.5 262.5 593.426 262.5 581Z" stroke="#000000" stroke-width="1.32283" stroke-miterlimit="8" fill="#000000" fill-rule="evenodd" fill-opacity="0.0509804"/>
+    <path d="M587 423L589.284 580.612" stroke="#156082" stroke-width="2" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/>
+    <path d="M260 423L262.285 580.612" stroke="#156082" stroke-width="2" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/>
+    <path d="M260.5 480C260.5 467.574 333.702 457.5 424 457.5C514.299 457.5 587.5 467.574 587.5 480C587.5 492.426 514.299 502.5 424 502.5C333.702 502.5 260.5 492.426 260.5 480Z" stroke="#000000" stroke-width="1.32283" stroke-miterlimit="8" fill="#000000" fill-rule="evenodd" fill-opacity="0.0509804"/>
+    <use width="100%" height="100%" xlink:href="#img0" fill="none" transform="translate(621,119)"></use>
+    <!-- Partie basse remplie d'eau -->
+    <path d="M262.5,581 L262,720 L590,720 L590,581 M262,581 C262" fill="#87CEEB" stroke="none"/>
+  </g>
+</svg>
+

@@ -250,6 +250,8 @@ class EditInputOutput(QDialog) :
                 query = f"\nselect api.insert_inp_out('{b_type}', '{key}', '{self.output_i[key]}', '{self.default_values.get(key, 'null')}', 'remove', 'output') ;"
         print(query)
         print(self.default_values)
+        
+        query = f"drop view if exists api.{b_type}_bloc ;\n" + query
         self.__project.execute(query)
         
         
@@ -274,7 +276,7 @@ class EditInputOutput(QDialog) :
                 if line.startswith(f"select api.add_new_bloc('{b_type}'") : 
                     bloc_view = '\n'.join(lines[k:k+3])
                     break
-        bloc_view = f"drop view if exists api.{b_type}_bloc ;\n" + bloc_view
+
         print(bloc_view)
         self.__project.execute(bloc_view)        
         

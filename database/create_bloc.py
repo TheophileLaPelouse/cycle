@@ -53,6 +53,10 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
             view_join += f" join ___.{key}_type_table on {key}_type_table.val = c.{key} "
             
             line = f"{key} ___.{key}_type not null default '{possible_values[key][0]}' references ___.{key}_type_table(val)"
+        elif value not in type_table :
+            line = f"{key} ___.{key}_type references ___.{key}_type_table(val)"
+            view_col += f"{key}_type_table.FE as {key}_FE, {key}_type_table.description as {key}_description, "
+            view_join += f" join ___.{key}_type_table on {key}_type_table.val = c.{key} "
         else : line = f"{key} {type_table[value]}"
         if default_values.get(key) : 
             line += f" default {default_values[key]}"

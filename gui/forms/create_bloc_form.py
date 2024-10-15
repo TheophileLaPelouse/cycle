@@ -29,12 +29,14 @@ class CreateBlocWidget(QDialog):
         self.__project = Project(project_name, self.__log_manager)
         self.__project_name = project_name
         
-        self.geom.addItems(['Point', 'LineString', 'Polygon'])
-        types = ['real', 'integer', 'list'] # On pourra ajouter les types de la base de donnée aussi       
-        
-        self.entree_type.addItems(types)
+        self.geom.addItems(['Point', 'LineString', 'Polygon'])       
+        self.type_list = self.__project.fetchall("select table_name from information_schema.tables where table_schema = 'api' and table_name like '%_type_table'")
+        for k in range(len(self.type_list)) : 
+            self.type_list[k] = self.type_list[k][0].replace('_type_table', '')
+        self.type_list = ['real', 'integer', 'list'] + self.type_list
+        self.entree_type.addItems(self.type_list)
         # 2 = output
-        self.sortie_type.addItems(types)
+        self.sortie_type.addItems(self.type_list)
         self.possible_values_text.setEnabled(False)
         self.possible_values_text2.setEnabled(False)
         
@@ -44,6 +46,7 @@ class CreateBlocWidget(QDialog):
         self.formula_description = {}
         self.default_values = {}
         self.possible_values = {}
+        self.other_types = {}
         
         # Input tab
         self.entree_type.currentIndexChanged.connect(self.__update_entree_type)
@@ -120,10 +123,15 @@ class CreateBlocWidget(QDialog):
             self.table_formula.removeRow(selected_row)
     
     def __update_entree_type(self):
-        if self.entree_type.currentText() == 'list':
+        type_ = self.entree_type.currentText()
+        if type_ == 'list':
             self.possible_values_text.setEnabled(True)
             self.warning_input.setText('Enter the possible values separated by a semicolon')
             self.warning_input.setStyleSheet("color: orange; font-weight: bold")
+        elif type_ != 'real' and type_ != 'integer':
+            self.possible_values_text.setEnabled(False)
+            self.warning_input.clear()
+            self.entree_name.setText(type_)
         else:
             self.possible_values_text.setEnabled(False)
             self.warning_input.clear()
@@ -140,6 +148,8 @@ class CreateBlocWidget(QDialog):
             self.completer_list.append(name)
             self.completer.update_words(self.completer_list)
             self.input[name] = type_
+            if type_ not in ['real', 'integer', 'list']:
+                self.other_types[name] = type_
             self.default_values[name] = default_value
             self.possible_values[name] = possible_values
             
@@ -172,10 +182,15 @@ class CreateBlocWidget(QDialog):
             self.table_input.removeRow(selected_row)
 
     def __update_sortie_type(self):
-        if self.sortie_type.currentText() == 'list':
+        type_ = self.sortie_type.currentText()
+        if type_ == 'list':
             self.possible_values_text2.setEnabled(True)
             self.warning_output.setText('Enter the possible values separated by a semicolon')
             self.warning_output.setStyleSheet("color: orange; font-weight: bold")
+        elif type_ != 'real' and type_ != 'integer':
+            self.possible_values_text2.setEnabled(False)
+            self.warning_input.clear()
+            self.sortie_name.setText(type_)
         else:
             self.possible_values_text2.setEnabled(False)
             self.warning_output.clear()
@@ -195,7 +210,9 @@ class CreateBlocWidget(QDialog):
             self.default_values[name] = default_value
             self.possible_values[name] = possible_values
             self.output[name] = type_
-            
+            if type_ not in ['real', 'integer', 'list']:
+                self.other_types[name] = type_
+                
             self.table_output.setRowCount(len(self.output))
             self.table_output.setItem(len(self.output)-1, 0, QTableWidgetItem(name))
             self.table_output.setItem(len(self.output)-1, 1, QTableWidgetItem(type_))
@@ -309,7 +326,13 @@ class CreateBlocWidget(QDialog):
                 
             if fieldname.strip() in self.input:
                 if fieldname.strip() in self.possible_values and self.possible_values[fieldname.strip()]:
-                    dico_ref[fieldname] = self.add_list_container(layer, input_tab, fieldname, idx, fields, default_values)
+                    if not dico_ref.get(fieldname.strip()):
+                        dico_ref[fieldname.strip()] = [] 
+                    dico_ref[fieldname].append(self.add_list_container(layer, input_tab, fieldname, idx, fields, default_values))
+                elif fieldname.strip() in self.other_types: 
+                    if not dico_ref.get(fieldname.strip()):
+                        dico_ref[fieldname.strip()] = [] 
+                    dico_ref[fieldname].append(self.add_list_container(layer, input_tab, fieldname, idx, fields, default_values))
                 else :
                     input_tab.addChildElement(attrfield(field.name(), idx, input_tab)) # à vérifier sur la doc si c'est bien comme ça
                     layer.setFieldAlias(idx, Alias.get(fieldname, ''))
@@ -351,8 +374,8 @@ class CreateBlocWidget(QDialog):
         if not layertree.get('Properties'):
             layertree['Properties'] = {}
         for fieldname in dico_ref:
-            layertree['Properties'][fieldname] = dico_ref[fieldname][0]
-            layertree['Properties'][fieldname+'__ref'] = dico_ref[fieldname][1]
+            layertree['Properties'][fieldname] = dico_ref[fieldname][0][0]
+            layertree['Properties'][fieldname+'__ref'] = [tab[1] for tab in dico_ref[fieldname]]
         save_to_json(layertree, path_layertree)
         # Faudra vérifier qu'il ne se passe pas de dingz avec le fait que le json soit pas le même que l'autre non custom.
         
@@ -365,26 +388,31 @@ class CreateBlocWidget(QDialog):
         container.addChildElement(attrfield(fieldname, idx, container))
         container.addChildElement(attrfield(fieldname+"_fe", fields.indexOf(fieldname+"_fe"), container))
         defval = QgsDefaultValue()
-        default = self.__project.fetchone(f"select {default_values[fieldname]}") 
+        try : default = self.__project.fetchone(f"select {default_values[fieldname]}") 
+        except : default = ''
         if default : default = default[0]
-        defval.setExpression(str(default))
-        layer.setDefaultValueDefinition(idx, defval) 
+        # defval.setExpression(str(default))
+        # layer.setDefaultValueDefinition(idx, defval) 
         # The first part will be saved in the qml file
         
         # Add the propertie layer to the project 
         project = QgsProject.instance()
         root = project.layerTreeRoot()
-        g = root.findGroup('Properties') or root.insertGroup(-1, 'Properties')
+        g = root.findGroup(tr('Propriétés')) or root.insertGroup(-1, tr('Propriétés'))
         
-        sch, tbl, key = "api", f'{fieldname}_type_table', 'val'
-        layer_name = f'{fieldname}'
-        uri = f'''dbname='{self.__project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" '''
-        prop_layer = QgsVectorLayer(uri, layer_name, "postgres")
-        prop_layer.setDisplayExpression('val')
-        project.addMapLayer(prop_layer, False)
-        g.addLayer(prop_layer)
-        if not prop_layer.isValid():
-            raise RuntimeError(f'layer {layer_name} is invalid')
+        layers = project.mapLayersByName(Alias.get(fieldname, ''))
+        if not layers:
+            sch, tbl, key = "api", f'{fieldname}_type_table', 'val'
+            layer_name = f'{fieldname}'
+            uri = f'''dbname='{self.__project_name}' service={get_service()} sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}" '''
+            prop_layer = QgsVectorLayer(uri, layer_name, "postgres")
+            prop_layer.setDisplayExpression('val')
+            project.addMapLayer(prop_layer, False)
+            g.addLayer(prop_layer)
+            if not prop_layer.isValid():
+                raise RuntimeError(f'layer {layer_name} is invalid')
+        else : 
+            prop_layer = layers[0]
         
         default_fe = f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
         defval.setExpression(default_fe)
@@ -392,7 +420,7 @@ class CreateBlocWidget(QDialog):
         layer.setDefaultValueDefinition(fields.indexOf(fieldname+"_fe"), defval) # saved in the qml file
         
         tab.addChildElement(container)
-        name = 'ref_' + fieldname
+        name = 'ref_' + fieldname + '_' + layer.name()
         referencedLayer, referencedField = prop_layer.id(), 'val'
         referencingLayer, referencingField = layer.id(), fieldname
         relation = QgsRelation(QgsRelationContext(project))
