@@ -13,11 +13,14 @@ def get_propertie(name, dico):
     stack = [dico]
 
     while stack:
+        print(stack)
         current_dico = stack.pop()
         if name in current_dico:
             return current_dico[name]
         for key in current_dico:
+            print('hmm')
             if isinstance(current_dico[key], dict):
+                print("et bas ?")
                 stack.append(current_dico[key])
 
     return None

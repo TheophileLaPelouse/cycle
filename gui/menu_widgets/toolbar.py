@@ -176,6 +176,11 @@ class CycleToolbar(QToolBar):
         custom_layertree = QGisProjectManager.layertree_custom(project.qgs)
         layertree = QGisProjectManager.layertree()
         new_layertree = add_dico(layertree, custom_layertree)
+        properties = new_layertree['properties']
+        properties_custom = custom_layertree['properties']
+        for key in properties_custom :
+            if key.endswith('__ref') : 
+                properties[key] += properties_custom[key] 
         if os.path.exists(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json')):
             os.remove(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json'))
         os.rename(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree.json'), os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json'))

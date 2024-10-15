@@ -237,13 +237,13 @@ class EditInputOutput(QDialog) :
         
         for key in self.output : 
             if key in self.output_i and self.output[key] != self.output_i[key] : 
-                if self.input[key].endswith('_type') :
-                    self.__create_type_table(key, self.input[key])
+                if self.output[key].endswith('_type') :
+                    self.__create_type_table(key, self.output[key])
                 query += f"\nselect api.insert_inp_out('{b_type}', '{key}', '{self.output[key]}', '{self.default_values.get(key, 'null')}', 'modif', 'output') ;"
                 
             elif key not in self.output_i :
-                if self.input[key].endswith('_type') :
-                    self.__create_type_table(key, self.input[key])
+                if self.output[key].endswith('_type') :
+                    self.__create_type_table(key, self.output[key])
                 query = f"\nselect api.insert_inp_out('{b_type}', '{key}', '{self.output[key]}', '{self.default_values.get(key, 'null')}', 'added', 'output') ;"
         for key in self.output_i :
             if key not in self.output : 
@@ -268,7 +268,7 @@ class EditInputOutput(QDialog) :
                 break
             
         if not flag :
-            with open(os.path.join(self.__project.directory,  'custom_bloc.sql'), 'r') as f :
+            with open(os.path.join(self.__project.directory,  'custom_blocs.sql'), 'r') as f :
                 lines  = f.readlines()
             n_lines = len(lines)
             for k in range(n_lines) :
@@ -280,7 +280,7 @@ class EditInputOutput(QDialog) :
         print(bloc_view)
         self.__project.execute(bloc_view)        
         
-        with open(os.path.join(self.__project.directory, 'custom_bloc.sql'), 'a') as f :
+        with open(os.path.join(self.__project.directory, 'custom_blocs.sql'), 'a') as f :
             f.write(query)
             
         # Il faut aussi update la layer mais du coup comme les formules faudra recharger l'application pour le moment 

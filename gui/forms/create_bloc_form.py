@@ -7,9 +7,9 @@ from qgis.core import QgsAttributeEditorField as attrfield, Qgis, QgsProject, Qg
 from ...service import get_service
 from ...database.version import __version__
 from ...database.create_bloc import write_sql_bloc, load_custom
-from ...qgis_utilities import tr, Alias
+from ...qgis_utilities import tr, Alias, QGisProjectManager as manager
 from ...project import Project
-from ...utility.json_utils import open_json, get_propertie, save_to_json
+from ...utility.json_utils import open_json, get_propertie, save_to_json, add_dico
 from ...utility.string import normalized_name
 
 Formules_de_base = []
@@ -76,19 +76,26 @@ class CreateBlocWidget(QDialog):
         self.formula_text.setCompleter(self.completer)
         self.completer.setFilterMode(Qt.MatchContains)
         
+        self.formula_list = self.__project.fetchall("select name from api.formulas")
+        self.formula_list = [name[0] for name in self.formula_list]
+        self.formula_name_completer = QCompleter(self.formula_list)
+        self.formula_list = set(self.formula_list)
+        self.description.setCompleter(self.formula_name_completer) 
+        self.description.textChanged.connect(self.__is_known_formula)
+        
         # Group line edit
-        path_layertree = os.path.join(self.__project.directory, 'layertree_custom.json')
-        try :
-            layertree = open_json(path_layertree)
-            self.group_completer = GrpCompleter(list(layertree.keys()), layertree)
-            self.group.setCompleter(self.group_completer)
-            self.group.textChanged.connect(lambda : self.group_completer.update_completions(self.group.text()))
-        except FileNotFoundError : 
-            pass
+        layertree_custom = manager.layertree_custom(self.__project.qgs)
+        layertree = manager.layertree()
+        layertree = add_dico(layertree, layertree_custom)['']
+        self.group_completer = GrpCompleter(list(layertree.keys()), layertree)
+        self.group.setCompleter(self.group_completer)
+        self.group.textChanged.connect(lambda : self.group_completer.update_completions(self.group.text()))
         
         
         # Ok button
-        self.bloc_name.textChanged.connect(self.enable_ok_button)
+        existing_bloc = self.__project.fetchall("select table_name from information_schema.tables where table_schema = 'api' and table_name like '%_bloc'")
+        existing_bloc = set([bloc[0].replace('_bloc', '') for bloc in existing_bloc])
+        self.bloc_name.textChanged.connect(lambda _ : self.enable_ok_button(existing_bloc))
         self.ok_button = self.buttons.button(QDialogButtonBox.Ok)
         self.ok_button.setEnabled(False)   
         self.ok_button.clicked.connect(self.__create_bloc)
@@ -100,6 +107,7 @@ class CreateBlocWidget(QDialog):
         description = self.description.text()
         detail = self.detail_level.value()
         if self.verify_formula(formula):
+            formula = formula.lower()
             self.formula.append(formula)
             self.formula_description[formula] = [self.description.text(), self.comment.toPlainText(), detail]
             self.table_formula.setRowCount(len(self.formula))
@@ -110,6 +118,15 @@ class CreateBlocWidget(QDialog):
             self.formula_text.clear()
             self.description.clear()
             self.comment.clear()
+    
+    def  __is_known_formula(self):
+        if self.description.text() in self.formula_list:
+            formula_info = self.__project.fetchone(f"select formula, detail_level, comment from api.formulas where name = '{self.description.text()}'")
+            self.formula_text.setText(formula_info[0])
+            self.detail_level.setValue(formula_info[1])
+            self.comment.setPlainText(formula_info[2])
+            
+            
     
     def verify_formula(self, formula):
         # Faudra vérifier les formules sur le point de vue synthax et le point de vue sécurité.
@@ -233,10 +250,9 @@ class CreateBlocWidget(QDialog):
             self.completer.update_words(self.completer_list)
             self.table_output.removeRow(selected_row)
     
-    def enable_ok_button(self) : 
+    def enable_ok_button(self, bloc_exists): 
         bloc_name = self.bloc_name.text()
-        bloc_exists = self.__project.fetchone(f"select exists(select 1 from information_schema.tables where table_name='{bloc_name}_bloc' and table_schema='api')")
-        if bloc_exists[0]:
+        if bloc_name in bloc_exists:
             self.warning_bloc.setText('This bloc already exists')
             self.warning_bloc.setStyleSheet("color: red")
             self.ok_button.setEnabled(False)    
@@ -483,11 +499,12 @@ class GrpCompleter(QCompleter):
         self.mod = self.model()
         self.mod.setStringList(words)
         self.setModel(self.mod)
+        self.length = 0
             
     def splitPath(self, path):
         print("split", path)
         print(self.model().stringList())
-        return path.split('/')
+        return [path.split('/')[-1]]
     
     def pathFromIndex(self, index) :
         current_text = self.widget().text()
@@ -500,14 +517,26 @@ class GrpCompleter(QCompleter):
         
     def update_completions(self, path):
         parts = path.split('/')
+        if len(parts) != self.length:
+            self.length = len(parts)
+        else:
+            return
         if len(parts) > 1:
-            branch = get_propertie(parts[-2], self.layertree)
-            if isinstance(branch, dict):
-                completions = list(branch.keys())
-            else:
-                completions = []
-            self.mod.setStringList(completions)
-            print("bonjour", completions)
+            ref = parts[-2]
+        else : 
+            ref = ''
+        if ref : 
+            branch = get_propertie(ref, self.layertree)
+        else : 
+            branch = self.layertree
+        if isinstance(branch, dict):
+            completions = list(branch.keys())
+        else:
+            completions = []
+        if 'bloc' in completions : 
+            completions.remove('bloc')
+        self.mod.setStringList(completions)
+        print("bonjour", completions)
 
 
 if __name__ == '__main__':

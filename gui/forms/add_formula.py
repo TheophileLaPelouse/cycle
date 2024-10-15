@@ -56,7 +56,7 @@ class AddFormula(QDialog) :
         self.__project.execute(query)
         query2 = f"update api.input_output set default_formulas = array_append(default_formulas, '{description}') where b_type = '{b_type}' ;"
         self.__project.execute(query2)      
-        _custom_qml_path = os.path.join(self.__project.directory, 'custom_bloc.sql')
+        _custom_qml_path = os.path.join(self.__project.directory, 'custom_blocs.sql')
         with open(_custom_qml_path, 'a') as f : 
             f.write(query + '\n' + query2 + '\n')
         self.__log_manager.notice('formula %s added' % description)

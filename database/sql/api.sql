@@ -770,7 +770,9 @@ begin
     and (old.b_type = new.b_type or new.b_type is null) then
         select array_agg(elem) into formula_to_add from unnest(new.default_formulas) as elem
         where elem not in (select unnest(old.default_formulas));
-
+        if array_length(formula_to_add, 1) = 0 or formula_to_add is null then 
+            return null;
+        end if;
         foreach formula in array formula_to_add
         loop
             perform api.add_formula_to_input_output(old.b_type, formula);
