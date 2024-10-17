@@ -85,6 +85,23 @@ create table ___.model(
 -- Pour l'instant y'a rien mais on mettra sûrement des trucs comme les propriétés des matériaux 
 ------------------------------------------------------------------------------------------------
 
+create table ___.global_values(
+    name varchar primary key,
+    val real,
+    comment text
+) ; 
+
+insert into ___.global_values values ('PRG_CH4', 28, 'Potentiel de réchauffement global du méthane sur 100 ans');
+insert into ___.global_values values ('PRG_N2O', 265, 'Potentiel de réchauffement global du protoxyde azote sur 100 ans');
+insert into ___.global_values values ('PRG_CO2', 1, 'Potentiel de réchauffement global du dioxyde de carbone sur 100 ans');
+insert into ___.global_values(name, val) values ('febet', 155);
+insert into ___.global_values(name, val) values ('rhobet', 2400);
+insert into ___.global_values(name, val) values ('feevac', 5.44);
+insert into ___.global_values(name, val) values ('rhoterre', 1.5);
+insert into ___.global_values(name, val, comment) values ('fepoids', 5.5, 'Facteur émission par kg d équipement et machines');
+insert into ___.global_values(name, val) values ('felam', 3.6);
+insert into ___.global_values(name, val) values ('rholam', 1040);
+insert into ___.global_values(name, val) values ('fepelle', 61);
 
 ------------------------------------------------------------------------------------------------
 -- Abstract tables

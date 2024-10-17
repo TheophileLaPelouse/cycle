@@ -45,7 +45,7 @@ class AddFormula(QDialog) :
         self.exec_()
         
     def __add_formula(self) : 
-        formula = self.formula_text.text()
+        formula = self.formula_text.text().lower()
         description = self.description.text()
         detail = self.detail_level.value()
         comment = self.comment.toPlainText()

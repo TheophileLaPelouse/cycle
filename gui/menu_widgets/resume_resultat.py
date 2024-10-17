@@ -103,7 +103,7 @@ class RecapResults(QDockWidget) :
     def show_plot(self, bloc_name = None, dpi = 75, edgecolor = 'grey', color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
         print("show", self.__current_model)
         print(f"select api.get_histo_data('{self.__current_model}')")
-        data = self.__project.fetchone(f"select api.get_histo_data('zef')")
+        data = self.__project.fetchone(f"select api.get_histo_data('{self.__current_model}')")
         data = data[0]
         print(data)
         fields = ['co2_e', 'ch4_e', 'n2o_e', 'co2_c', 'ch4_c', 'n2o_c']

@@ -27,7 +27,7 @@ import os
 from pathlib import Path
 import re
 import tempfile
-from qgis.core import Qgis, QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsRelation, QgsRelationContext, QgsSettings, QgsSnappingConfig, QgsTolerance, qgsfunction, QgsMessageLog, QgsMeshLayer, QgsAttributeEditorContainer, QgsAttributeEditorField as attrfield, QgsDefaultValue
+from qgis.core import Qgis, QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsRelation, QgsRelationContext, QgsSettings, QgsSnappingConfig, QgsTolerance, qgsfunction, QgsMessageLog, QgsMeshLayer, QgsAttributeEditorContainer, QgsAttributeEditorField as attrfield, QgsDefaultValue, QgsRasterLayer
 from qgis.utils import iface
 from qgis.gui import QgsEditorWidgetFactory, QgsEditorWidgetWrapper, QgsEditorConfigWidget
 from qgis.PyQt.QtCore import QObject, QSettings, QCoreApplication, QFile
@@ -49,8 +49,13 @@ _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
 _columns_to_hide = set(['shape', 'formula', 'b_type', 'geom_ref'])
 Alias = {'ngl' : 'NGL (kgNGL/an)', 'oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'milieu' : 'Milieu', 
-         'q' : 'Débit (m3/s)', 'eh' : 'Equivalent Habitants', 'tbhaut' : 'Tonne de boue en amont (t/an)', 'eh_fe' : ' ', 'w' : 'Welec (kWh/an)',
-         'dco_elim' : 'DCO éliminée (kgDCO/an)'}
+         'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont (t/an)', 'eh_fe' : ' ', 'w' : 'Welec (kWh/an)',
+         'dco_elim' : 'DCO éliminée (kgDCO/an)', 'tsejour' : 'Temps de séjour', 'tjour' : 'Stockage en jour', 'h' : 'Hauteur (m)', 'long' : 'Longueur (m)',
+         'larg' : 'Largeur (m)', 'vit' : 'Vitesse (m/h)', 'tbsortant' : 'Tonne de boue en sortie (t/an)', 'e' : 'Epaisseur de voile (m)', 
+         'taur' : 'Taux de recirculation', 'tauenterre' : 'Taux d\'enterrement', 'prop_l' : 'rapport longueur/largeur', 'vu' : 'Volume utile (m3)', 
+         'vbiogaz' : 'Volume de biogaz produit (m3/an)', 'cad' : 'Cadence pelleteuse (m3/h)', 'gros' : 'Dégrillage supérieur à 20mm  (booléen)', 
+         'compd' : 'Avec ou sans compactage (booléen)', 'compt' : 'Avec ou sans compactage (booléen)', 'qe_s' : 'Débit sortant (m3/j)', 
+         'munite' : 'Masse du dégrilleur (kg)', 'qmax' : 'Débit maximal (m3/j)'}
 
 class MessageBarLogger:
     def __init__(self, message_bar):
@@ -310,6 +315,11 @@ class QGisProjectManager(QObject):
                 c+=1
             layer.setEditFormConfig(config)
         
+        # osmlayer = project.mapLayersByName('OSM') 
+        # if not osmlayer :
+        #     tms = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png&zmax=19&zmin=0'
+        #     osmlayer = QgsRasterLayer(tms,'OSM', 'wms')
+        #     root.insertLayer(-1, osmlayer)
         QGisProjectManager.load_qml(project, project_filename)
         project.write()
     

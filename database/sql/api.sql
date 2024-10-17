@@ -358,25 +358,25 @@ begin
     E'        update ___.link set geom = st_setpoint(geom, -1, new.geom) where down = new.id;\n' ||
     E'    end if;\n' ||
     E'    perform api.calculate_bloc(new.id, new.model);' ||
-    E'    perform api.update_results_ss_bloc(new.id, new.sur_bloc);' ||
+    E'    perform api.update_results_ss_bloc(new.id, new.sur_bloc);' || 
     E'$$, \n' ||
     E'after_insert_section => $$\n' ||
     E'      perform api.update_links(new.id, ''' || shape || ''', new.geom, new.model);' ||
     E'      perform api.update_calc_bloc(new.id, new.model);' ||
     E'      perform api.calculate_bloc(new.id, new.model);' ||
-    E'      perform api.get_results_ss_bloc(new.id);' ||
-    E'      perform api.update_results_ss_bloc(new.id, new.sur_bloc);' ||
+    -- E'      perform api.get_results_ss_bloc(new.id);' ||
+    E'      perform api.update_results_ss_bloc(new.id, new.sur_bloc);' || 
     E'$$, \n' ||
     E'start_section => $$\n' ||
     E'    if tg_op = ''INSERT'' or tg_op = ''UPDATE'' then\n' ||
     E'        new.b_type := '''||concrete||'''::___.bloc_type ;' ||
     E'        new.geom_ref := api.make_polygon(new.geom, '''||shape||''');' ||
-    E'        new.ss_blocs := api.find_ss_blocs(new.id, new.geom_ref, new.model);\n' ||
     E'        new.sur_bloc := api.find_sur_bloc(new.id, new.geom_ref, new.model);\n' ||
+    E'        new.ss_blocs := api.find_ss_blocs(new.id, new.geom_ref, new.model);\n' ||
     E'    end if;\n' ||
     E'    if tg_op = ''DELETE'' then\n' ||
     E'        perform api.update_calc_bloc(old.id, old.model, true);' ||
-    E'        perform api.update_results_ss_bloc(old.id, old.sur_bloc, true);' ||
+    E'        perform api.update_results_ss_bloc(old.id, old.sur_bloc, true);' || 
     E'        update ___.bloc set ss_blocs = array_remove(ss_blocs, old.id) where id = old.sur_bloc; -- remove the bloc from the list of sub-blocs of the sur-bloc\n' ||
     E'        update ___.bloc set sur_bloc = api.find_sur_bloc(old.id, old.geom, old.model) where sur_bloc = old.id; -- update the sur-bloc\n' || 
     E'    end if;\n' ||
@@ -546,6 +546,7 @@ language plpgsql
 as $$
 declare
     ss_blocs_array integer[];
+    id_bloc integer ;
 Begin 
     -- raise notice 'finding ss_blocs';
     select array_agg(id) into ss_blocs_array
@@ -568,6 +569,11 @@ Begin
     );
     -- raise notice 'ss_blocs_array := %', ss_blocs_array;
     update ___.bloc set sur_bloc = id_sur_bloc where id = any(ss_blocs_array);
+    foreach id_bloc in array ss_blocs_array
+    loop
+        update ___.bloc set ss_blocs = array_remove(ss_blocs, id_bloc) where id = (select sur_bloc from ___.bloc where id = id_sur_bloc);
+    end loop;
+
     -- raise notice 'ss_blocs found';
     return ss_blocs_array;
     
@@ -735,11 +741,12 @@ begin
             select array_cat(inputs, outputs) as olds from old_inputs, old_outputs
         ),
         new_inputs as (
-            select count(inp) as c from unnest(f_inputs) as inp
+            select count(inp) as c, array_agg(inp) as ar from unnest(f_inputs) as inp
             where inp not in (select unnest(olds) from inp_out)
         )
         select c=0 into flag from new_inputs; 
-
+    -- raise notice 'flag = %', flag;
+    flag := 1 ;
     end if;
     if flag then 
         update ___.input_output
@@ -750,8 +757,8 @@ begin
         query := 'update ___.'||b_type_arg||'_bloc set formula_name = array_append(formula_name, '''||formula_name||''')';
         execute query;
         -- On change les valeurs par défaults de la colonne formula_name
-        query := 'alter view api.'||b_type_arg||'_bloc alter column formula_name set default array['||coalesce(array_to_string(f_name, ',') || ',', '')||' '''||formula_name||''']';
-        -- raise notice '%', query;
+        query := 'alter view api.'||b_type_arg||'_bloc alter column formula_name set default array['''||coalesce(array_to_string(f_name, ''',''') || ''',', '')||' '''||formula_name||''']';
+        raise notice '%', query;
         execute query;
     end if ;
     return flag ; 
@@ -825,15 +832,15 @@ with ranked_results as (
            row_number() over (partition by id, name order by detail_level desc) as rank,
            max(detail_level) over (partition by id) as max_detail_level
     from ___.results
-    where formula is not null
+    where formula is not null and result_ss_blocs is not null
 ),
 in_use as (
     select id, formula, name, detail_level, result_ss_blocs, co2_eq
     from ranked_results
     where (max_detail_level < 6 and rank = 1) or (max_detail_level = 6 and rank <= 2)
 ),
-exploit as (select name, id, co2_eq from in_use where name like '%_e'),
-constr as (select name, id, co2_eq from in_use where name like '%_c')
+exploit as (select name, id, co2_eq, formula from in_use where name like '%_e'),
+constr as (select name, id, co2_eq, formula from in_use where name like '%_c')
 select ___.results.id, ___.bloc.name, model, jsonb_build_object(
     'data', jsonb_agg(
         jsonb_build_object(
@@ -853,8 +860,8 @@ from ___.results
 join ___.bloc on ___.bloc.id = ___.results.id
 left join in_use on ___.results.id = in_use.id and 
 ___.results.name = in_use.name and ___.results.detail_level = in_use.detail_level
-left join exploit on ___.results.id = exploit.id and ___.results.name = exploit.name
-left join constr on ___.results.id = constr.id and ___.results.name = constr.name
+left join exploit on ___.results.id = exploit.id and ___.results.name = exploit.name and ___.results.formula = exploit.formula
+left join constr on ___.results.id = constr.id and ___.results.name = constr.name and ___.results.formula = constr.formula
 where ___.results.formula is not null 
 group by ___.results.id, model, ___.bloc.name;
 
@@ -866,31 +873,47 @@ declare
     query text;
     id_bloc integer;
     res jsonb := '{}';
-    sur_blocs integer[];
+    ss_blocs_array integer[];
     names varchar[] := array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
-    bloc_name varchar;
+    b_name varchar;
     sum_values jsonb;
     id_loop integer;
     total_values jsonb;
 begin
-    select into id_bloc id from api.bloc where name = 'bloc' limit 1; -- limit 1 normally useless
+    select into id_bloc id from api.bloc where name = bloc_name limit 1; -- limit 1 normally useless
+    raise notice 'id_bloc = %', id_bloc;
     if id_bloc is null then
-        select into sur_blocs array_agg(id) from ___.bloc where model = p_model and sur_bloc is null;
+        select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc is null;
     else 
-        select into sur_blocs array_agg(id) from ___.bloc where model = p_model and sur_bloc = id_bloc;
+        select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc = id_bloc;
     end if;
-
+    raise notice 'ss_blocs_array = %', ss_blocs_array;
     -- Loop through each bloc id
-    if array_length(sur_blocs, 1) = 0 or sur_blocs is null then
+    if array_length(ss_blocs_array, 1) = 0 or ss_blocs_array is null then
+        ss_blocs_array := array[id_bloc];
+    end if;
+    if array[1] is null then
         return '{"total": {"ch4_c": 0, "ch4_e": 0, "co2_c": 0, "co2_e": 0, "n2o_c": 0, "n2o_e": 0, "co2_eq_c": 0, "co2_eq_e": 0}';
     end if;
 
-    foreach id_loop in array sur_blocs loop
+    foreach id_loop in array ss_blocs_array loop
         -- Get the bloc name
-        select into bloc_name name from ___.bloc where id = id_loop;
+        select into b_name name from ___.bloc where id = id_loop;
 
-        if bloc_name != 'link' or bloc_name != 'lien' then 
+        if b_name != 'link' or b_name != 'lien' then 
             -- Calculate the sum of the values for the specified names
+            with ranked_results as (
+                select id, formula, name, detail_level, result_ss_blocs, co2_eq,
+                    row_number() over (partition by id, name order by detail_level desc) as rank,
+                    max(detail_level) over (partition by id) as max_detail_level
+                from ___.results
+                where formula is not null and result_ss_blocs is not null
+            ),
+            in_use as (
+                select id, formula, name, detail_level, result_ss_blocs, co2_eq
+                from ranked_results
+                where (max_detail_level < 6 and rank = 1) or (max_detail_level = 6 and rank <= 2)
+            )
             select into sum_values jsonb_build_object(
                 'n2o_c', coalesce(sum(case when name = 'n2o_c' then result_ss_blocs end), 0),
                 'n2o_e', coalesce(sum(case when name = 'n2o_e' then result_ss_blocs end), 0),
@@ -900,13 +923,25 @@ begin
                 'co2_e', coalesce(sum(case when name = 'co2_e' then result_ss_blocs end), 0),
                 'co2_eq_e', coalesce(sum(case when name like '%_e' then co2_eq end), 0),
                 'co2_eq_c', coalesce(sum(case when name like '%_c' then co2_eq end), 0)
-            ) from ___.results where id = id_loop;
+            ) from in_use where id = id_loop;
 
             -- Add the result to the JSONB object
-            res := jsonb_set(res, array[bloc_name], sum_values, true);
+            res := jsonb_set(res, array[b_name], sum_values, true);
         end if;
     end loop;
 
+    with ranked_results as (
+        select id, formula, name, detail_level, result_ss_blocs, co2_eq,
+            row_number() over (partition by id, name order by detail_level desc) as rank,
+            max(detail_level) over (partition by id) as max_detail_level
+        from ___.results
+        where formula is not null and result_ss_blocs is not null
+    ),
+    in_use as (
+        select id, formula, name, detail_level, result_ss_blocs, co2_eq
+        from ranked_results
+        where (max_detail_level < 6 and rank = 1) or (max_detail_level = 6 and rank <= 2)
+    )
     select into total_values jsonb_build_object(
         'n2o_c', coalesce(sum(case when name = 'n2o_c' then result_ss_blocs end), 0),
         'n2o_e', coalesce(sum(case when name = 'n2o_e' then result_ss_blocs end), 0),
@@ -916,7 +951,7 @@ begin
         'co2_e', coalesce(sum(case when name = 'co2_e' then result_ss_blocs end), 0),
         'co2_eq_e', coalesce(sum(case when name like '%_e' then co2_eq end), 0),
         'co2_eq_c', coalesce(sum(case when name like '%_c' then co2_eq end), 0)
-    ) from ___.results where id = any(sur_blocs);
+    ) from ___.results where id = any(ss_blocs_array);
 
     -- Add the total values to the JSONB object
     res := jsonb_set(res, array['total'], total_values, true);
@@ -1033,6 +1068,7 @@ begin
     return 'Column ' || col_name || ' ' || modif || ' to ' || b_type;
 end;
 $$;
+
 -- create or replace function api.select_enum_types()
 -- returns table(enum_type text) 
 -- language plpgsql as
@@ -1249,27 +1285,38 @@ declare
     colnames varchar[] ;
     col varchar ;
     inp_col real ;
-    up integer ;
+    up_ integer ;
     flag boolean := false ;
+    n integer ;
+    i integer ; 
 begin 
     select into b_typ_fils b_type from ___.bloc where id = id_bloc ;
     select into links_up array_agg(api.link.up) from api.link where down = id_bloc and model = model_bloc ;    
+    raise notice 'links_up = %', links_up ;
     if array_length(links_up, 1) = 0 or links_up is null then 
         return false ;
     else 
-    foreach up in array links_up loop
-        select into b_typ b_type from ___.bloc where id = up ;
-
+    n = array_length(links_up, 1) ;
+    i = 1; 
+    while i < n+1 loop
+        up_ = links_up[i] ;
+        raise notice 'up_ = %', up_ ;
+        select into b_typ b_type from ___.bloc where id = up_ ;
+        raise notice 'b_typ = %', b_typ ;
         select array_agg(column_name) into colnames from information_schema.columns, api.input_output  
         where table_name = b_typ||'_bloc' and table_schema = 'api' and 
         b_type = b_typ and column_name = any(outputs) ;
 
         if b_typ::varchar = 'lien' or b_typ::varchar = 'link' then 
-            select into links_up array_cat(links_up, array_agg(api.link.up)) from api.link where down = up and model = model_bloc ;
+            select into links_up array_cat(links_up, array_agg(api.link.up)) from api.link where down = up_ and model = model_bloc ;
+            n := array_length(links_up, 1) ;
         end if ;
+        raise notice 'links_up2 = %', links_up ;
+        raise notice 'colnames = %', colnames ;
+        if colnames is not null then 
         foreach col in array colnames loop
             query = 'select '||col||' from ___.'||b_typ||'_bloc where id = $1 ;' ;
-            execute query into inp_col using up ;
+            execute query into inp_col using up_ ;
             -- raise notice 'inp_col = %', inp_col ;
             if inp_col is not null then 
                 if col like '%_s' then 
@@ -1294,6 +1341,8 @@ begin
                 end if ;
             end if ;
         end loop ;
+        end if ;
+        i := i + 1 ;
     end loop ;
     end if ;
     return flag ;
@@ -1346,6 +1395,8 @@ declare
     tac timestamp ;
 begin
     formul := replace(formula, ' ', '') ;
+    formul := regexp_replace(formula, '[^0-9a-zA-Z\+\-\*\/\^\(\)\.\>\<\=\_]', '', 'g');
+    formul := regexp_replace(formula, '**', '^', 'g') ;
     raise notice 'formula = %', formul ;
     rightside := '('||split_part(formul, '=', 2)||')' ;
     -- On met entre parenthèse parce que le code parcours la formule en fonction des parenthèses
@@ -1357,8 +1408,13 @@ begin
     idx := 1 ;
     query := '' ;
     len := array_length(queries, 1) ;
-    select into notnowns array_agg(name) from inp_out where val is null and name in (select unnest(args)) ;
-    -- raise notice 'unknowns = %', notnowns ;
+    select into notnowns distinct array_agg(distinct elem) 
+    from unnest(args) as elem 
+    left join inp_out on name = elem 
+    where (val is null and name = elem) 
+    or (elem not in (select name from inp_out) and not elem ~ '[0-9].*');
+    -- select into notnowns array_agg(name) from inp_out where val is null and name in (select unnest(args)) ;
+    raise notice 'unknowns = %', notnowns ;
     if array_length(notnowns, 1) > 0 then
         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then
             update ___.results set val=null, unknowns = notnowns where name = to_calc and ___.results.formula = formul and id = id_bloc ;
@@ -1376,24 +1432,29 @@ begin
             else
                 select into val_arg val from inp_out where name = args[j] ;
             end if ; 
+            raise notice 'val_arg = %', val_arg ;
             op = operators[i] ;
-            case 
-            when op = '(' then 
+            if op = '(' then 
                 if idx > len then 
                     queries := array_append(queries, '') ;
                     to_cast := array_append(to_cast, false) ;
                 end if ; 
+                raise notice 'query avant ( = %', query ;
+                query := query||op ; 
                 queries[idx] := query ; 
-                query := op||val_arg ;
-                j := j + 1 ;
+                
+                if operators[i+1] != '(' then 
+                    query := query||val_arg ;
+                    j := j + 1 ;
+                end if ;
                 idx := idx + 1 ;
-            when operators[i+1] = '(' then 
+            elseif operators[i+1] = '(' then 
                 query := query||op ;
-            when op = '>' or op = '<' then 
+            elseif op = '>' or op = '<' then 
                 query := query||op||val_arg ; 
                 j := j + 1 ;
                 to_cast[idx] := true ;
-            when op = ')' then
+            elseif op = ')' then
                 raise notice 'query above here = %', query ;
                 query := query||op ;
                 if to_cast[idx] then 
@@ -1402,12 +1463,12 @@ begin
                 raise notice 'query here = %', query ;
                 end if ;
                 idx := idx - 1 ;
-                query := queries[idx]||query ;
+                -- query := queries[idx]||query ;
             else
                 
                 query := query||op||val_arg ;
                 j := j + 1 ;
-            end case ;
+            end if ;
         end loop ;
         raise notice 'query = %', query ;
         execute 'select '||query into result ;
@@ -1442,9 +1503,21 @@ declare
     flag boolean := true ;
     tic timestamp ;
     tac timestamp ;
+    type_ varchar ; 
+    inp_out_exists boolean ;
 begin 
+    raise notice 'id_bloc = %, model_bloc = %', id_bloc, model_bloc ;
     tic := clock_timestamp() ;
-    select into b_typ b_type from ___.bloc where id = id and model = model_bloc ;
+    select into b_typ b_type from ___.bloc where id = id_bloc and model = model_bloc ;
+    if b_typ = 'lien' then 
+        return 'No calculation for link' ;
+    end if ;
+    -- raise notice 'b_typ = %', b_typ ;
+    
+    -- select into inp_out_exists exists(select 1 from pg_catalog.pg_tables where tablename = 'inp_out' and schemaname = 'pg_temp') ;
+    -- if inp_out_exists then 
+    --     drop table inp_out ;
+    -- end if ;
     create temp table inp_out(name varchar, val real) on commit drop; 
     -- raise notice 'b_typ = %', b_typ ;
     -- raise notice 'input_output = %', (select inputs from api.input_output where b_type = b_typ) ;
@@ -1453,16 +1526,25 @@ begin
     b_type = b_typ and (column_name = any(inputs) or column_name = any(outputs)) ;
     -- raise notice 'colnames = %', colnames ;
     foreach col in array colnames loop
-        query := 'select '''||col||''' as name, '||col||'::real as val from ___.'||b_typ||'_bloc where id = $1 ; '  ; 
-        execute query into items using id_bloc ;
+        select data_type from information_schema.columns where table_name = b_typ||'_bloc' and column_name = col limit 1 into type_ ; 
+        if type_ = 'USER-DEFINED' then 
+            query := 'select '''||col||''' as name, '||col||'_fe::real as val from api.'||b_typ||'_bloc where id = $1 ; '  ; 
+            execute query into items using id_bloc ;
+        else 
+            query := 'select '''||col||''' as name, '||col||'::real as val from ___.'||b_typ||'_bloc where id = $1 ; '  ; 
+            execute query into items using id_bloc ;
+        end if ;
         if items.val is null then 
             insert into inp_out(name) values (col) ;
         else
             insert into inp_out(name, val) values (items.name, items.val) ;
         end if ;
+        -- raise notice 'items = %', items ;
     end loop ;
+    insert into inp_out(name, val) select name, val from ___.global_values ;
     flag := api.recup_entree(id_bloc, model_bloc) ;
     if not flag and on_update then
+        drop table inp_out ;
         return 'No new entry' ;
     end if ;  
 
@@ -1472,6 +1554,9 @@ begin
     insert into bilan(leftside, calc_with, formula, detail_level) 
     select trim(both ' ' from split_part(formula, '=', 1)), api.read_formula(split_part(formula, '=', 2), colnames), formula, detail_level from bloc_formula ;
 
+    -- for items in (select * from bilan) loop
+    --     raise notice 'items bilan = %', items ;
+    -- end loop ;
 
     create temp table known_data(leftside varchar, known boolean default false) on commit drop;
     insert into known_data(leftside, known) select name, val is not null from inp_out ;
@@ -1503,6 +1588,7 @@ begin
             c := c + 1 ;
             to_calc := api.pop('treatment_lifo', true) ;
             for f, detail in (select formula, detail_level from bilan where leftside = to_calc) loop
+                raise notice 'f = %', f ;
                 perform api.calculate_formula(f, id_bloc, detail, to_calc) ;
                 raise notice 'result = %', result ;
                 -- insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail, result, f) ;
@@ -1585,40 +1671,59 @@ declare
     n_sb boolean;
 begin   
     foreach k in array keys loop
+		raise notice 'k = %', k;
         select array_length(ss_blocs, 1) > 0 into n_sb from ___.bloc where id = id_bloc ;
         if n_sb is null or not n_sb then
             update ___.results set result_ss_blocs = val where name = k and id = id_bloc ;
         else
+            flag := true ;
             s := 0 ;
             for sb in (select unnest(ss_blocs) from ___.bloc where id = id_bloc) loop 
                 select into details array_agg(detail_level)
                 from (
                     select detail_level
                     from ___.results
-                    where name = k and id = sb
+                    where name = k and id = sb and (val is not null or result_ss_blocs is not null)
                     order by detail_level desc
                     limit 2
                 ) subquery;
                 if details[1] < 6 then
-                    details := array[6] ;
+                    details := array[details[1]] ;
                 end if ;
+                if details is not null then 
+                raise notice 'dans la boucle' ; 
                 foreach detail_l in array details loop
-                    select into item val, result_ss_blocs from ___.results where name = k and id = sb and detail_level = detail_l ;
+					if detail_l = 6 then 
+						select into item val, result_ss_blocs from ___.results where name = k and id = sb and detail_level = detail_l ;
+					else select into item val, result_ss_blocs from ___.results where name = k and id = sb order by result_ss_blocs limit 1; 
+					end if ; 
                     if item.val is not null and item.result_ss_blocs is null then 
                         perform api.get_results_ss_bloc(sb) ;
                         -- Normalement pas de problème parce que si on a cette situation on l'a bien pour toutes les clés 
-                        select into item val, result_ss_blocs from ___.results where name = k and id = sb and detail_level = detail_l ;
+                        select into item val, result_ss_blocs from ___.results where name = k and id = sb ;
                     end if ;
-                    if detail_l > 6 then -- 6 est le niveua de détail des intrants
+                    if detail_l = 6 then -- 6 est le niveua de détail des intrants
                         flag_intrant := true ;
                     end if ;
+					raise notice 'item = %', item ; 
                     if item.result_ss_blocs is not null then 
                         s := s + item.result_ss_blocs ;
                     else 
                         flag := false ;
                     end if ;
                 end loop ;
+                else 
+                    raise notice 'dans le else' ;
+                    select into item result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
+					raise notice 'item = %', item ; 
+                    if item.result_ss_blocs is not null then 
+                        s := s + item.result_ss_blocs ;
+                    else 
+                        flag := false ;
+                    end if ;
+                end if ;
             end loop ;
+            raise notice 'flag = %, id_bloc = %, s = %', flag, id_bloc, s ;
             if flag then 
                 update ___.results set result_ss_blocs = s where name = k and id = id_bloc ;
             elseif flag_intrant then
@@ -1653,6 +1758,7 @@ begin
     tic := clock_timestamp() ;
     create temp table old_results(id integer, name varchar, result_ss_blocs real) on commit drop ;
     insert into old_results(id, name, result_ss_blocs) select id, name, result_ss_blocs from ___.results where id = id_bloc ;
+    perform api.get_results_ss_bloc(id_bloc) ;
     select array_length(ss_blocs, 1) > 0 into n_sb from ___.bloc where id = id_bloc ;
     if n_sb is null or not n_sb then
         update ___.results set result_ss_blocs = val where id = id_bloc ;
@@ -1661,33 +1767,51 @@ begin
         update ___.results set val = null, result_ss_blocs = null where id = id_bloc ;
         -- raise notice 'Results deleted' ;
     end if ;
+    if old_sur_bloc is null then
+        foreach k in array keys loop
+            select into s_old result_ss_blocs from ___.results where name = k and id = id_bloc ;
+            select into s_new val from ___.results where name = k and id = id_bloc ;
+            raise notice 'k = %, s_old = %, s_new = %', k, s_old, s_new ;
+            if s_old is null and s_new is not null then 
+                update ___.results set result_ss_blocs = val where name = k and id = id_bloc ;
+            end if ; 
+        end loop ;
+        drop table old_results ;
+        return ;
+    end if ;
     create temp table fifo(id serial primary key, value varchar) on commit drop ;
 
     insert into fifo(value) values (old_sur_bloc) ;
     sb := id_bloc ; 
     while (select count(*) from fifo) > 0 loop
         container := api.pop('fifo')::integer ;
-        insert into old_results(id, name, result_ss_blocs) select id, name, result_ss_blocs from ___.results where name = k and id = container ;
-        foreach k in array keys loop
-            select into s_old sum(result_ss_blocs) from old_results where name = k and id = sb ;
-            select into s_new sum(result_ss_blocs) from ___.results where name = k and id = sb ; 
-            -- if k ='co2_e' then
-            --     raise notice 'sb = %, container = %', sb, container ;
-            --     raise notice 's_old = %, s_new = %', s_old, s_new ;
-            -- end if ;
-            if s_old != s_new or (s_old is not null and s_new is null) or (s_new is not null and s_old is null) then
-                if s_new is null then
-                    update ___.results set result_ss_blocs = val where name = k and id = container ;
-                elseif s_old is null then 
-                    perform api.get_results_ss_bloc(container) ;
-                else
-                    update ___.results set result_ss_blocs = result_ss_blocs + s_new - s_old where name = k and id = container ;
-                end if ;
-                insert into fifo(value) select sur_bloc from api.bloc where id = container ;
-                sb := container ;
-            end if ;
+        -- insert into old_results(id, name, result_ss_blocs) select id, name, result_ss_blocs from ___.results where name = k and id = container ;
+        -- foreach k in array keys loop
+        --     select into s_old sum(result_ss_blocs) from old_results where name = k and id = sb ;
+        --     select into s_new sum(result_ss_blocs) from ___.results where name = k and id = sb ; 
+        --     if k ='co2_c' then
+        --         raise notice 'sb = %, container = %', sb, container ;
+        --         raise notice 's_old = %, s_new = %', s_old, s_new ;
+        --     end if ;
+        --     if s_old != s_new or (s_old is not null and s_new is null) or (s_new is not null and s_old is null) then
+        --         if s_new is null then
+        --             update ___.results set result_ss_blocs = val where name = k and id = container ;
+        --         elseif s_old is null then 
+        --             perform api.get_results_ss_bloc(container) ;
+        --         else
+        --             update ___.results set result_ss_blocs = result_ss_blocs + s_new - s_old where name = k and id = container ;
+        --         end if ;
+        --         insert into fifo(value) select sur_bloc from api.bloc where id = container ;
+        --         sb := container ;
+        --     elseif s_old is null then 
+        --         update ___.results set result_ss_blocs = val where name = k and id = container ;
+        --         insert into fifo(value) select sur_bloc from api.bloc where id = container ;
+        --         sb := container ;
+        --     end if ;
             
-        end loop ;
+        -- end loop ;
+        perform api.get_results_ss_bloc(container) ;
+        insert into fifo(value) select sur_bloc from api.bloc where id = container ;
     end loop ;
     drop table fifo ;
     drop table old_results ;

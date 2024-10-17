@@ -278,9 +278,11 @@ class EditInputOutput(QDialog) :
                     break
 
         print(bloc_view)
-        self.__project.execute(bloc_view)        
+        self.__project.execute(bloc_view)    
+            
         
         with open(os.path.join(self.__project.directory, 'custom_blocs.sql'), 'a') as f :
-            f.write(query)
+            f.write(query+'\n')
+            f.write(bloc_view)
             
         # Il faut aussi update la layer mais du coup comme les formules faudra recharger l'application pour le moment 

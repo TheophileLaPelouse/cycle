@@ -91,6 +91,12 @@ class CreateBlocWidget(QDialog):
         self.group.setCompleter(self.group_completer)
         self.group.textChanged.connect(lambda : self.group_completer.update_completions(self.group.text()))
         
+        # Copy other blocs 
+        
+        b_types = self.__project.fetchall("select b_type from api.input_output group by b_type")
+        b_types = [b_type[0] for b_type in b_types]
+        self.combo_bloc.addItems([''] + b_types)
+        self.combo_bloc.currentIndexChanged.connect(self.__copy_bloc)
         
         # Ok button
         existing_bloc = self.__project.fetchall("select table_name from information_schema.tables where table_schema = 'api' and table_name like '%_bloc'")
@@ -136,7 +142,8 @@ class CreateBlocWidget(QDialog):
         items = self.table_formula.selectedItems()
         if len(items)>0:
             selected_row = self.table_formula.row(items[0])
-            del self.formula[selected_row]
+            self.formula.remove(self.table_formula.item(selected_row, 0).text())
+            del self.formula_description[self.table_formula.item(selected_row, 0).text()]
             self.table_formula.removeRow(selected_row)
     
     def __update_entree_type(self):
@@ -194,7 +201,8 @@ class CreateBlocWidget(QDialog):
         if len(items)>0:
             selected_row = self.table_input.row(items[0])
             del self.input[self.table_input.item(selected_row, 0).text()]
-            self.completer_list.remove(self.table_input.item(selected_row, 0).text())
+            if self.table_input.item(selected_row, 0).text() in self.completer_list :
+                self.completer_list.remove(self.table_input.item(selected_row, 0).text())
             self.completer.update_words(self.completer_list)
             self.table_input.removeRow(selected_row)
 
@@ -246,7 +254,8 @@ class CreateBlocWidget(QDialog):
         if len(items)>0:
             selected_row = self.table_output.row(items[0])
             del self.output[self.table_output.item(selected_row, 0).text()]
-            self.completer_list.remove(self.table_output.item(selected_row, 0).text())
+            if self.table_output.item(selected_row, 0).text() in self.completer_list :
+                self.completer_list.remove(self.table_output.item(selected_row, 0).text())
             self.completer.update_words(self.completer_list)
             self.table_output.removeRow(selected_row)
     
@@ -272,6 +281,81 @@ class CreateBlocWidget(QDialog):
     #     rx = '[' + re.escape(''.join(char_to_remove)) + ']'
     #     return re.sub(rx, '', name).strip().replace(' ', '_')
     
+    def __copy_bloc(self):
+        b_type = self.combo_bloc.currentText()
+        if not b_type : 
+            return 
+        query_inp = f"""
+        with inp_out as (select inputs, outputs from api.input_output 
+        where b_type = '{b_type}')
+        select data_type as inp_type, column_name as inp_col from information_schema.columns, inp_out
+        where table_schema = 'api' and table_name='{b_type}_bloc'
+        and column_name = any(inp_out.inputs)
+        """
+        query_out = f"""
+        with inp_out as (select inputs, outputs from api.input_output 
+        where b_type = '{b_type}')
+        select data_type as out_type, column_name as out_col from information_schema.columns, inp_out
+        where table_schema = 'api' and table_name='{b_type}_bloc'
+        and column_name = any(inp_out.outputs)
+        """
+        query_default = f"""
+        select jsonb_object_agg(column_name, column_default) from information_schema.columns
+        where table_schema='api' and table_name='{b_type}_bloc'
+        """
+        defaults= self.__project.fetchone(query_default)[0]
+        print(defaults)
+        values_inp = self.__project.fetchall(query_inp)
+        values_out = self.__project.fetchall(query_out)
+        for val in values_inp:
+            v = val[0]
+            if val[0] != 'integer' or val[0] != 'real' or val[0] != 'list':
+                v = val[0].replace('_type', '')
+            self.input[val[1]] = v
+        for val in values_out:
+            v = val[0]
+            if val[0] != 'integer' or val[0] != 'real' or val[0] != 'list':
+                v = v.replace('_type', '')
+            self.output[val[1]] = v
+        
+        self.table_input.setRowCount(len(self.input))
+        i = 0
+        for key, value in self.input.items():
+            self.table_input.setItem(i, 0, QTableWidgetItem(key))
+            self.table_input.setItem(i, 1, QTableWidgetItem(value))
+            if defaults.get(key) : 
+                self.default_values[key] = defaults[key]
+                self.table_input.setItem(i, 2, QTableWidgetItem(defaults[key]))
+            i += 1
+            
+        self.table_output.setRowCount(len(self.output))
+        i = 0
+        for key, value in self.output.items():
+            self.table_output.setItem(i, 0, QTableWidgetItem(key))
+            self.table_output.setItem(i, 1, QTableWidgetItem(value))
+            if defaults.get(key) : 
+                self.default_values[key] = defaults[key]
+                self.table_output.setItem(i, 2, QTableWidgetItem(defaults[key]))
+            i += 1
+        
+        query_formula = f"""
+        with f_names as (select default_formulas from api.input_output where b_type = '{b_type}')
+        select name, formula, detail_level, comment from api.formulas, f_names where name = any(default_formulas) ;
+        """
+        formulas = self.__project.fetchall(query_formula)
+        for f in formulas:
+            self.formula.append(f[1])
+            self.formula_description[f[1]] = [f[0], f[3], f[2]]
+        
+        self.table_formula.setRowCount(len(self.formula))
+        i = 0
+        for f in self.formula:
+            self.table_formula.setItem(i, 0, QTableWidgetItem(f))
+            self.table_formula.setItem(i, 1, QTableWidgetItem(str(self.formula_description[f][2])))
+            self.table_formula.setItem(i, 2, QTableWidgetItem(self.formula_description[f][0]))
+            i += 1
+        
+        
     def __create_bloc(self):
         # Pour que ce soit plus jolie faudra différencier layer_name et layer_name_bloc.
         self.default_values['shape'] = self.geom.currentText()

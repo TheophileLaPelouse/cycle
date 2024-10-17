@@ -249,7 +249,7 @@ select api.add_new_formula('Exploitation file eau'::varchar, 'ch4_e = dco_elim*0
 
 alter type ___.bloc_type add value 'clarificateur' ;
 commit ; 
-insert into ___.input_output values ('clarificateur', array['eh', 'q', 'vit', 'v', 'e_voile']::varchar[], array['q_s', 'v_s']::varchar[], array['emission construction débit']::varchar[]) ;
+insert into ___.input_output values ('clarificateur', array['eh', 'q', 'vit', 'vu', 'e_voile']::varchar[], array['q_s', 'v_s']::varchar[], array['emission construction débit']::varchar[]) ;
 
 create sequence ___.clarificateur_bloc_name_seq ;     
 
@@ -261,12 +261,12 @@ id integer primary key,
 shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('clarificateur_bloc', abbreviation=>'clarificateur_bloc'),
-formula varchar[] default array['co2_c = 52.7*q + 1273*q^(1/2)']::varchar[],
-formula_name varchar[] default array['emission construction débit']::varchar[],
+formula varchar[] default array[]::varchar[],
+formula_name varchar[] default array[]::varchar[],
 eh real,
 q real,
-vit real,
-v real,
+vit real default 60,
+vu real,
 e_voile real,
 q_s real,
 v_s real,
@@ -286,7 +286,7 @@ select api.add_new_bloc('clarificateur', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('emission construction débit'::varchar, 'co2_c = 52.7*q + 1273*q^(1/2)'::varchar, 2, ''::text) ;
+-- select api.add_new_formula('emission construction débit'::varchar, 'co2_c = 52.7*q + 1273*q^(1/2)'::varchar, 2, ''::text) ;
 
 
 

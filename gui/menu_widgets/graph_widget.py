@@ -37,6 +37,7 @@ class GraphWidget(QWidget):
         self.canvas.setVisible(True)
         
     def pie_chart(self, data, labels, color, title) : 
+        self.__ax.clear()
         if data == [0,0,0] : 
             data = [1,1,1]
         def autopct_format(values):
@@ -50,7 +51,8 @@ class GraphWidget(QWidget):
         # print("pie_color", list(color.values()))
         self.__ax.pie(data, autopct=autopct_format(data), colors=list(color.values()))
         self.fig.tight_layout(rect= [-0.05, -0.05, 1.05, 1.05])
-        self.__ax.legend(labels, loc='upper right', bbox_to_anchor=(1.1, 1))
+        # self.__ax.legend(labels, loc='upper right', bbox_to_anchor=(1, 1))
+        self.__ax.legend(labels, loc='upper right')
         # self.__ax.set_title(title)
         self.__render()
         
