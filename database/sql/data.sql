@@ -94,7 +94,7 @@ create table ___.global_values(
 insert into ___.global_values values ('PRG_CH4', 28, 'Potentiel de réchauffement global du méthane sur 100 ans');
 insert into ___.global_values values ('PRG_N2O', 265, 'Potentiel de réchauffement global du protoxyde azote sur 100 ans');
 insert into ___.global_values values ('PRG_CO2', 1, 'Potentiel de réchauffement global du dioxyde de carbone sur 100 ans');
-insert into ___.global_values(name, val) values ('febet', 155);
+insert into ___.global_values(name, val) values ('febet', 0.155);
 insert into ___.global_values(name, val) values ('rhobet', 2400);
 insert into ___.global_values(name, val) values ('feevac', 5.44);
 insert into ___.global_values(name, val) values ('rhoterre', 1.5);
@@ -121,6 +121,7 @@ create table ___.formulas(
     name varchar default ___.unique_name('formula', abbreviation=>'formula'),
     formula varchar not null, 
     detail_level integer default 1,
+    f_inputs varchar[],
     comment text default null,
     unique (id),
     unique (name)

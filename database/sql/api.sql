@@ -1069,6 +1069,41 @@ begin
 end;
 $$;
 
+
+create or replace function api.select_default_input_output(b_typ ___.bloc_type)
+returns jsonb
+language plpgsql as
+$$
+declare 
+    inps varchar[];
+    outs varchar[];
+    inp_out varchar[];
+    query text;
+    res jsonb;
+begin
+    -- Select inputs and outputs from api.input_output
+    select inputs, outputs into inps, outs
+    from api.input_output
+    where b_type = b_typ;
+
+    inp_out := array_cat(inps, outs);
+    
+    with default_values as (
+        select column_name, column_default 
+        from information_schema.columns 
+        where table_name = b_typ || '_bloc' 
+          and table_schema = 'api'
+          and column_default is not null 
+          and data_type != 'USER-DEFINED'
+    )
+    select jsonb_object_agg(inp, column_default) into res
+    from default_values, unnest(inp_out) as inp
+    where column_name = inp;
+
+    return res;
+end
+$$;
+    
 -- create or replace function api.select_enum_types()
 -- returns table(enum_type text) 
 -- language plpgsql as
@@ -1669,6 +1704,7 @@ declare
     detail_l integer ; 
     details integer[] ; 
     n_sb boolean;
+	b_typ varchar ;
 begin   
     foreach k in array keys loop
 		raise notice 'k = %', k;
@@ -1679,6 +1715,9 @@ begin
             flag := true ;
             s := 0 ;
             for sb in (select unnest(ss_blocs) from ___.bloc where id = id_bloc) loop 
+				raise notice 'sb = %, flag = %', sb, flag ;
+				select into b_typ b_type from api.bloc where id = sb ;
+				if not b_typ = 'lien' then 
                 select into details array_agg(detail_level)
                 from (
                     select detail_level
@@ -1709,6 +1748,7 @@ begin
                     if item.result_ss_blocs is not null then 
                         s := s + item.result_ss_blocs ;
                     else 
+                        raise notice 'sb = %', sb ;
                         flag := false ;
                     end if ;
                 end loop ;
@@ -1722,6 +1762,7 @@ begin
                         flag := false ;
                     end if ;
                 end if ;
+				end if ; 
             end loop ;
             raise notice 'flag = %, id_bloc = %, s = %', flag, id_bloc, s ;
             if flag then 
