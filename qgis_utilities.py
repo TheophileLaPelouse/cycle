@@ -197,6 +197,11 @@ class QGisProjectManager(QObject):
         project_name = project.baseName()
         # todo vérifier que les layers et les relations sont déjà là sinon les ajouter
 
+        cv = QgsProject.instance().customVariables()
+        current_model = cv.get('current_model', None)
+        if current_model:
+            QGisProjectManager.refresh_layers(current_model)
+        
         # add layers if they are not already there
         root = project.layerTreeRoot()
         name_id_map = {layer.name(): layer.layerId() for layer in root.findLayers()}
@@ -374,7 +379,7 @@ class QGisProjectManager(QObject):
         
         
     @staticmethod
-    def update_qml(project, project_filename, f_details, inp_outs) : 
+    def update_qml(project, project_filename, f_details, inp_outs, f_inputs) : 
         import time 
         tic = time.time()
         # Pour l'instant on appelle à chaque ouverture de projet mais on pourrait vouloir ne pas toujours l'appeler
@@ -394,84 +399,9 @@ class QGisProjectManager(QObject):
                 if tbl.endswith('_bloc') : 
                     b_types = tbl[:-5]
                     if f_details.get(b_types) :
-                        config = layer.editFormConfig()
-                        input_tab = None
-                        output_tab = None
-                        for tab in config.tabs() :
-                            if re.match('Donnée.*so', tab.name()) :
-                                output_tab = tab 
-                            elif re.match('Donnée.*en', tab.name()) :
-                                input_tab = tab
-                        print(layer.name())
-                        print('inp et out', input_tab, output_tab)
-                        if input_tab and output_tab :
-                            input_tab.clear()
-                            output_tab.clear()
-                            lvlmax = 6
-                            in2tab = {'inp' : {k : False for k in range(lvlmax+1)}, 'out' : {k : False for k in range(lvlmax+1)}}
-                            level_container = {'inp' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, input_tab) for k in range(lvlmax+1)}, 
-                                            'out' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, output_tab) for k in range(lvlmax+1)}}
-                            level_container_children = {'inp' : {k : [] for k in range(lvlmax+1)}, 'out' : {k : [] for k in range(lvlmax+1)}}
-                            fieldnames = [f.name() for f in layer.fields()]
-                            field_fe = {}
-                            for name in fieldnames :
-                                if name.endswith('_fe') :
-                                    field_fe[name[:-3]] = True
-
-                            def treat_formula(formulas, lvl, in_or_out) :
-                                sides = formulas.split('=')
-                                if len(sides) == 2 : 
-                                    group_field = read_formula(sides[1],  inp_outs[b_types][in_or_out])
-                                for val in group_field : 
-                                    idx = layer.fields().indexFromName(val)
-                                    if field_fe.get(val) :
-                                        container = QgsAttributeEditorContainer(val.upper(), level_container[in_or_out][lvl])
-                                        container.setColumnCount(2)
-                                        container.addChildElement(attrfield(val, idx, container))
-                                        fe_idx = layer.fields().indexFromName(val+'_fe')
-                                        container.addChildElement(attrfield(val+"_fe", fe_idx, container))
-                                        # alias 
-                                        layer.setFieldAlias(fe_idx, Alias.get(val+"_fe", ''))
-                                        layer.setFieldAlias(idx, Alias.get(val, ''))
-                                        
-                                        # default value
-                                        defval = QgsDefaultValue()
-                                        prop_layer = project.mapLayersByName(Alias[val])[0]
-                                        default_fe = layer.defaultValueDefinition(fe_idx)
-                                        default_fe = default_fe.expression()
-                                        #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
-                                        
-                                        default_fe = re.sub("layer:='[^']+'", f"layer:='{prop_layer.id()}'", default_fe)
-                                        defval.setExpression(default_fe)
-                                        defval.setApplyOnUpdate(True)
-                                        layer.setDefaultValueDefinition(fe_idx, defval)
-                                        # indexOf = indexFromName d'après la doc
-                                        # On va faire un test pas opti : 
-                                        if val.upper() not in level_container_children[in_or_out][lvl] :
-                                            level_container[in_or_out][lvl].addChildElement(container)
-                                            level_container_children[in_or_out][lvl].append(val.upper())  
-                                    else :    
-                                        if val not in level_container_children[in_or_out][lvl] :
-                                            level_container[in_or_out][lvl].addChildElement(attrfield(val, idx, level_container[in_or_out][lvl]))
-                                            level_container_children[in_or_out][lvl].append(val)
-                                            layer.setFieldAlias(idx, Alias.get(val, ''))
-                                    in2tab[in_or_out][lvl] = True
-                                return
-                            print(f_details)
-                            for formulas, lvl in f_details[b_types].items() : 
-                                treat_formula(formulas, lvl, 'inp')
-                                treat_formula(formulas, lvl, 'out')
-                            
-                            for in_or_out in in2tab : 
-                                for lvl in in2tab[in_or_out] : 
-                                    if in2tab[in_or_out][lvl] :
-                                        if in_or_out == 'inp' :
-                                            input_tab.addChildElement(level_container[in_or_out][lvl])
-                                        else :
-                                            output_tab.addChildElement(level_container[in_or_out][lvl])
-                            print(layer.name(), config.tabs()[-1].children())
-                            layer.setEditFormConfig(config)
-                            layer.saveNamedStyle(qml)
+                        if not f_inputs.get(b_types) :
+                            f_inputs[b_types] = {}
+                        QGisProjectManager.update1qml(project, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
         print('temps', time.time()-tic)
                         
                             

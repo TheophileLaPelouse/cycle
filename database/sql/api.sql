@@ -1070,7 +1070,7 @@ end;
 $$;
 
 
-create or replace function api.select_default_input_output(b_typ ___.bloc_type)
+create or replace function api.select_default_input_output()
 returns jsonb
 language plpgsql as
 $$
@@ -1078,28 +1078,36 @@ declare
     inps varchar[];
     outs varchar[];
     inp_out varchar[];
+    b_typ ___.bloc_type ;
     query text;
-    res jsonb;
+    b_typ_json jsonb;
+    res jsonb := '{}';
 begin
     -- Select inputs and outputs from api.input_output
-    select inputs, outputs into inps, outs
-    from api.input_output
-    where b_type = b_typ;
+    for b_typ in (select b_type from api.input_output) 
+    loop
+        select inputs, outputs into inps, outs
+        from api.input_output
+        where b_type = b_typ;
 
-    inp_out := array_cat(inps, outs);
-    
-    with default_values as (
-        select column_name, column_default 
-        from information_schema.columns 
-        where table_name = b_typ || '_bloc' 
-          and table_schema = 'api'
-          and column_default is not null 
-          and data_type != 'USER-DEFINED'
-    )
-    select jsonb_object_agg(inp, column_default) into res
-    from default_values, unnest(inp_out) as inp
-    where column_name = inp;
-
+        inp_out := array_cat(inps, outs);
+        
+        with default_values as (
+            select column_name, column_default 
+            from information_schema.columns 
+            where table_name = b_typ || '_bloc' 
+            and table_schema = 'api'
+            and column_default is not null 
+            and data_type != 'USER-DEFINED'
+        )
+        select jsonb_object_agg(inp, column_default) into b_typ_json
+        from default_values, unnest(inp_out) as inp
+        where column_name = inp;
+        
+        if b_typ_json is not null then 
+			res := jsonb_set(res, array[b_typ]::text[], b_typ_json, true);
+		end if ; 
+        end loop ;
     return res;
 end
 $$;
