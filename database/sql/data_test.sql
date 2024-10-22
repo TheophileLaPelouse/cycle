@@ -6,7 +6,7 @@ create extension if not exists postgis;
 
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
 
-
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
 ------------------------------------------------------------------------------------------------
 -- function tests
 ------------------------------------------------------------------------------------------------
@@ -50,19 +50,19 @@ insert into ___.model(name) values ('test_model');
 -- select st_astext(api.make_polygon(st_geomfromtext('point(0 0)', 2154), 'Point'::___.geo_type)) ;
 -- select st_astext(api.make_polygon(st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'Polygon'::___.geo_type)) ;
 -- select st_within(api.make_polygon(st_geomfromtext('point(0 0)', 2154), 'Point'::___.geo_type), api.make_polygon(st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'Polygon'::___.geo_type)) ;
-select api.add_new_formula('Delamgie', 'co2_e=eh - q + 1000*(eh<q)', 2, 'C''est vraiment de la magie') ;
-
+select api.add_new_formula('Delamgie', 'co2_e=10*eh/((2^10*(1<0)+1))', 2, 'C''est vraiment de la magie') ;
 update api.input_output set default_formulas = array_append(default_formulas, 'Delamgie') where b_type = 'test' ;
 
-insert into api.test_bloc(geom, model, name) values (st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 'bloc1');
-update api.test_bloc set q = 10, eh = 5 where id = 1  ;
+-- update api.test_bloc set q = 10, eh = 5 where id = 1  ;
 
 -- select api.get_results_ss_bloc(1) ; 
+insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 4);
+insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model', 1);
+insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0.2 0.2, 0.2 0.95, 0.95 0.2, 0.2 0.2))', 2154), 'test_model', 2);
+insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
+select id, sur_bloc, ss_blocs from api.test_bloc;
 
--- insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model');
--- select name, sur_bloc, ss_blocs from api.test_bloc;
-
--- insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
+select id, val, result_ss_blocs from ___.results where name='co2_e' ;
 -- select name, sur_bloc, ss_blocs from api.test_bloc;
 -- delete from api.test_bloc where name = 'bloc1'
 

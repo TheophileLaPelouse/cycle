@@ -401,7 +401,8 @@ class QGisProjectManager(QObject):
                     if f_details.get(b_types) :
                         if not f_inputs.get(b_types) :
                             f_inputs[b_types] = {}
-                        QGisProjectManager.update1qml(project, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
+                        if inp_outs[b_types]['concrete'] :
+                            QGisProjectManager.update1qml(project, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
         print('temps', time.time()-tic)
                         
                             

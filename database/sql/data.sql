@@ -113,6 +113,7 @@ create table ___.input_output(
     inputs varchar[], 
     outputs varchar[], 
     default_formulas varchar[],
+    concrete boolean default true,
     unique (b_type)
 ) ;
 
@@ -152,6 +153,7 @@ create table ___.results(
     formula varchar, 
     unknowns varchar[], 
     result_ss_blocs real,
+    result_ss_blocs_intrant real,
     co2_eq real,
     unique(name, id, formula)
 ) ;

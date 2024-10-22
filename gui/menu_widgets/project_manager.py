@@ -157,7 +157,7 @@ class ProjectManager(QDialog):
         QGisProjectManager.open_project(project.qgs, project.srid)
         
         raw_inp_out = project.fetchall('select * from api.input_output')
-        input_output = {elem[0] : {'inp' : elem[1], 'out' : elem[2]} for elem in raw_inp_out}
+        input_output = {elem[0] : {'inp' : elem[1], 'out' : elem[2], 'concrete' : elem[-1]} for elem in raw_inp_out}
         query = """
         select jsonb_build_object(b_type, jsonb_object_agg(f.formula, f.detail_level)) 
         from api.input_output i_o 

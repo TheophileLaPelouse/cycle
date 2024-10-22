@@ -64,7 +64,7 @@ class GraphWidget(QWidget):
                 color = color['co2'], edgecolor=edgecolor,  label = 'co2')
         self.__ax.bar(r, data['ch4'], 
                 bottom = data['co2'], 
-                color = color['ch4'], edgecolor=edgecolor, label = 'ch4_'+c_or_e)
+                color = color['ch4'], edgecolor=edgecolor, label = 'ch4')
         self.__ax.bar(r, data['n2o'], 
                 bottom = [x + y for x, y in zip(data['co2'], data['ch4'])], 
                 color = color['n2o'], edgecolor=edgecolor, label = 'n2o')
@@ -73,7 +73,7 @@ class GraphWidget(QWidget):
         self.__ax.set_xticks(r, names)
         self.__ax.set_ylabel(ylabel)
         self.__ax.set_xlabel(xlabel)
-        self.__ax.legend()
+        self.__ax.legend(edgecolor=None)
         self.__ax.grid(axis='y')
         self.fig.tight_layout(rect=[0.1, 0.1, 0.9, 0.9 ])
         self.__render()
@@ -83,18 +83,19 @@ class GraphWidget(QWidget):
                 color = color['co2'], edgecolor=edgecolor,  label = 'co2')
         self.__ax.bar(r, data['ch4'], 
                 bottom = data['co2'], 
-                color = color['ch4'], edgecolor=edgecolor, label = 'ch4_'+c_or_e)
+                color = color['ch4'], edgecolor=edgecolor, label = 'ch4')
         self.__ax.bar(r, data['n2o'], 
                 bottom = [x + y for x, y in zip(data['co2'], data['ch4'])], 
                 color = color['n2o'], edgecolor=edgecolor, label = 'n2o')
-        # print(rtot, names)
+        print(rtot, names)
         self.__ax.set_xticks(rtot, names)
-        
+        self.__render()
         
 if __name__ == '__main__' : 
     app = QApplication([])
     widget = GraphWidget()
-    widget.pie_chart([1,2,3], ['a', 'b', 'c'], {'a':'red', 'b':'blue', 'c':'green'}, "test")
-    widget.bar_chart([1,2,3], {'co2_e':[1,2,3], 'ch4_e':[1,2,3], 'n2o_e':[1,2,3]}, 'e', ['a', 'b', 'c'], {'co2':'red', 'ch4':'blue', 'n2o':'green'}, 'black', 'test', 'y', 'x')
+    # widget.pie_chart([1,2,3], ['a', 'b', 'c'], {'a':'red', 'b':'blue', 'c':'green'}, "test")
+    widget.bar_chart(range(3), {'co2':[1,2,3], 'ch4':[1,2,3], 'n2o':[1,2,3]}, 'e', ['a', 'b', 'c'], {'co2':'red', 'ch4':'blue', 'n2o':'green'}, 'black', 'test', 'y', 'x')
+    widget.add_bar_chart(range(3, 6), range(6), {'co2':[1,2,3], 'ch4':[1,2,3], 'n2o':[1,2,3]}, 'e',['a', 'b', 'c']+['d', 'e', 'f'], {'co2':'red', 'ch4':'blue', 'n2o':'green'}, 'blue')
     widget.show()
     app.exec_()
