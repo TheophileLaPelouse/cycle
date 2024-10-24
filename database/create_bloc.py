@@ -117,7 +117,7 @@ select api.add_new_bloc('{name}', 'bloc', '{shape}'
 
 {to_insert_formulas}
 """
-    print(query)
+    # print(query)
     with open(path, 'a') as f :
         f.write(query)
         f.write('\n\n')
@@ -141,7 +141,86 @@ def load_custom(project_name, query = '', path = os.path.join(_custom_sql_dir, '
     else : 
         with autoconnection(project_name) as con, con.cursor() as cur:
             cur.execute(query)
+
+
+def from_custom_to_main(project_name):
+    """
+    Transfert les blocs personnalisés dans la base de donnée principale
+    """
+    custom_sql = os.path.join(_cycle_dir, project_name, 'custom_blocs.sql')
+    if not os.path.exists(custom_sql):
+        return
+    with open(custom_sql) as f:
+        file_text = f.readlines()
+    table_bloc = {}
+    table_type = {}
+    with autoconnection(project_name) as con, con.cursor() as cur:
+        cur.execute("select table_name, column_name, data_type, column_default from information_schema.columns where table_schema = 'api'")
+        col_info = cur.fetchall()
+        cur.execute("select * from api.input_output")
+        input_output = cur.fetchall()
+        input_output = {io[0]: io[1:] for io in input_output}
+        cur.execute("select name, formula, detail_level, comment from api.formulas")
+        formulas = cur.fetchall()
+        formulas = {f[0] : [f[0], f[1], f[3], f[2]] for f in formulas}
+        for col in col_info:
+            table_name = col[0]
+            if table_name not in table_type and table_name.endswith('_type_table'):
+                cur.execute(f"select * from api.{table_name}")
+                table_type[table_name] = cur.fetchall()
+    
+    for col in col_info:
+        table_name = col[0]
+        if table_name not in table_bloc and table_name.endswith('_bloc'):
+            name = table_name[:-5]
+            print(table_name)
+            shape = 'Polygon'
+            entree = {}
+            sorties = {}
+            default_values = {}
+            possible_values = {}
+            abbreviation = table_name 
+            formula = []
+            formula_description = {}
+            table_bloc[table_name] = [name, shape, entree, sorties, default_values, possible_values, abbreviation, formula, formula_description]
+            print(input_output[name])
+        if table_name in table_bloc:
+            table_name, column_name, data_type, column_default = col
+            print(table_name, column_name, column_default)
+            if column_name == 'shape' : 
+                table_bloc[table_name][1] = column_default.split('::')[0]
+                table_bloc[table_name][4]['shape'] = column_default
+            if data_type=='USER-DEFINED' and column_name+'_type_table' in table_type:
+                data_type = 'list'
+                type_val = table_type[column_name + '_type_table']
+                table_bloc[table_name][5][column_name] = [val[0] for val in type_val]
+            if column_name in input_output[name][0] :
+                table_bloc[table_name][2][column_name] = data_type
+                if column_default : 
+                    table_bloc[table_name][4][column_name] = column_default
+            if column_name in input_output[name][1] :
+                table_bloc[table_name][3][column_name] = data_type
+                if column_default : 
+                    table_bloc[table_name][4][column_name] = column_default
             
+            if input_output[name][2] :
+                for f in input_output[name][2] : 
+                    try : 
+                        table_bloc[table_name][7].append(formulas[f][1])
+                        table_bloc[table_name][8][formulas[f][1]] = [formulas[f][0], formulas[f][2], formulas[f][3]]
+                    except KeyError :
+                        pass
+                
+    new_sql = os.path.join(os.path.dirname(__file__), 'sql', 'blocs_to_add.sql')
+    for bloc in table_bloc:
+        print(bloc)
+        write_sql_bloc(None, *table_bloc[bloc], path = new_sql)
+    with open(new_sql, 'a') as f:
+        for table_name in table_type : 
+            for val in table_type[table_name] : 
+                f.write(f"update api.{table_name} set fe = {val[1]}, description = '{val[2]}' where val = '{val[0]}' ;\n")
+                
+    return
             
 if __name__ == '__main__':
 
