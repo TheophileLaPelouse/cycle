@@ -88,20 +88,21 @@ create table ___.model(
 create table ___.global_values(
     name varchar primary key,
     val real,
+    incert real,
     comment text
 ) ; 
 
-insert into ___.global_values values ('PRG_CH4', 28, 'Potentiel de réchauffement global du méthane sur 100 ans');
-insert into ___.global_values values ('PRG_N2O', 265, 'Potentiel de réchauffement global du protoxyde azote sur 100 ans');
-insert into ___.global_values values ('PRG_CO2', 1, 'Potentiel de réchauffement global du dioxyde de carbone sur 100 ans');
-insert into ___.global_values(name, val) values ('febet', 0.155);
-insert into ___.global_values(name, val) values ('rhobet', 2400);
-insert into ___.global_values(name, val) values ('feevac', 5.44);
-insert into ___.global_values(name, val) values ('rhoterre', 1.5);
-insert into ___.global_values(name, val, comment) values ('fepoids', 5.5, 'Facteur émission par kg d équipement et machines');
-insert into ___.global_values(name, val) values ('felam', 3.6);
-insert into ___.global_values(name, val) values ('rholam', 1040);
-insert into ___.global_values(name, val) values ('fepelle', 61);
+insert into ___.global_values values ('PRG_CH4', 28, 0, 'Potentiel de réchauffement global du méthane sur 100 ans');
+insert into ___.global_values values ('PRG_N2O', 265, 0,'Potentiel de réchauffement global du protoxyde azote sur 100 ans');
+insert into ___.global_values values ('PRG_CO2', 1, 0, 'Potentiel de réchauffement global du dioxyde de carbone sur 100 ans');
+insert into ___.global_values(name, val, incert) values ('febet', 0.155, 0);
+insert into ___.global_values(name, val, incert) values ('rhobet', 2400, 0);
+insert into ___.global_values(name, val, incert) values ('feevac', 5.44, 0);
+insert into ___.global_values(name, val, incert) values ('rhoterre', 1.5, 0);
+insert into ___.global_values(name, val, incert, comment) values ('fepoids', 5.5, 0, 'Facteur émission par kg d équipement et machines');
+insert into ___.global_values(name, val, incert) values ('felam', 3.6, 0);
+insert into ___.global_values(name, val, incert) values ('rholam', 1040, 0);
+insert into ___.global_values(name, val, incert) values ('fepelle', 61, 0);
 
 ------------------------------------------------------------------------------------------------
 -- Abstract tables
@@ -145,28 +146,38 @@ create table ___.bloc(
 );
 create index bloc_geomidx on ___.bloc using gist(geom_ref);
 
+create type ___.res as (val real, incert real) ; -- valeur et incertitude relative
+
 create table ___.results(
     id integer references ___.bloc(id) on update cascade on delete cascade,
     name varchar, 
-    val real, 
+    val ___.res, 
     detail_level integer, 
     formula varchar, 
     unknowns varchar[], 
-    result_ss_blocs real,
-    result_ss_blocs_intrant real,
-    co2_eq real,
+    result_ss_blocs ___.res,
+    result_ss_blocs_intrant ___.res,
+    co2_eq ___.res,
     unique(name, id, formula)
 ) ;
 
 create or replace function ___.calculate_co2_eq() returns trigger as $$
+declare 
+    prg ___.res ;
 begin
     case 
     when new.name like 'ch4%' then
-        new.co2_eq := new.result_ss_blocs * 28; -- Multiplication par le PRG sur 100 ans 
+        select into prg val, incert from ___.global_values where name='PRG_CH4';
+        new.co2_eq.val := (new.result_ss_blocs).val * prg.val;
+        new.co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);  
     when new.name like 'n2o%' then
-        new.co2_eq := new.result_ss_blocs * 265;
+        select into prg val, incert from ___.global_values where name='PRG_N2O';
+        new.co2_eq.val := (new.result_ss_blocs).val * prg.val;
+        new.co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);
     when new.name like 'co2%' then
-        new.co2_eq := new.result_ss_blocs;
+        select into prg val, incert from ___.global_values where name='PRG_CO2';
+        new.co2_eq.val := (new.result_ss_blocs).val * prg.val;
+        new.co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);
     end case;
     return new;
 end;
