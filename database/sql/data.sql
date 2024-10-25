@@ -148,6 +148,25 @@ create index bloc_geomidx on ___.bloc using gist(geom_ref);
 
 create type ___.res as (val real, incert real) ; -- valeur et incertitude relative
 
+create or replace function ___.add(val1 ___.res, val2 ___.res)
+returns ___.res
+language plpgsql
+as $$
+declare 
+    res ___.res ;
+begin 
+    if val1.val is null then 
+        return val2 ;
+    elseif val2.val is null then 
+        return val1 ;
+    end if ;
+    res.val := val1.val + val2.val ;
+    res.incert := (val1.incert*val1.val + val2.incert*val2.val)/(val1.val + val2.val) ;
+    return res ;
+end ;
+$$ ;
+
+
 create table ___.results(
     id integer references ___.bloc(id) on update cascade on delete cascade,
     name varchar, 
@@ -164,21 +183,22 @@ create table ___.results(
 create or replace function ___.calculate_co2_eq() returns trigger as $$
 declare 
     prg ___.res ;
+    co2_eq ___.res ;
+    co2_eq_intrant ___.res ;
 begin
     case 
     when new.name like 'ch4%' then
-        select into prg val, incert from ___.global_values where name='PRG_CH4';
-        new.co2_eq.val := (new.result_ss_blocs).val * prg.val;
-        new.co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);  
+        select into prg val, incert from ___.global_values where name='PRG_CH4'; 
     when new.name like 'n2o%' then
         select into prg val, incert from ___.global_values where name='PRG_N2O';
-        new.co2_eq.val := (new.result_ss_blocs).val * prg.val;
-        new.co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);
     when new.name like 'co2%' then
         select into prg val, incert from ___.global_values where name='PRG_CO2';
-        new.co2_eq.val := (new.result_ss_blocs).val * prg.val;
-        new.co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);
     end case;
+    co2_eq.val := (new.result_ss_blocs).val * prg.val;
+    co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);
+    co2_eq_intrant.val := (new.result_ss_blocs_intrant).val * prg.val;
+    co2_eq_intrant.incert := sqrt((new.result_ss_blocs_intrant).incert^2 + prg.incert^2);
+    new.co2_eq := ___.add(co2_eq, co2_eq_intrant);
     return new;
 end;
 $$ language plpgsql;

@@ -11,6 +11,8 @@ declare
 begin 
     if sum is null then 
         return array[new_val, new_incert] ;
+    elseif new_val is null then 
+        return sum ;
     end if ;
     return array[sum_val + new_val, 
             (sum_incert*sum_val + new_incert*new_val)/(sum_val + new_val)
@@ -237,8 +239,8 @@ begin
     end loop ;
     args := args[1:j] ;
     raise notice 'args finale %', args ;
-    for i in 1..j-1 loop 
-        raise notice 'args %', args[i] ;
+    for i in 1..j loop 
+        -- raise notice 'args %', args[i] ;
         if args[i] = '(' then 
             len := array_length(calc, 1) ; 
             if len < (idx + 1)*calc_sb_len then 
@@ -263,7 +265,7 @@ begin
                 calc := formula.resize_array(calc, calc_sb_len, 2*(calc_length[idx] + last_op_length[idx])) ;
                 calc_sb_len := 2*(calc_length[idx] + last_op_length[idx]) ;
             end if ; 
-            raise notice 'là1' ;
+            -- raise notice 'là1' ;
             if 1 <= last_op_length[idx] then
                 calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
                 calc_length[idx] := calc_length[idx] + last_op_length[idx] ;
@@ -272,20 +274,20 @@ begin
                 calc := formula.resize_array(calc, calc_sb_len, 2*(calc_length[idx] + calc_length[idx-1])) ;
                 calc_sb_len := 2*(calc_length[idx] + calc_length[idx-1]) ;
             end if ; 
-            raise notice 'calc_length %', calc_length ;
-            raise notice 'là % < %', (idx-2)*calc_sb_len+calc_length[idx-1]+1, (idx-2)*calc_sb_len+calc_length[idx-1]+calc_length[idx] ;
+            -- raise notice 'calc_length %', calc_length ;
+            -- raise notice 'là % < %', (idx-2)*calc_sb_len+calc_length[idx-1]+1, (idx-2)*calc_sb_len+calc_length[idx-1]+calc_length[idx] ;
             calc[(idx-2)*calc_sb_len+calc_length[idx-1]+1:(idx-2)*calc_sb_len+calc_length[idx-1]+calc_length[idx]] := calc[(idx-1)*calc_sb_len+1:(idx-1)*calc_sb_len+calc_length[idx]] ;
             calc_length[idx-1] := calc_length[idx-1] + calc_length[idx] ;
             flag_op = array_remove(flag_op, flag_op[idx]) ;
             idx := idx - 1 ;
-        elseif not args[i] ~ pat then 
+        elseif not args[i] ~ pat and not args[i] = '' then 
             if calc_length[idx]+1 > calc_sb_len then 
                 calc := formula.resize_array(calc, calc_sb_len, 2*(calc_length[idx]+1)) ;
                 calc_sb_len := 2*(calc_length[idx]+1) ;
             end if ;
             calc[(idx-1)*calc_sb_len+calc_length[idx]+1] := args[i];
             calc_length[idx] := calc_length[idx] + 1 ;
-        else 
+        elseif args[i] ~ pat then
             if last_op_length[idx] > 0 then 
                 prioritized := last_op[(idx-1)*last_op_sb_len+1] ;
             else 
@@ -315,17 +317,18 @@ begin
                 flag_op[idx] := false ;
             end if ;
         end if ;
-        raise notice 'idx %, calc %', idx, calc ;
-        raise notice 'last_op %', last_op ;
-        raise notice 'calc_length %, last_op_length %', calc_length, last_op_length ;
+        -- raise notice 'idx %, calc %', idx, calc ;
+        -- raise notice 'last_op %', last_op ;
+        -- raise notice 'calc_length %, last_op_length %', calc_length, last_op_length ;
     end loop ;
     if calc_length[idx] + last_op_length[idx] > calc_sb_len then 
         calc := formula.resize_array(calc, calc_sb_len, (calc_length[idx] + last_op_length[idx])+1) ;
     end if ;
     if 1 <= last_op_length[idx] then 
         calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
+        calc_length[idx] := calc_length[idx] + last_op_length[idx] ;
     end if ; 
-    raise notice 'calc final %', calc ;
+    -- raise notice 'calc final %', calc ;
     return calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ; 
 end ;
 $$ ;
@@ -466,7 +469,9 @@ begin
             insert into ___.results(id, name, detail_level, formula, unknowns) values (id_bloc, to_calc, detail_level, formul, notnowns) ;
         end if ; 
     else 
+        
         result := formula.calc_incertitudes(formula.write_formula(rightside)) ;
+        raise notice 'calc %', formula.write_formula(rightside) ;
         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then 
             update ___.results set val = result, unknowns = null where name = to_calc and ___.results.formula = formul and id = id_bloc ;
         else
@@ -802,8 +807,11 @@ begin
         if n_sb is null or not n_sb then
             with somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results where name = k and id = id_bloc and detail_level = 6)
             update ___.results set result_ss_blocs_intrant = (select somme.val from somme) where name = k and id = id_bloc ;
-            update ___.results set result_ss_blocs = (select val from ___.results where name = k and id = id_bloc and val is not null 
-            and detail_level < 6 order by detail_level desc limit 1) 
+            with max_detail as (select max(detail_level) as max_detail from ___.results 
+            where name = k and id = id_bloc and val is not null and detail_level < 6), 
+            somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results, max_detail 
+            where name = k and id = id_bloc and detail_level = max_detail.max_detail)
+            update ___.results set result_ss_blocs = (select somme.val from somme) 
             where name = k and id = id_bloc ;
         else
             flag := true ;
@@ -838,8 +846,11 @@ begin
             if flag then 
                 update ___.results set result_ss_blocs = s where name = k and id = id_bloc ;
             else 
-                update ___.results set result_ss_blocs = (select val from ___.results where name = k and id = id_bloc and val is not null 
-                and detail_level < 6 order by detail_level desc limit 1) 
+                with max_detail as (select max(detail_level) as max_detail from ___.results 
+                where name = k and id = id_bloc and val is not null and detail_level < 6), 
+                somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results, max_detail 
+                where name = k and id = id_bloc and detail_level = max_detail.max_detail)
+                update ___.results set result_ss_blocs = (select somme.val from somme) 
                 where name = k and id = id_bloc ;
             end if ;
             if flag_intrant then 
@@ -892,8 +903,8 @@ begin
     insert into fifo(value) values (old_sur_bloc) ;
     sb := id_bloc ;
     while (select count(*) from fifo) > 0 loop
-        raise notice 'old_results = %', (select result_ss_blocs from old_results where name = 'co2_e' and id = sb and result_ss_blocs is not null) ;
-        raise notice 'new_results = %', (select result_ss_blocs from ___.results where name = 'co2_e' and id = sb and result_ss_blocs is not null) ;
+        raise notice 'old_results = %', (select result_ss_blocs from old_results where name = 'co2_e' and id = sb and result_ss_blocs is not null limit 1) ;
+        raise notice 'new_results = %', (select result_ss_blocs from ___.results where name = 'co2_e' and id = sb and result_ss_blocs is not null limit 1) ;
         container := formula.pop('fifo')::integer ;
         raise notice 'container = %, sb = %', container, sb ;
         
@@ -905,8 +916,11 @@ begin
             -- select into s_new result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
             -- Je sais pas pouquoi la ligne d'au dessus ne marche pas
             if s_new is null then
-                update ___.results set result_ss_blocs = (select val from ___.results where name = k and id = container and val is not null 
-                and detail_level < 6 order by detail_level desc limit 1) 
+                with max_detail as (select max(detail_level) as max_detail from ___.results 
+                where name = k and id = container and val is not null and detail_level < 6), 
+                somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results, max_detail 
+                where name = k and id = container and detail_level = max_detail.max_detail)
+                update ___.results set result_ss_blocs = (select somme.val from somme) 
                 where name = k and id = container ;
             elseif s_new is not null and s_old is null then 
                 perform api.get_results_ss_bloc(container) ;
@@ -949,26 +963,32 @@ $$ ;
 
 
 create view api.results as
-with ranked_results as (
-    select id, formula, name, detail_level, result_ss_blocs, co2_eq,
-           row_number() over (partition by id, name order by detail_level desc) as rank,
-           max(detail_level) over (partition by id) as max_detail_level
+with normal as (
+    select id, formula, name, detail_level, result_ss_blocs, val, co2_eq
+    from ___.results 
+),
+norm_lvl_max as (
+    select id, name, max(detail_level) as max_lvl from normal where detail_level < 6 group by id, name 
+),
+intrant as (
+    select id, formula, name, detail_level, result_ss_blocs_intrant, val
     from ___.results
-    where formula is not null and result_ss_blocs is not null
 ),
-in_use as (
-    select id, formula, name, detail_level, result_ss_blocs, co2_eq
-    from ranked_results
-    where (max_detail_level < 6 and rank = 1) or (max_detail_level = 6 and rank <= 2)
+in_use as (select distinct normal.id, normal.name, normal.detail_level, normal.formula, co2_eq 
+from normal 
+join intrant on normal.id = intrant.id and normal.name = intrant.name 
+join norm_lvl_max on normal.id = norm_lvl_max.id and normal.name = norm_lvl_max.name
+where ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null 
+and (normal.detail_level = norm_lvl_max.max_lvl or normal.detail_level = 6)
 ),
-exploit as (select name, id, co2_eq, formula from in_use where name like '%_e'),
-constr as (select name, id, co2_eq, formula from in_use where name like '%_c')
+exploit as (select distinct name, id, co2_eq from in_use where name like '%_e'),
+constr as (select distinct name, id, co2_eq from in_use where name like '%_c')
 select ___.results.id, ___.bloc.name, model, jsonb_build_object(
     'data', jsonb_agg(
         jsonb_build_object(
             'name', ___.results.name,
             'formula', ___.results.formula,
-            'result', ___.results.result_ss_blocs,
+            'result', ___.add(___.results.result_ss_blocs, ___.results.result_ss_blocs_intrant),
             'co2_eq', ___.results.co2_eq, 
             'detail', ___.results.detail_level, 
             'unknown', ___.results.unknowns,
@@ -977,38 +997,35 @@ select ___.results.id, ___.bloc.name, model, jsonb_build_object(
         )
         )
     ) as res, 
-    formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert) as co2_eq_e, 
+    formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert) as co2_eq_e, -- il fallait juste une fonction d'aggrégat
     formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert) as co2_eq_c
 from ___.results
 join ___.bloc on ___.bloc.id = ___.results.id
 left join in_use on ___.results.id = in_use.id and 
 ___.results.name = in_use.name and ___.results.detail_level = in_use.detail_level
-left join exploit on ___.results.id = exploit.id and ___.results.name = exploit.name and ___.results.formula = exploit.formula
-left join constr on ___.results.id = constr.id and ___.results.name = constr.name and ___.results.formula = constr.formula
+left join exploit on ___.results.id = exploit.id and ___.results.name = exploit.name
+left join constr on ___.results.id = constr.id and ___.results.name = constr.name
 where ___.results.formula is not null 
 group by ___.results.id, model, ___.bloc.name;
 
-
 create or replace function api.get_histo_data(p_model varchar, bloc_name varchar default null)
-returns jsonb 
+returns jsonb
 language plpgsql
 as $$
 declare
     query text;
     id_bloc integer;
-    res jsonb := '{}';
-    gaz jsonb;
-    exploitation jsonb;
-    construction jsonb;
     ss_blocs_array integer[];
     names varchar[] := array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
     b_name varchar;
     item record ; 
     concr boolean;
-    sum_values record;
+    js1 jsonb;
     id_loop integer;
-    total_values jsonb;
+    js2 jsonb;
+    res jsonb := '{}';
 begin
+
     select into id_bloc id from api.bloc where name = bloc_name limit 1; -- limit 1 normally useless
     raise notice 'id_bloc = %', id_bloc;
     if id_bloc is null then
@@ -1032,80 +1049,51 @@ begin
         select into concr concrete from api.input_output where b_type = item.b_type;
         if concr or item.b_type = 'sur_bloc' then 
             -- Calculate the sum of the values for the specified names
-            with ranked_results as (
-                select id, formula, name, detail_level, result_ss_blocs, co2_eq,
-                    row_number() over (partition by id, name order by detail_level desc) as rank,
-                    max(detail_level) over (partition by id) as max_detail_level
-                from ___.results
-                where formula is not null and result_ss_blocs is not null
-            ),
-            in_use as (
-                select id, formula, name, detail_level, result_ss_blocs, co2_eq
-                from ranked_results
-                where (max_detail_level < 6 and rank = 1) or (max_detail_level = 6 and rank <= 2)
-            ),
-            -- select into sum_values jsonb_build_object(
-            --     'n2o_c', coalesce(formula.sum_incert(case when name = 'n2o_c' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-            --     'n2o_e', coalesce(formula.sum_incert(case when name = 'n2o_e' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-            --     'ch4_c', coalesce(formula.sum_incert(case when name = 'ch4_c' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-            --     'ch4_e', coalesce(formula.sum_incert(case when name = 'ch4_e' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-            --     'co2_c', coalesce(formula.sum_incert(case when name = 'co2_c' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-            --     'co2_e', coalesce(formula.sum_incert(case when name = 'co2_e' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-            --     'co2_eq_e', coalesce(formula.sum_incert(case when name like '%_e' then co2_eq.val, co2_eq.incert end), 0),
-            --     'co2_eq_c', coalesce(formula.sum_incert(case when name like '%_c' then co2_eq.val, co2_eq.incert end), 0)
-            -- ) from in_use where id = id_loop;
-            gas as (select name, formula.sum_incert((result_ss_blocs).val, (result_ss_blocs).incert) as j
-            from in_use where id = id_loop and name = any(names)),
-            exploit as (select name, formula.sum_incert((result_ss_blocs).val, (result_ss_blocs).incert) as j
-            from in_use where id = id_loop and name like '%_e'),
-            constr as (select name, formula.sum_incert((result_ss_blocs).val, (result_ss_blocs).incert) as j
-            from in_use where id = id_loop and name like '%_c')
-            select into sum_values jsonb_agg(gas.name, gas.j) as gas, jsonb_agg(exploit.name, exploit.j) as exploit, 
-            jsonb_agg(constr.name, constr.j) as constr from gas, exploit, constr;
+            with results as (
+                select name, ___.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
+                from ___.results where id = id_loop and name = any(names) 
+                and ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null
+            )
+            select into js1 jsonb_object_agg(name, result) from results; 
 
-            -- Add the result to the JSONB object
-            res := jsonb_set(res, array[b_name], sum_values.gas, true);
-            res := jsonb_set(res, array[b_name], sum_values.exploit, true);
-            res := jsonb_set(res, array[b_name], sum_values.constr, true);
+            raise notice 'js1 = %', js1;
+            with results as (
+                select name, co2_eq 
+                from ___.results where id = id_loop and name = any(names) 
+            ), 
+            exploit as (select distinct name, co2_eq from results where name like '%_e'),
+            constr as (select distinct name, co2_eq from results where name like '%_c')
+            select into js2 jsonb_build_object(
+                'co2_eq_e', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
+                'co2_eq_c', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
+            ) from exploit, constr ;
+            raise notice 'js2 = %', js2;
+            res := jsonb_set(res, array[b_name], js1||js2, true);
         end if;
     end loop;
 
-    with ranked_results as (
-        select id, formula, name, detail_level, result_ss_blocs, co2_eq,
-            row_number() over (partition by id, name order by detail_level desc) as rank,
-            max(detail_level) over (partition by id) as max_detail_level
-        from ___.results
-        where formula is not null and result_ss_blocs is not null
-    ),
-    in_use as (
-        select id, formula, name, detail_level, result_ss_blocs, co2_eq
-        from ranked_results
-        where (max_detail_level < 6 and rank = 1) or (max_detail_level = 6 and rank <= 2)
-    ),
-    -- select into total_values jsonb_build_object(
-    --     'n2o_c', coalesce(formula.sum_incert(case when name = 'n2o_c' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-    --     'n2o_e', coalesce(formula.sum_incert(case when name = 'n2o_e' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-    --     'ch4_c', coalesce(formula.sum_incert(case when name = 'ch4_c' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-    --     'ch4_e', coalesce(formula.sum_incert(case when name = 'ch4_e' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-    --     'co2_c', coalesce(formula.sum_incert(case when name = 'co2_c' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-    --     'co2_e', coalesce(formula.sum_incert(case when name = 'co2_e' then result_ss_blocs.val, result_ss_blocs.incert end), 0),
-    --     'co2_eq_e', coalesce(formula.sum_incert(case when name like '%_e' then co2_eq.val, co2_eq.incert end), 0),
-    --     'co2_eq_c', coalesce(formula.sum_incert(case when name like '%_c' then co2_eq.val, co2_eq.incert end), 0)
-    -- ) from ___.results where id = any(ss_blocs_array);
-    gas as (select name, formula.sum_incert((result_ss_blocs).val, (result_ss_blocs).incert) as j
-    from in_use where id = id_loop and name = any(names)),
-    exploit as (select name, formula.sum_incert((result_ss_blocs).val, (result_ss_blocs).incert) as j
-    from in_use where id = id_loop and name like '%_e'),
-    constr as (select name, formula.sum_incert((result_ss_blocs).val, (result_ss_blocs).incert) as j
-    from in_use where id = id_loop and name like '%_c')
-    select into sum_values jsonb_agg(gas.name, gas.j) as gas, jsonb_agg(exploit.name, exploit.j) as exploit, 
-    jsonb_agg(constr.name, constr.j) as constr from gas, exploit, constr;
+    with results as (
+        select name, ___.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
+        from ___.results where id = any(ss_blocs_array) and name = any(names) 
+        and ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null
+    )
+    select into js1 jsonb_object_agg(name, result) from results; 
 
-    -- Add the result to the JSONB object
-    res := jsonb_set(res, array['total'], sum_values.gas, true);
-    res := jsonb_set(res, array['total'], sum_values.exploit, true);
-    res := jsonb_set(res, array['total'], sum_values.constr, true);
+    raise notice 'js1 = %', js1;
+    
+    with results as (
+        select name, co2_eq 
+        from ___.results where id = any(ss_blocs_array) and name = any(names) 
+    ), 
+    exploit as (select distinct name, co2_eq from results where name like '%_e'),
+    constr as (select distinct name, co2_eq from results where name like '%_c')
+    select into js2 jsonb_build_object(
+        'co2_eq_e', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
+        'co2_eq_c', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
+    ) from exploit, constr ;
+    raise notice 'js2 = %', js2;
 
+    res := jsonb_set(res, array['total'], js1||js2, true);
     return res;
 end;
 $$;

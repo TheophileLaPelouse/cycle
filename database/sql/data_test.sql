@@ -54,8 +54,11 @@ insert into ___.model(name) values ('test_model');
 -- select st_astext(api.make_polygon(st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'Polygon'::___.geo_type)) ;
 -- select st_within(api.make_polygon(st_geomfromtext('point(0 0)', 2154), 'Point'::___.geo_type), api.make_polygon(st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'Polygon'::___.geo_type)) ;
 select api.add_new_formula('Delamgie', 'co2_e=10*eh/((2^10*(1<0)+1))', 2, 'C''est vraiment de la magie') ;
+select api.add_new_formula('magiemagie', 'co2_e=1*eh', 2, 'C''est vraiment de la magie') ;
+select api.add_new_formula('abracadabra', 'n2o_e=1*eh', 2, 'C''est vraiment de la magie') ;
 update api.input_output set default_formulas = array_append(default_formulas, 'Delamgie') where b_type = 'test' ;
-
+update api.input_output set default_formulas = array_append(default_formulas, 'magiemagie') where b_type = 'test' ;
+update api.input_output set default_formulas = array_append(default_formulas, 'abracadabra') where b_type = 'test' ;
 -- update api.test_bloc set q = 10, eh = 5 where id = 1  ;
 
 -- select api.get_results_ss_bloc(1) ; 
@@ -65,7 +68,9 @@ insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0.2
 insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
 select id, sur_bloc, ss_blocs from api.test_bloc;
 
-select id, val, result_ss_blocs from ___.results where name='co2_e' ;
+-- select id, name, val, result_ss_blocs, formula, co2_eq from ___.results order by id ;
+
+select api.get_histo_data('test_model');
 -- select name, sur_bloc, ss_blocs from api.test_bloc;
 -- delete from api.test_bloc where name = 'bloc1'
 
