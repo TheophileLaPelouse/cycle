@@ -1,6 +1,7 @@
 # Code qui permet la création d'un nouveau bloc dans la base de donnée en écrivant dans un fichier
 
 import os 
+import re
 from . import autoconnection
 
 _cycle_dir = os.path.join(os.path.expanduser('~'), '.cycle')
@@ -9,7 +10,7 @@ _custom_sql_dir = os.path.join(_cycle_dir, 'sql')
 if not os.path.exists(_custom_sql_dir):
     os.makedirs(_custom_sql_dir) 
 
-def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], formula_description = {}, path = os.path.join(_custom_sql_dir, 'custom_bloc.sql')):
+def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], formula_description = {}, path = os.path.join(_custom_sql_dir, 'custom_bloc.sql'), mode = 'a'):
     """
     Crée un nouveau bloc dans la base de donnée en écrivant de base dans un fichier sql local,
     sûrement que plus tard on pourra le faire sur une base de donnée en ligne 
@@ -20,7 +21,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
         default_values (list): Liste des valeurs par défaut des colonnes
         path (str): Chemin du fichier où écrire le bloc
     """
-    print("possible_values", possible_values)
+    # print("possible_values", possible_values)
     if project_name : 
         path = os.path.join(_cycle_dir, project_name, 'custom_blocs.sql')
     
@@ -35,7 +36,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     view_col = "additional_columns => '{"
     columns = ''
     for key, value in rows.items(): 
-        print("value", value)
+        # print("value", value)
         if value == "list" :
         # Dans le cas où on une liste de valeur, nous allons créer un nouveau tableau pour stocker les valeurs possibles
         # Donc on doit en plus ajouter une colonne qui y fait référence dans le bloc
@@ -79,7 +80,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     for f in formula_description :
         to_insert_formulas += f"select api.add_new_formula('{formula_description[f][0]}'::varchar, '{f}'::varchar, {formula_description[f][2]}, '{formula_description[f][1]}'::text) ;\n"
     
-    print("bonjour", table_types)
+    # print("bonjour", table_types)
     
     query = f"""
 
@@ -118,7 +119,7 @@ select api.add_new_bloc('{name}', 'bloc', '{shape}'
 {to_insert_formulas}
 """
     # print(query)
-    with open(path, 'a') as f :
+    with open(path, mode) as f :
         f.write(query)
         f.write('\n\n')
     
@@ -147,6 +148,15 @@ def from_custom_to_main(project_name):
     """
     Transfert les blocs personnalisés dans la base de donnée principale
     """
+    special_blocs =  set(['piptest', 'test'])
+    with open(os.path.join(os.path.dirname(__file__), 'sql', 'special_blocs.sql')) as f:
+        lines = f.readlines()
+    for line in lines : 
+        if line.startswith('alter type ___.bloc_type') :
+            # alter type ___.bloc_type add value 'source' ; 
+            b_name = re.search(r"'(.*?)'", line).group(1)
+            special_blocs.add(b_name)
+    
     custom_sql = os.path.join(_cycle_dir, project_name, 'custom_blocs.sql')
     if not os.path.exists(custom_sql):
         return
@@ -168,10 +178,10 @@ def from_custom_to_main(project_name):
             if table_name not in table_type and table_name.endswith('_type_table'):
                 cur.execute(f"select * from api.{table_name}")
                 table_type[table_name] = cur.fetchall()
-    
+    # Y'a un truc qui se passe pas bien avec les formules faut regarder 
     for col in col_info:
         table_name = col[0]
-        if table_name not in table_bloc and table_name.endswith('_bloc'):
+        if table_name not in table_bloc and table_name.endswith('_bloc') and table_name[:-5] not in special_blocs:
             name = table_name[:-5]
             print(table_name)
             shape = 'Polygon'
@@ -183,28 +193,30 @@ def from_custom_to_main(project_name):
             formula = []
             formula_description = {}
             table_bloc[table_name] = [name, shape, entree, sorties, default_values, possible_values, abbreviation, formula, formula_description]
-            print(input_output[name])
+            # print(input_output[name])
         if table_name in table_bloc:
             table_name, column_name, data_type, column_default = col
             print(table_name, column_name, column_default)
             if column_name == 'shape' : 
-                table_bloc[table_name][1] = column_default.split('::')[0]
-                table_bloc[table_name][4]['shape'] = column_default
+                shape_default = column_default.split('::')[0].replace("'", '')
+                table_bloc[table_name][1] = shape_default
+                table_bloc[table_name][4]['shape'] = shape_default
             if data_type=='USER-DEFINED' and column_name+'_type_table' in table_type:
                 data_type = 'list'
                 type_val = table_type[column_name + '_type_table']
                 table_bloc[table_name][5][column_name] = [val[0] for val in type_val]
-            if column_name in input_output[name][0] :
+                column_default = ''
+            if column_name in input_output[table_bloc[table_name][0]][0] :
                 table_bloc[table_name][2][column_name] = data_type
                 if column_default : 
                     table_bloc[table_name][4][column_name] = column_default
-            if column_name in input_output[name][1] :
+            if column_name in input_output[table_bloc[table_name][0]][1] :
                 table_bloc[table_name][3][column_name] = data_type
                 if column_default : 
                     table_bloc[table_name][4][column_name] = column_default
             
-            if input_output[name][2] :
-                for f in input_output[name][2] : 
+            if input_output[table_bloc[table_name][0]][2] and not table_bloc[table_name][7] :
+                for f in input_output[table_bloc[table_name][0]][2] : 
                     try : 
                         table_bloc[table_name][7].append(formulas[f][1])
                         table_bloc[table_name][8][formulas[f][1]] = [formulas[f][0], formulas[f][2], formulas[f][3]]
@@ -212,7 +224,13 @@ def from_custom_to_main(project_name):
                         pass
                 
     new_sql = os.path.join(os.path.dirname(__file__), 'sql', 'blocs_to_add.sql')
+    i = 0
     for bloc in table_bloc:
+        if not i : 
+            print("BONJOUR", len(table_bloc[bloc][7]))
+            with open(new_sql, 'w') as f:
+                f.write('')
+            i += 1
         print(bloc)
         write_sql_bloc(None, *table_bloc[bloc], path = new_sql)
     with open(new_sql, 'a') as f:

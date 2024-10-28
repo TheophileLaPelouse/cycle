@@ -693,3 +693,79 @@ select jsonb_build_object(
     'co2_eq_c', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
     'co2_eq_e', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
 ) from exploit, constr ;
+
+
+create or replace function formula.read_formula(formula text, colnames varchar[])
+returns varchar[]
+language plpgsql as
+$$
+declare 
+    list varchar[] ;
+    to_return varchar[] ;
+    pat text ;
+begin
+    pat := '[\+\-\*\/\^\(\)\<\>]' ; 
+    formula := regexp_replace(formula,  '[^0-9a-zA-Z\+\-\*\/\^\(\)\.\>\<\=\_]', '', 'g');
+    list := regexp_split_to_array(formula, pat) ;
+    select into to_return array_agg(elem) from unnest(list) as elem where elem = any(colnames) ;
+    return to_return ;
+end ;
+$$ ;
+do $$
+declare 
+    tab integer[] := array[1, 2, 3, 4, 5] ;
+    tab2 integer[] := array[1, 2, 3, 4, 5] ;
+    i integer := 1 ;
+    j integer := 2 ;
+begin 
+    raise notice 'tab %', tab[1:5] ;
+    tab2[i:j] := tab[i:j] ;
+end ;
+$$ ;
+
+create or replace function formula.resize_array(tab text[], len_sb integer, new_size integer)
+returns text[]
+language plpgsql 
+as $$ 
+declare 
+    resized text[];
+    n integer ; 
+    n_sub integer ; 
+    i integer;
+    j integer;
+begin
+
+    n = array_length(tab, 1) ;
+    n_sub = (n/len_sb)::integer ; 
+    resized := array_fill(''::text, array[n_sub*new_size]) ;
+    for i in 0..n_sub-1 loop
+        for j in 1..len_sb loop
+            resized[i*new_size+j] := tab[i*len_sb+j] ;
+        -- resized[i*new_size+1:i*new_size+len_sb] := tab[i*len_sb+1:i*len_sb+len_sb] ;
+        end loop ;
+    end loop ;
+    return resized ; 
+end ;
+$$ ; 
+
+create or replace function formula.resize_array(tab text[], len_sb integer, new_size integer)
+returns text[]
+language plpgsql 
+as $$ 
+declare 
+    resized text[];
+    n integer ; 
+    n_sub integer ; 
+    i integer;
+    j integer;
+begin
+
+    n = array_length(tab, 1) ;
+    n_sub = (n/len_sb)::integer ; 
+    resized := array_fill(''::text, array[n_sub*new_size]) ;
+    for i in 0..n_sub-1 loop
+        resized[i*new_size+1:i*new_size+len_sb] := tab[i*len_sb+1:i*len_sb+len_sb] ;
+    end loop ;
+    return resized ; 
+end ;
+$$ ; 
