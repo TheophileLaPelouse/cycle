@@ -16,6 +16,7 @@ from ..forms.create_bloc_form import CreateBlocWidget
 from ..forms.add_formula import AddFormula
 from ..forms.edit_input import EditInputOutput
 from ...database import reset_project
+from ...database.create_bloc import from_custom_to_main
 from ...compute.bloc import get_sur_blocs, get_links, Bloc
 from ...utility.json_utils import save_to_json, add_dico
 import time 
@@ -60,11 +61,11 @@ class CycleToolbar(QToolBar):
         project = Project(QGisProjectManager.project_name(), self.__log_manager)
         
         self.__add_bloc_button = self.__add_action_button(tr('Add bloc'), 'add_bloc.svg', self.__add_bloc)
-        self.__reset_db_button = self.__add_action_button(tr('Reset database'), 'reset_db.svg', self.__reset_db)
-        self.__run_button = self.__add_action_button(tr('Run computation'), 'run.svg', self.__run)
+        # self.__run_button = self.__add_action_button(tr('Run computation'), 'run.svg', self.__run)
         self.__add_formula_button = self.__add_action_button(tr('Add formula'), 'add_formula.svg', self.__add_formula)
         self.__add_input_button = self.__add_action_button(tr('Add input'), 'add_input.svg', self.__add_input)
         # admin buttons
+        self.__reset_db_button = None
         self.__print_sur_blocs_button = None
         self.__print_links_button = None
         self.__edit_bloc_button = None
@@ -153,10 +154,11 @@ class CycleToolbar(QToolBar):
         print("show results", tic-tac)
         
     def __to_admin_mode(self) : 
-        self.__print_sur_blocs_button = self.__add_action_button(tr('Print sur_blocs'), 'sur_blocs.svg', self.__print_sur_blocs)
-        self.__print_links_button = self.__add_action_button(tr('Print links'), 'links.svg', self.__print_links)
+        # self.__print_sur_blocs_button = self.__add_action_button(tr('Print sur_blocs'), 'sur_blocs.svg', self.__print_sur_blocs)
+        # self.__print_links_button = self.__add_action_button(tr('Print links'), 'links.svg', self.__print_links)
         self.__from_custom_to_solid_button = self.__add_action_button(tr('From custom to solid'), 'from_custom_to_solid.svg', self.__from_custom_to_solid)
         self.__save_properties_button = self.__add_action_button(tr('Save properties'), 'save_properties.svg', self.__save_properties)
+        self.__reset_db_button = self.__add_action_button(tr('Reset database'), 'reset_db.svg', self.__reset_db)
     
     def __save_properties(self) : 
         project = Project(QGisProjectManager.project_name(), self.__log_manager)
@@ -176,16 +178,19 @@ class CycleToolbar(QToolBar):
         custom_layertree = QGisProjectManager.layertree_custom(project.qgs)
         layertree = QGisProjectManager.layertree()
         new_layertree = add_dico(layertree, custom_layertree)
-        properties = new_layertree['properties']
-        properties_custom = custom_layertree['properties']
-        for key in properties_custom :
-            if key.endswith('__ref') : 
-                properties[key] += properties_custom[key] 
+        # properties = new_layertree['Properties']
+        # import json 
+        # print(json.dumps(new_layertree, indent=4))
+        # properties_custom = custom_layertree['Properties']
+        # for key in properties_custom :
+        #     if key.endswith('__ref') : 
+        #         properties[key] += properties_custom[key] 
+        
         if os.path.exists(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json')):
             os.remove(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json'))
         os.rename(os.path.join(os.path.dirname(__file__), '..', '..', 'layertree.json'), os.path.join(os.path.dirname(__file__), '..', '..', 'layertree_old.json'))
         save_to_json(new_layertree, os.path.join(os.path.dirname(__file__), '..', '..', 'layertree.json'))
         
         QGisProjectManager.save_qml2ressource(QgsProject.instance(), new_layertree)
-        
-        # Ajouter une fonction qui update les tableaux dans properties. 
+        from_custom_to_main(QGisProjectManager.project_name())
+        self.__log_manager.notice(tr("Les blocs personnalisés ont été sauvegardés définitivement"))

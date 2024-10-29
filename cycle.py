@@ -156,7 +156,7 @@ class Cycle(QObject):
             model = QgsProject.instance().customVariables().get('current_model')
             print("bonjour", model)
             self.__dock_results = RecapResults(model, Project(QGisProjectManager.project_name(), self.__log_manager))
-            self.__dock_results.setWindowTitle(tr('Réumer résultats'))
+            self.__dock_results.setWindowTitle(tr('Résumer résultats'))
             self.__dock_results.show()
         return self.__dock_results
             

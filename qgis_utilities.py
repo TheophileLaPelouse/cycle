@@ -600,6 +600,7 @@ class QGisProjectManager(QObject):
 
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         lang = '' if locale == 'en' else '_fr'
+        lang = ''
 
         for layer_name, tbl in QGisProjectManager.layers(project_filename).items():
             for layer in QgsProject.instance().mapLayersByName(layer_name):

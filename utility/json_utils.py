@@ -1,5 +1,6 @@
 import json 
 import os 
+from copy import deepcopy
 
 
 def open_json(path) : 
@@ -48,22 +49,58 @@ def get_all_properties(name, dico):
 
     return properties, paths
 
-def add_dico(dico1, dico2) : 
-    # Servira pour rentrer le custom json dans l'admin json
-    if not isinstance(dico2, dict) :
-        return dico1
-    if not isinstance(dico1, dict) : 
-        return dico2
-    for key in dico2 : 
-        if key not in dico1 : 
-            dico1[key] = dico2[key]
+def add_dico(dico, dico_to_add):
+    if not isinstance(dico, dict):
+        return dico_to_add
+    if not isinstance(dico_to_add, dict):
+        return dico
+    dico_key = {key : '/' for key in dico}
+    new = deepcopy(dico)
+    def fill_dico_key(dico, path = '/') :
+        for key in dico : 
+            if isinstance(dico[key], dict) : 
+                if key in dico_key : 
+                    new_key = path.split('/')[-2] + '/' + key
+                    dico_key[new_key] = path + key + '/' # Pour l'instant on va pas le faire fonctionner et on veut avoir que des clés uniques
+                dico_key[key] = path + key + '/'
+                fill_dico_key(dico[key], path + key + '/')
+    fill_dico_key(dico)
+    for key in dico_to_add : 
+        if key in dico_key : 
+            path = dico_key[key].split('/')[1:-1]
+            if path :
+                d = new[path.pop(0)]
+                while path : 
+                    val = path.pop(0)
+                    if val : 
+                        d = d[val]
+                for key_to_add in dico_to_add[key] : 
+                    if key_to_add not in d : 
+                        d[key_to_add] = dico_to_add[key][key_to_add]
+                    else :
+                        d[key_to_add] = add_dico(d[key_to_add], dico_to_add[key][key_to_add])  # dégueu mais ça marche
         else : 
-            dico1[key] = add_dico(dico1[key], dico2[key])
-    return dico1
+            new[key] = dico_to_add[key]
+    return new
+                
+     
+
+# def add_dico(dico1, dico2) : 
+#     # Servira pour rentrer le custom json dans l'admin json
+#     if not isinstance(dico2, dict) :
+#         return dico1
+#     if not isinstance(dico1, dict) : 
+#         return dico2
+#     for key in dico2 : 
+#         if key not in dico1 : 
+#             dico1[key] = dico2[key]
+#         else : 
+#             dico1[key] = add_dico(dico1[key], dico2[key])
+#     return dico1
 
 def save_to_json(dico, path) : 
     with open(path, 'w') as f : 
-        json.dump(dico, f)
+        json.dump(dico, f, indent=4, sort_keys=True)
         
 if __name__ == '__main__' : 
     import unittest

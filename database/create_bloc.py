@@ -183,7 +183,7 @@ def from_custom_to_main(project_name):
         table_name = col[0]
         if table_name not in table_bloc and table_name.endswith('_bloc') and table_name[:-5] not in special_blocs:
             name = table_name[:-5]
-            print(table_name)
+            # print(table_name)
             shape = 'Polygon'
             entree = {}
             sorties = {}
@@ -196,7 +196,7 @@ def from_custom_to_main(project_name):
             # print(input_output[name])
         if table_name in table_bloc:
             table_name, column_name, data_type, column_default = col
-            print(table_name, column_name, column_default)
+            # print(table_name, column_name, column_default)
             if column_name == 'shape' : 
                 shape_default = column_default.split('::')[0].replace("'", '')
                 table_bloc[table_name][1] = shape_default
@@ -223,14 +223,14 @@ def from_custom_to_main(project_name):
                     except KeyError :
                         pass
                 
-    new_sql = os.path.join(os.path.dirname(__file__), 'sql', 'blocs_to_add.sql')
-    i = 0
+    new_sql = os.path.join(os.path.dirname(__file__), 'sql', 'blocs.sql')
+    old_sql = os.path.join(os.path.dirname(__file__), 'sql', 'blocs_old.sql')
+    if os.path.exists(old_sql):
+        os.remove(old_sql)
+    os.rename(new_sql, old_sql)
+    with open(new_sql, 'w') as f:
+        f.write('')
     for bloc in table_bloc:
-        if not i : 
-            print("BONJOUR", len(table_bloc[bloc][7]))
-            with open(new_sql, 'w') as f:
-                f.write('')
-            i += 1
         print(bloc)
         write_sql_bloc(None, *table_bloc[bloc], path = new_sql)
     with open(new_sql, 'a') as f:
