@@ -161,7 +161,11 @@ begin
         return val1 ;
     end if ;
     res.val := val1.val + val2.val ;
-    res.incert := (val1.incert*val1.val + val2.incert*val2.val)/(val1.val + val2.val) ;
+    if res.val = 0 then 
+        res.incert := 0 ;
+    else 
+        res.incert := (val1.incert*val1.val + val2.incert*val2.val)/(val1.val + val2.val) ;
+    end if ;
     return res ;
 end ;
 $$ ;

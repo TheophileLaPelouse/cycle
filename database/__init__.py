@@ -366,7 +366,10 @@ def export_model(dbname, model, file):
                       where pg_stat_activity.datname in ('{dbname}');")
         cur.execute(f"drop database if exists {tmp_db}")
         cur.execute(f"create database {tmp_db} with template {dbname}")
-
+    
+    with autoconnection(tmp_db) as con, con.cursor() as cur:
+        cur.execute("delete from api.model where name != %s", (model,))
+    
     export_db(tmp_db, file)
     remove_project(tmp_db)
 

@@ -14,6 +14,9 @@ begin
     elseif new_val is null then 
         return sum ;
     end if ;
+    if sum_val + new_val = 0 then 
+        return array[0.0, 0.0] ;
+    end if ;
     return array[sum_val + new_val, 
             (sum_incert*sum_val + new_incert*new_val)/(sum_val + new_val)
             ] ;
@@ -958,6 +961,7 @@ begin
             select into test result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
             s_new.val := (test.result_ss_blocs).val ;
             s_new.incert := (test.result_ss_blocs).incert ;
+            raise notice 's_new = %, s_old = %', s_new, s_old ;
             -- select into s_new result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
             -- Je sais pas pouquoi la ligne d'au dessus ne marche pas
             if s_new is null then
@@ -978,7 +982,10 @@ begin
                 continue[1] := false ;
             end if ;
             select into s_old result_ss_blocs_intrant from old_results where name = k and id = sb and result_ss_blocs_intrant is not null ;
-            select into s_new result_ss_blocs_intrant from ___.results where name = k and id = sb and result_ss_blocs_intrant is not null ;
+            select into test result_ss_blocs_intrant from ___.results where name = k and id = sb and result_ss_blocs_intrant is not null ;
+            s_new.val := (test.result_ss_blocs_intrant).val ;
+            s_new.incert := (test.result_ss_blocs_intrant).incert ;
+
             if s_new is null then
                 with somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results where name = k and id = container and detail_level = 6)
                 update ___.results set result_ss_blocs_intrant = (select somme.val from somme) where name = k and id = container ;

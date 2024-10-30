@@ -290,27 +290,9 @@ class ProjectManager(QDialog):
     def export_model(self):
         project_name, model_name = self.__get_selection()
         project = Project(project_name, self.__log_manager)
-        scn_dialog = QDialog()
-        scn_dialog.setLayout(QHBoxLayout())
-        scn_dialog.layout().addWidget(QLabel(self.tr('Choose scenario (optional)')))
-        scn_combo = QComboBox()
-        scn_combo.addItems(['']+project.scenarios)
-        scn_dialog.layout().addWidget(scn_combo)
-        btn = QPushButton("OK")
-        btn.clicked.connect(scn_dialog.close)
-        #scn_combo.currentTextChanged.connect(scn_dialog.close)
-        scn_dialog.layout().addWidget(btn)
-        scn_dialog.exec_()
-        file_path, __ = QFileDialog.getSaveFileName(self, self.tr("Select a file to export ")+model_name+' '+scn_combo.currentText(), os.path.join(project.directory, model_name+'_'+scn_combo.currentText()+'.inp'), filter="EPANET (*.inp);; EXPRESSEAU (*.sql)")
-        if file_path and file_path.lower().endswith('.inp'):
-            processing.execAlgorithmDialog('cycle:export inp', {
-                "project": project_name,
-                "model": model_name,
-                "scenario": scn_combo.currentText() or None,
-                "file": file_path
-                })
-        elif file_path and file_path.lower().endswith('.sql'):
-            export_model(project_name, model_name, file_path)
+
+        file_path, __ = QFileDialog.getSaveFileName(self, self.tr("Select a file to export ")+model_name, os.path.join(project.directory, model_name+'.sql'), filter="CYCLE (*.sql)")
+        export_model(project_name, model_name, file_path)
 
     def add_model(self):
         '''Adds a model to selected project'''

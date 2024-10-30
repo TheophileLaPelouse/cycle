@@ -1,6 +1,6 @@
 alter type ___.bloc_type add value 'source' ; 
 commit ; 
-insert into ___.input_output values ('source', array['to_transmit']::varchar[], array['qe_s', 'tbentrant_s', 'tbsortant_s', 'dbo5_s', 'mes_s', 'ngl_s']::varchar[], array[]::varchar[], true) ;
+insert into ___.input_output values ('source', array['to_transmit']::varchar[], array['qe_s', 'tbentrant_s', 'tbsortant_s', 'dbo5_s', 'mes_s', 'ngl_s']::varchar[], array[]::varchar[], false) ;
 
 create sequence ___.source_bloc_name_seq ;
 
@@ -52,6 +52,7 @@ begin
     select into ups array_agg(up) from ___.link where down = id_source;
     n := array_length(ups, 1) ;
     while i < n + 1 loop 
+        raise notice 'ups[i] = %', ups[i] ;
         select into b_typ b_type from ___.bloc where id = ups[i];
         if b_typ = 'lien' then 
             ups := array_append(ups, (select up from ___.link where down = ups[i]));
@@ -84,3 +85,71 @@ end ;
 $$ language plpgsql ;
 
 create trigger source_link_trigger after insert or update on ___.link for each row execute function ___.source_link_trigger_function() ;
+
+
+alter type ___.bloc_type add value 'sur_bloc' ;
+commit ; 
+insert into ___.input_output values ('sur_bloc', array[]::varchar[], array[]::varchar[], array[]::varchar[], false) ;
+
+create sequence ___.sur_bloc_bloc_name_seq ;     
+
+
+
+
+create table ___.sur_bloc_bloc(
+id integer primary key,
+shape ___.geo_type not null default 'Polygon',
+geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
+name varchar not null default ___.unique_name('sur_bloc_bloc', abbreviation=>'sur_bloc_bloc'),
+formula varchar[] default array[]::varchar[],
+formula_name varchar[] default array[]::varchar[],
+
+foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
+unique (name, id)
+);
+
+create table ___.sur_bloc_bloc_config(
+    like ___.sur_bloc_bloc,
+    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+    foreign key (id, name) references ___.sur_bloc_bloc(id, name) on delete cascade on update cascade,
+    primary key (id, config)
+) ; 
+
+select api.add_new_bloc('sur_bloc', 'bloc', 'Polygon' 
+    
+    ) ;
+
+
+
+
+alter type ___.bloc_type add value 'lien' ;
+commit ; 
+insert into ___.input_output values ('lien', array[]::varchar[], array[]::varchar[], array[]::varchar[], false) ;
+
+create sequence ___.lien_bloc_name_seq ;     
+
+
+
+
+create table ___.lien_bloc(
+id integer primary key,
+shape ___.geo_type not null default 'LineString',
+geom geometry('LINESTRING', 2154) not null check(ST_IsValid(geom)),
+name varchar not null default ___.unique_name('lien_bloc', abbreviation=>'lien_bloc'),
+formula varchar[] default array[]::varchar[],
+formula_name varchar[] default array[]::varchar[],
+
+foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
+unique (name, id)
+);
+
+create table ___.lien_bloc_config(
+    like ___.lien_bloc,
+    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+    foreign key (id, name) references ___.lien_bloc(id, name) on delete cascade on update cascade,
+    primary key (id, config)
+) ; 
+
+select api.add_new_bloc('lien', 'bloc', 'LineString' 
+    
+    ) ;

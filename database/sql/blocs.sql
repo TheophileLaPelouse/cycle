@@ -372,46 +372,6 @@ select api.add_new_formula('decanteur lamellaire construction niveau 3'::varchar
 '::varchar, 3, ''::text) ;
 
 
-
-
-
-alter type ___.bloc_type add value 'sur_bloc' ;
-commit ; 
-insert into ___.input_output values ('sur_bloc', array[]::varchar[], array[]::varchar[], array[]::varchar[]) ;
-
-create sequence ___.sur_bloc_bloc_name_seq ;     
-
-
-
-
-create table ___.sur_bloc_bloc(
-id integer primary key,
-shape ___.geo_type not null default 'Polygon',
-geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
-name varchar not null default ___.unique_name('sur_bloc_bloc', abbreviation=>'sur_bloc_bloc'),
-formula varchar[] default array[]::varchar[],
-formula_name varchar[] default array[]::varchar[],
-
-foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
-unique (name, id)
-);
-
-create table ___.sur_bloc_bloc_config(
-    like ___.sur_bloc_bloc,
-    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
-    foreign key (id, name) references ___.sur_bloc_bloc(id, name) on delete cascade on update cascade,
-    primary key (id, config)
-) ; 
-
-select api.add_new_bloc('sur_bloc', 'bloc', 'Polygon' 
-    
-    ) ;
-
-
-
-
-
-
 alter type ___.bloc_type add value 'tamis' ;
 commit ; 
 insert into ___.input_output values ('tamis', array['qe', 'compt', 'eh']::varchar[], array[]::varchar[], array['tamis statique construction niveau de détail 1', 'tamis statique construction niveau de détail 2', 'tamis exploitation niveau 1', 'tamis exploitation niveau 2', 'tamis exploitation niveau 3']::varchar[]) ;
@@ -808,46 +768,6 @@ select api.add_new_bloc('rejets_eau', 'bloc', 'Point'
 
 select api.add_new_formula('emission exploitation rejets eau azote'::varchar, 'n2o_e = ngl*oxi'::varchar, 3, ''::text) ;
 select api.add_new_formula('emission exploitation rejets eau méthane'::varchar, 'ch4_e = dco*milieu'::varchar, 3, ''::text) ;
-
-
-
-
-
-alter type ___.bloc_type add value 'lien' ;
-commit ; 
-insert into ___.input_output values ('lien', array[]::varchar[], array[]::varchar[], array[]::varchar[]) ;
-
-create sequence ___.lien_bloc_name_seq ;     
-
-
-
-
-create table ___.lien_bloc(
-id integer primary key,
-shape ___.geo_type not null default 'LineString',
-geom geometry('LINESTRING', 2154) not null check(ST_IsValid(geom)),
-name varchar not null default ___.unique_name('lien_bloc', abbreviation=>'lien_bloc'),
-formula varchar[] default array[]::varchar[],
-formula_name varchar[] default array[]::varchar[],
-
-foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
-unique (name, id)
-);
-
-create table ___.lien_bloc_config(
-    like ___.lien_bloc,
-    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
-    foreign key (id, name) references ___.lien_bloc(id, name) on delete cascade on update cascade,
-    primary key (id, config)
-) ; 
-
-select api.add_new_bloc('lien', 'bloc', 'LineString' 
-    
-    ) ;
-
-
-
-
 
 
 alter type ___.bloc_type add value 'table_degouttage' ;

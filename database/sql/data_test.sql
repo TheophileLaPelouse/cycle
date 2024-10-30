@@ -10,7 +10,7 @@ create extension if not exists postgis;
 
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/special_blocs.sql
 
-\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
 
 ------------------------------------------------------------------------------------------------
 -- function tests
@@ -64,11 +64,13 @@ update api.input_output set default_formulas = array_append(default_formulas, 'a
 -- update api.test_bloc set q = 10, eh = 5 where id = 1  ;
 
 -- select api.get_results_ss_bloc(1) ; 
+insert into api.source_bloc(geom, model) values (st_geomfromtext('point(0.5 0.5)', 2154), 'test_model');
 insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0 0, 0 1, 1 1, 1 0, 0 0))', 2154), 'test_model', 4);
-insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model', 1);
-insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0.2 0.2, 0.2 0.95, 0.95 0.2, 0.2 0.2))', 2154), 'test_model', 2);
-insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
-select id, sur_bloc, ss_blocs from api.test_bloc;
+
+-- insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0.1 0.1, 0.1 0.9, 0.9 0.1, 0.1 0.1))', 2154), 'test_model', 1);
+-- insert into api.test_bloc(geom, model, eh) values (st_geomfromtext('polygon((0.2 0.2, 0.2 0.95, 0.95 0.2, 0.2 0.2))', 2154), 'test_model', 2);
+-- insert into api.test_bloc(geom, model) values (st_geomfromtext('polygon((-1 -1, -1 2, 2 2, 2 -1, -1 -1))', 2154), 'test_model');
+-- select id, sur_bloc, ss_blocs from api.test_bloc;
 
 -- select id, name, val, result_ss_blocs, formula, co2_eq from ___.results order by id ;
 
@@ -126,5 +128,5 @@ select api.get_histo_data('test_model');
 
 
 -- ------------------------------------------------------------------------------------------------
--- -- tests select for calculation
+-- -- tests unitaires
 -- ------------------------------------------------------------------------------------------------
