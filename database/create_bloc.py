@@ -41,7 +41,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
         # Dans le cas où on une liste de valeur, nous allons créer un nouveau tableau pour stocker les valeurs possibles
         # Donc on doit en plus ajouter une colonne qui y fait référence dans le bloc
         # Ainsi que les colonnes additionnelles et les jointures dans le bloc.
-            table_types += f"create table ___.{key}_type_table(val ___.{key}_type primary key, FE real, description text);\n"
+            table_types += f"create table ___.{key}_type_table(val ___.{key}_type primary key, FE real, incert real default 0, description text);\n"
             new_type += f"create type ___.{key}_type as enum ("
             for k in possible_values[key] : 
                 new_type += f"'{k}', "

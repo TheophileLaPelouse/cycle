@@ -192,7 +192,10 @@ begin
     n_sub = (n/len_sb)::integer ; 
     resized := array_fill(''::text, array[n_sub*new_size]) ;
     for i in 0..n_sub-1 loop
-        resized[i*new_size+1:i*new_size+len_sb] := tab[i*len_sb+1:i*len_sb+len_sb] ;
+        for j in 1..len_sb loop
+            resized[i*new_size+j] := tab[i*len_sb+j] ;
+        end loop ;
+        -- resized[i*new_size+1:i*new_size+len_sb] := tab[i*len_sb+1:i*len_sb+len_sb] ;
     end loop ;
     return resized ; 
 end ;
@@ -220,6 +223,12 @@ declare
     j integer := 1 ;
     car char ;
     prioritized varchar ;
+    k integer ;
+    symbols varchar[] := array['^', '>', '<', '*', '/', '+', '-', ''] ; 
+    prio integer[] :=array[4,3,3,2,2,1,1,0] ;
+    temp_op varchar ;
+    temp_op2 varchar ;
+    k2 integer ;
 begin 
     -- fonction qui réécrit une formule sous forme lisibles sans ambiguités je sais plus comment ça s'appelle mais 
     -- on a a+b*c qui devient a b c * +
@@ -247,7 +256,10 @@ begin
                 calc := array_cat(calc, array_fill(''::text, array[calc_sb_len])) ;
                 calc_length := array_append(calc_length, 0) ;
             else 
-                calc[idx*calc_sb_len+1:(idx+1)*calc_sb_len] = array_fill(''::text, array[calc_sb_len]) ;
+                for k in 1..calc_sb_len loop 
+                    calc[idx*calc_sb_len+k] := '' ;
+                end loop ;
+                -- calc[idx*calc_sb_len+1:(idx+1)*calc_sb_len] = array_fill(''::text, array[calc_sb_len]) ;
                 calc_length[idx+1] := 0 ;
             end if ; 
             flag_op := array_append(flag_op, false) ;
@@ -256,7 +268,10 @@ begin
                 last_op := array_cat(last_op, array_fill(''::text, array[last_op_sb_len])) ;
                 last_op_length := array_append(last_op_length, 0) ;
             else
-                last_op[idx*last_op_sb_len+1:(idx+1)*last_op_sb_len] = array_fill(''::text, array[last_op_sb_len]) ;
+                for k in 1..last_op_sb_len loop 
+                    last_op[idx*last_op_sb_len+k] := '' ;
+                end loop ;
+                -- last_op[idx*last_op_sb_len+1:(idx+1)*last_op_sb_len] = array_fill(''::text, array[last_op_sb_len]) ;
                 last_op_length[idx+1] := 0 ;
             end if ;
             idx := idx + 1 ; 
@@ -267,7 +282,10 @@ begin
             end if ; 
             -- raise notice 'là1' ;
             if 1 <= last_op_length[idx] then
-                calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
+                for k in 1..last_op_length[idx] loop 
+                    calc[(idx-1)*calc_sb_len+calc_length[idx]+k] := last_op[(idx-1)*last_op_sb_len+k] ;
+                end loop ;
+                -- calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
                 calc_length[idx] := calc_length[idx] + last_op_length[idx] ;
             end if ;
             if calc_length[idx] + calc_length[idx - 1] > calc_sb_len then 
@@ -276,7 +294,10 @@ begin
             end if ; 
             -- raise notice 'calc_length %', calc_length ;
             -- raise notice 'là % < %', (idx-2)*calc_sb_len+calc_length[idx-1]+1, (idx-2)*calc_sb_len+calc_length[idx-1]+calc_length[idx] ;
-            calc[(idx-2)*calc_sb_len+calc_length[idx-1]+1:(idx-2)*calc_sb_len+calc_length[idx-1]+calc_length[idx]] := calc[(idx-1)*calc_sb_len+1:(idx-1)*calc_sb_len+calc_length[idx]] ;
+            for k in 1..calc_length[idx] loop 
+                calc[(idx-2)*calc_sb_len+calc_length[idx-1]+k] := calc[(idx-1)*calc_sb_len+k] ;
+            end loop ;
+            -- calc[(idx-2)*calc_sb_len+calc_length[idx-1]+1:(idx-2)*calc_sb_len+calc_length[idx-1]+calc_length[idx]] := calc[(idx-1)*calc_sb_len+1:(idx-1)*calc_sb_len+calc_length[idx]] ;
             calc_length[idx-1] := calc_length[idx-1] + calc_length[idx] ;
             flag_op = array_remove(flag_op, flag_op[idx]) ;
             idx := idx - 1 ;
@@ -300,7 +321,20 @@ begin
             end if ;
             -- raise notice 'last_op %, args %', last_op, args[i] ;
             -- raise notice 'idx %', idx ; 
-            last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] := formula.insert_op(last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len], args[i]) ;
+            for k in 1..last_op_length[idx] loop 
+                if prio[array_position(symbols, last_op[(idx-1)*last_op_sb_len+k])] >= prio[array_position(symbols, args[i])] then 
+                    temp_op := last_op[(idx-1)*last_op_sb_len+k] ;
+                    last_op[(idx-1)*last_op_sb_len+k] := args[i] ;
+                    k2 := k + 1 ; 
+                end if ; 
+                if k2 > k then 
+                    temp_op2 := last_op[(idx-1)*last_op_sb_len+k2] ;
+                    last_op[(idx-1)*last_op_sb_len+k2] := temp_op ; 
+                    temp_op := temp_op2 ; 
+                end if ;
+            end loop ;
+            -- à tester
+            -- last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] := formula.insert_op(last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len], args[i]) ;
             last_op_length[idx] := last_op_length[idx] + 1 ;
             if prioritized = last_op[(idx-1)*last_op_sb_len+1] then 
                 flag_op[idx] := true ;
@@ -311,7 +345,10 @@ begin
                     calc_sb_len := 2*(calc_length[idx]+1) ;
                 end if ;
                 calc[(idx-1)*calc_sb_len+calc_length[idx]+1] := last_op[(idx-1)*last_op_sb_len+1] ;
-                last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len-1] := last_op[(idx-1)*last_op_sb_len+2:idx*last_op_sb_len] ;
+                for k in 1..last_op_length[idx]-1 loop 
+                    last_op[(idx-1)*last_op_sb_len+k] := last_op[(idx-1)*last_op_sb_len+k+1] ;
+                end loop ;
+                -- last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len-1] := last_op[(idx-1)*last_op_sb_len+2:idx*last_op_sb_len] ;
                 last_op_length[idx] := last_op_length[idx] - 1 ;
                 calc_length[idx] := calc_length[idx] + 1 ;
                 flag_op[idx] := false ;
@@ -325,7 +362,10 @@ begin
         calc := formula.resize_array(calc, calc_sb_len, (calc_length[idx] + last_op_length[idx])+1) ;
     end if ;
     if 1 <= last_op_length[idx] then 
-        calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
+        for k in 1..last_op_length[idx] loop 
+            calc[(idx-1)*calc_sb_len+calc_length[idx]+k] := last_op[(idx-1)*last_op_sb_len+k] ;
+        end loop ;
+        -- calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
         calc_length[idx] := calc_length[idx] + last_op_length[idx] ;
     end if ; 
     -- raise notice 'calc final %', calc ;
@@ -627,6 +667,7 @@ declare
     tac timestamp ;
     type_ varchar ; 
     inp_out_exists boolean ;
+    incertitude real ;
 begin 
     -- raise notice 'id_bloc = %, model_bloc = %', id_bloc, model_bloc ;
     -- tic := clock_timestamp() ;
@@ -650,11 +691,15 @@ begin
         if type_ = 'USER-DEFINED' then 
             query := 'select '''||col||''' as name, '||col||'_fe::real as val from api.'||b_typ||'_bloc where id = $1 ; '  ; 
             execute query into items using id_bloc ;
+            raise notice 'ICI à vérifier' ;
+            query := 'select incert from api.'||col||'_type_table where fe = $1 ;'; 
+            execute query into incertitude using items.val ;
         else 
             query := 'select '''||col||''' as name, '||col||'::real as val from ___.'||b_typ||'_bloc where id = $1 ; '  ; 
             execute query into items using id_bloc ;
+            incertitude := 0.0 ;
         end if ;
-        insert into inp_out(name, val) values (items.name, items.val) ;
+        insert into inp_out(name, val, incert) values (items.name, items.val, incertitude) ;
         -- raise notice 'items = %', items ;
     end loop ;
     insert into inp_out(name, val, incert) select name, val, incert from ___.global_values ;

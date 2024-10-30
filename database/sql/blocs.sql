@@ -222,7 +222,7 @@ create sequence ___.bassin_biologique_bloc_name_seq ;
 
 create type ___.tsejour_type as enum ('Faible charge', 'Moyenne charge', 'Forte charge');
 
-create table ___.tsejour_type_table(val ___.tsejour_type primary key, FE real, description text);
+create table ___.tsejour_type_table(val ___.tsejour_type primary key, FE real, incert real default 0, description text);
 insert into ___.tsejour_type_table(val) values ('Faible charge') ;
 insert into ___.tsejour_type_table(val) values ('Moyenne charge') ;
 insert into ___.tsejour_type_table(val) values ('Forte charge') ;
@@ -768,10 +768,10 @@ create sequence ___.rejets_eau_bloc_name_seq ;
 create type ___.oxi_type as enum ('bien oxygéné', 'peu oxygéné');
 create type ___.milieu_type as enum ('réserve,lac, estuaire', 'autres');
 
-create table ___.oxi_type_table(val ___.oxi_type primary key, FE real, description text);
+create table ___.oxi_type_table(val ___.oxi_type primary key, FE real, incert real default 0, description text);
 insert into ___.oxi_type_table(val) values ('bien oxygéné') ;
 insert into ___.oxi_type_table(val) values ('peu oxygéné') ;
-create table ___.milieu_type_table(val ___.milieu_type primary key, FE real, description text);
+create table ___.milieu_type_table(val ___.milieu_type primary key, FE real, incert real default 0, description text);
 insert into ___.milieu_type_table(val) values ('réserve,lac, estuaire') ;
 insert into ___.milieu_type_table(val) values ('autres') ;
 

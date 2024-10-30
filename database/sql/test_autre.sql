@@ -449,268 +449,268 @@
 -- end ;
 -- $$ ;
 -- select formula.sum_incert(val, incert) from inp_out ;
-create or replace function formula.state_function(sum real[], new_val real, new_incert real)
-returns real[]
-language plpgsql
-as $$
-declare 
-    sum_val real := sum[1] ;
-    sum_incert real := sum[2] ;
-begin 
-    if sum is null then 
-        return array[new_val, new_incert] ;
-    elseif new_val is null then 
-        return sum ;
-    end if ;
-    return array[sum_val + new_val, 
-            (sum_incert*sum_val + new_incert*new_val)/(sum_val + new_val)
-            ] ;
-end ;
-$$ ; 
+-- create or replace function formula.state_function(sum real[], new_val real, new_incert real)
+-- returns real[]
+-- language plpgsql
+-- as $$
+-- declare 
+--     sum_val real := sum[1] ;
+--     sum_incert real := sum[2] ;
+-- begin 
+--     if sum is null then 
+--         return array[new_val, new_incert] ;
+--     elseif new_val is null then 
+--         return sum ;
+--     end if ;
+--     return array[sum_val + new_val, 
+--             (sum_incert*sum_val + new_incert*new_val)/(sum_val + new_val)
+--             ] ;
+-- end ;
+-- $$ ; 
 
-create or replace function formula.final_function(state real[])
-returns ___.res 
-language plpgsql
-as $$
-declare 
-    res ___.res ;
-begin 
-    select into res state[1] as val, state[2] as incert ;
-    return res ;
-end ;
-$$ ;
+-- create or replace function formula.final_function(state real[])
+-- returns ___.res 
+-- language plpgsql
+-- as $$
+-- declare 
+--     res ___.res ;
+-- begin 
+--     select into res state[1] as val, state[2] as incert ;
+--     return res ;
+-- end ;
+-- $$ ;
 
-create or replace aggregate formula.sum_incert(val real, incert real)
-(
-    sfunc = formula.state_function,
-    stype = real[],
-    finalfunc = formula.final_function
-) ;
+-- create or replace aggregate formula.sum_incert(val real, incert real)
+-- (
+--     sfunc = formula.state_function,
+--     stype = real[],
+--     finalfunc = formula.final_function
+-- ) ;
 
-create or replace function formula.add(val1 ___.res, val2 ___.res)
-returns ___.res
-language plpgsql
-as $$
-declare 
-    res ___.res ;
-begin 
-    if val1.val is null then 
-        return val2 ;
-    elseif val2.val is null then 
-        return val1 ;
-    end if ;
-    res.val := val1.val + val2.val ;
-    res.incert := (val1.incert*val1.val + val2.incert*val2.val)/(val1.val + val2.val) ;
-    return res ;
-end ;
-$$ ;
+-- create or replace function formula.add(val1 ___.res, val2 ___.res)
+-- returns ___.res
+-- language plpgsql
+-- as $$
+-- declare 
+--     res ___.res ;
+-- begin 
+--     if val1.val is null then 
+--         return val2 ;
+--     elseif val2.val is null then 
+--         return val1 ;
+--     end if ;
+--     res.val := val1.val + val2.val ;
+--     res.incert := (val1.incert*val1.val + val2.incert*val2.val)/(val1.val + val2.val) ;
+--     return res ;
+-- end ;
+-- $$ ;
 
-create view api.results as
-with normal as (
-    select id, formula, name, detail_level, result_ss_blocs, val, co2_eq
-    from ___.results
-),
-intrant as (
-    select id, formula, name, detail_level, result_ss_blocs_intrant, val
-    from ___.results
-),
-in_use as (select normal.id, normal.name, normal.detail_level, normal.formula, co2_eq 
-from normal 
-join intrant on normal.id = intrant.id and normal.name = intrant.name 
-where formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null 
-and (result_ss_blocs = normal.val or result_ss_blocs_intrant = intrant.val) 
-),
-exploit as (select name, id, co2_eq, formula from in_use where name like '%_e'),
-constr as (select name, id, co2_eq, formula from in_use where name like '%_c')
-select ___.results.id, ___.bloc.name, model, jsonb_build_object(
-    'data', jsonb_agg(
-        jsonb_build_object(
-            'name', ___.results.name,
-            'formula', ___.results.formula,
-            'result', formula.add(___.results.result_ss_blocs, ___.results.result_ss_blocs_intrant),
-            'co2_eq', ___.results.co2_eq, 
-            'detail', ___.results.detail_level, 
-            'unknown', ___.results.unknowns,
-            'in use', case when ___.results.id = in_use.id and ___.results.name = in_use.name 
-            and ___.results.detail_level = in_use.detail_level then true else false end
-        )
-        )
-    ) as res, 
-    formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert) as co2_eq_e, 
-    formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert) as co2_eq_c
-from ___.results
-join ___.bloc on ___.bloc.id = ___.results.id
-left join in_use on ___.results.id = in_use.id and 
-___.results.name = in_use.name and ___.results.detail_level = in_use.detail_level
-left join exploit on ___.results.id = exploit.id and ___.results.name = exploit.name and ___.results.formula = exploit.formula
-left join constr on ___.results.id = constr.id and ___.results.name = constr.name and ___.results.formula = constr.formula
-where ___.results.formula is not null 
-group by ___.results.id, model, ___.bloc.name;
+-- create view api.results as
+-- with normal as (
+--     select id, formula, name, detail_level, result_ss_blocs, val, co2_eq
+--     from ___.results
+-- ),
+-- intrant as (
+--     select id, formula, name, detail_level, result_ss_blocs_intrant, val
+--     from ___.results
+-- ),
+-- in_use as (select normal.id, normal.name, normal.detail_level, normal.formula, co2_eq 
+-- from normal 
+-- join intrant on normal.id = intrant.id and normal.name = intrant.name 
+-- where formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null 
+-- and (result_ss_blocs = normal.val or result_ss_blocs_intrant = intrant.val) 
+-- ),
+-- exploit as (select name, id, co2_eq, formula from in_use where name like '%_e'),
+-- constr as (select name, id, co2_eq, formula from in_use where name like '%_c')
+-- select ___.results.id, ___.bloc.name, model, jsonb_build_object(
+--     'data', jsonb_agg(
+--         jsonb_build_object(
+--             'name', ___.results.name,
+--             'formula', ___.results.formula,
+--             'result', formula.add(___.results.result_ss_blocs, ___.results.result_ss_blocs_intrant),
+--             'co2_eq', ___.results.co2_eq, 
+--             'detail', ___.results.detail_level, 
+--             'unknown', ___.results.unknowns,
+--             'in use', case when ___.results.id = in_use.id and ___.results.name = in_use.name 
+--             and ___.results.detail_level = in_use.detail_level then true else false end
+--         )
+--         )
+--     ) as res, 
+--     formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert) as co2_eq_e, 
+--     formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert) as co2_eq_c
+-- from ___.results
+-- join ___.bloc on ___.bloc.id = ___.results.id
+-- left join in_use on ___.results.id = in_use.id and 
+-- ___.results.name = in_use.name and ___.results.detail_level = in_use.detail_level
+-- left join exploit on ___.results.id = exploit.id and ___.results.name = exploit.name and ___.results.formula = exploit.formula
+-- left join constr on ___.results.id = constr.id and ___.results.name = constr.name and ___.results.formula = constr.formula
+-- where ___.results.formula is not null 
+-- group by ___.results.id, model, ___.bloc.name;
 
-create or replace function api.get_histo_data(p_model varchar, bloc_name varchar default null)
-returns jsonb
-language plpgsql
-as $$
-declare
-    query text;
-    id_bloc integer;
-    ss_blocs_array integer[];
-    names varchar[] := array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
-    b_name varchar;
-    item record ; 
-    concr boolean;
-    js1 jsonb;
-    id_loop integer;
-    js2 jsonb;
-    res jsonb := '{}';
-begin
+-- create or replace function api.get_histo_data(p_model varchar, bloc_name varchar default null)
+-- returns jsonb
+-- language plpgsql
+-- as $$
+-- declare
+--     query text;
+--     id_bloc integer;
+--     ss_blocs_array integer[];
+--     names varchar[] := array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
+--     b_name varchar;
+--     item record ; 
+--     concr boolean;
+--     js1 jsonb;
+--     id_loop integer;
+--     js2 jsonb;
+--     res jsonb := '{}';
+-- begin
 
-    select into id_bloc id from api.bloc where name = bloc_name limit 1; -- limit 1 normally useless
-    raise notice 'id_bloc = %', id_bloc;
-    if id_bloc is null then
-        select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc is null;
-    else 
-        select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc = id_bloc;
-    end if;
-    raise notice 'ss_blocs_array = %', ss_blocs_array;
-    -- Loop through each bloc id
-    if array_length(ss_blocs_array, 1) = 0 or ss_blocs_array is null then
-        ss_blocs_array := array[id_bloc];
-    end if;
-    if array[1] is null then
-        return '{"total": {"ch4_c": 0, "ch4_e": 0, "co2_c": 0, "co2_e": 0, "n2o_c": 0, "n2o_e": 0, "co2_eq_c": 0, "co2_eq_e": 0}';
-    end if;
+--     select into id_bloc id from api.bloc where name = bloc_name limit 1; -- limit 1 normally useless
+--     raise notice 'id_bloc = %', id_bloc;
+--     if id_bloc is null then
+--         select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc is null;
+--     else 
+--         select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc = id_bloc;
+--     end if;
+--     raise notice 'ss_blocs_array = %', ss_blocs_array;
+--     -- Loop through each bloc id
+--     if array_length(ss_blocs_array, 1) = 0 or ss_blocs_array is null then
+--         ss_blocs_array := array[id_bloc];
+--     end if;
+--     if array[1] is null then
+--         return '{"total": {"ch4_c": 0, "ch4_e": 0, "co2_c": 0, "co2_e": 0, "n2o_c": 0, "n2o_e": 0, "co2_eq_c": 0, "co2_eq_e": 0}';
+--     end if;
 
-    foreach id_loop in array ss_blocs_array loop
-        -- Get the bloc name
-        select into item name, b_type from ___.bloc where id = id_loop;
-        b_name := item.name ;
-        select into concr concrete from api.input_output where b_type = item.b_type;
-        if concr or item.b_type = 'sur_bloc' then 
-            -- Calculate the sum of the values for the specified names
-            with results as (
-                select name, formula.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
-                from ___.results where id = id_loop and name = any(names) 
-                and formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null
-            )
-            select into js1 jsonb_build_object(
-                'n2o_c', coalesce((case when name = 'n2o_c' then result end), row(0, 0)::___.res),
-                'n2o_e', coalesce((case when name = 'n2o_e' then result end), row(0, 0)::___.res),
-                'ch4_c', coalesce((case when name = 'ch4_c' then result end), row(0, 0)::___.res),
-                'ch4_e', coalesce((case when name = 'ch4_e' then result end), row(0, 0)::___.res),
-                'co2_c', coalesce((case when name = 'co2_c' then result end), row(0, 0)::___.res),
-                'co2_e', coalesce((case when name = 'co2_e' then result end), row(0, 0)::___.res)
-            ) from results;
+--     foreach id_loop in array ss_blocs_array loop
+--         -- Get the bloc name
+--         select into item name, b_type from ___.bloc where id = id_loop;
+--         b_name := item.name ;
+--         select into concr concrete from api.input_output where b_type = item.b_type;
+--         if concr or item.b_type = 'sur_bloc' then 
+--             -- Calculate the sum of the values for the specified names
+--             with results as (
+--                 select name, formula.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
+--                 from ___.results where id = id_loop and name = any(names) 
+--                 and formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null
+--             )
+--             select into js1 jsonb_build_object(
+--                 'n2o_c', coalesce((case when name = 'n2o_c' then result end), row(0, 0)::___.res),
+--                 'n2o_e', coalesce((case when name = 'n2o_e' then result end), row(0, 0)::___.res),
+--                 'ch4_c', coalesce((case when name = 'ch4_c' then result end), row(0, 0)::___.res),
+--                 'ch4_e', coalesce((case when name = 'ch4_e' then result end), row(0, 0)::___.res),
+--                 'co2_c', coalesce((case when name = 'co2_c' then result end), row(0, 0)::___.res),
+--                 'co2_e', coalesce((case when name = 'co2_e' then result end), row(0, 0)::___.res)
+--             ) from results;
 
-            with results as (
-                select name, formula.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
-                from ___.results where id = id_loop and name = any(names) 
-                and formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null
-            )
-            select into js2 jsonb_build_object(
-                'co2_eq_c', coalesce((case when name like '%_c' then formula.sum_incert((result).val, (result).incert) end), row(0, 0)::___.res),
-                'co2_eq_e', coalesce((case when name like '%_e' then formula.sum_incert((result).val, (result).incert) end), row(0, 0)::___.res)
-            ) from results group by name;
+--             with results as (
+--                 select name, formula.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
+--                 from ___.results where id = id_loop and name = any(names) 
+--                 and formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null
+--             )
+--             select into js2 jsonb_build_object(
+--                 'co2_eq_c', coalesce((case when name like '%_c' then formula.sum_incert((result).val, (result).incert) end), row(0, 0)::___.res),
+--                 'co2_eq_e', coalesce((case when name like '%_e' then formula.sum_incert((result).val, (result).incert) end), row(0, 0)::___.res)
+--             ) from results group by name;
 
-            res := jsonb_set(res, array[b_name], js1||js2, true);
-        end if;
-    end loop;
+--             res := jsonb_set(res, array[b_name], js1||js2, true);
+--         end if;
+--     end loop;
 
-    with results as (
-        select name, formula.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
-        from ___.results where id = any(ss_blocs_array) and name = any(names) 
-        and formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null
-    )
-    select into js1 jsonb_build_object(
-        'n2o_c', coalesce((case when name = 'n2o_c' then result end), row(0, 0)::___.res),
-        'n2o_e', coalesce((case when name = 'n2o_e' then result end), row(0, 0)::___.res),
-        'ch4_c', coalesce((case when name = 'ch4_c' then result end), row(0, 0)::___.res),
-        'ch4_e', coalesce((case when name = 'ch4_e' then result end), row(0, 0)::___.res),
-        'co2_c', coalesce((case when name = 'co2_c' then result end), row(0, 0)::___.res),
-        'co2_e', coalesce((case when name = 'co2_e' then result end), row(0, 0)::___.res)
-    ) from results;
+--     with results as (
+--         select name, formula.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
+--         from ___.results where id = any(ss_blocs_array) and name = any(names) 
+--         and formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null
+--     )
+--     select into js1 jsonb_build_object(
+--         'n2o_c', coalesce((case when name = 'n2o_c' then result end), row(0, 0)::___.res),
+--         'n2o_e', coalesce((case when name = 'n2o_e' then result end), row(0, 0)::___.res),
+--         'ch4_c', coalesce((case when name = 'ch4_c' then result end), row(0, 0)::___.res),
+--         'ch4_e', coalesce((case when name = 'ch4_e' then result end), row(0, 0)::___.res),
+--         'co2_c', coalesce((case when name = 'co2_c' then result end), row(0, 0)::___.res),
+--         'co2_e', coalesce((case when name = 'co2_e' then result end), row(0, 0)::___.res)
+--     ) from results;
 
-    with results as (
-        select name, formula.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
-        from ___.results where id = any(ss_blocs_array) and name = any(names) 
-        and formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null
-    )
-    select into js2 jsonb_build_object(
-        'co2_eq_c', coalesce((case when name like '%_c' then formula.sum_incert((result).val, (result).incert) end), row(0, 0)::___.res),
-        'co2_eq_e', coalesce((case when name like '%_e' then formula.sum_incert((result).val, (result).incert) end), row(0, 0)::___.res)
-    ) from results group by name;
+--     with results as (
+--         select name, formula.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
+--         from ___.results where id = any(ss_blocs_array) and name = any(names) 
+--         and formula.add(result_ss_blocs, result_ss_blocs_intrant) is not null
+--     )
+--     select into js2 jsonb_build_object(
+--         'co2_eq_c', coalesce((case when name like '%_c' then formula.sum_incert((result).val, (result).incert) end), row(0, 0)::___.res),
+--         'co2_eq_e', coalesce((case when name like '%_e' then formula.sum_incert((result).val, (result).incert) end), row(0, 0)::___.res)
+--     ) from results group by name;
 
-    res := jsonb_set(res, array['total'], js1||js2, true);
-    return res;
-end;
-$$;
+--     res := jsonb_set(res, array['total'], js1||js2, true);
+--     return res;
+-- end;
+-- $$;
 
-select api.get_histo_data('test_model') ;
+-- select api.get_histo_data('test_model') ;
 
-with normal as (
-    select id, formula, name, detail_level, result_ss_blocs, val, co2_eq
-    from ___.results 
-),
-norm_lvl_max as (
-    select id, name, max(detail_level) as max_lvl from normal where detail_level < 6 group by id, name 
-),
-intrant as (
-    select id, formula, name, detail_level, result_ss_blocs_intrant, val
-    from ___.results
-),
-in_use as (select distinct normal.id, normal.name, normal.detail_level, normal.formula, co2_eq 
-from normal 
-join intrant on normal.id = intrant.id and normal.name = intrant.name 
-join norm_lvl_max on normal.id = norm_lvl_max.id and normal.name = norm_lvl_max.name
-where ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null 
-and (normal.detail_level = norm_lvl_max.max_lvl or normal.detail_level = 6)
-),
-exploit as (select distinct name, id, co2_eq from in_use where name like '%_e')
-select id, name, formula.sum_incert((co2_eq).val, (co2_eq).incert) from exploit group by name, id;
+-- with normal as (
+--     select id, formula, name, detail_level, result_ss_blocs, val, co2_eq
+--     from ___.results 
+-- ),
+-- norm_lvl_max as (
+--     select id, name, max(detail_level) as max_lvl from normal where detail_level < 6 group by id, name 
+-- ),
+-- intrant as (
+--     select id, formula, name, detail_level, result_ss_blocs_intrant, val
+--     from ___.results
+-- ),
+-- in_use as (select distinct normal.id, normal.name, normal.detail_level, normal.formula, co2_eq 
+-- from normal 
+-- join intrant on normal.id = intrant.id and normal.name = intrant.name 
+-- join norm_lvl_max on normal.id = norm_lvl_max.id and normal.name = norm_lvl_max.name
+-- where ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null 
+-- and (normal.detail_level = norm_lvl_max.max_lvl or normal.detail_level = 6)
+-- ),
+-- exploit as (select distinct name, id, co2_eq from in_use where name like '%_e')
+-- select id, name, formula.sum_incert((co2_eq).val, (co2_eq).incert) from exploit group by name, id;
 
-with results as (
-    select name, ___.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
-    from ___.results where id = 4 and name in ('n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e') 
-    and ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null
-)
-select jsonb_build_object(
-                'n2o_c', coalesce((case when name = 'n2o_c' then result end), row(0, 0)::___.res),
-                'n2o_e', coalesce((case when name = 'n2o_e' then result end), row(0, 0)::___.res),
-                'ch4_c', coalesce((case when name = 'ch4_c' then result end), row(0, 0)::___.res),
-                'ch4_e', coalesce((case when name = 'ch4_e' then result end), row(0, 0)::___.res),
-                'co2_c', coalesce((case when name = 'co2_c' then result end), row(0, 0)::___.res),
-                'co2_e', coalesce((case when name = 'co2_e' then result end), row(0, 0)::___.res)
-            ) from results;
-
-
-with results as (
-    select name, co2_eq 
-    from ___.results where id = 4 and name in ('n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e') 
-), 
-exploit as (select distinct name, co2_eq from results where name like '%_e'),
-constr as (select distinct name, co2_eq from results where name like '%_c')
-select jsonb_build_object(
-    'co2_eq_c', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
-    'co2_eq_e', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
-) from exploit, constr ;
+-- with results as (
+--     select name, ___.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
+--     from ___.results where id = 4 and name in ('n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e') 
+--     and ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null
+-- )
+-- select jsonb_build_object(
+--                 'n2o_c', coalesce((case when name = 'n2o_c' then result end), row(0, 0)::___.res),
+--                 'n2o_e', coalesce((case when name = 'n2o_e' then result end), row(0, 0)::___.res),
+--                 'ch4_c', coalesce((case when name = 'ch4_c' then result end), row(0, 0)::___.res),
+--                 'ch4_e', coalesce((case when name = 'ch4_e' then result end), row(0, 0)::___.res),
+--                 'co2_c', coalesce((case when name = 'co2_c' then result end), row(0, 0)::___.res),
+--                 'co2_e', coalesce((case when name = 'co2_e' then result end), row(0, 0)::___.res)
+--             ) from results;
 
 
-create or replace function formula.read_formula(formula text, colnames varchar[])
-returns varchar[]
-language plpgsql as
-$$
-declare 
-    list varchar[] ;
-    to_return varchar[] ;
-    pat text ;
-begin
-    pat := '[\+\-\*\/\^\(\)\<\>]' ; 
-    formula := regexp_replace(formula,  '[^0-9a-zA-Z\+\-\*\/\^\(\)\.\>\<\=\_]', '', 'g');
-    list := regexp_split_to_array(formula, pat) ;
-    select into to_return array_agg(elem) from unnest(list) as elem where elem = any(colnames) ;
-    return to_return ;
-end ;
-$$ ;
+-- with results as (
+--     select name, co2_eq 
+--     from ___.results where id = 4 and name in ('n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e') 
+-- ), 
+-- exploit as (select distinct name, co2_eq from results where name like '%_e'),
+-- constr as (select distinct name, co2_eq from results where name like '%_c')
+-- select jsonb_build_object(
+--     'co2_eq_c', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
+--     'co2_eq_e', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
+-- ) from exploit, constr ;
+
+
+-- create or replace function formula.read_formula(formula text, colnames varchar[])
+-- returns varchar[]
+-- language plpgsql as
+-- $$
+-- declare 
+--     list varchar[] ;
+--     to_return varchar[] ;
+--     pat text ;
+-- begin
+--     pat := '[\+\-\*\/\^\(\)\<\>]' ; 
+--     formula := regexp_replace(formula,  '[^0-9a-zA-Z\+\-\*\/\^\(\)\.\>\<\=\_]', '', 'g');
+--     list := regexp_split_to_array(formula, pat) ;
+--     select into to_return array_agg(elem) from unnest(list) as elem where elem = any(colnames) ;
+--     return to_return ;
+-- end ;
+-- $$ ;
 do $$
 declare 
     tab integer[] := array[1, 2, 3, 4, 5] ;
@@ -718,6 +718,7 @@ declare
     i integer := 1 ;
     j integer := 2 ;
 begin 
+    tab2[2:4] := tab[1:3] ;
     raise notice 'tab %', tab[1:5] ;
     tab2[i:j] := tab[i:j] ;
 end ;
@@ -769,3 +770,11 @@ begin
     return resized ; 
 end ;
 $$ ; 
+
+SELECT
+    p.proname AS function_name
+FROM
+    pg_proc p
+JOIN
+    pg_namespace n ON p.pronamespace = n.oid
+where n.nspname = 'formula' ;

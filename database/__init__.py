@@ -154,7 +154,7 @@ def create_project(project_name, srid=2154, debug=False):
     reset_project(project_name, srid, debug)
 
 def load_file(project_name, file):
-    command = ['psql', f'--file={file}', f'service={get_service()} dbname={project_name}']
+    command = ['psql', '-b', f'--file={file}', f'service={get_service()} dbname={project_name}']
     result = subprocess.run(command)
     if result.returncode:
         raise RuntimeError(f"error in command: {' '.join(command)}")
@@ -178,24 +178,24 @@ def reset_project(project_name, srid, debug=False):
             ;
             """)
         print("où3")
-        load_file(project_name, os.path.join(__current_dir, 'sql', 'data.sql'))
-        load_file(project_name, os.path.join(__current_dir, 'sql', 'api.sql'))
-        load_file(project_name, os.path.join(__current_dir, 'sql', 'formula.sql'))
-        load_file(project_name, os.path.join(__current_dir, 'sql', 'special_blocs.sql'))
-        load_file(project_name, os.path.join(__current_dir, 'sql', 'blocs.sql'))
+        # load_file(project_name, os.path.join(__current_dir, 'sql', 'data.sql'))
+        # load_file(project_name, os.path.join(__current_dir, 'sql', 'api.sql'))
+        # load_file(project_name, os.path.join(__current_dir, 'sql', 'formula.sql'))
+        # load_file(project_name, os.path.join(__current_dir, 'sql', 'special_blocs.sql'))
+        # load_file(project_name, os.path.join(__current_dir, 'sql', 'blocs.sql'))
         
-        # with open(os.path.join(__current_dir, 'sql', 'data.sql')) as f:
-        #     cur.execute(f.read())
-        # print("où4")
-        # with open(os.path.join(__current_dir, 'sql', 'api.sql')) as f:
-        #     cur.execute(f.read())
-        # with open(os.path.join(__current_dir, 'sql', 'formula.sql')) as f:
-        #     cur.execute(f.read())
-        # print("où5")
-        # with open(os.path.join(__current_dir, 'sql', 'special_blocs.sql')) as f:
-        #     cur.execute(f.read())
-        # with open(os.path.join(__current_dir, 'sql', 'blocs.sql')) as f:
-        #     cur.execute(f.read())
+        with open(os.path.join(__current_dir, 'sql', 'data.sql')) as f:
+            cur.execute(f.read())
+        print("où4")
+        with open(os.path.join(__current_dir, 'sql', 'api.sql')) as f:
+            cur.execute(f.read())
+        with open(os.path.join(__current_dir, 'sql', 'formula.sql')) as f:
+            cur.execute(f.read())
+        print("où5")
+        with open(os.path.join(__current_dir, 'sql', 'special_blocs.sql')) as f:
+            cur.execute(f.read())
+        with open(os.path.join(__current_dir, 'sql', 'blocs.sql')) as f:
+            cur.execute(f.read())
         print("où5.2")
         # Custom blocs 
         custom_sql = os.path.join(CYCLE_DIR, project_name, 'custom_blocs.sql')
