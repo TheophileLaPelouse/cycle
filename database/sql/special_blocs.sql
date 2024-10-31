@@ -41,8 +41,8 @@ as $$
 declare
     ups integer[] ;
     n integer ; 
-    i integer ;
-    s real ; 
+    i integer := 1;
+    s real := 0; 
     val real ;
     b_typ ___.bloc_type ;
     col varchar ;
@@ -52,22 +52,24 @@ begin
     select into ups array_agg(up) from ___.link where down = id_source;
     n := array_length(ups, 1) ;
     while i < n + 1 loop 
-        raise notice 'ups[i] = %', ups[i] ;
         select into b_typ b_type from ___.bloc where id = ups[i];
+        raise notice 'b_typ = %, col = %', b_typ, col ;
         if b_typ = 'lien' then 
-            ups := array_append(ups, (select up from ___.link where down = ups[i]));
+            ups := array_append(ups, (select up from ___.link where down = ups[i]
+             and 'lien' != (select b_type from api.bloc where id = ___.link.up)::varchar));
             n := n + 1 ;
         end if ;
-        if exists(select 1 from information_schema.columns where table_name = b_typ||'_bloc' and column_name = col) then 
+        if col = any((select outputs from api.input_output where b_type = b_typ)::varchar[]) then
             query := 'select '||col||' from ___.'||b_typ||'_bloc where id = $1';
             execute query using ups[i] into val;
             s := s + val;
-        elseif exists(select 1 from information_schema.columns where table_name = b_typ||'_bloc' and column_name = col||'_s') then 
+        elseif col||'_s' = any((select outputs from api.input_output where b_type = b_typ)::varchar[]) then 
             query := 'select '||col||'_s from ___.'||b_typ||'_bloc where id = $1';
             execute query using ups[i] into val;
             s := s + val;
-        i := i + 1 ;
+       
         end if ; 
+        i := i + 1 ;
     end loop ;
     query := 'update api.source_bloc set '||col||'_s = $1 where id = $2';
     execute query using s, id_source;
@@ -78,6 +80,7 @@ $$ ;
 create or replace function ___.source_link_trigger_function() returns trigger as $$
 begin
     if new.down in (select id from api.source_bloc) then 
+        raise notice 'on y est' ; 
         perform ___.update_source_bloc(new.down);
     end if ;
     return new ;

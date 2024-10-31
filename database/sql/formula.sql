@@ -82,6 +82,7 @@ declare
     flag boolean := false ;
     n integer ;
     i integer ; 
+    c integer := 1 ; 
 begin 
     select into b_typ_fils b_type from ___.bloc where id = id_bloc ;
     select into links_up array_agg(api.link.up) from api.link where down = id_bloc and model = model_bloc ;    
@@ -93,19 +94,20 @@ begin
     i = 1; 
     while i < n+1 loop
         up_ = links_up[i] ;
-        raise notice 'up_ = %', up_ ;
+        -- raise notice 'up_ = %', up_ ;
         select into b_typ b_type from ___.bloc where id = up_ ;
-        raise notice 'b_typ = %', b_typ ;
+        -- raise notice 'b_typ = %', b_typ ;
         select array_agg(column_name) into colnames from information_schema.columns, api.input_output  
         where table_name = b_typ||'_bloc' and table_schema = 'api' and 
         b_type = b_typ and column_name = any(outputs) ;
 
-        if b_typ::varchar = 'lien' or b_typ::varchar = 'link' then 
-            select into links_up array_cat(links_up, array_agg(api.link.up)) from api.link where down = up_ and model = model_bloc ;
+        if b_typ::varchar = 'lien' then 
+            select into links_up array_cat(links_up, array_agg(api.link.up)) from api.link where down = up_ and model = model_bloc
+            and 'lien' != (select b_type from api.bloc where id = api.link.up)::varchar  ;
             n := array_length(links_up, 1) ;
         end if ;
-        raise notice 'links_up2 = %', links_up ;
-        raise notice 'colnames = %', colnames ;
+        -- raise notice 'links_up2 = %', links_up ;
+        -- raise notice 'colnames = %', colnames ;
         if colnames is not null then 
         foreach col in array colnames loop
             query = 'select '||col||' from ___.'||b_typ||'_bloc where id = $1 ;' ;
@@ -156,6 +158,23 @@ begin
     list := regexp_split_to_array(formula, pat) ;
     select into to_return array_agg(elem) from unnest(list) as elem where elem = any(colnames) ;
     return to_return ;
+end ;
+$$ ;
+
+create or replace function formula.prio(op varchar)
+returns integer
+language plpgsql
+as $$
+begin
+    if op = '^' then return 4 ;
+    elseif op = '>' then return 3 ;
+    elseif op = '<' then return 3 ;
+    elseif op = '*' then return 2 ;
+    elseif op = '/' then return 2 ;
+    elseif op = '+' then return 1 ;
+    elseif op = '-' then return 1 ;
+    else return 0 ;
+    end if ;
 end ;
 $$ ;
 
@@ -312,6 +331,15 @@ begin
             calc[(idx-1)*calc_sb_len+calc_length[idx]+1] := args[i];
             calc_length[idx] := calc_length[idx] + 1 ;
         elseif args[i] ~ pat then
+            if args[i] = '-' and args[i-1] ~ pat then 
+                if calc_length[idx]+1 > calc_sb_len then 
+                    calc := formula.resize_array(calc, calc_sb_len, 2*(calc_length[idx]+1)) ;
+                    calc_sb_len := 2*(calc_length[idx]+1) ;
+                end if ;
+                calc[(idx-1)*calc_sb_len+calc_length[idx]+1] := '0';
+                calc_length[idx] := calc_length[idx] + 1 ;
+            end if ;
+
             if last_op_length[idx] > 0 then 
                 prioritized := last_op[(idx-1)*last_op_sb_len+1] ;
             else 
@@ -324,8 +352,12 @@ begin
             end if ;
             -- raise notice 'last_op %, args %', last_op, args[i] ;
             -- raise notice 'idx %', idx ; 
+            last_op_length[idx] := last_op_length[idx] + 1 ;
             for k in 1..last_op_length[idx] loop 
-                if prio[array_position(symbols, last_op[(idx-1)*last_op_sb_len+k])] >= prio[array_position(symbols, args[i])] then 
+                -- raise notice 'k %, last_op %', k, last_op[(idx-1)*last_op_sb_len+k] ;
+                -- raise notice 'args %', args[i] ;
+                -- raise notice 'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
+                if formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) then 
                     temp_op := last_op[(idx-1)*last_op_sb_len+k] ;
                     last_op[(idx-1)*last_op_sb_len+k] := args[i] ;
                     k2 := k + 1 ; 
@@ -338,7 +370,7 @@ begin
             end loop ;
             -- à tester
             -- last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] := formula.insert_op(last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len], args[i]) ;
-            last_op_length[idx] := last_op_length[idx] + 1 ;
+            
             if prioritized = last_op[(idx-1)*last_op_sb_len+1] then 
                 flag_op[idx] := true ;
             end if ;
@@ -371,7 +403,7 @@ begin
         -- calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
         calc_length[idx] := calc_length[idx] + last_op_length[idx] ;
     end if ; 
-    -- raise notice 'calc final %', calc ;
+    raise notice 'calc final %', calc ;
     return calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ; 
 end ;
 $$ ;
@@ -461,8 +493,8 @@ begin
         -- raise notice 'calc_val %', calc_val ;
         -- raise notice 'calc_incert %', calc_incert ;
     end loop ; 
-    raise notice 'val %', calc_val[fin] ;
-    raise notice 'incert %', calc_incert[fin] ;
+    -- raise notice 'val %', calc_val[fin] ;
+    -- raise notice 'incert %', calc_incert[fin] ;
     select into result calc_val[fin] as val, calc_incert[fin] as incert;
     return result ;
     
@@ -476,6 +508,7 @@ $$
 declare 
     pat varchar := '[\+\-\*\/\^\(\)\>\<]' ;
     rightside text ; 
+    colnames varchar[] ;
     operators varchar[] ;
     op varchar ;
     args varchar[] ;
@@ -498,6 +531,10 @@ begin
     formul := regexp_replace(formula, '[^0-9a-zA-Z\+\-\*\/\^\(\)\.\>\<\=\_]', '', 'g');
     formul := regexp_replace(formula, '\*\*', '^', 'g') ;
     rightside := split_part(formul, '=', 2) ;
+
+    select into colnames array_agg(name) from inp_out ; 
+    args := formula.read_formula(rightside, colnames) ;
+
     select into notnowns distinct array_agg(distinct elem) 
     from unnest(args) as elem 
     left join inp_out on name = elem 
@@ -512,9 +549,9 @@ begin
             insert into ___.results(id, name, detail_level, formula, unknowns) values (id_bloc, to_calc, detail_level, formul, notnowns) ;
         end if ; 
     else 
-        
+        -- raise notice 'calc %', formula.write_formula(rightside) ;
         result := formula.calc_incertitudes(formula.write_formula(rightside)) ;
-        raise notice 'calc %', formula.write_formula(rightside) ;
+        
         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then 
             update ___.results set val = result, unknowns = null where name = to_calc and ___.results.formula = formul and id = id_bloc ;
         else
@@ -527,124 +564,6 @@ begin
 end ;
 $$ ;
 
-
--- create or replace function formula.calculate_formula(formula text, id_bloc integer, detail_level integer, to_calc varchar)
--- returns void
--- language plpgsql as
--- $$
--- declare 
---     pat varchar := '[\+\-\*\/\^\(\)\>\<]' ;
---     rightside text ; 
---     operators varchar[] ;
---     op varchar ;
---     args varchar[] ;
---     arg varchar ;
---     queries text[] := array['', '', '', '', '', '']::text[] ;
---     len integer ;
---     to_cast boolean[] := array[false, false, false, false, false]::boolean[] ;
---     idx integer ;
---     query text ;
---     val_arg real ;
---     i integer ; 
---     j integer := 1 ;
---     flag boolean := true ;
---     result real ;
---     notnowns varchar[] := array[]::varchar[] ; 
---     formul text ;
---     tic timestamp ;
---     tac timestamp ;
--- begin
---     -- formul := replace(formula, ' ', '') ;
---     formul := regexp_replace(formula, '[^0-9a-zA-Z\+\-\*\/\^\(\)\.\>\<\=\_]', '', 'g');
---     formul := regexp_replace(formula, '\*\*', '^', 'g') ;
---     raise notice 'formula = %', formul ;
---     rightside := '('||split_part(formul, '=', 2)||')' ;
---     -- On met entre parenthèse parce que le code parcours la formule en fonction des parenthèses
---     select into operators array_agg(match[1]) from regexp_matches(rightside,  '(\s*[\+\-\*\/\^\(\)\>\<]\s*)', 'g') as match ;
---     raise notice 'operators = %', operators ;
---     raise notice 'rightside = %', rightside ;
---     select into args array_remove(regexp_split_to_array(rightside, pat), '') ;
---     raise notice 'args = %', args ;
---     idx := 1 ;
---     query := '' ;
---     len := array_length(queries, 1) ;
---     -- On regarde si les arguments de la formule sont connus.
---     select into notnowns distinct array_agg(distinct elem) 
---     from unnest(args) as elem 
---     left join inp_out on name = elem 
---     where (val is null and name = elem) 
---     or (elem not in (select name from inp_out) and not elem ~ '[0-9].*');
---     -- select into notnowns array_agg(name) from inp_out where val is null and name in (select unnest(args)) ;
---     raise notice 'unknowns = %', notnowns ;
---     if array_length(notnowns, 1) > 0 then
---         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then
---             update ___.results set val=null, unknowns = notnowns where name = to_calc and ___.results.formula = formul and id = id_bloc ;
---         else 
---             insert into ___.results(id, name, detail_level, formula, unknowns) values (id_bloc, to_calc, detail_level, formul, notnowns) ;
---         end if ; 
---     else 
---         -- On parcours la formule en fonction des parenthèses pour créer une requête SQL de calcul qui correspond à la formule
---         for i in 1..array_length(operators, 1) loop
---             raise notice 'query = %', query ;
---             raise notice 'queries = %', queries ;
---             raise notice 'i = %, j = %, op = %, arg = %', i, j, operators[i], args[j] ;
-            
---             if regexp_matches(args[j], '^[0-9]+(\.[0-9]+)?$') is not null then 
---                 val_arg := args[j]::real ;
---             else
---                 select into val_arg val from inp_out where name = args[j] ;
---             end if ; 
---             raise notice 'val_arg = %', val_arg ;
---             op = operators[i] ;
---             if op = '(' then 
---                 if idx > len then 
---                     queries := array_append(queries, '') ;
---                     to_cast := array_append(to_cast, false) ;
---                 end if ; 
---                 raise notice 'query avant ( = %', query ;
---                 query := query||op ; 
---                 queries[idx] := query ; 
-                
---                 if operators[i+1] != '(' then 
---                     query := query||val_arg ;
---                     j := j + 1 ;
---                 end if ;
---                 idx := idx + 1 ;
---             elseif operators[i+1] = '(' then 
---                 query := query||op ;
---             elseif op = '>' or op = '<' then 
---                 query := query||op||val_arg ; 
---                 j := j + 1 ;
---                 to_cast[idx] := true ;
---             elseif op = ')' then
---                 raise notice 'query above here = %', query ;
---                 query := query||op ;
---                 if to_cast[idx] then 
---                     query := query||'::int::real' ; -- boolean to real
---                     to_cast[idx] := false ;
---                 raise notice 'query here = %', query ;
---                 end if ;
---                 idx := idx - 1 ;
---                 -- query := queries[idx]||query ;
---             else
-                
---                 query := query||op||val_arg ;
---                 j := j + 1 ;
---             end if ;
---         end loop ;
---         raise notice 'query = %', query ;
---         execute 'select '||query into result ;
---         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then 
---             update ___.results set val = result, unknowns = null where name = to_calc and ___.results.formula = formul and id = id_bloc ;
---         else
---             insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail_level, result, formul) ;
---         end if ; 
---         -- On update inp_out pour les futurs calculs si besoin 
---         update inp_out set val = result where name = to_calc and val is null;
---     end if ;
---     return ;
--- end ;
--- $$ ;
 
 create or replace function api.calculate_bloc(id_bloc integer, model_bloc text, on_update boolean default false)
 returns varchar
@@ -707,6 +626,7 @@ begin
     end loop ;
     insert into inp_out(name, val, incert) select name, val, incert from ___.global_values ;
     flag := api.recup_entree(id_bloc, model_bloc) ;
+    raise notice 'flag = %', flag ;
     if not flag and on_update then
         drop table inp_out ;
         return 'No new entry' ;
@@ -754,10 +674,9 @@ begin
             c := c + 1 ;
             to_calc := formula.pop('treatment_lifo', true) ;
             for f, detail in (select formula, detail_level from bilan where leftside = to_calc) loop
-                raise notice 'f = %', f ;
+                -- raise notice 'f = %', f ;
                 -- update tableau ___.result et inp_out
                 perform formula.calculate_formula(f, id_bloc, detail, to_calc) ;
-                raise notice 'result = %', result ;
                 -- insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail, result, f) ;
             end loop ;
             with max_detail as (select max(detail_level) as max_detail from ___.results
@@ -786,7 +705,7 @@ begin
         end if ;
     end loop ;
     tac := clock_timestamp() ;
-    raise notice 'Time to calculate = %', tac - tic ;
+    -- raise notice 'Time to calculate = %', tac - tic ;
     return 'Calculation done' ;
 end ;
 $$ ;
@@ -798,6 +717,8 @@ as $$
 declare
     downs integer ;
     new_up integer ; 
+    c integer ; 
+    count integer ; 
 begin
 -- Recalcul les émissions en fonction des liens entre les blocs.
     create temp table fifo2(id serial primary key, value integer) on commit drop;
@@ -805,12 +726,16 @@ begin
     loop
         insert into fifo2(value) values (downs) ;
     end loop;
+    select into count count(*) from fifo2 ;
     if deleted then
         delete from api.link where up = id_bloc and model = model_name ;
     end if ;
-    while (select count(*) from fifo2) > 0
+    c := 0 ;
+    while c < count and c < 1000
     loop
-        new_up := formula.pop('fifo2', true) ;
+        c := c + 1 ;
+        raise notice 'fifo2 = %', (select array_agg(value) from fifo2) ;
+        select into new_up value from fifo2 where id = c ;
         if deleted then 
         -- On doit tout recalculer donc on_update = False pour être sûr de refaire tout le calcul
             perform api.calculate_bloc(new_up, model_name, false) ; 
@@ -819,11 +744,18 @@ begin
             perform api.calculate_bloc(new_up, model_name, true) ;
         end if ; 
         perform api.update_results_ss_bloc(new_up, id_bloc) ; 
+        -- raise notice 'downs = %', (select array_agg(down) from api.link where up = new_up and model = model_name) ;
         for downs in (select down from api.link where up = new_up and model = model_name)
         loop
-            insert into fifo2(value) values (downs) ;
+            if downs not in (select value from fifo2) then 
+                insert into fifo2(value) values (downs) ;
+                count := count + 1 ;
+            end if ;
         end loop ;
     end loop ;
+    if c = 100 then 
+        raise exception 'Too many iterations' ;
+    end if ;
     drop table fifo2 ; 
 end ;
 $$ ;
@@ -878,14 +810,12 @@ begin
                     res.val := (items.result_ss_blocs).val ;
                     res.incert := (items.result_ss_blocs).incert ;
                     if res_intrant is not null then 
-                        s_intrant.incert := (s_intrant.incert*s_intrant.val + res_intrant.incert*res_intrant.val)/(s_intrant.val + res_intrant.val) ;
-                        s_intrant.val := s_intrant.val + res_intrant.val ;
+                        s_intrant := ___.add(s_intrant, res_intrant) ;
                     else 
                         flag_intrant := false ;
                     end if ;
                     if res is not null then 
-                        s.incert := (s.incert*s.val + res.incert*res.val)/(s.val + res.val) ;
-                        s.val := s.val + res.val ;
+                        s := ___.add(s, res) ;                     
                     else 
                         flag := false ;
                     end if ;
@@ -927,11 +857,14 @@ declare
     n_sb boolean;
     s_old ___.res ;
     s_new ___.res ;
-    test record ; 
+    s_new_record record ; 
+    s_old_record record ;
     new_res ___.res ;
     tic timestamp ; 
     tac timestamp ; 
     continue boolean[] := array[true, true] ; 
+    
+    c integer ;
 begin   
     create temp table old_results(id integer, name varchar, result_ss_blocs ___.res, result_ss_blocs_intrant ___.res) on commit drop ;
     insert into old_results(id, name, result_ss_blocs, result_ss_blocs_intrant) 
@@ -950,18 +883,22 @@ begin
 
     insert into fifo(value) values (old_sur_bloc) ;
     sb := id_bloc ;
-    while (select count(*) from fifo) > 0 loop
-        raise notice 'old_results = %', (select result_ss_blocs from old_results where name = 'co2_e' and id = sb and result_ss_blocs is not null limit 1) ;
-        raise notice 'new_results = %', (select result_ss_blocs from ___.results where name = 'co2_e' and id = sb and result_ss_blocs is not null limit 1) ;
+    c := 0 ;
+    while (select count(*) from fifo) > 0 and c < 100 loop
+        raise notice 'fifo = %', (select array_agg(value) from fifo) ;
+        c := c + 1 ;
+        -- raise notice 'c = %', c ;
+        -- raise notice 'old_results = %', (select result_ss_blocs from old_results where name = 'co2_e' and id = sb and result_ss_blocs is not null limit 1) ;
+        -- raise notice 'new_results = %', (select result_ss_blocs from ___.results where name = 'co2_e' and id = sb and result_ss_blocs is not null limit 1) ;
         container := formula.pop('fifo')::integer ;
         raise notice 'container = %, sb = %', container, sb ;
         
         foreach k in array keys loop
-            select into s_old result_ss_blocs from old_results where name = k and id = sb and result_ss_blocs is not null ;
-            select into test result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
-            s_new.val := (test.result_ss_blocs).val ;
-            s_new.incert := (test.result_ss_blocs).incert ;
-            raise notice 's_new = %, s_old = %', s_new, s_old ;
+            select into s_old_record result_ss_blocs from old_results where name = k and id = sb and result_ss_blocs is not null ;
+            select into s_new_record result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
+            s_old := s_old_record.result_ss_blocs ;
+            s_new := s_new_record.result_ss_blocs ;
+            -- raise notice 's_new = %, s_old = %', s_new, s_old ;
             -- select into s_new result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
             -- Je sais pas pouquoi la ligne d'au dessus ne marche pas
             if s_new is null then
@@ -981,10 +918,10 @@ begin
             else 
                 continue[1] := false ;
             end if ;
-            select into s_old result_ss_blocs_intrant from old_results where name = k and id = sb and result_ss_blocs_intrant is not null ;
-            select into test result_ss_blocs_intrant from ___.results where name = k and id = sb and result_ss_blocs_intrant is not null ;
-            s_new.val := (test.result_ss_blocs_intrant).val ;
-            s_new.incert := (test.result_ss_blocs_intrant).incert ;
+            select into s_old_record result_ss_blocs_intrant from old_results where name = k and id = sb and result_ss_blocs_intrant is not null ;
+            select into s_new_record result_ss_blocs_intrant from ___.results where name = k and id = sb and result_ss_blocs_intrant is not null ;
+            s_new := s_new_record.result_ss_blocs_intrant ;
+            s_old := s_old_record.result_ss_blocs_intrant ;
 
             if s_new is null then
                 with somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results where name = k and id = container and detail_level = 6)
@@ -1001,12 +938,19 @@ begin
             end if ;
 
             if continue[1] or continue[2] then 
-                insert into fifo(value) select sur_bloc from api.bloc where id = container ;
                 sb := container ;
+                select into container sur_bloc from ___.bloc where id = container ;
+                raise notice 'sb2 = %, container2 = %', sb, container ;
+                if container is not null then 
+                    insert into fifo(value) values (container) ;
+                end if ;
                 continue := array[true, true] ;
             end if ; 
         end loop ;
     end loop ;
+    if c = 100 then 
+        raise exception 'Too many iterations' ;
+    end if ;
     drop table fifo ;
     drop table old_results ;
     return ;
@@ -1079,13 +1023,13 @@ declare
 begin
 
     select into id_bloc id from api.bloc where name = bloc_name limit 1; -- limit 1 normally useless
-    raise notice 'id_bloc = %', id_bloc;
+    -- raise notice 'id_bloc = %', id_bloc;
     if id_bloc is null then
         select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc is null;
     else 
         select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc = id_bloc;
     end if;
-    raise notice 'ss_blocs_array = %', ss_blocs_array;
+    -- raise notice 'ss_blocs_array = %', ss_blocs_array;
     -- Loop through each bloc id
     if array_length(ss_blocs_array, 1) = 0 or ss_blocs_array is null then
         ss_blocs_array := array[id_bloc];

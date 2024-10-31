@@ -364,7 +364,7 @@ begin
     E'      perform api.update_links(new.id, ''' || shape || ''', new.geom, new.model);' ||
     E'      perform api.update_calc_bloc(new.id, new.model);' ||
     E'      perform api.calculate_bloc(new.id, new.model);' ||
-    -- E'      perform api.get_results_ss_bloc(new.id);' ||
+    E'      perform api.get_results_ss_bloc(new.id);' ||
     E'      perform api.update_results_ss_bloc(new.id, new.sur_bloc);' || 
     E'$$, \n' ||
     E'start_section => $$\n' ||
@@ -611,29 +611,40 @@ declare
     text_geo varchar;
     point_up geometry;
     point_down geometry;
+    b_typ ___.bloc_type;
+    line_ record;
+    query text ;
+    line_bloc record ; 
+    p_start geometry;
+    p_end geometry;
 begin 
     -- raise notice 'updating links';
     if shape = 'LineString' then
+        select b_type into b_typ from ___.bloc where id = link_id;
         point_up := st_startpoint(g);
         point_down := st_endpoint(g);
 -- Y'a peut être possibilité de faire tout en une seule query mais j'ai pas réussi
         for ups in (
             with possible_ids as (select id, geom_ref from ___.bloc 
             where model = model_name and not id = link_id and not st_within(g, geom_ref)
+            -- and (b_type != 'lien' or b_typ != 'lien')
             )
             select id from possible_ids where st_intersects(geom_ref, point_up)
             )
         loop
+            raise notice 'ups = %, link_id = %', (select name from ___.bloc where id = ups), (select name from ___.bloc where id = link_id);
             insert into ___.link (up, down, model) values (ups, link_id, model_name);
         end loop;
         
         for downs in (
             with possible_ids as (select id, geom_ref from ___.bloc 
             where model = model_name and not id = link_id and not st_within(g, geom_ref)
+            -- and (b_type != 'lien' or b_typ != 'lien')
             )
             select id from possible_ids where st_intersects(geom_ref, point_down)
             )
         loop
+            raise notice 'downs = %, link_id = %', (select name from ___.bloc where id = downs), (select name from ___.bloc where id = link_id);
             insert into ___.link (up, down, model) values (link_id, downs, model_name);
         end loop;
 
@@ -641,29 +652,25 @@ begin
         -- link_id n'est plus l'id d'un lien
         -- (dp).path[1] renvoie le numéro de la ligne dans le multipoint et d'après la fonction api.make_polygon,
         -- le premier point dans un linestrig est le startpoint et le deuxième le endpoint  
-    for downs in (
-        with dumps as (select id, st_dump(st_points(geom_ref)) as dp
-        from ___.bloc where model = model_name and ___.bloc.shape = 'LineString'
-        ),
-        startpoints as (select id, (dp).geom as geo from dumps where (dp).path[1] = 1
-        )
-        select id from startpoints where st_intersects(geo, g)
-        )
-    loop
-        insert into ___.link (up, down, model) values (link_id, downs, model_name);
+    for line_bloc in (select id, b_type from ___.bloc where ___.bloc.shape = 'LineString' and model = model_name) loop
+        query := 'select geom from ___.'||line_bloc.b_type||'_bloc where id = $1';
+        execute query into line_ using line_bloc.id;
+        
+        p_start := st_startpoint(line_.geom);
+        p_end := st_endpoint(line_.geom);
+
+        if st_intersects(g, p_start) 
+        and link_id not in (select sur_bloc from ___.bloc where id = line_bloc.id) 
+        and line_bloc.id not in (select sur_bloc from ___.bloc where id = link_id) then
+            insert into ___.link (up, down, model) values (link_id, line_bloc.id, model_name);
+        end if;
+
+        if st_intersects(g, p_end)
+        and link_id not in (select sur_bloc from ___.bloc where id = line_bloc.id)
+        and line_bloc.id not in (select sur_bloc from ___.bloc where id = link_id) then
+            insert into ___.link (up, down, model) values (line_bloc.id, link_id, model_name);
+        end if;
     end loop;
-    
-    for ups in (
-        with dumps as (select id, st_dump(st_points(geom_ref)) as dp
-        from ___.bloc where model = model_name and ___.bloc.shape = 'LineString'
-        ),
-        endpoints as (select id, (dp).geom as geo from dumps where (dp).path[1] = 2
-        )
-        select id from endpoints where st_intersects(geo, g)
-        )
-    loop
-        insert into ___.link (up, down, model) values (ups, link_id, model_name);
-    end loop;    
 
     end if;
     -- raise notice 'links updated';

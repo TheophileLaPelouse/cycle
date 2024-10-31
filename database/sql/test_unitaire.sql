@@ -1,3 +1,5 @@
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/test_unitaire.sql
+
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
 
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
@@ -10,6 +12,7 @@
 
 create or replace function notice_equality(val1 anyelement, val2 anyelement, name1 text, name2 text) returns void as $$
 begin 
+    raise notice '% = %, % = %', name1, val1, name2, val2 ;
     if val1 = val2 then 
         raise notice '% = %', name1, name2 ;
     else
@@ -22,6 +25,7 @@ $$ language plpgsql ;
 create or replace function insert_random(array_to_shuffle text[][], to_verify real[][]) returns void as $$
 declare 
     shuffled_statements text[][];
+    shuffled_rows int[] ; 
     sql_text text;
     items record ; 
     i integer ; 
@@ -30,25 +34,37 @@ declare
     k integer ; 
 begin
     raise notice 'yo' ;
-    shuffled_statements := (
-        SELECT array_agg(stmt ORDER BY random())
-        FROM unnest(array_to_shuffle) AS stmt
-    );
+    -- initalize suffled_statements comme un tableau vide de la taille de array_to_shuffle
+    shuffled_statements := array_fill(NULL::text, ARRAY[
+    array_length(array_to_shuffle, 1),
+    array_length(array_to_shuffle, 2)
+    ]);
+    select into shuffled_rows array_agg(tab order by random()) from generate_series(1, array_length(array_to_shuffle, 1)) as tab;
+    for i in 1..array_length(array_to_shuffle, 1) loop
+        shuffled_statements[i][1] := array_to_shuffle[shuffled_rows[i]][1] ;
+        shuffled_statements[i][2] := array_to_shuffle[shuffled_rows[i]][2] ;
+    end loop; 
+
     raise notice 'hello' ; 
     for sql_text in (select stmt from unnest(shuffled_statements) as stmt) loop
-        raise notice 'sql_text = %', sql_text ;
+        -- raise notice 'sql_text = %', sql_text ;
         if length(sql_text) >1 then 
             execute sql_text;
         end if ; 
     end loop;
     -- verify the values 
-    raise notice 'shuffled_statements = %', shuffled_statements ;
+    raise notice 'shuffled_statements = %', (select array_agg(stmt) from unnest(shuffled_statements) as stmt where length(stmt) <2 ) ;
+    raise notice 'length = %', array_length(shuffled_statements, 1) ;
     for i in 1..array_length(shuffled_statements, 1) loop 
+        raise notice 'i = %', i ;
         if shuffled_statements[i][2] != '' then
             k := shuffled_statements[i][2]::integer ;
+            raise notice 'k = %', k ;
             for j in 1..array_length(to_verify, 1) loop 
                 raise notice 'i, j, k = %, %, %', i, j, k ;
-                perform notice_equality(to_verify[j][k], (select (result_ss_blocs).val from ___.results where id = i), 'to_verify[j][k]', 'result_ss_blocs') ; 
+                perform notice_equality(to_verify[j][k], (select (result_ss_blocs).val from ___.results 
+                where id = i and result_ss_blocs is not null limit 1),
+                 'to_verify[j][k]', 'result_ss_blocs') ; 
             end loop ;
         end if ;
     end loop ;                
@@ -112,21 +128,24 @@ declare
         '6'],
         -- Insertion dans api.file_boue_bloc
         ['INSERT INTO api.file_boue_bloc(geom, model) VALUES (ST_GeomFromText(''' || file_boue_bloc || ''', 2154), ''' || model || ''');',
-        '5']
+        '5'], 
+        ['INSERT INTO api.source_bloc(geom, model) VALUES (ST_GeomFromText(''' || source_point || ''', 2154), ''' || model || ''');', '']
     ];
     shuffled_statements text[];
     k integer ; 
+    g geometry ;
+    ids integer[] ; 
 begin 
     drop view if exists api.usine_de_compostage_bloc ;
     perform api.insert_inp_out('usine_de_compostage', 'qe', 'real', 'null', 'added', 'input') ;
     perform api.add_new_bloc('usine_de_compostage', 'bloc', 'Point') ;
-
+    
     drop view if exists api.file_eau_bloc ; 
     perform api.insert_inp_out('file_eau', 'qe_s', 'real', 'null', 'added', 'output') ;
     perform api.add_new_bloc('file_eau', 'bloc', 'Polygon') ;
 
     perform api.add_new_formula('co2_e formule', 'co2_e=(10^0 + (3* (1>2)))*qe_s', 1, 'Formule de test') ;
-    perform api.add_new_formula('co2_c formule', 'co2_e=(10^1 + (3* (1>2)))*qe_s', 1, 'Formule de test') ;
+    perform api.add_new_formula('co2_c formule', 'co2_c=(10^1 + (3* (1>2)))*qe_s', 1, 'Formule de test') ;
     perform api.add_new_formula('n2o_e formule', 'n2o_e=(10^(-1) + (3* (1>2)))*qe_s', 1, 'Formule de test') ;
     perform api.add_new_formula('hydraulique complexe', 'qe_s = qe', 1) ;
 
@@ -138,13 +157,36 @@ begin
     or b_type = 'bassin_dorage' or b_type = 'clarificateur' ;
 
     insert into api.model(name) values (model) ;
-    insert into api.source_bloc(geom, model) values (st_geomfromtext(source_point, 2154), model) ;
+
+    insert into api.usine_de_compostage_bloc(geom, model) values (st_geomfromtext(usine_point, 2154), model) ;
     insert into api.file_eau_bloc(geom, model, qe_s) values (st_geomfromtext(file_eau_bloc, 2154), model, qe_s_clarif) ;
+    insert into api.clarificateur_bloc(geom, model, qe_s) values (st_geomfromtext(clarif_point, 2154), model, qe_s_clarif) ;
+    insert into api.bassin_dorage_bloc(geom, model, qe_s) values (st_geomfromtext(bassin_dorage_point, 2154), model, qe_s_bassin) ;
+
+    insert into api.source_bloc(geom, model) values (st_geomfromtext(source_point, 2154), model) ;
+
+    insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line1, 2154), model) ;
+    insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line2, 2154), model) ;
+    insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line3, 2154), model) ;
+
+    insert into api.sur_bloc_bloc(geom, model) values (st_geomfromtext(sur_bloc_polygon, 2154), model) ;
+    insert into api.file_boue_bloc(geom, model) values (st_geomfromtext(file_boue_bloc, 2154), model) ;
+    
+
+    select into g geom from api.file_boue_bloc limit 1 ; 
+    with dumps as (select id, st_dump(st_points(geom_ref)) as dp
+        from ___.bloc where ___.bloc.shape = 'LineString'
+        ),
+        endpoints as (select id, (dp).geom as geo from dumps where (dp).path[1] = 2
+        )
+        select into ids array_agg(id) from endpoints where st_intersects(geo, g);
     
     shuffled_statements := (
         SELECT array_agg(stmt ORDER BY random())
         FROM unnest(sql_statements) AS stmt
     );
+
+    -- raise notice 'ids = %', ids ;
 
     -- for k in 1..1 loop
     --     raise notice 'Bonjour'  ;
@@ -152,16 +194,23 @@ begin
     -- end loop;
 end ;
 $$ ;
-    -- insert into api.usine_de_compostage_bloc(geom, model) values (st_geomfromtext(usine_point, 2154), model) ;
-    -- insert into api.file_eau_bloc(geom, model, qe_s) values (st_geomfromtext(file_eau_bloc, 2154), model, qe_s_clarif) ;
-    -- insert into api.clarificateur_bloc(geom, model, qe_s) values (st_geomfromtext(clarif_point, 2154), model, qe_s_clarif) ;
-    -- insert into api.bassin_dorage_bloc(geom, model, qe_s) values (st_geomfromtext(bassin_dorage_point, 2154), model, qe_s_bassin) ;
 
-    -- insert into api.source_bloc(geom, model) values (st_geomfromtext(source_point, 2154), model) ;
 
-    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line1, 2154), model) ;
-    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line2, 2154), model) ;
-    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line3, 2154), model) ;
+-- select * from api.link ; 
+-- select id, name from api.bloc ; 
 
-    -- insert into api.sur_bloc_bloc(geom, model) values (st_geomfromtext(sur_bloc_polygon, 2154), model) ;
-    -- insert into api.file_boue_bloc(geom, model) values (st_geomfromtext(file_boue_bloc, 2154), model) ;
+-- do $$
+-- declare 
+-- query text ; 
+-- line_ record ;
+-- p_start geometry ;
+-- p_end geometry ;
+-- begin
+--     query := 'select geom from ___.'||'lien'||'_bloc where id = $1';
+--     execute query into line_ using 8;
+    
+--     p_start := st_startpoint(line_.geom);
+--     p_end := st_endpoint(line_.geom);
+--     raise notice 'p_start = %, p_end = %', p_start, p_end ;
+-- end ;
+-- $$ ;
