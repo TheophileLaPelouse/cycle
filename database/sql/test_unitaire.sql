@@ -1,14 +1,17 @@
+create extension if not exists postgis;
+
 -- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/test_unitaire.sql
-
-\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
-
-\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
-
-\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/formula.sql
-
-\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/special_blocs.sql
-
-\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
+-- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/test_unitaire.sql
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
+\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/data.sql
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
+\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/api.sql
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/formula.sql
+\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/formula.sql
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/special_blocs.sql
+\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/special_blocs.sql
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
+\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/blocs.sql
 
 create or replace function notice_equality(val1 anyelement, val2 anyelement, name1 text, name2 text) returns void as $$
 begin 
@@ -30,6 +33,7 @@ declare
     items record ; 
     i integer ; 
     j integer ; 
+    names text[] := array['co2_e', 'co2_c', 'n2o_e'] ;
     val1 real[][] ; 
     k integer ; 
 begin
@@ -60,10 +64,11 @@ begin
         if shuffled_statements[i][2] != '' then
             k := shuffled_statements[i][2]::integer ;
             raise notice 'k = %', k ;
-            for j in 1..array_length(to_verify, 1) loop 
+            for j in 1..array_length(names, 1) loop 
                 raise notice 'i, j, k = %, %, %', i, j, k ;
+                raise notice 'bloc = %', (select name from api.bloc where id = i) ;
                 perform notice_equality(to_verify[j][k], (select (result_ss_blocs).val from ___.results 
-                where id = i and result_ss_blocs is not null limit 1),
+                where id = i and result_ss_blocs is not null and name=names[j] limit 1),
                  'to_verify[j][k]', 'result_ss_blocs') ; 
             end loop ;
         end if ;
@@ -144,10 +149,10 @@ begin
     perform api.insert_inp_out('file_eau', 'qe_s', 'real', 'null', 'added', 'output') ;
     perform api.add_new_bloc('file_eau', 'bloc', 'Polygon') ;
 
-    perform api.add_new_formula('co2_e formule', 'co2_e=(10^0 + (3* (1>2)))*qe_s', 1, 'Formule de test') ;
-    perform api.add_new_formula('co2_c formule', 'co2_c=(10^1 + (3* (1>2)))*qe_s', 1, 'Formule de test') ;
-    perform api.add_new_formula('n2o_e formule', 'n2o_e=(10^(-1) + (3* (1>2)))*qe_s', 1, 'Formule de test') ;
-    perform api.add_new_formula('hydraulique complexe', 'qe_s = qe', 1) ;
+    perform api.add_new_formula('co2_e formule', 'co2_e=(10^0 + (3* (1>2)))*qe_s', 4, 'Formule de test') ;
+    perform api.add_new_formula('co2_c formule', 'co2_c=(10^1 + (3* (1>2)))*qe_s', 4, 'Formule de test') ;
+    perform api.add_new_formula('n2o_e formule', 'n2o_e=(10^(-1) + (3* (1>2)))*qe_s', 4, 'Formule de test') ;
+    perform api.add_new_formula('hydraulique complexe', 'qe_s = qe', 4) ;
 
     update api.input_output set default_formulas = array_append(default_formulas, 'co2_e formule') where b_type = 'usine_de_compostage' 
     or b_type = 'bassin_dorage' or b_type = 'clarificateur' or b_type = 'file_eau' ; 
@@ -156,21 +161,25 @@ begin
     update api.input_output set default_formulas = array_append(default_formulas, 'n2o_e formule') where b_type = 'usine_de_compostage'
     or b_type = 'bassin_dorage' or b_type = 'clarificateur' ;
 
+    update api.input_output set default_formulas = array_append(default_formulas, 'hydraulique complexe') 
+    where b_type = 'usine_de_compostage' ;
     insert into api.model(name) values (model) ;
 
-    insert into api.usine_de_compostage_bloc(geom, model) values (st_geomfromtext(usine_point, 2154), model) ;
-    insert into api.file_eau_bloc(geom, model, qe_s) values (st_geomfromtext(file_eau_bloc, 2154), model, qe_s_clarif) ;
-    insert into api.clarificateur_bloc(geom, model, qe_s) values (st_geomfromtext(clarif_point, 2154), model, qe_s_clarif) ;
-    insert into api.bassin_dorage_bloc(geom, model, qe_s) values (st_geomfromtext(bassin_dorage_point, 2154), model, qe_s_bassin) ;
+    
+    -- insert into api.file_eau_bloc(geom, model, qe_s) values (st_geomfromtext(file_eau_bloc, 2154), model, qe_s_clarif) ;
+    -- insert into api.clarificateur_bloc(geom, model, qe_s) values (st_geomfromtext(clarif_point, 2154), model, qe_s_clarif) ;
+    -- insert into api.bassin_dorage_bloc(geom, model, qe_s) values (st_geomfromtext(bassin_dorage_point, 2154), model, qe_s_bassin) ;
 
-    insert into api.source_bloc(geom, model) values (st_geomfromtext(source_point, 2154), model) ;
+    
 
-    insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line1, 2154), model) ;
-    insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line2, 2154), model) ;
-    insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line3, 2154), model) ;
-
-    insert into api.sur_bloc_bloc(geom, model) values (st_geomfromtext(sur_bloc_polygon, 2154), model) ;
-    insert into api.file_boue_bloc(geom, model) values (st_geomfromtext(file_boue_bloc, 2154), model) ;
+    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line1, 2154), model) ;
+    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line2, 2154), model) ;
+    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line3, 2154), model) ;
+    
+    -- insert into api.source_bloc(geom, model) values (st_geomfromtext(source_point, 2154), model) ;
+    -- insert into api.sur_bloc_bloc(geom, model) values (st_geomfromtext(sur_bloc_polygon, 2154), model) ;
+    -- insert into api.file_boue_bloc(geom, model) values (st_geomfromtext(file_boue_bloc, 2154), model) ;
+    -- insert into api.usine_de_compostage_bloc(geom, model) values (st_geomfromtext(usine_point, 2154), model) ;
     
 
     select into g geom from api.file_boue_bloc limit 1 ; 
@@ -188,10 +197,10 @@ begin
 
     -- raise notice 'ids = %', ids ;
 
-    -- for k in 1..1 loop
-    --     raise notice 'Bonjour'  ;
-    --     perform insert_random(sql_statements, to_verify) ;
-    -- end loop;
+    for k in 1..1 loop
+        raise notice 'Bonjour'  ;
+        perform insert_random(sql_statements, to_verify) ;
+    end loop;
 end ;
 $$ ;
 

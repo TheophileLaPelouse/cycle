@@ -197,6 +197,8 @@ begin
         select into prg val, incert from ___.global_values where name='PRG_N2O';
     when new.name like 'co2%' then
         select into prg val, incert from ___.global_values where name='PRG_CO2';
+    else 
+        return new; 
     end case;
     co2_eq.val := (new.result_ss_blocs).val * prg.val;
     co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);

@@ -72,6 +72,7 @@ language plpgsql as
 $$
 declare
     links_up integer[] ;
+    links_up2 integer[] ;
     b_typ_fils ___.bloc_type ; 
     b_typ ___.bloc_type ;
     query text ;
@@ -85,8 +86,11 @@ declare
     c integer := 1 ; 
 begin 
     select into b_typ_fils b_type from ___.bloc where id = id_bloc ;
-    select into links_up array_agg(api.link.up) from api.link where down = id_bloc and model = model_bloc ;    
-    raise notice 'links_up = %', links_up ;
+    select into links_up array_agg(api.link.up) from api.link where down = id_bloc and model = model_bloc ;
+    select into links_up array_agg(id order by (st_area(geom_ref)) asc) from api.bloc 
+    where id = any(links_up) ; 
+    -- raise notice 'id_bloc = %', (select name from ___.bloc where id = id_bloc) ;  
+    -- raise notice 'links_up = %', links_up ;
     if array_length(links_up, 1) = 0 or links_up is null then 
         return false ;
     else 
@@ -97,17 +101,20 @@ begin
         -- raise notice 'up_ = %', up_ ;
         select into b_typ b_type from ___.bloc where id = up_ ;
         -- raise notice 'b_typ = %', b_typ ;
-        select array_agg(column_name) into colnames from information_schema.columns, api.input_output  
-        where table_name = b_typ||'_bloc' and table_schema = 'api' and 
-        b_type = b_typ and column_name = any(outputs) ;
+
+        select into colnames outputs from api.input_output where b_type = b_typ ;
 
         if b_typ::varchar = 'lien' then 
-            select into links_up array_cat(links_up, array_agg(api.link.up)) from api.link where down = up_ and model = model_bloc
+            select into links_up2 array_agg(api.link.up) from api.link where down = up_ and model = model_bloc 
             and 'lien' != (select b_type from api.bloc where id = api.link.up)::varchar  ;
+            select into links_up2 array_agg(id order by (st_area(geom_ref)) asc) from api.bloc 
+            where id = any(links_up2) ;
+            links_up := array_cat(links_up, links_up2) ;  
+            
             n := array_length(links_up, 1) ;
         end if ;
         -- raise notice 'links_up2 = %', links_up ;
-        -- raise notice 'colnames = %', colnames ;
+        raise notice 'colnames = %', colnames ;
         if colnames is not null then 
         foreach col in array colnames loop
             query = 'select '||col||' from ___.'||b_typ||'_bloc where id = $1 ;' ;
@@ -115,24 +122,19 @@ begin
             -- raise notice 'inp_col = %', inp_col ;
             if inp_col is not null then 
                 if col like '%_s' then 
-                    if left(col, -2) in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then 
-                        update inp_out set val = inp_col where name = left(col, -2) and val is null ;
-                        if found then 
-                            flag := true ;
-                        end if ;
+                    if left(col, -2) in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then
+                        col := left(col, -2) ;
                     elseif left(col, -2)||'_e' in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then 
-                        update inp_out set val = inp_col where name = left(col, -2)||'_e' and val is null;
-                        if found then 
-                            flag := true ;
-                        end if ;
+                        col := left(col, -2)||'_e' ;
                     end if ;
                 end if ;
-                if col in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then
-                    update inp_out set val = inp_col where name = col and val is null;
+                -- raise notice 'col = %', col ;
+                if col in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then 
+                    raise notice 'Bonjour ?' ;
+                    update inp_out set val = inp_col where name = col and val is null ;
                     if found then 
                         flag := true ;
                     end if ;
-
                 end if ;
             end if ;
         end loop ;
@@ -144,7 +146,7 @@ begin
 end ;
 $$ ;
 
-create or replace function formula.read_formula(formula text, colnames varchar[])
+create or replace function formula.read_formula(formula text)
 returns varchar[]
 language plpgsql as
 $$
@@ -156,7 +158,7 @@ begin
     pat := '[\+\-\*\/\^\(\)\<\>]' ; 
     formula := regexp_replace(formula,  '[^0-9a-zA-Z\+\-\*\/\^\(\)\.\>\<\=\_]', '', 'g');
     list := regexp_split_to_array(formula, pat) ;
-    select into to_return array_agg(elem) from unnest(list) as elem where elem = any(colnames) ;
+    select into to_return array_agg(elem) from unnest(list) as elem where elem !~ '^[0-9]*(\.[0-9]+)?$'  ;
     return to_return ;
 end ;
 $$ ;
@@ -528,12 +530,13 @@ declare
     tac timestamp ;
     result ___.res ;
 begin 
+    
     formul := regexp_replace(formula, '[^0-9a-zA-Z\+\-\*\/\^\(\)\.\>\<\=\_]', '', 'g');
     formul := regexp_replace(formula, '\*\*', '^', 'g') ;
     rightside := split_part(formul, '=', 2) ;
 
-    select into colnames array_agg(name) from inp_out ; 
-    args := formula.read_formula(rightside, colnames) ;
+    -- select into colnames array_agg(name) from inp_out ; 
+    args := formula.read_formula(rightside) ;
 
     select into notnowns distinct array_agg(distinct elem) 
     from unnest(args) as elem 
@@ -558,7 +561,11 @@ begin
             insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail_level, result, formul) ;
         end if ; 
         -- On update inp_out pour les futurs calculs si besoin 
-        update inp_out set val = result.val where name = to_calc and val is null;
+        if not exists(select 1 from inp_out where name = to_calc) then 
+            insert into inp_out(name, val, incert) values (to_calc, result.val, result.incert) ;
+        else
+            update inp_out set val = result.val, incert = result.incert where name = to_calc and val is null;
+        end if ;
         return ;
     end if ;
 end ;
@@ -573,6 +580,7 @@ declare
     b_typ ___.bloc_type ;
     concr boolean ;
     to_calc varchar ;
+    detail_fifo integer ; 
     data_ varchar ; 
     bil varchar ;
     args varchar[] ; 
@@ -589,8 +597,11 @@ declare
     tac timestamp ;
     type_ varchar ; 
     inp_out_exists boolean ;
+    is_known boolean ;
+    is_in_bilan boolean ;
     incertitude real ;
 begin 
+    raise notice E'\nOn calcul pour %\n', (select name from ___.bloc where id = id_bloc) ;
     -- raise notice 'id_bloc = %, model_bloc = %', id_bloc, model_bloc ;
     -- tic := clock_timestamp() ;
     select into b_typ b_type from ___.bloc where id = id_bloc and model = model_bloc ;
@@ -627,6 +638,7 @@ begin
     insert into inp_out(name, val, incert) select name, val, incert from ___.global_values ;
     flag := api.recup_entree(id_bloc, model_bloc) ;
     raise notice 'flag = %', flag ;
+    raise notice 'inp_out = %', (select jsonb_object_agg(name, val) from inp_out) ;
     if not flag and on_update then
         drop table inp_out ;
         return 'No new entry' ;
@@ -636,21 +648,21 @@ begin
     
     with bloc_formula as (select formula, detail_level from api.formulas where name in (select unnest(default_formulas) from api.input_output where b_type = b_typ))
     insert into bilan(leftside, calc_with, formula, detail_level) 
-    select trim(both ' ' from split_part(formula, '=', 1)), formula.read_formula(split_part(formula, '=', 2), colnames), formula, detail_level from bloc_formula ;
+    select trim(both ' ' from split_part(formula, '=', 1)), formula.read_formula(split_part(formula, '=', 2)), formula, detail_level from bloc_formula ;
 
     -- for items in (select * from bilan) loop
     --     raise notice 'items bilan = %', items ;
     -- end loop ;
 
-    create temp table known_data(leftside varchar, known boolean default false) on commit drop;
-    insert into known_data(leftside, known) select name, val is not null from inp_out ;
+    create temp table known_data(leftside varchar, detail_level integer default null, known boolean default false) on commit drop;
 
     -- create temp table results(name varchar, detail_level integer, val real) on commit drop ; 
     tac := clock_timestamp() ;
-    for data_, args in (select leftside, calc_with from bilan) loop
-        create temp table fifo(id serial primary key, value varchar) ; 
+    
+    for data_, args, detail in (select leftside, calc_with, detail_level from bilan) loop
+        raise notice E'data_ = %, args = %, detail= %\n', data_, args, detail ;
         create temp table treatment_lifo(id serial primary key, value varchar) ; 
-
+        create temp table fifo(id serial primary key, value varchar) ; 
         insert into fifo(value) values (data_) ;
         c := 0 ; 
         -- On fait un parcours de graph en profondeur avec treatment_lifo pour calculer les inconnus (le graphs représente le système d'équations)
@@ -658,31 +670,39 @@ begin
         while c < 10000 and (select count(*) from fifo) > 0 loop
             c := c + 1 ;
             to_calc := formula.pop('fifo') ;
-            -- raise notice 'to_calc = %', to_calc ;
-            -- raise notice 'known_data = %', (select known from known_data where leftside = to_calc) ;
-            if (to_calc not in (select leftside from known_data where known = true)) and (to_calc in (select leftside from bilan)) then 
+            is_known := (to_calc in (select leftside from known_data where known = true and detail_level=detail)) ;
+            is_in_bilan := (to_calc in (select leftside from bilan where detail_level = detail)) ;
+            raise notice 'to_calc = %, is_known = %, is_in_bilan = %', to_calc, is_known, is_in_bilan ;
+            if (not is_known or is_known is null) and is_in_bilan then
                 insert into treatment_lifo(value) values (to_calc) ;
-                update known_data set known = true where leftside = to_calc ;
+                if not exists(select 1 from known_data where leftside = to_calc and detail_level = detail) then
+                    insert into known_data(leftside, known, detail_level) values (to_calc, true, detail) ;
+                end if ;
                 insert into fifo(value) select elem from unnest(args) as elem where elem not in (select leftside from known_data where known = true) ;
             end if ;
+            raise notice 'fifo_calc = %', (select jsonb_object_agg(id, value) from fifo) ;
+            raise notice 'c = %, to_calc = %', c, to_calc ;
+            raise notice 'known_data = %', (select leftside from known_data where leftside = to_calc and detail_level=detail) ;
         end loop ;
         if c = 10000 then 
             raise exception 'Too many iterations' ;
         end if ;
+    
         c := 0 ; 
+        raise notice 'treatment_lifo = %', (select jsonb_object_agg(id, value) from treatment_lifo) ;
         while c < 10000 and (select count(*) from treatment_lifo) > 0 loop
             c := c + 1 ;
             to_calc := formula.pop('treatment_lifo', true) ;
-            for f, detail in (select formula, detail_level from bilan where leftside = to_calc) loop
+            for f in (select formula from bilan where leftside = to_calc and detail_level=detail) loop
                 -- raise notice 'f = %', f ;
                 -- update tableau ___.result et inp_out
                 perform formula.calculate_formula(f, id_bloc, detail, to_calc) ;
                 -- insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail, result, f) ;
             end loop ;
-            with max_detail as (select max(detail_level) as max_detail from ___.results
-            where name = to_calc and id = id_bloc and val is not null)
-            update inp_out set val = (___.results.val).val from ___.results, max_detail 
-            where inp_out.name = to_calc and ___.results.id = id_bloc and detail = max_detail ; 
+            update inp_out set val = (___.results.val).val, incert = (___.results.val).incert from ___.results 
+            where inp_out.name = to_calc 
+            and ___.results.name = to_calc and ___.results.id = id_bloc and ___.results.detail_level = detail ;
+            raise notice 'to_calc = %, result = %', to_calc, (select val from inp_out where name = to_calc) ;
         end loop ;
         if c = 10000 then 
             raise exception 'Too many iterations' ;
@@ -690,6 +710,7 @@ begin
         drop table fifo ;
         drop table treatment_lifo ;
     end loop ;
+    
     -- update b_typ_bloc 
     foreach col in array colnames loop
         query := 'update ___.'||b_typ||'_bloc set '||col||' = (select val from inp_out where name = '''||col||''' and val is not null) 
@@ -736,6 +757,7 @@ begin
         c := c + 1 ;
         raise notice 'fifo2 = %', (select array_agg(value) from fifo2) ;
         select into new_up value from fifo2 where id = c ;
+        raise notice 'new_up = %', new_up ;
         if deleted then 
         -- On doit tout recalculer donc on_update = False pour être sûr de refaire tout le calcul
             perform api.calculate_bloc(new_up, model_name, false) ; 

@@ -617,6 +617,8 @@ declare
     line_bloc record ; 
     p_start geometry;
     p_end geometry;
+    sur_bloc1 integer;
+    sur_bloc2 integer;
 begin 
     -- raise notice 'updating links';
     if shape = 'LineString' then
@@ -659,15 +661,21 @@ begin
         p_start := st_startpoint(line_.geom);
         p_end := st_endpoint(line_.geom);
 
+        raise notice 'Intersects = %', st_intersects(g, p_end);
+
+        sur_bloc1 := (select sur_bloc from ___.bloc where id = line_bloc.id);
+        sur_bloc2 := (select sur_bloc from ___.bloc where id = link_id);
+
         if st_intersects(g, p_start) 
-        and link_id not in (select sur_bloc from ___.bloc where id = line_bloc.id) 
-        and line_bloc.id not in (select sur_bloc from ___.bloc where id = link_id) then
+        and (link_id != sur_bloc1 or sur_bloc1 is null)
+        and (line_bloc.id != sur_bloc2 or sur_bloc2 is null) then
             insert into ___.link (up, down, model) values (link_id, line_bloc.id, model_name);
         end if;
 
         if st_intersects(g, p_end)
-        and link_id not in (select sur_bloc from ___.bloc where id = line_bloc.id)
-        and line_bloc.id not in (select sur_bloc from ___.bloc where id = link_id) then
+        and (link_id != sur_bloc1 or sur_bloc1 is null)
+        and (line_bloc.id != sur_bloc2 or sur_bloc2 is null) then
+            raise notice 'BONJOUR';
             insert into ___.link (up, down, model) values (line_bloc.id, link_id, model_name);
         end if;
     end loop;
