@@ -357,6 +357,7 @@ begin
     E'        update ___.link set geom = st_setpoint(geom, 0, new.geom) where up = new.id;\n' ||
     E'        update ___.link set geom = st_setpoint(geom, -1, new.geom) where down = new.id;\n' ||
     E'    end if;\n' ||
+    E'    perform api.update_calc_bloc(new.id, new.model);\n' ||
     E'    perform api.calculate_bloc(new.id, new.model);' ||
     E'    perform api.update_results_ss_bloc(new.id, new.sur_bloc);' || 
     E'$$, \n' ||
@@ -364,7 +365,6 @@ begin
     E'      perform api.update_links(new.id, ''' || shape || ''', new.geom, new.model);' ||
     E'      perform api.update_calc_bloc(new.id, new.model);' ||
     E'      perform api.calculate_bloc(new.id, new.model);' ||
-    E'      perform api.get_results_ss_bloc(new.id);' ||
     E'      perform api.update_results_ss_bloc(new.id, new.sur_bloc);' || 
     E'$$, \n' ||
     E'start_section => $$\n' ||
@@ -428,7 +428,7 @@ begin
 
     for c in select name from ___.type_node
     loop
-        raise notice '%', c;
+        -- raise notice '%', c;
         sql := sql || format($sql$
             select '%1$s_node' as type, n.name, c.config, d.difference, n.geom
             from ___.%1$s_node_config c
@@ -442,7 +442,7 @@ begin
 
     for c in select name from ___.type_singularity
     loop
-        raise notice '%', c;
+        -- raise notice '%', c;
         sql := sql || format($sql$
             select '%1$s_singularity' as type, c.name, c.config, d.difference, n.geom
             from ___.%1$s_singularity_config c
@@ -568,7 +568,7 @@ Begin
         )
     );
     -- raise notice 'ss_blocs_array := %', ss_blocs_array;
-    update ___.bloc set sur_bloc = id_sur_bloc where id = any(ss_blocs_array);
+    update ___.bloc set sur_bloc = id_sur_bloc where id = any(ss_blocs_array) and id != id_sur_bloc;
     -- On enlève les sous-blocs du tableaux de sous-blocs de l'ancien sur_bloc
     foreach id_bloc in array ss_blocs_array
     loop
@@ -634,7 +634,7 @@ begin
             select id from possible_ids where st_intersects(geom_ref, point_up)
             )
         loop
-            raise notice 'ups = %, link_id = %', (select name from ___.bloc where id = ups), (select name from ___.bloc where id = link_id);
+            -- raise notice 'ups = %, link_id = %', (select name from ___.bloc where id = ups), (select name from ___.bloc where id = link_id);
             insert into ___.link (up, down, model) values (ups, link_id, model_name);
         end loop;
         
@@ -646,7 +646,7 @@ begin
             select id from possible_ids where st_intersects(geom_ref, point_down)
             )
         loop
-            raise notice 'downs = %, link_id = %', (select name from ___.bloc where id = downs), (select name from ___.bloc where id = link_id);
+            -- raise notice 'downs = %, link_id = %', (select name from ___.bloc where id = downs), (select name from ___.bloc where id = link_id);
             insert into ___.link (up, down, model) values (link_id, downs, model_name);
         end loop;
 
@@ -661,7 +661,7 @@ begin
         p_start := st_startpoint(line_.geom);
         p_end := st_endpoint(line_.geom);
 
-        raise notice 'Intersects = %', st_intersects(g, p_end);
+        -- raise notice 'Intersects = %', st_intersects(g, p_end);
 
         sur_bloc1 := (select sur_bloc from ___.bloc where id = line_bloc.id);
         sur_bloc2 := (select sur_bloc from ___.bloc where id = link_id);
@@ -675,7 +675,7 @@ begin
         if st_intersects(g, p_end)
         and (link_id != sur_bloc1 or sur_bloc1 is null)
         and (line_bloc.id != sur_bloc2 or sur_bloc2 is null) then
-            raise notice 'BONJOUR';
+            -- raise notice 'BONJOUR';
             insert into ___.link (up, down, model) values (line_bloc.id, link_id, model_name);
         end if;
     end loop;

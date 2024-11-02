@@ -53,11 +53,12 @@ begin
     n := array_length(ups, 1) ;
     while i < n + 1 loop 
         select into b_typ b_type from ___.bloc where id = ups[i];
-        raise notice 'b_typ = %, col = %', b_typ, col ;
+        -- raise notice 'b_typ = %, col = %', b_typ, col ;
         if b_typ = 'lien' then 
-            ups := array_append(ups, (select up from ___.link where down = ups[i]
+            ups := array_cat(ups, (select array_agg(up) from ___.link where down = ups[i]
              and 'lien' != (select b_type from api.bloc where id = ___.link.up)::varchar));
-            n := n + 1 ;
+            n := n + (select count(*) from ___.link where down = ups[i] 
+            and 'lien' != (select b_type from api.bloc where id = ___.link.up)::varchar); 
         end if ;
         if col = any((select outputs from api.input_output where b_type = b_typ)::varchar[]) then
             query := 'select '||col||' from ___.'||b_typ||'_bloc where id = $1';
@@ -67,21 +68,42 @@ begin
             query := 'select '||col||'_s from ___.'||b_typ||'_bloc where id = $1';
             execute query using ups[i] into val;
             s := s + val;
-       
+       -- raise notice 's = %, val = %', s, val ;
         end if ; 
         i := i + 1 ;
     end loop ;
     query := 'update api.source_bloc set '||col||'_s = $1 where id = $2';
+    -- raise notice 'query = %', query ;
+    -- raise notice 's = %', s ;
     execute query using s, id_source;
     return ;
 end ;
 $$ ;
 
 create or replace function ___.source_link_trigger_function() returns trigger as $$
+declare 
+    b_typ ___.bloc_type ;
+    flag boolean := false ;
+    double_down integer ;
 begin
-    if new.down in (select id from api.source_bloc) then 
-        raise notice 'on y est' ; 
-        perform ___.update_source_bloc(new.down);
+    -- raise notice E'\n on est dans le trigger' ;
+    select into b_typ b_type from api.bloc where id = new.down ;
+    -- raise notice 'b_typ = %', b_typ ;
+    if b_typ = 'source' then 
+        flag := true ;
+        double_down := new.down ;
+    end if ;
+    if b_typ = 'lien' then 
+        for double_down in (select down from ___.link where up = new.down) loop 
+            if (select b_type from api.bloc where id = double_down) = 'source' then 
+                flag := true ;
+                exit ;
+            end if ;
+        end loop ;
+    end if ;
+    if flag then 
+        -- raise notice 'on y est' ; 
+        perform ___.update_source_bloc(double_down);
     end if ;
     return new ;
 end ;

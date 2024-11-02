@@ -19,7 +19,8 @@ begin
     if val1 = val2 then 
         raise notice '% = %', name1, name2 ;
     else
-        raise notice '% != %', name1, name2 ;
+        -- raise notice '% != %', name1, name2 ;
+        raise exception '% != %', name1, name2 ;
     end if ;
 end ;
 $$ language plpgsql ;
@@ -53,6 +54,7 @@ begin
     for sql_text in (select stmt from unnest(shuffled_statements) as stmt) loop
         -- raise notice 'sql_text = %', sql_text ;
         if length(sql_text) >1 then 
+            raise notice E'\n\n SQL TEXT = %\n\n', sql_text ;
             execute sql_text;
         end if ; 
     end loop;
@@ -69,7 +71,7 @@ begin
                 raise notice 'bloc = %', (select name from api.bloc where id = i) ;
                 perform notice_equality(to_verify[j][k], (select (result_ss_blocs).val from ___.results 
                 where id = i and result_ss_blocs is not null and name=names[j] limit 1),
-                 'to_verify[j][k]', 'result_ss_blocs') ; 
+                'to_verify[j][k]', 'result_ss_blocs') ; 
             end loop ;
         end if ;
     end loop ;                
@@ -165,22 +167,23 @@ begin
     where b_type = 'usine_de_compostage' ;
     insert into api.model(name) values (model) ;
 
-    
+    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line1, 2154), model) ;
+
     -- insert into api.file_eau_bloc(geom, model, qe_s) values (st_geomfromtext(file_eau_bloc, 2154), model, qe_s_clarif) ;
+
+    -- insert into api.source_bloc(geom, model) values (st_geomfromtext(source_point, 2154), model) ;
+
+
+    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line2, 2154), model) ;
     -- insert into api.clarificateur_bloc(geom, model, qe_s) values (st_geomfromtext(clarif_point, 2154), model, qe_s_clarif) ;
     -- insert into api.bassin_dorage_bloc(geom, model, qe_s) values (st_geomfromtext(bassin_dorage_point, 2154), model, qe_s_bassin) ;
 
-    
 
-    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line1, 2154), model) ;
-    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line2, 2154), model) ;
-    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line3, 2154), model) ;
-    
-    -- insert into api.source_bloc(geom, model) values (st_geomfromtext(source_point, 2154), model) ;
     -- insert into api.sur_bloc_bloc(geom, model) values (st_geomfromtext(sur_bloc_polygon, 2154), model) ;
     -- insert into api.file_boue_bloc(geom, model) values (st_geomfromtext(file_boue_bloc, 2154), model) ;
     -- insert into api.usine_de_compostage_bloc(geom, model) values (st_geomfromtext(usine_point, 2154), model) ;
-    
+    -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line3, 2154), model) ;
+
 
     select into g geom from api.file_boue_bloc limit 1 ; 
     with dumps as (select id, st_dump(st_points(geom_ref)) as dp
@@ -197,9 +200,11 @@ begin
 
     -- raise notice 'ids = %', ids ;
 
-    for k in 1..1 loop
+    for k in 1..10 loop
         raise notice 'Bonjour'  ;
         perform insert_random(sql_statements, to_verify) ;
+        delete from api.bloc;
+        alter sequence ___.bloc_id_seq restart with 1;
     end loop;
 end ;
 $$ ;
