@@ -2,16 +2,16 @@ create extension if not exists postgis;
 
 -- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/test_unitaire.sql
 -- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/test_unitaire.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
-\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/data.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
+-- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/data.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
 \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/api.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/formula.sql
-\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/formula.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/special_blocs.sql
-\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/special_blocs.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
-\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/blocs.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/formula.sql
+-- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/formula.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/special_blocs.sql
+-- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/special_blocs.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
+-- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/blocs.sql
 
 create or replace function notice_equality(val1 anyelement, val2 anyelement, name1 text, name2 text) returns void as $$
 begin 
