@@ -1137,6 +1137,7 @@ declare
     id_loop integer;
     js2 jsonb;
     res jsonb := '{}';
+    k text ;
 begin
 
     select into id_bloc id from api.bloc where name = bloc_name limit 1; -- limit 1 normally useless
@@ -1169,6 +1170,12 @@ begin
             )
             select into js1 jsonb_object_agg(name, result) from results; 
 
+            foreach k in array names loop
+                if not js1 ? k or js1->k is null then
+                    js1 := jsonb_set(js1, array[k], to_jsonb(row(0, 0)::___.res), true);
+                end if;
+            end loop;
+
             -- raise notice 'js1 = %', js1;
             with results as (
                 select name, co2_eq 
@@ -1180,6 +1187,14 @@ begin
                 'co2_eq_e', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
                 'co2_eq_c', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
             ) from exploit, constr ;
+
+            if not js2 ? 'co2_eq_e' then
+                js2 := jsonb_set(js2, array['co2_eq_e'], to_jsonb(row(0, 0)::___.res), true);
+            end if;
+            if not js2 ? 'co2_eq_c' then
+                js2 := jsonb_set(js2, array['co2_eq_c'], to_jsonb(row(0, 0)::___.res), true);
+            end if;
+
             -- raise notice 'js2 = %', js2;
             res := jsonb_set(res, array[b_name], js1||js2, true);
         end if;
@@ -1191,6 +1206,12 @@ begin
         and ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null
     )
     select into js1 jsonb_object_agg(name, result) from results; 
+
+    foreach k in array names loop
+        if not js1 ? k or js1->k is null then
+            js1 := jsonb_set(js1, array[k], to_jsonb(row(0, 0)::___.res), true);
+        end if;
+    end loop;
 
     -- raise notice 'js1 = %', js1;
     
@@ -1204,7 +1225,15 @@ begin
         'co2_eq_e', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
         'co2_eq_c', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
     ) from exploit, constr ;
-    -- raise notice 'js2 = %', js2;
+    raise notice 'js2 = %', js2;
+    raise notice '%', (js2 ? 'co2_eq_e');
+    if not js2 ? 'co2_eq_e' then
+        js2 := jsonb_set(js2, array['co2_eq_e'], to_jsonb(row(0, 0)::___.res), true);
+    end if;
+    if not js2 ? 'co2_eq_c' then
+        js2 := jsonb_set(js2, array['co2_eq_c'], to_jsonb(row(0, 0)::___.res), true);
+    end if;
+    raise notice 'js2 = %', js2;
 
     res := jsonb_set(res, array['total'], js1||js2, true);
     return res;

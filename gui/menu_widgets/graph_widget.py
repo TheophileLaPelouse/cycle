@@ -4,6 +4,7 @@ from qgis.PyQt.QtWidgets import QApplication, QWidget, QGridLayout, QMenu
 from qgis.PyQt.QtGui import QCursor, QImage, QPalette
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT, FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import math
 
 matplotlib.rc('xtick', labelsize=8)
 matplotlib.rc('ytick', labelsize=8)
@@ -49,47 +50,60 @@ class GraphWidget(QWidget):
         # print("pie_data", data)
         # print("pie_labels", labels)
         # print("pie_color", list(color.values()))
-        self.__ax.pie(data, autopct=autopct_format(data), colors=list(color.values()))
+        # self.__ax.pie(data, autopct=autopct_format(data), colors=list(color.values()))
+        self.__ax.pie(data, colors=list(color.values()))
         self.fig.tight_layout(rect= [-0.05, -0.05, 1.05, 1.05])
         # self.__ax.legend(labels, loc='upper right', bbox_to_anchor=(1, 1))
         self.__ax.legend(labels, loc='upper right')
         # self.__ax.set_title(title)
         self.__render()
         
-    def bar_chart(self, r, data, c_or_e, names, color, edgecolor, title, ylabel, xlabel) :
+    def bar_chart(self, r, data, data_err, c_or_e, names, color, edgecolor, title, ylabel, xlabel) :
         # print("bar_data", data)
         # print("test", data)
+        width = 0.4 
+        
         self.__ax.clear()
         self.__ax.bar(r, data['co2'], 
-                color = color['co2'], edgecolor=edgecolor,  label = 'co2')
+                color = color['co2'], edgecolor=edgecolor,  label = 'co2', width=width)
         self.__ax.bar(r, data['ch4'], 
                 bottom = data['co2'], 
-                color = color['ch4'], edgecolor=edgecolor, label = 'ch4')
+                color = color['ch4'], edgecolor=edgecolor, label = 'ch4', width=width)
         self.__ax.bar(r, data['n2o'], 
                 bottom = [x + y for x, y in zip(data['co2'], data['ch4'])], 
-                color = color['n2o'], edgecolor=edgecolor, label = 'n2o')
+                color = color['n2o'], edgecolor=edgecolor, label = 'n2o', 
+                yerr = data_err, capsize = 5, ecolor = 'black', width=width)
         
         self.__ax.set_title(title)
         self.__ax.set_xticks(r, names)
         self.__ax.set_ylabel(ylabel)
         self.__ax.set_xlabel(xlabel)
-        self.__ax.legend(edgecolor=None)
+        self.__ax.legend(edgecolor='black')
         self.__ax.grid(axis='y')
-        self.fig.tight_layout(rect=[0.1, 0.1, 0.9, 0.9 ])
+        # self.fig.tight_layout(rect=[0.1, 0.1, 0.9, 0.9 ])
+        self.fig.tight_layout()
         self.__render()
 
-    def add_bar_chart(self, r, rtot, data, c_or_e, names, color, edgecolor) : 
+    def add_bar_chart(self, r, rtot, data, data_err, c_or_e, names, color, edgecolor) : 
+        width = 0.4
         self.__ax.bar(r, data['co2'], 
-                color = color['co2'], edgecolor=edgecolor,  label = 'co2')
+                color = color['co2'], edgecolor=edgecolor,  label = 'co2', width=width)
         self.__ax.bar(r, data['ch4'], 
                 bottom = data['co2'], 
-                color = color['ch4'], edgecolor=edgecolor, label = 'ch4')
+                color = color['ch4'], edgecolor=edgecolor, label = 'ch4', width=width)
         self.__ax.bar(r, data['n2o'], 
                 bottom = [x + y for x, y in zip(data['co2'], data['ch4'])], 
-                color = color['n2o'], edgecolor=edgecolor, label = 'n2o')
+                color = color['n2o'], edgecolor=edgecolor, label = 'n2o', 
+                yerr = data_err, capsize = 5, ecolor = 'black', width=width)
         print(rtot, names)
         self.__ax.set_xticks(rtot, names)
         self.__render()
+        
+def pretty_number(num, incert, unit, nb_sig = 3, nb_decimals = 1) :
+    if num / 1000 > 1 : 
+        return  f"{num:.{nb_sig}g}" + " ± " + f"{incert:.{nb_sig}g}" + ' ' + unit
+    else : 
+        return  f"{num:.{nb_decimals}f}" + " ± " + f"{incert:.{nb_decimals}f}" + ' ' + unit
         
 if __name__ == '__main__' : 
     app = QApplication([])

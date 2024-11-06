@@ -6,7 +6,7 @@ from ...qgis_utilities import QGisProjectManager, tr
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT, FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from .graph_widget import GraphWidget
+from .graph_widget import GraphWidget, pretty_number
 
 class RecapResults(QDockWidget) : 
     
@@ -37,6 +37,11 @@ class RecapResults(QDockWidget) :
         model_list = self.__project.models
         self.update_model_list()
         self.model_combo.currentIndexChanged.connect(self.show_results)
+        
+        self.prg = {}
+        prgs = project.fetchall("select name, val from ___.global_values where name like 'PRG_%'")
+        for prg in prgs :
+            self.prg[prg[0][4:].lower()] = prg[1]
         
         if model_name is not None : 
             print("ici")
@@ -107,36 +112,53 @@ class RecapResults(QDockWidget) :
         data = data[0]
         print(data)
         fields = ['co2_e', 'ch4_e', 'n2o_e', 'co2_c', 'ch4_c', 'n2o_c']
-        self.label_e.setText(f"{data['total']['co2_eq_e']:.1f} kgCO2/an")
-        self.label_c.setText(f"{data['total']['co2_eq_c']:.1f} kgCO2")
+        self.label_e.setText(pretty_number(data['total']['co2_eq_e']['val'], data['total']['co2_eq_e']['incert']*data['total']['co2_eq_e']['val'], 'kgCO2/an'))
+        self.label_c.setText(pretty_number(data['total']['co2_eq_c']['val'], data['total']['co2_eq_c']['incert']*data['total']['co2_eq_c']['val'], 'kgCO2'))
         self.label_e.setStyleSheet("font-weight: bold; font-size: 13px;")
         self.label_c.setStyleSheet("font-weight: bold; font-size: 13px;")
         
-        data_pie_e = [data['total'][field] for field in fields[:3]]
+        fields = ['co2_e', 'ch4_e', 'n2o_e', 'co2_c', 'ch4_c', 'n2o_c']
+        data_pie_e = [data['total'][field]['val']*self.prg[field[:-2]] for field in fields[:3]]
         labels = ['CO2', 'CH4', 'N2O']
         self.graph_pie_e.pie_chart(data_pie_e, labels, color, tr("kgGaz/an"))
         
-        data_pie_c = [data['total'][field] for field in fields[3:]]
+        data_pie_c = [data['total'][field]['val']*self.prg[field[:-2]] for field in fields[3:]]
         self.graph_pie_c.pie_chart(data_pie_c, labels, color, tr("kgGaz"))
         
         # bars
+        r, bars_c, bars_c_err, bars_e, bars_e_err, names = self.fill_bars(data)
+        self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, edgecolor, tr(""), tr('kg de GES émis'), tr('Blocs du modèle %s' % self.__current_model))
+        self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, color, edgecolor, tr(""), tr('kg de GES émis par an'), tr('Blocs du modèle %s' % self.__current_model))   
+        
+        # self.title_bar_e.setText(tr("Emission exploitation (kgGaz/an)"))
+        # self.title_bar_c.setText(tr("Emission construction (kgGaz)"))
+    
+    def fill_bars(self, data) : 
         bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': []}
         for key in data : 
             if key != 'total' :
                 for field in bars : 
                     bars[field].append(data[key][field])
-        r = range(len(bars['co2_e']))        
-        
+        r = range(len(bars['co2_e'])) 
         names = list(data.keys())
         names.remove('total')
-        bars_c = {'co2' : bars['co2_c'], 'ch4' : bars['ch4_c'], 'n2o' : bars['n2o_c']}
-        bars_e = {'co2' : bars['co2_e'], 'ch4' : bars['ch4_e'], 'n2o' : bars['n2o_e']}
-        self.graph_bar_c.bar_chart(r, bars_c, 'c', names, color, edgecolor, tr(""), tr('kg de GES émis'), tr('Blocs du modèle %s' % self.__current_model))
-        self.graph_bar_e.bar_chart(r, bars_e, 'e', names, color, edgecolor, tr(""), tr('kg de GES émis par an'), tr('Blocs du modèle %s' % self.__current_model))   
+        print('r', r)
+        print('prg', self.prg)
+        bars_c = {'co2' : [x['val']*self.prg['co2'] for x in bars['co2_c']], 
+                  'ch4' : [x['val']*self.prg['ch4'] for x in bars['ch4_c']], 
+                  'n2o' : [x['val']*self.prg['n2o'] for x in bars['n2o_c']]}
         
-        # self.title_bar_e.setText(tr("Emission exploitation (kgGaz/an)"))
-        # self.title_bar_c.setText(tr("Emission construction (kgGaz)"))
+        bars_e = {'co2' : [x['val']*self.prg['co2'] for x in bars['co2_e']], 
+                  'ch4' : [x['val']*self.prg['ch4'] for x in bars['ch4_e']], 
+                  'n2o' : [x['val']*self.prg['n2o'] for x in bars['n2o_e']]}
         
+        bars_c_err = [bars['co2_c'][k]['incert']*bars_c['co2'][k] + bars['ch4_c'][k]['incert']*bars_c['ch4'][k] + bars['n2o_c'][k]['incert']*bars_c['n2o'][k] for k in r]
+        
+        bars_e_err = [bars['co2_e'][k]['incert']*bars_e['co2'][k] + bars['ch4_e'][k]['incert']*bars_e['ch4'][k] + bars['n2o_e'][k]['incert']*bars_e['n2o'][k] for k in r]
+        print('bars_c', bars_c)
+        print('bonjour', bars_e_err)
+        return r, bars_c, bars_c_err, bars_e, bars_e_err, names
+    
     def navigate(self, index) :
         if index == 1 : 
             self.stackedWidget.setCurrentIndex(2)

@@ -5,7 +5,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from ...qgis_utilities import QGisProjectManager, tr 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from .graph_widget import GraphWidget
+from .graph_widget import GraphWidget, pretty_number
 
 class AllResults(QDialog) : 
     def __init__(self, project, resume_results_widget, parent=None) : 
@@ -39,7 +39,13 @@ class AllResults(QDialog) :
         self.show_result_button.clicked.connect(self.show_results)
         
         self.close_button.clicked.connect(self.close)
-    
+        
+        self.prg = {}
+        prgs = project.fetchall("select name, val from ___.global_values where name like 'PRG_%'")
+        for prg in prgs :
+            self.prg[prg[0][4:].lower()] = prg[1]
+             
+        
     def close(self) :
         # Y'aura peut être d'autres trucs ?
         self.accept()
@@ -48,7 +54,9 @@ class AllResults(QDialog) :
         model = getattr(self, f'combo_mod{index}').currentText()
         if model == '' : 
             return
-        blocs = self.__project.fetchall(f"select name from api.bloc where model = '{model}'")
+        blocs = self.__project.fetchall(f"""
+            with b_types as (select b_type from api.input_output where concrete or b_type='sur_bloc')
+            select name from api.bloc where model = '{model}' and b_type in (select b_type from b_types)""")
         blocs = [bloc[0] for bloc in blocs]
         combo_bloc = getattr(self, f'combo_bloc{index}')
         combo_bloc.clear()
@@ -120,10 +128,9 @@ class AllResults(QDialog) :
         groupbox = getattr(self, 'resume'+str(index))
         combomod = getattr(self, 'combo_mod'+str(index))
         combobloc = getattr(self, 'combo_bloc'+str(index))
-        
-        
-        label_e.setText(str(data['total']['co2_eq_e']) + ' kgCO2/an')
-        label_c.setText(str(data['total']['co2_eq_c']) + ' kgCO2')
+        print(data)
+        label_e.setText(pretty_number(data['total']['co2_eq_e']['val'], data['total']['co2_eq_e']['incert']*data['total']['co2_eq_e']['val'], 'kgCO2/an'))
+        label_c.setText(pretty_number(data['total']['co2_eq_c']['val'], data['total']['co2_eq_c']['incert']*data['total']['co2_eq_c']['val'], 'kgCO2'))
         label_e.setStyleSheet("font-weight: bold; font-size: 10px;")
         label_c.setStyleSheet("font-weight: bold; font-size: 10px;")
         if combobloc.currentText() == '' : 
@@ -132,31 +139,31 @@ class AllResults(QDialog) :
             groupbox.setTitle(tr('Modèle ')+ combomod.currentText() + tr(', bloc ')+ combobloc.currentText())
                 
         fields = ['co2_e', 'ch4_e', 'n2o_e', 'co2_c', 'ch4_c', 'n2o_c']
-        data_pie_e = [data['total'][field] for field in fields[:3]]
+        data_pie_e = [data['total'][field]['val']*self.prg[field[:-2]] for field in fields[:3]]
         labels = ['CO2', 'CH4', 'N2O']
         pie_chart_e.pie_chart(data_pie_e, labels, color, tr("kgGaz/an"))
         
-        data_pie_c = [data['total'][field] for field in fields[3:]]
+        data_pie_c = [data['total'][field]['val']*self.prg[field[:-2]] for field in fields[3:]]
         pie_chart_c.pie_chart(data_pie_c, labels, color, tr("kgGaz"))
         print(index, data_pie_e, data_pie_c)
         
     def show_bar_chart(self, data1, data2, color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
         bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': []}
         if data1 :
-            r, bars_c, bars_e, names = self.fill_bars(data1)
-            self.graph_bar_c.bar_chart(r, bars_c, 'c', names, color, 'blue', tr("Emmission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
-            self.graph_bar_e.bar_chart(r, bars_e, 'e', names, color, 'blue', tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"))   
+            r, bars_c, bars_c_err, bars_e, bars_e_err, names = self.fill_bars(data1)
+            self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, 'blue', tr("Emmission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
+            self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, color, 'blue', tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"))   
             if data2 : 
-                r2, bars_c, bars_e, names2 = self.fill_bars(data2)
+                r2, bars_c, bars_c_err, bars_e, bars_e_err, names2 = self.fill_bars(data2)
                 rtot = range(r[0], r2[-1]+1+r[-1]+1)
                 r = range(r[-1]+1, r2[-1]+1+r[-1]+1)
                 names = names + names2
-                self.graph_bar_c.add_bar_chart(r, rtot, bars_c, 'c', names, color, 'red')
-                self.graph_bar_e.add_bar_chart(r, rtot, bars_e, 'e', names, color, 'red')  
+                self.graph_bar_c.add_bar_chart(r, rtot, bars_c, bars_c_err, 'c', names, color, 'red')
+                self.graph_bar_e.add_bar_chart(r, rtot, bars_e, bars_e_err, 'e', names, color, 'red')  
         elif data2 : 
-            r, bars_c, bars_e, names = self.fill_bars(data2)
-            self.graph_bar_c.bar_chart(r, bars_c, 'c', names, color, 'red', tr("Emmission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
-            self.graph_bar_e.bar_chart(r, bars_e, 'e', names, color, 'red', tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs")) 
+            r, bars_c, bars_c_err, bars_e, bars_e_err, names = self.fill_bars(data2)
+            self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, 'red', tr("Emmission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
+            self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, color, 'red', tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs")) 
         
     def fill_bars(self, data) : 
         bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': []}
@@ -167,8 +174,20 @@ class AllResults(QDialog) :
         r = range(len(bars['co2_e'])) 
         names = list(data.keys())
         names.remove('total')
-    
-        bars_c = {'co2' : bars['co2_c'], 'ch4' : bars['ch4_c'], 'n2o' : bars['n2o_c']}
-        bars_e = {'co2' : bars['co2_e'], 'ch4' : bars['ch4_e'], 'n2o' : bars['n2o_e']}
-        return r, bars_c, bars_e, names
+        print('r', r)
+        print('prg', self.prg)
+        bars_c = {'co2' : [x['val']*self.prg['co2'] for x in bars['co2_c']], 
+                  'ch4' : [x['val']*self.prg['ch4'] for x in bars['ch4_c']], 
+                  'n2o' : [x['val']*self.prg['n2o'] for x in bars['n2o_c']]}
+        
+        bars_e = {'co2' : [x['val']*self.prg['co2'] for x in bars['co2_e']], 
+                  'ch4' : [x['val']*self.prg['ch4'] for x in bars['ch4_e']], 
+                  'n2o' : [x['val']*self.prg['n2o'] for x in bars['n2o_e']]}
+        
+        bars_c_err = [bars['co2_c'][k]['incert']*bars_c['co2'][k] + bars['ch4_c'][k]['incert']*bars_c['ch4'][k] + bars['n2o_c'][k]['incert']*bars_c['n2o'][k] for k in r]
+        
+        bars_e_err = [bars['co2_e'][k]['incert']*bars_e['co2'][k] + bars['ch4_e'][k]['incert']*bars_e['ch4'][k] + bars['n2o_e'][k]['incert']*bars_e['n2o'][k] for k in r]
+        print('bars_c', bars_c)
+        print('bonjour', bars_e_err)
+        return r, bars_c, bars_c_err, bars_e, bars_e_err, names
         

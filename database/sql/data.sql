@@ -200,6 +200,12 @@ begin
     else 
         return new; 
     end case;
+    if new.result_ss_blocs is null then 
+        co2_eq.val := 0 ; 
+        co2_eq.incert := 0 ;
+        new.co2_eq := co2_eq ;
+        return new ; 
+    end if ;
     co2_eq.val := (new.result_ss_blocs).val * prg.val;
     co2_eq.incert := sqrt((new.result_ss_blocs).incert^2 + prg.incert^2);
     co2_eq_intrant.val := (new.result_ss_blocs_intrant).val * prg.val;

@@ -5,7 +5,7 @@ create extension if not exists postgis;
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
 -- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/data.sql
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
-\i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/api.sql
+-- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/api.sql
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/formula.sql
 -- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/formula.sql
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/special_blocs.sql
@@ -200,11 +200,12 @@ begin
 
     -- raise notice 'ids = %', ids ;
 
-    for k in 1..10 loop
-        raise notice 'Bonjour'  ;
-        perform insert_random(sql_statements, to_verify) ;
+    for k in 1..1 loop
         delete from api.bloc;
         alter sequence ___.bloc_id_seq restart with 1;
+        raise notice 'Bonjour'  ;
+        perform insert_random(sql_statements, to_verify) ;
+        
     end loop;
 end ;
 $$ ;

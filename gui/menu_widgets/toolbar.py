@@ -7,10 +7,11 @@ import warnings
 from pathlib import Path
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
-from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction
+from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction, QLineEdit, QDockWidget, QWidget, QSizePolicy
 from qgis.utils import iface
 from qgis.core import QgsProject, QgsVectorLayer
 from ...project import Project
+from .results import AllResults
 from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
 from ..forms.add_formula import AddFormula
@@ -57,13 +58,50 @@ class CycleToolbar(QToolBar):
         self.__model_menu.menu().aboutToShow.connect(self.__refresh_model_menu)
         self.__model_menu.setPopupMode(QToolButton.MenuButtonPopup)
         self.__model_menu.setToolTip(self.tr("Current model"))
-
-        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        self.res_widget = None
         
-        self.__add_bloc_button = self.__add_action_button(tr('Add bloc'), 'add_bloc.svg', self.__add_bloc)
+        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        self.addWidget(QLabel(self.tr('Edition blocs')))
+        self.__add_bloc_button = self.__add_action_button(tr('Ajouter un bloc'), 'add_bloc.svg', self.__add_bloc)
         # self.__run_button = self.__add_action_button(tr('Run computation'), 'run.svg', self.__run)
-        self.__add_formula_button = self.__add_action_button(tr('Add formula'), 'add_formula.svg', self.__add_formula)
-        self.__add_input_button = self.__add_action_button(tr('Add input'), 'add_input.svg', self.__add_input)
+        self.__add_formula_button = self.__add_action_button(tr('Ajouter une formule'), 'add_formula.svg', self.__add_formula)
+        self.__add_input_button = self.__add_action_button(tr('Edition bloc'), 'add_input.svg', self.__add_input)
+        self.addSeparator()
+        
+        self.spacer = QLabel('')
+        self.spacer.setFixedWidth(10)
+        self.addWidget(self.spacer)
+            
+        # self.addWidget(QLabel(self.tr('Propriétés du modèle')))
+        self.addWidget(QLabel(self.tr('Modèle courant')))
+        self.addWidget(self.__model_menu)
+        self.spacer4 = QLabel('')
+        self.spacer4.setFixedWidth(5)
+        self.addWidget(self.spacer4)
+        self.addWidget(QLabel(self.tr("Temps d'étude")))
+        self.study_time = QLineEdit()
+        self.study_time.setFixedWidth(30)
+        self.addWidget(self.study_time)
+        self.addWidget(QLabel(self.tr("ans")))
+        
+        self.study_time.setText('1')
+        self.study_time.textChanged.connect(self.__set_study_time)
+        
+        self.spacer2 = QLabel('')
+        self.spacer2.setFixedWidth(10)
+        self.addWidget(self.spacer2)
+        self.addSeparator()
+        self.spacer3 = QLabel('')
+        self.spacer3.setFixedWidth(10)
+        self.addWidget(self.spacer3)
+        
+        self.addWidget(QLabel(self.tr('Résultats')))
+        self.__add_resume_result_dock_button = self.__add_action_button(tr('Résumer résultats'), 'resume_results.svg', self.__add_resume_result_dock)
+        self.__show_all_results_button = self.__add_action_button(tr('Afficher tous les résultats'), 'show_all_results.svg', self.__show_all_results)
+        self.addSeparator()
+        self.spacer5 = QLabel('')
+        self.spacer5.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.addWidget(self.spacer5)
         # admin buttons
         self.__reset_db_button = None
         self.__print_sur_blocs_button = None
@@ -72,8 +110,8 @@ class CycleToolbar(QToolBar):
         self.__from_custom_to_solid_button = None
         self.__add_admin_mode_button = self.__add_action_button(tr('Admin mode'), 'admin_mode.svg', self.__to_admin_mode)
 
-        self.addWidget(QLabel(self.tr('Current model:')))
-        self.addWidget(self.__model_menu)
+        # self.addWidget(QLabel(self.tr('Current model:')))
+        # self.addWidget(self.__model_menu)
 
         # self.__model
         
@@ -194,3 +232,18 @@ class CycleToolbar(QToolBar):
         QGisProjectManager.save_qml2ressource(QgsProject.instance(), new_layertree)
         from_custom_to_main(QGisProjectManager.project_name())
         self.__log_manager.notice(tr("Les blocs personnalisés ont été sauvegardés définitivement"))
+
+    def __set_study_time(self) :
+        self.__log_manager.notice(tr("Temps d'étude fixé à") + self.study_time.text()+", lol en fait non")
+        
+    def __add_resume_result_dock(self) : 
+        rr = iface.mainWindow().findChildren(QDockWidget, "resume_result")
+        if rr : 
+            rr = rr[0]
+            rr.show()
+    
+    def __show_all_results(self) :
+        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        self.res_widget and self.res_widget.setParent(None)
+        self.res_widget = AllResults(project, self.parent())
+        self.res_widget.show()
