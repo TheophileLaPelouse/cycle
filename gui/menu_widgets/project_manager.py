@@ -26,7 +26,7 @@ _bold = QFont()
 _bold.setWeight(QFont.Bold)
 
 class ProjectManager(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, project_list, parent=None):
         QDialog.__init__(self, parent)
         current_dir = os.path.dirname(__file__)
         uic.loadUi(os.path.join(current_dir, "project_manager.ui"), self)
@@ -69,6 +69,7 @@ class ProjectManager(QDialog):
         self.tree_widget.itemSelectionChanged.connect(self.__refresh_buttons)
         self.tree_widget.itemDoubleClicked.connect(self.open_project)
 
+        self.project_list = project_list
         self.__refresh_tree()
         self.__refresh_buttons()
 
@@ -76,6 +77,9 @@ class ProjectManager(QDialog):
         self.raise_()  # for MacOS
         self.activateWindow() # for Windows
 
+        
+        
+        
     def __service_changed(self, service):
         set_service(service)
         self.__refresh_tree()
@@ -84,7 +88,7 @@ class ProjectManager(QDialog):
     def __refresh_tree(self):
         '''Clears the QTreeWidget then re-populates it with all cycle projects'''
         self.tree_widget.clear()
-        for project_name in get_projects_list():
+        for project_name in self.project_list:
             if project_name != normalized_name(project_name):
                 project_node = QTreeWidgetItem(self.tree_widget)
                 project_node.setExpanded(False)
@@ -187,6 +191,7 @@ class ProjectManager(QDialog):
         ok = dialog.exec_()
         if ok == dialog.Accepted:
             Project.create_new_project(dialog.return_name(), dialog.return_srid(), dialog.return_directory(), self.__log_manager)
+            self.project_list.append(dialog.return_name())
             self.__refresh_tree()
             self.__log_manager.notice(f'{dialog.return_name()} '+self.tr('created'))
 
@@ -201,6 +206,7 @@ class ProjectManager(QDialog):
             duplicate(project.name, dialog.return_name())
             project = Project(project_name, self.__log_manager) # needed because duplicate(src, dst) terminates connections on src
             new_project = Project(dialog.return_name(), self.__log_manager)
+            self.project_list.append(dialog.return_name())
             os.rmdir(new_project.directory)
             shutil.copytree(project.directory, new_project.directory)
             if os.path.exists(project.qgs):
@@ -233,6 +239,7 @@ class ProjectManager(QDialog):
                 project = Project(project_name, self.__log_manager)
                 shutil.rmtree(project.directory)
             remove_project(project_name)
+            self.project_list.remove(project_name)
             self.__refresh_tree()
             self.__log_manager.notice(project_name+self.tr(' deleted'))
 

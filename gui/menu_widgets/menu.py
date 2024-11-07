@@ -10,6 +10,7 @@ from qgis.PyQt.QtGui import QIcon, QFont
 from qgis.PyQt.QtWidgets import QMenu, QFileDialog, QMessageBox, QInputDialog
 from ...project import Project
 from ...qgis_utilities import QGisProjectManager
+from ...database import get_projects_list
 from .project_manager import ProjectManager
 from .results import AllResults
 from .new_project_dialog import NewProjectDialog
@@ -71,7 +72,8 @@ class CycleMenu(QMenu):
 
     def __manage_projects(self):
         self.pm and self.pm.setParent(None)
-        self.pm = ProjectManager(self.parent())
+        project_list = get_projects_list()
+        self.pm = ProjectManager(project_list, self.parent())
         self.pm.show()
 
     def __project_new(self):

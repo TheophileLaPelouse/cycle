@@ -948,7 +948,7 @@ begin
         query = 'alter table ___.'|| b_type ||'_bloc_config add column ' || col_name || ' ' || col_type || ' default ' || col_default ||';';
         execute query;
     else 
-        return 'not the write modif';
+        return 'not the right modif';
     end case ;
     return 'Column ' || col_name || ' ' || modif || ' to ' || b_type;
 end;

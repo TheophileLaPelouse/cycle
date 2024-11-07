@@ -178,3 +178,185 @@ create table ___.lien_bloc_config(
 select api.add_new_bloc('lien', 'bloc', 'LineString' 
     
     ) ;
+
+
+----------------------------------------------------------------------------------------------------------------
+-- Canalisation
+----------------------------------------------------------------------------------------------------------------
+
+alter type ___.bloc_type add value 'canalisation' ; 
+commit ; 
+insert into ___.input_output values ('canalisation', array['qe_e', 'dbo5_e', 'mes_e', 'ngl_e']::varchar[], array['qe_s', 'dbo5_s', 'mes_s', 'ngl_s']::varchar[], array[]::varchar[]) ;
+
+create sequence ___.canalisation_bloc_name_seq ;
+
+create type ___.mat_cana_type as enum ('fonte', 'PEHD', 'PVC', 'acier', 'béton') ;
+create type ___.urban_type as enum ('rural', 'urbain') ;
+create type ___.diam_type as enum ('100', '300', '500', '250', '400', '125', '225', '600', '1300', '1000', '110', '200', '160') ;
+create type ___.dvie_type as enum ('50', '60', '80') ;
+create type ___.method_type as enum ('classic', 'sans_tranche') ;
+
+-- create type ___.cana_type as (
+--     mat_cana ___.mat_cana_type,
+--     urban ___.urban_type,
+--     diam ___.diam_type,
+--     d_vie ___.dvie_type,
+--     method ___.method_type
+-- );
+
+create table ___.diam_type_table(
+    id serial primary key,
+    val ___.diam_type, 
+    FE real, 
+    incert real default 0,
+    materiau ___.mat_cana_type,
+    sans_tranche ___.method_type,
+    urbain ___.urban_type,
+    d_vie ___.dvie_type,
+    description text,
+    unique(val, materiau, urbain, d_vie, sans_tranche)
+) ; 
+
+create table ___.diam_values(
+    val ___.diam_type primary key
+) ;
+insert into ___.diam_values(val) values ('100'), ('300'), ('500'), ('250'), ('400'), ('125'), ('225'), ('600'), ('1300'), ('1000'), ('110'), ('200'), ('160') ;
+create table ___.method_values(
+    val ___.method_type primary key
+) ;
+insert into ___.method_values(val) values ('classic'), ('sans_tranche') ;
+
+create table ___.dvie_values(
+    val ___.dvie_type primary key
+) ;
+insert into ___.dvie_values(val) values ('50'), ('60'), ('80') ;
+create table ___.urban_values(
+    val ___.urban_type primary key
+) ;
+insert into ___.urban_values(val) values ('rural'), ('urbain') ;
+
+
+
+insert into ___.diam_type_table (val, FE, incert, materiau, d_vie, sans_tranche, urbain)
+values
+('100', 120, 0.40, 'fonte', '80', 'classic', 'rural'),
+('300', 270, 0.60, 'fonte', '80', 'classic', 'rural'),
+('500', 440, 0.30, 'fonte', '80', 'classic', 'rural'),
+('100', 50, 0.30, 'fonte', '80', 'classic', 'urbain'),
+('250', 120, 0.40, 'fonte', '80', 'classic', 'urbain'),
+('500', 290, 0.50, 'fonte', '80', 'classic', 'urbain'),
+('100', 30, 0.80, 'fonte', '80', 'sans_tranche', 'rural'),
+('200', 70, 0.80, 'fonte', '80', 'sans_tranche', 'rural'),
+('300', 120, 0.80, 'fonte', '80', 'sans_tranche', 'rural'),
+('400', 180, 0.80, 'fonte', '80', 'sans_tranche', 'rural'),
+('125', 90, 0.25, 'PEHD', '60', 'classic', 'rural'),
+('500', 240, 0.70, 'PEHD', '60', 'classic', 'rural'),
+('160', 50, 0.30, 'PEHD', '60', 'classic', 'urbain'),
+('250', 100, 0.40, 'PEHD', '60', 'classic', 'urbain'),
+('125', 20, 0.80, 'PEHD', '60', 'sans_tranche', 'rural'),
+('225', 50, 0.80, 'PEHD', '60', 'sans_tranche', 'rural'),
+('500', 250, 0.50, 'acier', '80', 'classic', 'urbain'),
+('600', 320, 0.50, 'acier', '80', 'classic', 'urbain'),
+('1300', 1460, 0.50, 'acier', '80', 'classic', 'urbain'),
+('600', 380, 0.80, 'béton', '50', 'classic', 'rural'),
+('1000', 800, 0.80, 'béton', '50', 'classic', 'rural'),
+('110', 30, 0.25, 'PVC', '60', 'classic', 'urbain'),
+('225', 80, 0.35, 'PVC', '60', 'classic', 'urbain');
+
+
+select template.basic_view('diam_type_table') ;
+
+create table ___.canalisation_bloc(
+id integer primary key,
+shape ___.geo_type not null default 'LineString',
+geom geometry('LINESTRING', 2154) not null check(ST_IsValid(geom)),
+name varchar not null default ___.unique_name('canalisation_bloc', abbreviation=>'canalisation'),
+formula varchar[] default array[]::varchar[],
+formula_name varchar[] default array[]::varchar[],
+qe_e real,
+dbo5_e real,
+mes_e real,
+ngl_e real,
+qe_s real,
+dbo5_s real,
+mes_s real,
+ngl_s real,
+
+-- cana ___.cana_type not null default row('fonte', 'rural', '100', '80', 'classic'),
+
+diam ___.diam_type not null default '100',
+materiau ___.mat_cana_type not null default 'fonte',
+urbain ___.urban_type not null default 'urbain',
+d_vie ___.dvie_type not null default '80',
+sans_tranche ___.method_type not null default 'classic',
+
+
+foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
+unique (name, id)
+);
+
+create table ___.canalisation_bloc_config(
+    like ___.canalisation_bloc,
+    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+    foreign key (id, name) references ___.canalisation_bloc(id, name) on delete cascade on update cascade,
+    primary key (id, config)
+) ; 
+
+-- select api.add_new_bloc('canalisation', 'bloc', 'LineString' 
+--     );
+select api.add_new_bloc('canalisation', 'bloc', 'LineString' 
+    ,additional_columns => '{diam_type_table.FE as diam_FE, diam_type_table.description as diam_description}'
+    ,additional_join => 'left join ___.diam_type_table on diam_type_table.val = c.diam::varchar::___.diam_type and diam_type_table.materiau = c.materiau and diam_type_table.urbain = c.urbain::varchar::___.urban_type and diam_type_table.d_vie = c.d_vie::varchar::___.dvie_type and diam_type_table.sans_tranche = c.sans_tranche::varchar::___.method_type' 
+    ) ;
+-- select api.add_new_bloc('canalisation', 'bloc', 'LineString' 
+--     ,additional_columns => '{diam_type_table.FE as cana_FE, diam_type_table.description as cana_description}'
+--     ,additional_join => 'left join ___.diam_type_table on diam_type_table.val = c.cana' 
+--     ) ;
+
+create or replace function ___.trigger_update_canalisation_bloc()
+returns trigger
+language plpgsql
+as $$
+declare 
+    items record ; 
+    possible_meth ___.method_type[] ;
+    query text ;
+    elem varchar ;
+begin 
+    -- On doit pouvoir changer dans le formulaire : matériau, urbain ou rural et après on ajuste les autres en fonction de ce qui est possible
+    select into items array_agg(urbain) as urbain from ___.diam_type_table where materiau = new.materiau;
+    if not new.urbain::varchar::___.urban_type = any(items.urbain) then
+        new.urbain := items.val[1] ;
+    end if ;
+
+    select into items array_agg(val) as val, array_agg(d_vie) as d_vie from ___.diam_type_table where materiau = new.materiau and urbain = new.urbain;
+    raise notice 'items = %', items ;
+    if not new.diam::varchar::___.diam_type = any(items.val) then
+        new.diam := items.val[1] ;
+    end if ;
+    if not new.d_vie::varchar::___.dvie_type = any(items.d_vie) then
+        new.d_vie := items.d_vie[1] ;
+    end if ;
+    
+    select into possible_meth array_agg(sans_tranche) from ___.diam_type_table where materiau = new.materiau and urbain = new.urbain 
+    and val = new.diam::varchar::___.diam_type and d_vie = new.d_vie::varchar::___.dvie_type ;
+    if not new.sans_tranche::varchar::___.method_type = any(possible_meth) then
+        new.sans_tranche := items.meth[1] ;
+    end if ;
+
+    delete from ___.diam_values ;
+    insert into ___.diam_values(val) select distinct unnest(items.val) ;
+    delete from ___.method_values ;
+    insert into ___.method_values(val) select distinct unnest(possible_meth) ;
+    delete from ___.dvie_values ;
+    insert into ___.dvie_values(val) select distinct unnest(items.d_vie) ;
+    
+    return new ;
+end ;
+$$ ;
+
+-- create trigger canalisation_bloc_trigger after insert or update on ___.canalisation_bloc for each row execute function ___.trigger_update_canalisation_bloc() ;
+
+
+
+    

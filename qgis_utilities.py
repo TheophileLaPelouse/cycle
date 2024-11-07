@@ -424,6 +424,10 @@ class QGisProjectManager(QObject):
         constr_tab.setType(Qgis.AttributeEditorContainerType(1))
         config.addTab(constr_tab)
         
+        input_tab = QgsAttributeEditorContainer('Entrée', None)
+        input_tab.setType(Qgis.AttributeEditorContainerType(1))
+        config.addTab(input_tab)
+        
         output_tab = QgsAttributeEditorContainer('Sortie', None)
         output_tab.setType(Qgis.AttributeEditorContainerType(1))
         config.addTab(output_tab)
@@ -517,13 +521,12 @@ class QGisProjectManager(QObject):
                     else :
                         expl_tab.addChildElement(level_container[c_or_e][lvl])
                     
-        
-        for val in inp_outs['out'] : 
+        def addval2tab(val, tab) : 
             idx = layer.fields().indexFromName(val)
             print("sortie", val, idx)
             if field_fe.get(val) : 
                 
-                container = QgsAttributeEditorContainer(val.upper(), output_tab)
+                container = QgsAttributeEditorContainer(val.upper(), tab)
                 container.setColumnCount(2)
                 container.addChildElement(attrfield(val, idx, container))
                 fe_idx = layer.fields().indexFromName(val+'_fe')
@@ -544,11 +547,24 @@ class QGisProjectManager(QObject):
                     defval.setExpression(default_fe)
                     defval.setApplyOnUpdate(True)
                     layer.setDefaultValueDefinition(fe_idx, defval)
-                output_tab.addChildElement(container)
+                tab.addChildElement(container)
             else:
                 if val not in treated :  
                     layer.setFieldAlias(idx, Alias.get(val, ''))
-                output_tab.addChildElement(attrfield(val, idx, output_tab))
+                tab.addChildElement(attrfield(val, idx, tab))
+                
+        for val in inp_outs['out'] : 
+            addval2tab(val, output_tab)
+            inp = val
+            if inp[:-2] in inp_outs['inp'] :
+                inp = inp[:-2]
+            elif inp[:-2]+"_e" in inp_outs['inp'] :
+                inp = inp[:-2]+"_e"
+            elif inp + "_e" in inp_outs['inp'] :
+                inp = inp + "_e"
+            if inp in inp_outs['inp'] :
+                addval2tab(val, input_tab)
+            
         layer.setEditFormConfig(config)
         layer.saveNamedStyle(qml)
         return
