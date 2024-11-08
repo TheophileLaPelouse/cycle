@@ -1,0 +1,8 @@
+;1;2;3;4
+co2_c;(FEobj10*(EH<10000)+FEobj50*(EH>10000)*(EH<100000)+FEobj100*(EH>100000))*(((0.06*EH)/2+(0.09*EH)/2)/1000);(FEobj10*(EH<10000)+FEobj50*(EH>10000)*(EH<100000)+FEobj100*(EH>100000))*((DBO5/2+MES/2)/1000);(FEobj10*(EH<10000)+FEobj50*(EH>10000)*(EH<100000)+FEobj100*(EH>100000))*TBentrant;(FEobj10*(EH<10000)+FEobj50*(EH>10000)*(EH<100000)+FEobj100*(EH>100000))*(((0.06*EH)/2+(0.09*EH)/2)/1000)
+co2_stockage;0.06*EH*FEsilo;DBO5*FEsilo;0.06*EH*FEsilo;0.06*EH*FEsilo
+co2_methanisation;0.03156*EH*tau_abattement*tau_co2;0.21038*tau_abattement*tau_co2*(DBO5 + MES);420.75*TBentrant*tau_abattement*tau_co2;1.87*Vbiogaz*tau_co2
+ch4_methanisation;0.01109*EH*tau_abattement*tau_fuite;0.07391*tau_abattement*tau_fuite*(DBO5 + MES);147.825*TBentrant*tau_abattement*tau_fuite;0.657*Vbiogaz*tau_fuite
+co2_elec;1.3*EH;1.3*EH;1.3*EH;1.3*EH
+co2_intrant;FEintrant*Tintrant;FEintrant*Tintrant;FEintrant*Tintrant;FEintrant*Tintrant
+co2_transport;FEtransport*Ttransport*dist;FEtransport*Ttransport*dist;FEtransport*Ttransport*dist;FEtransport*Ttransport*dist

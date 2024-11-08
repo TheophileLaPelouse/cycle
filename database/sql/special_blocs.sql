@@ -186,7 +186,7 @@ select api.add_new_bloc('lien', 'bloc', 'LineString'
 
 alter type ___.bloc_type add value 'canalisation' ; 
 commit ; 
-insert into ___.input_output values ('canalisation', array['qe_e', 'dbo5_e', 'mes_e', 'ngl_e']::varchar[], array['qe_s', 'dbo5_s', 'mes_s', 'ngl_s']::varchar[], array[]::varchar[]) ;
+insert into ___.input_output values ('canalisation', array['qe_e', 'dbo5_e', 'mes_e', 'ngl_e', 'ml', 'diam']::varchar[], array['qe_s', 'dbo5_s', 'mes_s', 'ngl_s']::varchar[], array[]::varchar[]) ;
 
 create sequence ___.canalisation_bloc_name_seq ;
 
@@ -281,6 +281,7 @@ qe_s real,
 dbo5_s real,
 mes_s real,
 ngl_s real,
+ml real,
 
 -- cana ___.cana_type not null default row('fonte', 'rural', '100', '80', 'classic'),
 

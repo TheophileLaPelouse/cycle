@@ -356,6 +356,7 @@ begin
     E'    if not St_equals(old.geom, new.geom) then\n' ||
     E'        update ___.link set geom = st_setpoint(geom, 0, new.geom) where up = new.id;\n' ||
     E'        update ___.link set geom = st_setpoint(geom, -1, new.geom) where down = new.id;\n' ||
+    E'        perform api.update_geom_values(new.id, new.model);\n' ||
     E'    end if;\n' ||
     E'    perform api.update_calc_bloc(new.id, new.model);\n' ||
     E'    perform api.calculate_bloc(new.id, new.model);' ||
@@ -363,6 +364,7 @@ begin
     E'$$, \n' ||
     E'after_insert_section => $$\n' ||
     E'      perform api.update_links(new.id, ''' || shape || ''', new.geom, new.model);' ||
+    E'      perform api.update_geom_values(new.id, new.model);' ||
     E'      perform api.update_calc_bloc(new.id, new.model);' ||
     E'      perform api.calculate_bloc(new.id, new.model);' ||
     E'      perform api.update_results_ss_bloc(new.id, new.sur_bloc);' || 
@@ -683,6 +685,40 @@ begin
     end if;
     -- raise notice 'links updated';
 end;
+$$;
+
+create or replace function api.update_geom_values(bloc_id integer, model_name varchar)
+returns void
+language plpgsql
+as $$
+declare 
+    g geometry;
+    shape_ ___.geo_type;
+    b_typ ___.bloc_type;
+    inp_geom varchar;
+    query text;
+begin
+    select shape, b_type into shape_, b_typ from ___.bloc where id = bloc_id;
+    query := 'select geom from ___.'||b_typ||'_bloc where id = $1';
+    execute query into g using bloc_id;
+
+    with inputs as (select unnest(inputs) as input from api.input_output where b_type = b_typ)
+    select into inp_geom input from inputs where input = 's' or input = 'S' limit 1; -- Normalement pas besoin de limit 1 mais on sait jamais  
+    if shape_ = 'Polygon' and inp_geom is not null then 
+        query := 'update ___.'||b_typ||'_bloc set s = st_area(geom) where id = $1 and s is null';
+        execute query using bloc_id;
+    end if;
+    -- Pour le moment les unités sont décidées par le srid, donc faudra convertir en mètre un jour 
+    -- mais je ne sais pas comment faire ça de manière constante pour le moment
+    -- Dans le doute il est conseillé de remplir soit même la valeur souhaitée
+    with inputs as (select unnest(inputs) as input from api.input_output where b_type = b_typ)
+    select into inp_geom input from inputs where input = 'ml' limit 1;
+    if shape_ = 'LineString' and inp_geom is not null then 
+        query := 'update ___.'||b_typ||'_bloc set ml = st_length(geom) where id = $1 and ml is null';
+        execute query using bloc_id;
+    end if;
+
+end ;
 $$;
 
 -- Maintenant on ajoute les fonctions qui vont adapter input_output comme il faut 

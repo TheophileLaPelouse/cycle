@@ -722,9 +722,12 @@ begin
     
     -- update b_typ_bloc 
     foreach col in array colnames loop
-        query := 'update ___.'||b_typ||'_bloc set '||col||' = (select val from inp_out where name = '''||col||''' and val is not null) 
-        where id = '||id_bloc||' and '||col||' is null;' ; 
-        execute query ;
+        select data_type from information_schema.columns where table_name = b_typ||'_bloc' and column_name = col limit 1 into type_ ; 
+        if type_ != 'USER-DEFINED' then 
+            query := 'update ___.'||b_typ||'_bloc set '||col||' = (select val from inp_out where name = '''||col||''' and val is not null) 
+            where id = '||id_bloc||' and '||col||' is null;' ; 
+            execute query ;
+        end if ;
     end loop ;
     drop table inp_out ;
     drop table bilan ;

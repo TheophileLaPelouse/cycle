@@ -40,7 +40,7 @@ class formula :
     def __init__(self,gas_f , hypo, var) : 
         self.h = hypo.copy()
         self.var = var[:]
-        print(self.var)
+        # print(self.var)
         self.f = gas_f.copy()
         n= len(self.var)
         self.results = {}
@@ -105,19 +105,19 @@ def insert_op(operators, op) :
 def write_formula(expr, dico, var = set(), c = 0):
     if c > 20 : 
         return
-    print(expr)
+    # print(expr)
     operators = ['+', '-', '*', '/', '^', '>', '<', '(', ')']
     args = re.split(r'([\+\-\/\*\>\<\^\(\)])', expr)
     args = [arg.strip() for arg in args]
-    print("Mais Non ?", args)
+    # print("Mais Non ?", args)
     i = 0
     calc = [[]]
     idx = 0 
     last_op = [[]]
     flag_op = [False]
     for i in range(len(args)) : 
-        print('argument', args[i])
-        # print(i, flag_op)
+        # print('argument', args[i])
+        # # print(i, flag_op)
         if args[i] == '(' :
             calc.append([])
             flag_op.append(False)
@@ -138,7 +138,7 @@ def write_formula(expr, dico, var = set(), c = 0):
                 calc[idx].append(written_formula)
             else : 
                 calc[idx].append('('+written_formula + ')')
-            print("written formula", calc[idx][-1])
+            # print("written formula", calc[idx][-1])
         elif args[i] in operators :
             try : 
                 prioriorized = last_op[idx][0]
@@ -155,7 +155,7 @@ def write_formula(expr, dico, var = set(), c = 0):
             calc[idx].append(args[i])
     calc[idx] += last_op[idx]
 
-    print('calc', calc)
+    # print('calc', calc)
     def formula_from_calc(calc) :
         if not isinstance(calc, list) : 
             return calc
@@ -182,11 +182,11 @@ def write_formula(expr, dico, var = set(), c = 0):
                     arg = str(pi)
                 if arg2 == 'pi' : 
                     arg2 = str(pi)
-                print('hihi', arg, arg2, op)
+                # print('hihi', arg, arg2, op)
                 
                 if is_number(arg) and is_number(arg2) : 
                     if op == '+' :
-                        print("bonjour")
+                        # print("bonjour")
                         arg=  str(float(arg) + float(arg2))
                     elif op == '-' : 
                         arg= str(float(arg) - float(arg2))
@@ -201,7 +201,7 @@ def write_formula(expr, dico, var = set(), c = 0):
                     elif op == '<' : 
                         arg += str(float(float(arg) < float(arg2)))
                 else :
-                    print("euh", arg, op, arg2)
+                    # print("euh", arg, op, arg2)
                     arg = arg + op + arg2
                     if op == '/' and arg == arg2 : 
                         arg = '1'
@@ -211,7 +211,7 @@ def write_formula(expr, dico, var = set(), c = 0):
                 args.append(arg)
             else :
                 args.append(new)
-            print('args', args)
+            # print('args', args)
         return args[0]
     final_expr = formula_from_calc(calc)
     return final_expr
