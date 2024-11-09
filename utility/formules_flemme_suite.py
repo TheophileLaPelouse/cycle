@@ -7,6 +7,7 @@ Created on Tue Nov  5 09:52:26 2024
 #%%
 import pandas as pd
 import formules_flemmes as ff
+# Juste un petit test pour commit
 # Load the Excel file
 # file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
 file_path = '/Users/theophilemounier/Documents/stage_hydra2/emission GES _ traitement.xlsx'
