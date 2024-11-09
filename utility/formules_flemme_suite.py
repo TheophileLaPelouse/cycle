@@ -8,7 +8,8 @@ Created on Tue Nov  5 09:52:26 2024
 import pandas as pd
 import formules_flemmes as ff
 # Load the Excel file
-file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
+# file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
+file_path = '/Users/theophilemounier/Documents/stage_hydra2/emission GES _ traitement.xlsx'
 xls = pd.ExcelFile(file_path)
 #%%
 # Load the specific sheet
@@ -112,7 +113,8 @@ def global_values(data) :
 dico_bloc = dico_f_inp(data_f_inp)
 dico_global = global_values(data_global)
 dico_formules = {}
-specifiques_bloc = set(['Général', 'Général eau', 'Bassin cylindrique', 'Clarificateur'])
+# specifiques_bloc = set(['Général', 'Général eau', 'Bassin cylindrique', 'Clarificateur'])
+specifiques_bloc = None
 if not specifiques_bloc : 
     specifiques_bloc = set(dico_bloc.keys())
 for bloc in specifiques_bloc : 
@@ -149,12 +151,13 @@ for bloc in specifiques_bloc :
 #%%
 
 import sys
-from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QListWidget, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QListWidget, QPushButton, QHBoxLayout, QLineEdit, QLabel
 
 class ValuePickerDialog(QDialog):
-    def __init__(self, values, parent=None):
+    def __init__(self, values, formula_definition, parent=None):
         super().__init__(parent)
         self.values = values
+        self.formula_definition = formula_definition
         self.selected_value = None
         self.init_ui()
 
@@ -162,11 +165,18 @@ class ValuePickerDialog(QDialog):
         self.setWindowTitle('Pick a Value')
         self.layout = QVBoxLayout()
 
+        self.formula_label = QLabel(self.formula_definition)
+        self.layout.addWidget(self.formula_label)
+
         self.list_widget = QListWidget()
         for value in self.values:
             self.list_widget.addItem(value)
         self.layout.addWidget(self.list_widget)
 
+        self.input_field = QLineEdit()
+        self.input_field.setPlaceholderText('Or enter your own value')
+        self.layout.addWidget(self.input_field)
+        
         self.button_layout = QHBoxLayout()
         self.ok_button = QPushButton('OK')
         self.cancel_button = QPushButton('Cancel')
@@ -183,15 +193,17 @@ class ValuePickerDialog(QDialog):
         selected_items = self.list_widget.selectedItems()
         if selected_items:
             self.selected_value = selected_items[0].text()
+        elif self.input_field.text():
+            self.selected_value = self.input_field.text()
         super().accept()
 
     def reject(self):
         self.selected_value = None
         super().reject()
 
-def pick_value(values):
+def pick_value(values, formula_definition):
     # app = QApplication(sys.argv)
-    dialog = ValuePickerDialog(values)
+    dialog = ValuePickerDialog(values, formula_definition)
     if dialog.exec_() == QDialog.Accepted:
         return dialog.selected_value
     return None
@@ -250,25 +262,43 @@ types = {'réel' : 'real', 'entier' : 'integer', 'booléen' : 'integer', 'texte'
 
 formula_name = {}
 formula_description = {}
-formula_tab = []
-inputs = {}
-outputs = {}
-default_values = {}
-possible_values = {}
+
+args_bloc = {}
 
 for bloc in dico_formules : 
+    formula_tab = []
+    inputs = {}
+    outputs = {}
+    default_values = {}
+    possible_values = {}
+    args_bloc[bloc] = {'inputs' : {}, 'outputs' : {}, 'default_values' : {}, 'possible_values' : {}, 'formula' : [], 'formula_description' : {}}
+    
     norm_name = normalized_name(bloc)
+    args_bloc[bloc]['norm_name'] = norm_name
     print('\n', bloc)
     d = dico_bloc[bloc]
     print('BONJOUR', d)
     shape = d['shape']
+    args_bloc[bloc]['shape'] = shape
     res = dico_formules[bloc].results
     inps = set()
     outs = set()
     for inp in d['inp'] : 
+        print('INP', inp)
         if inp[-2:] == '_e' : 
             inps.add(inp)
+            type_ = types.get(d['inp'][inp][2], 'real')
+            if default : 
+                default = d['inp'][inp][0]
+            inputs[inp] = type_
+            default_values[inp] = default
         elif inp[-2:] == '_s' : 
+            print('In OUT !')
+            type_ = types.get(d['inp'][inp][2], 'real')
+            default = d['inp'][inp][0]
+            outputs[inp] = type_
+            if default : 
+                default_values[inp] = default
             outs.add(inp)
     
     for lvl in res : 
@@ -294,7 +324,8 @@ for bloc in dico_formules :
                     type_ = types.get(d['inp'][arg][2], 'real')
                     if type_ == 'list' : 
                         for val in dico_global : 
-                            if val.startswith(arg) : 
+                            if val.startswith(arg) and '(' in val: 
+                                print(val)
                                 val = val.split('(')[1].split(')')[0]
                                 if not possible_values.get(arg) : 
                                     possible_values[arg] = []
@@ -308,6 +339,11 @@ for bloc in dico_formules :
                         default_values[arg] = default
                     # Finit avec les inputs et outputs
                     print(max_lvl)
+            args_bloc[bloc]['inputs'] = inputs
+            args_bloc[bloc]['outputs'] = outputs
+            args_bloc[bloc]['default_values'] = default_values
+            args_bloc[bloc]['possible_values'] = possible_values
+            
             expr = res[lvl][f]
             flag = False
             for formula in formula_name : 
@@ -317,7 +353,8 @@ for bloc in dico_formules :
                     break 
             if not flag :
                 formula_name[expr] = set() 
-                formula_name[expr].add(formula_string(expr, trad.get(f, f), norm_name, max_lvl))   
+                formula_name[expr].add(formula_string(expr, trad.get(f, f), norm_name, max_lvl)) 
+                args_bloc[bloc]['formula'].append(expr)  
                 
 priority = {'general' : 0, 'bassin_cylindrique' : 1, 'general_eau' : 1}
 
@@ -336,6 +373,8 @@ for f in formula_name :
                         selected_value = names
         if not selected_value :  
             selected_value = pick_value(formula_name[f])
+            if selected_value not in formula_name[f] :
+                formula_name[f].add(selected_value, f)
             if not selected_value :
                 print("STOP STOP STOP")
                 break
@@ -345,6 +384,27 @@ for f in formula_name :
         print("STOP STOP STOP")
         break
     formula_description[str(f)] = [selected_value, '', int(selected_value[-1])]     
+
+
+#%%
+from cycle.database.create_bloc import write_sql_bloc
+import os 
+
+for bloc in args_bloc : 
+    for f in args_bloc[bloc]['formula'] : 
+        args_bloc[bloc]['formula_description'][f] = formula_description[f]
+
+specials_bloc = set(['Canalisation'])
+for bloc in args_bloc : 
+    print(bloc)
+    if bloc not in specials_bloc :
+        write_sql_bloc(None, args_bloc[bloc]['norm_name'], args_bloc[bloc]['shape'], 
+                       args_bloc[bloc]['inputs'], args_bloc[bloc]['outputs'], args_bloc[bloc]['default_values'], 
+                       args_bloc[bloc]['possible_values'], formula = args_bloc[bloc]['formula'], 
+                       formula_description = args_bloc[bloc]['formula_description'], 
+                       path = os.path.join(os.path.dirname(__file__), 'excel_bloc.sql'))
+    
+    
     
             
                  

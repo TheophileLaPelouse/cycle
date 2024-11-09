@@ -25,7 +25,8 @@ class CycleMenu(QMenu):
         QMenu.__init__(self, "&Cycle", parent)
         self.__log_manager = log_manager
         self.setIcon(QIcon(os.path.join(_current_dir, '..', 'ressources', 'images', 'cycle_logo.png')))
-        self.aboutToShow.connect(self.__refresh)
+        # self.aboutToShow.connect(self.__refresh)
+        self.__refresh()
         self.pm = None
         self.res_widget = None
 
