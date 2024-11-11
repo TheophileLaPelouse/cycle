@@ -95,14 +95,14 @@ create table ___.global_values(
 insert into ___.global_values values ('PRG_CH4', 28, 0, 'Potentiel de réchauffement global du méthane sur 100 ans');
 insert into ___.global_values values ('PRG_N2O', 265, 0,'Potentiel de réchauffement global du protoxyde azote sur 100 ans');
 insert into ___.global_values values ('PRG_CO2', 1, 0, 'Potentiel de réchauffement global du dioxyde de carbone sur 100 ans');
-insert into ___.global_values(name, val, incert) values ('febet', 0.155, 0);
-insert into ___.global_values(name, val, incert) values ('rhobet', 2400, 0);
-insert into ___.global_values(name, val, incert) values ('feevac', 5.44, 0);
-insert into ___.global_values(name, val, incert) values ('rhoterre', 1.5, 0);
-insert into ___.global_values(name, val, incert, comment) values ('fepoids', 5.5, 0, 'Facteur émission par kg d équipement et machines');
-insert into ___.global_values(name, val, incert) values ('felam', 3.6, 0);
-insert into ___.global_values(name, val, incert) values ('rholam', 1040, 0);
-insert into ___.global_values(name, val, incert) values ('fepelle', 61, 0);
+-- insert into ___.global_values(name, val, incert) values ('febet', 0.155, 0);
+-- insert into ___.global_values(name, val, incert) values ('rhobet', 2400, 0);
+-- insert into ___.global_values(name, val, incert) values ('feevac', 5.44, 0);
+-- insert into ___.global_values(name, val, incert) values ('rhoterre', 1.5, 0);
+-- insert into ___.global_values(name, val, incert, comment) values ('fepoids', 5.5, 0, 'Facteur émission par kg d équipement et machines');
+-- insert into ___.global_values(name, val, incert) values ('felam', 3.6, 0);
+-- insert into ___.global_values(name, val, incert) values ('rholam', 1040, 0);
+-- insert into ___.global_values(name, val, incert) values ('fepelle', 61, 0);
 
 ------------------------------------------------------------------------------------------------
 -- Abstract tables

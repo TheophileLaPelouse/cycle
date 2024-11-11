@@ -1,4 +1,5 @@
 import re 
+from cycle.utility.string import isfloat
 
 operators = ['+', '-', '*', '/', '^', '(', ')', '>', '<']
 
@@ -11,13 +12,19 @@ def read_formula(formula, dico) :
     """
     L'objectif est simplement de reconnaitre les données d'entrées nécessaire au calcul 
     """
-    l = []
+    l = set()
     pat = '['+re.escape(''.join(operators))+']'
     formula = formula.replace(' ', '')
     args = re.split(pat, formula)
+    # print('FORMULA', formula)
+    # print("INSIDE", args)
     for d in dico : 
         if d in args :
-            l.append(d)   
+            l.add(d)   
+    if not dico : 
+        for arg in args :
+            if arg not in operators and arg not in l and not isfloat(arg) : 
+                l.add(arg)
     return l
 
 def calculate_formula(formula, dico):

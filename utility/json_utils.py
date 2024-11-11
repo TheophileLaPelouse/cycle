@@ -49,6 +49,15 @@ def get_all_properties(name, dico):
 
     return properties, paths
 
+def json_map(dico, func) : 
+    new = {}
+    for key in dico : 
+        if isinstance(dico[key], dict) and key != 'bloc' and key != 'properties' : 
+            new[key] = json_map(dico[key], func)
+        else : 
+            new[key] = func(key, dico[key])
+    return new
+
 def add_dico(dico, dico_to_add):
     if not isinstance(dico, dict):
         return dico_to_add

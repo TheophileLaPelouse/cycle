@@ -22,7 +22,7 @@
 """
 QGisUIManager manage iface interactions with gqis
 """
-
+import time
 import os
 from pathlib import Path
 import re
@@ -260,10 +260,10 @@ class QGisProjectManager(QObject):
         for field in properties : 
             print('YOOOO', field)
             if not field.endswith('__ref') and properties.get(field+'__ref') :
-                prop_layers = project.mapLayersByName(Alias[properties[field][0]])
+                prop_layers = project.mapLayersByName(Alias.get(properties[field][0], properties[field][0]))
                 if not prop_layers:
                     layer_name, sch, tbl, key = properties[field]
-                    layer_name = Alias[layer_name]
+                    layer_name = Alias.get(layer_name, layer_name)
                     uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
                     prop_layer = QgsVectorLayer(uri, layer_name, "postgres")
                     prop_layer.setDisplayExpression('val')
@@ -380,16 +380,19 @@ class QGisProjectManager(QObject):
         
     @staticmethod
     def update_qml(project, project_filename, f_details, inp_outs, f_inputs) : 
-        import time 
+    
         tic = time.time()
         # Pour l'instant on appelle à chaque ouverture de projet mais on pourrait vouloir ne pas toujours l'appeler
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         lang = '' if locale == 'en' else '_fr'
         lang = ''
+        layers = project.mapLayers()
+        dico_layer = {layer.name() : (layer, id) for id, layer in layers.items()}
         for layer_name, tbl in QGisProjectManager.layers(project_filename).items():
-            found_layers = project.mapLayersByName(layer_name)
-            if len(found_layers):
-                layer = found_layers[0]
+            found_layer = dico_layer[layer_name]
+            print('temps de finding layers', time.time()-tic)
+            if found_layer:
+                layer = found_layer[0]
                 qml_basename = tbl+lang+'.qml'
                 qml = os.path.join(_custom_qml_dir, qml_basename)
                 if not os.path.exists(qml):
@@ -398,18 +401,31 @@ class QGisProjectManager(QObject):
                 print('founded qml', qml)
                 if tbl.endswith('_bloc') : 
                     b_types = tbl[:-5]
+                    # if layer_name == 'Dégazage' :
+                        # print('b_types', b_types)
+                        # print('f_details', f_details[b_types])
+                        # print('inp_outs', inp_outs[b_types])
                     if f_details.get(b_types) :
                         if not f_inputs.get(b_types) :
                             f_inputs[b_types] = {}
                         if inp_outs[b_types]['concrete'] :
-                            QGisProjectManager.update1qml(project, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
+                            print('Avant update', time.time()-tic)
+                            QGisProjectManager.update1qml(project, dico_layer, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
         print('temps', time.time()-tic)
                         
                             
     @staticmethod
-    def update1qml(project, layer, qml, f_details, inp_outs, f_inputs) : 
-        
+    def update1qml(project, dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
+        t1 = time.time()
         config = layer.editFormConfig()
+        config.setLayout(Qgis.AttributeFormLayout(1))
+        # En attendant pour pas que ce soit toujours trop long de tout recharger, plus tard y'aura un json propre qui permettra de gérer les blocs
+        if rapid == 1 :
+            for tab in config.tabs() :
+                if tab.name() in ['Exploitation', 'Construction'] : 
+                    print("Déjà bien configuré")
+                    return
+        # print('on va configurer')
         config.clearTabs()
         
         name = attrfield('name', layer.fields().indexFromName('name'), None)
@@ -433,7 +449,11 @@ class QGisProjectManager(QObject):
         config.addTab(output_tab)
         
         fieldnames = [f.name() for f in layer.fields()]
-        field_fe = {}
+        field_fe = set()
+        
+        for field in fieldnames :
+            if field.endswith('_fe') :
+                field_fe.add(field[:-3])
         lvlmax = 6
         in2tab = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
         in2tab_constr = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
@@ -450,17 +470,19 @@ class QGisProjectManager(QObject):
             sides = formulas.split('=')
             group_field = []
             c_or_e = 'constr'
-            print(sides)
+            # print(sides)
             if len(sides) == 2 : 
                 group_field = read_formula(sides[1],  inp_outs['inp'])
-                print('group_field', group_field)
+                # print('group_field', group_field)
                 if sides[0].strip().endswith('_c') : 
                     c_or_e = 'constr'
-                else :
+                elif sides[0].strip().endswith('_e') :
                     c_or_e = 'expl'
+                else :
+                    return set()
             for val in group_field : 
                 idx = layer.fields().indexFromName(val)
-                if field_fe.get(val) :
+                if val in field_fe :
                     container = QgsAttributeEditorContainer(val.upper(), level_container[c_or_e][lvl])
                     container.setColumnCount(2)
                     container.addChildElement(attrfield(val, idx, container))
@@ -472,12 +494,14 @@ class QGisProjectManager(QObject):
                     
                     # default value
                     defval = QgsDefaultValue()
-                    prop_layer = project.mapLayersByName(Alias[val])[0]
+                    # prop_layer = project.mapLayersByName(Alias.get(val, val))[0]
+                    prop_layer = dico_layer[Alias.get(val, val)][0]
                     default_fe = layer.defaultValueDefinition(fe_idx)
                     default_fe = default_fe.expression()
                     #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
                     
-                    default_fe = re.sub("layer:='[^']+'", f"layer:='{prop_layer.id()}'", default_fe)
+                    # default_fe = re.sub("layer:='[^']+'", f"layer:='{prop_layer.id()}'", default_fe)
+                    default_fe = f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=\"{val}\"), 'fe')"
                     defval.setExpression(default_fe)
                     defval.setApplyOnUpdate(True)
                     layer.setDefaultValueDefinition(fe_idx, defval)
@@ -495,17 +519,21 @@ class QGisProjectManager(QObject):
                             default_container[c_or_e][lvl].addChildElement(attrfield(val, idx, default_container[c_or_e][lvl]))
                             in2tab_default[c_or_e][lvl] = True
                 else : 
-                    print("avant c_or_e", c_or_e, lvl, val)   
+                    # print("avant c_or_e", c_or_e, lvl, val)   
                     if val not in level_container_children[c_or_e][lvl] :
-                        print("c_or_e", c_or_e, lvl, val)
+                        # print("c_or_e", c_or_e, lvl, val)
                         level_container[c_or_e][lvl].addChildElement(attrfield(val, idx, level_container[c_or_e][lvl]))
                         level_container_children[c_or_e][lvl].add(val)
                         layer.setFieldAlias(idx, Alias.get(val, ''))
                 in2tab[c_or_e][lvl] = True
             return set(group_field)
         treated = set()
+        t2 = time.time()
+        print('temps avant', t2-t1)
         for formulas, lvl in f_details.items() : 
             treated = treated.union(treat_formula(formulas, f_inputs, lvl))
+        t3 = time.time()
+        print('temps après boucle', t3-t2)
 
         for c_or_e in in2tab : 
             for lvl in in2tab[c_or_e] : 
@@ -523,8 +551,8 @@ class QGisProjectManager(QObject):
                     
         def addval2tab(val, tab) : 
             idx = layer.fields().indexFromName(val)
-            print("sortie", val, idx)
-            if field_fe.get(val) : 
+            # print("sortie", val, idx)
+            if val in field_fe : 
                 
                 container = QgsAttributeEditorContainer(val.upper(), tab)
                 container.setColumnCount(2)
@@ -538,7 +566,7 @@ class QGisProjectManager(QObject):
                     
                     # default value
                     defval = QgsDefaultValue()
-                    prop_layer = project.mapLayersByName(Alias[val])[0]
+                    prop_layer = project.mapLayersByName(Alias.get(val, val))[0]
                     default_fe = layer.defaultValueDefinition(fe_idx)
                     default_fe = default_fe.expression()
                     #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
@@ -564,9 +592,11 @@ class QGisProjectManager(QObject):
                 inp = inp + "_e"
             if inp in inp_outs['inp'] :
                 addval2tab(val, input_tab)
-            
+        t4 = time.time()
+        print('temps après boucle 2', t4-t3)
         layer.setEditFormConfig(config)
-        layer.saveNamedStyle(qml)
+        print('temps edit form config', time.time()-t4)
+        # layer.saveNamedStyle(qml)
         return
                 
                 

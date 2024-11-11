@@ -47,14 +47,18 @@ class formula :
         for k in range(n) : 
             self.results[k+1] = {}
             for f in self.f : 
-                if var[k] :
-                    final_expr = write_formula(self.f[f], self.h, self.var[k])
-                    if not( '>' in final_expr or '<' in final_expr) : 
-                        final_expr =replace_singleton(final_expr)
-                        final_expr =  sympy.simplify(final_expr)
-                        final_expr = round_expr(final_expr, 5)
-                        final_expr = invert_singleton(str(final_expr))
-                    self.results[k+1][f] = final_expr
+                for f2 in self.f[f] :
+                    if var[k] :
+                        # print("BONJOUE3", f2)
+                        final_expr = write_formula(f2, self.h, self.var[k])
+                        if not( '>' in final_expr or '<' in final_expr) : 
+                            final_expr =replace_singleton(final_expr)
+                            final_expr =  sympy.simplify(final_expr)
+                            final_expr = round_expr(final_expr, 5)
+                            final_expr = invert_singleton(str(final_expr))
+                        if not self.results[k+1].get(f) :
+                            self.results[k+1][f] = set()
+                        self.results[k+1][f].add(final_expr)
                 # self.formula_by_detail_level['variables pour %s' % str(k+1)] = self.var[k]
             # self.formula_by_detail_level['Hypothèses'] = self.h
                 
@@ -103,6 +107,7 @@ def insert_op(operators, op) :
     return operators
 
 def write_formula(expr, dico, var = set(), c = 0):
+    # print("Dans write formula", expr)
     if c > 20 : 
         return
     # print(expr)
