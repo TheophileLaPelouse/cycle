@@ -1,0 +1,226 @@
+{
+    "": {
+        "Fili\u00e8re Traitement": {
+            "File boue": {
+                "Traitement": {
+                    "Centrifugeuse pour \u00e9paississement": {
+                        "bloc": [
+                            "Centrifugeuse pour \u00e9paississement",
+                            "api",
+                            "centrifugeuse_pour_epais_bloc",
+                            "name"
+                        ]
+                    },
+                    "Dessableur-d\u00e9graisseur": {
+                        "bloc": [
+                            "Dessableur-d\u00e9graisseur",
+                            "api",
+                            "dessableurdegraisseur_bloc",
+                            "name"
+                        ]
+                    },
+                    "Digesteur": {
+                        "bloc": [
+                            "Digesteur",
+                            "api",
+                            "digesteur_bloc",
+                            "name"
+                        ]
+                    },
+                    "File boue": {},
+                    
+                    "Flottateur": {
+                        "bloc": [
+                            "Flottateur",
+                            "api",
+                            "flottateur_bloc",
+                            "name"
+                        ]
+                    },
+                    "Table d'\u00e9gouttage": {
+                        "bloc": [
+                            "Table d'\u00e9gouttage",
+                            "api",
+                            "table_degouttage_bloc",
+                            "name"
+                        ]
+                    },
+                    "Usine de compostage": {
+                        "bloc": [
+                            "Usine de compostage",
+                            "api",
+                            "usine_de_compostage_bloc",
+                            "name"
+                        ]
+                    }
+                },
+                "Valorisation et d\u00e9chets": {
+                    "Compostage": {
+                        "bloc": [
+                            "Compostage",
+                            "api",
+                            "compostage_bloc",
+                            "name"
+                        ]
+                    },
+                    "M\u00e9thanisation": {
+                        "bloc": [
+                            "M\u00e9thanisation",
+                            "api",
+                            "methanisation_bloc",
+                            "name"
+                        ]
+                    }
+                },
+                "bloc": [
+                    "File boue",
+                    "api",
+                    "file_boue_bloc",
+                    "name"
+                ]
+            },
+            "File eau": {
+                        "Bassin biologique": {
+                            "bloc": [
+                                "Bassin biologique",
+                                "api",
+                                "bassin_biologique_bloc",
+                                "name"
+                            ]
+                        },
+                        "Bassin d'orage": {
+                            "bloc": [
+                                "Bassin d'orage",
+                                "api",
+                                "bassin_dorage_bloc",
+                                "name"
+                            ]
+                        },
+                        "D\u00e9canteur lamellaire": {
+                            "bloc": [
+                                "D\u00e9canteur lamellaire",
+                                "api",
+                                "decanteur_lamellaire_bloc",
+                                "name"
+                            ]
+                        },
+                        "D\u00e9grilleur": {
+                            "bloc": [
+                                "D\u00e9grilleur",
+                                "api",
+                                "degrilleur_bloc",
+                                "name"
+                            ]
+                        },
+                        "Tamis": {
+                            "bloc": [
+                                "Tamis",
+                                "api",
+                                "tamis_bloc",
+                                "name"
+                            ]
+                        },
+                        "Clarificateur": {
+                            "bloc": [
+                                "Clarificateur",
+                                "api",
+                                "clarificateur_bloc",
+                                "name"
+                            ]
+                        },
+                        "bloc": [
+                            "File eau",
+                            "api",
+                            "file_eau_bloc",
+                            "name"
+                        ]
+                    },
+            "bloc": [
+                "Traitement",
+                "api",
+                "traitement_bloc",
+                "name"
+            ]
+        }
+    },
+    "Blocs abstraits": {
+        "Lien": {
+            "bloc": [
+                "Lien",
+                "api",
+                "lien_bloc",
+                "name"
+            ]
+        },
+        "Sur bloc": {
+            "bloc": [
+                "Sur bloc",
+                "api",
+                "sur_bloc_bloc",
+                "name"
+            ]
+        },
+        "Source": {
+            "bloc": [
+                "Source",
+                "api",
+                "source_bloc",
+                "name"
+            ]
+        }
+    },
+    "Properties": {
+        "milieu": [
+            "milieu",
+            "api",
+            "milieu_type_table",
+            "val"
+        ],
+        "milieu__ref": [
+            [
+                "ref_milieu",
+                "val",
+                "Rejets eau",
+                "milieu"
+            ]
+        ],
+        "oxi": [
+            "oxi",
+            "api",
+            "oxi_type_table",
+            "val"
+        ],
+        "oxi__ref": [
+            [
+                "ref_oxi",
+                "val",
+                "Rejets eau",
+                "oxi"
+            ]
+        ],
+        "tsejour": [
+            "tsejour",
+            "api",
+            "tsejour_type_table",
+            "val"
+        ],
+        "tsejour__ref": [
+            [
+                "ref_tsejour_Bassin biologique",
+                "val",
+                "Bassin biologique",
+                "tsejour"
+            ]
+        ]
+    },
+    "Rejets": {
+        "Rejets eau": {
+            "bloc": [
+                "Rejets eau",
+                "api",
+                "rejets_eau_bloc",
+                "name"
+            ]
+        }
+    }
+}

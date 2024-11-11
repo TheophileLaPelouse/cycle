@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<svg width="1280" height="720" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+
+ <g class="layer">
+  <title>Layer 1</title>
+  <g id="svg_9" transform="translate(5, -92) translate(53, 147) matrix(3.16046, 0, 0, 3.08676, -1382.76, -1162.32)">
+   <rect fill="#C38649" fill-opacity="0.45" height="167" id="svg_3" width="355" x="438" y="395"/>
+   <path d="m504,496l116,22.5l-116,22.5l0,-45z" fill="#E8E8E8" fill-rule="evenodd" id="svg_4" stroke="#042433" stroke-miterlimit="8" stroke-width="2"/>
+   <path d="m726,541l-108,-22.5l108,-22.5l0,45z" fill="#E8E8E8" fill-rule="evenodd" id="svg_5" stroke="#042433" stroke-miterlimit="8" stroke-width="2"/>
+   <path d="m788,377l0,185.6" fill="none" fill-rule="evenodd" id="svg_6" stroke="#000000" stroke-miterlimit="8" stroke-width="8.33"/>
+   <path d="m443,377l0,186.67" fill="none" fill-rule="evenodd" id="svg_7" stroke="#000000" stroke-miterlimit="8" stroke-width="8.33"/>
+   <path d="m792.13,564l-354.13,0" fill="none" fill-rule="evenodd" id="svg_8" stroke="#000000" stroke-miterlimit="8" stroke-width="8.33"/>
+  </g>
+ </g>
+</svg>
