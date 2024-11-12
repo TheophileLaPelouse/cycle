@@ -64,7 +64,9 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : '
          'q_chaux' : 'Quantité de chaux (kg/an)', 'transp_chaux' : "Distance d'approxivisionnement de la chaux (km)",
          'q_fecl3' : 'Quantité de FeCl3 (kg/an)', 'transp_fecl3' : "Distance d'approxivisionnement du FeCl3 (km)",
          'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
-         'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)"}
+         'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)", 
+         'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)'
+         }
 
 ConstrOnly = set(['cad', 'e', 'tauenterre'])
 
@@ -606,7 +608,7 @@ class QGisProjectManager(QObject):
         print('temps après boucle 2', t4-t3)
         layer.setEditFormConfig(config)
         print('temps edit form config', time.time()-t4)
-        # layer.saveNamedStyle(qml)
+        layer.saveNamedStyle(qml)
         return
                 
                 
