@@ -7,7 +7,7 @@ import warnings
 from pathlib import Path
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
-from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction, QLineEdit, QDockWidget, QWidget, QSizePolicy
+from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction, QLineEdit, QDockWidget, QWidget, QSizePolicy, QComboBox
 from qgis.utils import iface
 from qgis.core import QgsProject, QgsVectorLayer
 from ...project import Project
@@ -99,6 +99,19 @@ class CycleToolbar(QToolBar):
         self.__add_resume_result_dock_button = self.__add_action_button(tr('Résumer résultats'), 'resume_results.svg', self.__add_resume_result_dock)
         self.__show_all_results_button = self.__add_action_button(tr('Afficher tous les résultats'), 'show_all_results.svg', self.__show_all_results)
         self.addSeparator()
+        self.spacer6 = QLabel('')
+        self.spacer6.setFixedWidth(10)
+        self.addWidget(self.spacer6)
+        
+        
+        self.addWidget(QLabel(self.tr("Taille des blocs")))
+        self.combo_scale = QComboBox()
+        self.combo_scale.setEditable(True)  # Make the combo box editable
+        self.combo_scale.addItems(["1:500", "1:1000", "1:2500", "1:5000", "1:10000", "1:25000", "1:50000", "1:100000"])  # Add some default values
+        self.combo_scale.setCurrentIndex(2)
+        self.combo_scale.currentTextChanged.connect(self.__zoom_to_scale)
+        self.addWidget(self.combo_scale)
+        
         self.spacer5 = QLabel('')
         self.spacer5.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         self.addWidget(self.spacer5)
@@ -247,3 +260,16 @@ class CycleToolbar(QToolBar):
         self.res_widget and self.res_widget.setParent(None)
         self.res_widget = AllResults(project, self.parent())
         self.res_widget.show()
+        
+    def __zoom_to_scale(self) :
+        layers = iface.mapCanvas().layers()
+        print("Bonjour")
+        for layer in layers : 
+            print(layer.geometryType())
+            if layer.geometryType().name == 'Point' : 
+                print(layer.name())
+                print(layer.renderer().referenceScale())
+                r = layer.renderer()
+                r.setReferenceScale(float(self.combo_scale.currentText().split(':')[1]))
+                layer.setRenderer(r)
+                layer.triggerRepaint()

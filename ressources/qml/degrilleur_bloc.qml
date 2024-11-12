@@ -312,10 +312,7 @@
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation layerId="M_thode_de_compactage_9a40d39d_12fe_42da_8097_ec12f9f53be1" strength="Association" id="D_grilleur_965236b3_3d5d_4031_8be5_266dfeb6440f_qdechet_M_thode_de_compactage_9a40d39d_12fe_42da_8097_ec12f9f53be1_val" referencedLayer="M_thode_de_compactage_9a40d39d_12fe_42da_8097_ec12f9f53be1" name="ref_qdechet_degrilleur" layerName="Méthode de compactage" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" providerKey="postgres" referencingLayer="D_grilleur_965236b3_3d5d_4031_8be5_266dfeb6440f">
-      <fieldRef referencingField="qdechet" referencedField="val"/>
-    </relation>
-    <relation layerId="qdechet_13a57019_68f0_4ec4_90fa_d4f098736348" strength="Association" id="D_grilleur_965236b3_3d5d_4031_8be5_266dfeb6440f_qdechet_qdechet_13a57019_68f0_4ec4_90fa_d4f098736348_val" referencedLayer="qdechet_13a57019_68f0_4ec4_90fa_d4f098736348" name="ref_qdechet_degrilleur" layerName="qdechet" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" providerKey="postgres" referencingLayer="D_grilleur_965236b3_3d5d_4031_8be5_266dfeb6440f">
+    <relation layerId="M_thode_de_compactage_56ed756c_5313_4b00_ac24_a3efb538d770" strength="Association" id="D_grilleur_965236b3_3d5d_4031_8be5_266dfeb6440f_qdechet_M_thode_de_compactage_56ed756c_5313_4b00_ac24_a3efb538d770_val" referencedLayer="M_thode_de_compactage_56ed756c_5313_4b00_ac24_a3efb538d770" name="ref_qdechet_degrilleur" layerName="Méthode de compactage" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" providerKey="postgres" referencingLayer="D_grilleur_965236b3_3d5d_4031_8be5_266dfeb6440f">
       <fieldRef referencingField="qdechet" referencedField="val"/>
     </relation>
   </referencedLayers>
@@ -566,7 +563,7 @@
     <default applyOnUpdate="0" expression="" field="geom_ref"/>
     <default applyOnUpdate="0" expression="" field="sur_bloc"/>
     <default applyOnUpdate="0" expression="@current_model" field="model"/>
-    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='M_thode_de_compactage_9a40d39d_12fe_42da_8097_ec12f9f53be1', attribute:='val', value:=&quot;qdechet&quot;), 'fe')" field="qdechet_fe"/>
+    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='M_thode_de_compactage_56ed756c_5313_4b00_ac24_a3efb538d770', attribute:='val', value:=&quot;qdechet&quot;), 'fe')" field="qdechet_fe"/>
     <default applyOnUpdate="0" expression="" field="qdechet_description"/>
   </defaults>
   <constraints>

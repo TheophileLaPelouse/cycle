@@ -179,7 +179,8 @@ class ProjectManager(QDialog):
         raw_f_inputs = project.fetchone("select api.select_default_input_output() ;")
         f_inputs = raw_f_inputs[0]
         QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output, f_inputs) 
-        
+        urlWithParams = 'type=xyz&url=https://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857'
+
         if model_name is not None:
             project.current_model = model_name
 
