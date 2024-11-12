@@ -1,186 +1,186 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis simplifyDrawingHints="1" readOnly="0" hasScaleBasedVisibilityFlag="0" simplifyDrawingTol="1" labelsEnabled="0" version="3.34.12-Prizren" minScale="100000000" styleCategories="AllStyleCategories" autoRefreshMode="Disabled" autoRefreshTime="0" simplifyLocal="1" simplifyMaxScale="1" simplifyAlgorithm="0" symbologyReferenceScale="-1" maxScale="0">
+<qgis simplifyDrawingTol="1" readOnly="0" simplifyAlgorithm="0" simplifyLocal="1" labelsEnabled="0" hasScaleBasedVisibilityFlag="0" simplifyDrawingHints="1" maxScale="0" version="3.34.9-Prizren" minScale="100000000" simplifyMaxScale="1" symbologyReferenceScale="-1" styleCategories="AllStyleCategories">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
     <Searchable>1</Searchable>
     <Private>0</Private>
   </flags>
-  <temporal limitMode="0" startExpression="" mode="0" durationUnit="min" startField="" endField="" durationField="" endExpression="" accumulate="0" enabled="0" fixedDuration="0">
+  <temporal endExpression="" endField="" limitMode="0" durationField="" accumulate="0" mode="0" enabled="0" startExpression="" startField="" durationUnit="min" fixedDuration="0">
     <fixedRange>
       <start></start>
       <end></end>
     </fixedRange>
   </temporal>
-  <elevation type="IndividualFeatures" showMarkerSymbolInSurfacePlots="0" clamping="Terrain" binding="Centroid" extrusionEnabled="0" zscale="1" symbology="Line" zoffset="0" extrusion="0" respectLayerSymbol="1">
+  <elevation showMarkerSymbolInSurfacePlots="0" symbology="Line" extrusionEnabled="0" zscale="1" extrusion="0" zoffset="0" clamping="Terrain" binding="Centroid" type="IndividualFeatures" respectLayerSymbol="1">
     <data-defined-properties>
       <Option type="Map">
-        <Option type="QString" value="" name="name"/>
+        <Option value="" name="name" type="QString"/>
         <Option name="properties"/>
-        <Option type="QString" value="collection" name="type"/>
+        <Option value="collection" name="type" type="QString"/>
       </Option>
     </data-defined-properties>
     <profileLineSymbol>
-      <symbol type="line" alpha="1" clip_to_extent="1" is_animated="0" frame_rate="10" name="" force_rhr="0">
+      <symbol frame_rate="10" alpha="1" force_rhr="0" clip_to_extent="1" is_animated="0" name="" type="line">
         <data_defined_properties>
           <Option type="Map">
-            <Option type="QString" value="" name="name"/>
+            <Option value="" name="name" type="QString"/>
             <Option name="properties"/>
-            <Option type="QString" value="collection" name="type"/>
+            <Option value="collection" name="type" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{68aa11f7-b213-464b-b746-4c62cc7755e0}" class="SimpleLine" pass="0" locked="0" enabled="1">
+        <layer id="{68aa11f7-b213-464b-b746-4c62cc7755e0}" pass="0" locked="0" class="SimpleLine" enabled="1">
           <Option type="Map">
-            <Option type="QString" value="0" name="align_dash_pattern"/>
-            <Option type="QString" value="square" name="capstyle"/>
-            <Option type="QString" value="5;2" name="customdash"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="customdash_map_unit_scale"/>
-            <Option type="QString" value="MM" name="customdash_unit"/>
-            <Option type="QString" value="0" name="dash_pattern_offset"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="dash_pattern_offset_map_unit_scale"/>
-            <Option type="QString" value="MM" name="dash_pattern_offset_unit"/>
-            <Option type="QString" value="0" name="draw_inside_polygon"/>
-            <Option type="QString" value="bevel" name="joinstyle"/>
-            <Option type="QString" value="190,207,80,255" name="line_color"/>
-            <Option type="QString" value="solid" name="line_style"/>
-            <Option type="QString" value="0.6" name="line_width"/>
-            <Option type="QString" value="MM" name="line_width_unit"/>
-            <Option type="QString" value="0" name="offset"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
-            <Option type="QString" value="MM" name="offset_unit"/>
-            <Option type="QString" value="0" name="ring_filter"/>
-            <Option type="QString" value="0" name="trim_distance_end"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="trim_distance_end_map_unit_scale"/>
-            <Option type="QString" value="MM" name="trim_distance_end_unit"/>
-            <Option type="QString" value="0" name="trim_distance_start"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="trim_distance_start_map_unit_scale"/>
-            <Option type="QString" value="MM" name="trim_distance_start_unit"/>
-            <Option type="QString" value="0" name="tweak_dash_pattern_on_corners"/>
-            <Option type="QString" value="0" name="use_custom_dash"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="width_map_unit_scale"/>
+            <Option value="0" name="align_dash_pattern" type="QString"/>
+            <Option value="square" name="capstyle" type="QString"/>
+            <Option value="5;2" name="customdash" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="customdash_map_unit_scale" type="QString"/>
+            <Option value="MM" name="customdash_unit" type="QString"/>
+            <Option value="0" name="dash_pattern_offset" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="dash_pattern_offset_map_unit_scale" type="QString"/>
+            <Option value="MM" name="dash_pattern_offset_unit" type="QString"/>
+            <Option value="0" name="draw_inside_polygon" type="QString"/>
+            <Option value="bevel" name="joinstyle" type="QString"/>
+            <Option value="190,207,80,255" name="line_color" type="QString"/>
+            <Option value="solid" name="line_style" type="QString"/>
+            <Option value="0.6" name="line_width" type="QString"/>
+            <Option value="MM" name="line_width_unit" type="QString"/>
+            <Option value="0" name="offset" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
+            <Option value="MM" name="offset_unit" type="QString"/>
+            <Option value="0" name="ring_filter" type="QString"/>
+            <Option value="0" name="trim_distance_end" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="trim_distance_end_map_unit_scale" type="QString"/>
+            <Option value="MM" name="trim_distance_end_unit" type="QString"/>
+            <Option value="0" name="trim_distance_start" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="trim_distance_start_map_unit_scale" type="QString"/>
+            <Option value="MM" name="trim_distance_start_unit" type="QString"/>
+            <Option value="0" name="tweak_dash_pattern_on_corners" type="QString"/>
+            <Option value="0" name="use_custom_dash" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="width_map_unit_scale" type="QString"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
-              <Option type="QString" value="" name="name"/>
+              <Option value="" name="name" type="QString"/>
               <Option name="properties"/>
-              <Option type="QString" value="collection" name="type"/>
+              <Option value="collection" name="type" type="QString"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
     </profileLineSymbol>
     <profileFillSymbol>
-      <symbol type="fill" alpha="1" clip_to_extent="1" is_animated="0" frame_rate="10" name="" force_rhr="0">
+      <symbol frame_rate="10" alpha="1" force_rhr="0" clip_to_extent="1" is_animated="0" name="" type="fill">
         <data_defined_properties>
           <Option type="Map">
-            <Option type="QString" value="" name="name"/>
+            <Option value="" name="name" type="QString"/>
             <Option name="properties"/>
-            <Option type="QString" value="collection" name="type"/>
+            <Option value="collection" name="type" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{0164649d-9c6a-4d58-aae4-98f5dd36ea4d}" class="SimpleFill" pass="0" locked="0" enabled="1">
+        <layer id="{0164649d-9c6a-4d58-aae4-98f5dd36ea4d}" pass="0" locked="0" class="SimpleFill" enabled="1">
           <Option type="Map">
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="border_width_map_unit_scale"/>
-            <Option type="QString" value="190,207,80,255" name="color"/>
-            <Option type="QString" value="bevel" name="joinstyle"/>
-            <Option type="QString" value="0,0" name="offset"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
-            <Option type="QString" value="MM" name="offset_unit"/>
-            <Option type="QString" value="136,148,57,255" name="outline_color"/>
-            <Option type="QString" value="solid" name="outline_style"/>
-            <Option type="QString" value="0.2" name="outline_width"/>
-            <Option type="QString" value="MM" name="outline_width_unit"/>
-            <Option type="QString" value="solid" name="style"/>
+            <Option value="3x:0,0,0,0,0,0" name="border_width_map_unit_scale" type="QString"/>
+            <Option value="190,207,80,255" name="color" type="QString"/>
+            <Option value="bevel" name="joinstyle" type="QString"/>
+            <Option value="0,0" name="offset" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
+            <Option value="MM" name="offset_unit" type="QString"/>
+            <Option value="136,148,57,255" name="outline_color" type="QString"/>
+            <Option value="solid" name="outline_style" type="QString"/>
+            <Option value="0.2" name="outline_width" type="QString"/>
+            <Option value="MM" name="outline_width_unit" type="QString"/>
+            <Option value="solid" name="style" type="QString"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
-              <Option type="QString" value="" name="name"/>
+              <Option value="" name="name" type="QString"/>
               <Option name="properties"/>
-              <Option type="QString" value="collection" name="type"/>
+              <Option value="collection" name="type" type="QString"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
     </profileFillSymbol>
     <profileMarkerSymbol>
-      <symbol type="marker" alpha="1" clip_to_extent="1" is_animated="0" frame_rate="10" name="" force_rhr="0">
+      <symbol frame_rate="10" alpha="1" force_rhr="0" clip_to_extent="1" is_animated="0" name="" type="marker">
         <data_defined_properties>
           <Option type="Map">
-            <Option type="QString" value="" name="name"/>
+            <Option value="" name="name" type="QString"/>
             <Option name="properties"/>
-            <Option type="QString" value="collection" name="type"/>
+            <Option value="collection" name="type" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{2a114172-5ce0-4e95-8577-93ad2bd47502}" class="SimpleMarker" pass="0" locked="0" enabled="1">
+        <layer id="{2a114172-5ce0-4e95-8577-93ad2bd47502}" pass="0" locked="0" class="SimpleMarker" enabled="1">
           <Option type="Map">
-            <Option type="QString" value="0" name="angle"/>
-            <Option type="QString" value="square" name="cap_style"/>
-            <Option type="QString" value="190,207,80,255" name="color"/>
-            <Option type="QString" value="1" name="horizontal_anchor_point"/>
-            <Option type="QString" value="bevel" name="joinstyle"/>
-            <Option type="QString" value="diamond" name="name"/>
-            <Option type="QString" value="0,0" name="offset"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
-            <Option type="QString" value="MM" name="offset_unit"/>
-            <Option type="QString" value="136,148,57,255" name="outline_color"/>
-            <Option type="QString" value="solid" name="outline_style"/>
-            <Option type="QString" value="0.2" name="outline_width"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale"/>
-            <Option type="QString" value="MM" name="outline_width_unit"/>
-            <Option type="QString" value="diameter" name="scale_method"/>
-            <Option type="QString" value="3" name="size"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="size_map_unit_scale"/>
-            <Option type="QString" value="MM" name="size_unit"/>
-            <Option type="QString" value="1" name="vertical_anchor_point"/>
+            <Option value="0" name="angle" type="QString"/>
+            <Option value="square" name="cap_style" type="QString"/>
+            <Option value="190,207,80,255" name="color" type="QString"/>
+            <Option value="1" name="horizontal_anchor_point" type="QString"/>
+            <Option value="bevel" name="joinstyle" type="QString"/>
+            <Option value="diamond" name="name" type="QString"/>
+            <Option value="0,0" name="offset" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
+            <Option value="MM" name="offset_unit" type="QString"/>
+            <Option value="136,148,57,255" name="outline_color" type="QString"/>
+            <Option value="solid" name="outline_style" type="QString"/>
+            <Option value="0.2" name="outline_width" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>
+            <Option value="MM" name="outline_width_unit" type="QString"/>
+            <Option value="diameter" name="scale_method" type="QString"/>
+            <Option value="3" name="size" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>
+            <Option value="MM" name="size_unit" type="QString"/>
+            <Option value="1" name="vertical_anchor_point" type="QString"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
-              <Option type="QString" value="" name="name"/>
+              <Option value="" name="name" type="QString"/>
               <Option name="properties"/>
-              <Option type="QString" value="collection" name="type"/>
+              <Option value="collection" name="type" type="QString"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
     </profileMarkerSymbol>
   </elevation>
-  <renderer-v2 type="singleSymbol" enableorderby="0" forceraster="0" symbollevels="0" referencescale="-1">
+  <renderer-v2 referencescale="-1" symbollevels="0" enableorderby="0" forceraster="0" type="singleSymbol">
     <symbols>
-      <symbol type="marker" alpha="1" clip_to_extent="1" is_animated="0" frame_rate="10" name="0" force_rhr="0">
+      <symbol frame_rate="10" alpha="1" force_rhr="0" clip_to_extent="1" is_animated="0" name="0" type="marker">
         <data_defined_properties>
           <Option type="Map">
-            <Option type="QString" value="" name="name"/>
+            <Option value="" name="name" type="QString"/>
             <Option name="properties"/>
-            <Option type="QString" value="collection" name="type"/>
+            <Option value="collection" name="type" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{6ed4d270-6d54-4bdf-a206-14ff510fd826}" class="SimpleMarker" pass="0" locked="0" enabled="1">
+        <layer id="{6ed4d270-6d54-4bdf-a206-14ff510fd826}" pass="0" locked="0" class="SimpleMarker" enabled="1">
           <Option type="Map">
-            <Option type="QString" value="0" name="angle"/>
-            <Option type="QString" value="square" name="cap_style"/>
-            <Option type="QString" value="225,89,137,255" name="color"/>
-            <Option type="QString" value="1" name="horizontal_anchor_point"/>
-            <Option type="QString" value="bevel" name="joinstyle"/>
-            <Option type="QString" value="circle" name="name"/>
-            <Option type="QString" value="0,0" name="offset"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
-            <Option type="QString" value="MM" name="offset_unit"/>
-            <Option type="QString" value="35,35,35,255" name="outline_color"/>
-            <Option type="QString" value="solid" name="outline_style"/>
-            <Option type="QString" value="0" name="outline_width"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale"/>
-            <Option type="QString" value="MM" name="outline_width_unit"/>
-            <Option type="QString" value="diameter" name="scale_method"/>
-            <Option type="QString" value="2" name="size"/>
-            <Option type="QString" value="3x:0,0,0,0,0,0" name="size_map_unit_scale"/>
-            <Option type="QString" value="MM" name="size_unit"/>
-            <Option type="QString" value="1" name="vertical_anchor_point"/>
+            <Option value="0" name="angle" type="QString"/>
+            <Option value="square" name="cap_style" type="QString"/>
+            <Option value="225,89,137,255" name="color" type="QString"/>
+            <Option value="1" name="horizontal_anchor_point" type="QString"/>
+            <Option value="bevel" name="joinstyle" type="QString"/>
+            <Option value="circle" name="name" type="QString"/>
+            <Option value="0,0" name="offset" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
+            <Option value="MM" name="offset_unit" type="QString"/>
+            <Option value="35,35,35,255" name="outline_color" type="QString"/>
+            <Option value="solid" name="outline_style" type="QString"/>
+            <Option value="0" name="outline_width" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>
+            <Option value="MM" name="outline_width_unit" type="QString"/>
+            <Option value="diameter" name="scale_method" type="QString"/>
+            <Option value="2" name="size" type="QString"/>
+            <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>
+            <Option value="MM" name="size_unit" type="QString"/>
+            <Option value="1" name="vertical_anchor_point" type="QString"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
-              <Option type="QString" value="" name="name"/>
+              <Option value="" name="name" type="QString"/>
               <Option name="properties"/>
-              <Option type="QString" value="collection" name="type"/>
+              <Option value="collection" name="type" type="QString"/>
             </Option>
           </data_defined_properties>
         </layer>
@@ -198,167 +198,170 @@
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>1</layerOpacity>
-  <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+  <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
     <activeChecks type="StringList">
-      <Option type="QString" value=""/>
+      <Option value="" type="QString"/>
     </activeChecks>
     <checkConfiguration/>
   </geometryOptions>
-  <legend type="default-vector" showLabelLegend="0"/>
+  <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation providerKey="postgres" referencingLayer="Stockage_Boue_7b447c8c_f1f8_4fbc_a463_2dbe36d3c058" id="Stockage_Boue_7b447c8c_f1f8_4fbc_a463_2dbe36d3c058_festock_festock_d2b4e137_d793_4716_9199_aa180e3dc959_val" referencedLayer="festock_d2b4e137_d793_4716_9199_aa180e3dc959" strength="Association" dataSource="dbname='lol' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" name="ref_festock_stockage_boue" layerId="festock_d2b4e137_d793_4716_9199_aa180e3dc959" layerName="festock">
-      <fieldRef referencedField="val" referencingField="festock"/>
+    <relation layerId="Taille_du_stockage_10a2613d_7294_4663_a0af_30202da533cf" strength="Association" id="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b_festock_Taille_du_stockage_10a2613d_7294_4663_a0af_30202da533cf_val" referencedLayer="Taille_du_stockage_10a2613d_7294_4663_a0af_30202da533cf" name="ref_festock_stockage_boue" layerName="Taille du stockage" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" referencingLayer="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b">
+      <fieldRef referencingField="festock" referencedField="val"/>
+    </relation>
+    <relation layerId="festock_98d41167_33fb_4940_8323_1dceba05751e" strength="Association" id="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b_festock_festock_98d41167_33fb_4940_8323_1dceba05751e_val" referencedLayer="festock_98d41167_33fb_4940_8323_1dceba05751e" name="ref_festock_stockage_boue" layerName="festock" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" referencingLayer="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b">
+      <fieldRef referencingField="festock" referencedField="val"/>
     </relation>
   </referencedLayers>
   <fieldConfiguration>
-    <field name="id" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="id">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="shape" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="shape">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="name" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="name">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="formula" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="formula">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="formula_name" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="formula_name">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="aere" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="aere">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="grand" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="grand">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="dbo" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="dbo">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="welec" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="welec">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="eh" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="eh">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="festock" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="festock">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="mes" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="mes">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="dbo5" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="dbo5">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="tbentrant" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="tbentrant">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="tbsortant_s" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="tbsortant_s">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="ss_blocs" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="ss_blocs">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="b_type" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="b_type">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="geom_ref" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="geom_ref">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="sur_bloc" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="sur_bloc">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="model" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="model">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="festock_fe" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="festock_fe">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="festock_description" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="festock_description">
       <editWidget type="">
         <config>
           <Option/>
@@ -367,28 +370,28 @@
     </field>
   </fieldConfiguration>
   <aliases>
-    <alias field="id" index="0" name=""/>
-    <alias field="shape" index="1" name=""/>
-    <alias field="name" index="2" name=""/>
-    <alias field="formula" index="3" name=""/>
-    <alias field="formula_name" index="4" name=""/>
-    <alias field="aere" index="5" name=""/>
-    <alias field="grand" index="6" name=""/>
-    <alias field="dbo" index="7" name=""/>
-    <alias field="welec" index="8" name=""/>
-    <alias field="eh" index="9" name="Equivalent Habitants"/>
-    <alias field="festock" index="10" name=""/>
-    <alias field="mes" index="11" name=""/>
-    <alias field="dbo5" index="12" name=""/>
-    <alias field="tbentrant" index="13" name="Tonne de boue en amont (t/an)"/>
-    <alias field="tbsortant_s" index="14" name=""/>
-    <alias field="ss_blocs" index="15" name=""/>
-    <alias field="b_type" index="16" name=""/>
-    <alias field="geom_ref" index="17" name=""/>
-    <alias field="sur_bloc" index="18" name=""/>
-    <alias field="model" index="19" name=""/>
-    <alias field="festock_fe" index="20" name=""/>
-    <alias field="festock_description" index="21" name=""/>
+    <alias index="0" name="id" field="id"/>
+    <alias index="1" name="shape" field="shape"/>
+    <alias index="2" name="name" field="name"/>
+    <alias index="3" name="formula" field="formula"/>
+    <alias index="4" name="formula_name" field="formula_name"/>
+    <alias index="5" name="aere" field="aere"/>
+    <alias index="6" name="grand" field="grand"/>
+    <alias index="7" name="" field="dbo"/>
+    <alias index="8" name="Welec (kWh/an)" field="welec"/>
+    <alias index="9" name="Equivalent Habitants" field="eh"/>
+    <alias index="10" name="Taille du stockage" field="festock"/>
+    <alias index="11" name="" field="mes"/>
+    <alias index="12" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="13" name="Tonne de boue en amont (t/an)" field="tbentrant"/>
+    <alias index="14" name="" field="tbsortant_s"/>
+    <alias index="15" name="ss_blocs" field="ss_blocs"/>
+    <alias index="16" name="b_type" field="b_type"/>
+    <alias index="17" name="geom_ref" field="geom_ref"/>
+    <alias index="18" name="sur_bloc" field="sur_bloc"/>
+    <alias index="19" name="model" field="model"/>
+    <alias index="20" name="" field="festock_fe"/>
+    <alias index="21" name="festock_description" field="festock_description"/>
   </aliases>
   <splitPolicies>
     <policy field="id" policy="Duplicate"/>
@@ -415,52 +418,52 @@
     <policy field="festock_description" policy="Duplicate"/>
   </splitPolicies>
   <defaults>
-    <default expression="" field="id" applyOnUpdate="0"/>
-    <default expression="" field="shape" applyOnUpdate="0"/>
-    <default expression="" field="name" applyOnUpdate="0"/>
-    <default expression="" field="formula" applyOnUpdate="0"/>
-    <default expression="" field="formula_name" applyOnUpdate="0"/>
-    <default expression="" field="aere" applyOnUpdate="0"/>
-    <default expression="" field="grand" applyOnUpdate="0"/>
-    <default expression="" field="dbo" applyOnUpdate="0"/>
-    <default expression="" field="welec" applyOnUpdate="0"/>
-    <default expression="" field="eh" applyOnUpdate="0"/>
-    <default expression="" field="festock" applyOnUpdate="0"/>
-    <default expression="" field="mes" applyOnUpdate="0"/>
-    <default expression="" field="dbo5" applyOnUpdate="0"/>
-    <default expression="" field="tbentrant" applyOnUpdate="0"/>
-    <default expression="" field="tbsortant_s" applyOnUpdate="0"/>
-    <default expression="" field="ss_blocs" applyOnUpdate="0"/>
-    <default expression="" field="b_type" applyOnUpdate="0"/>
-    <default expression="" field="geom_ref" applyOnUpdate="0"/>
-    <default expression="" field="sur_bloc" applyOnUpdate="0"/>
-    <default expression="" field="model" applyOnUpdate="0"/>
-    <default expression="attribute(get_feature(layer:='festock_d2b4e137_d793_4716_9199_aa180e3dc959', attribute:='val', value:=&quot;festock&quot;), 'fe')" field="festock_fe" applyOnUpdate="1"/>
-    <default expression="" field="festock_description" applyOnUpdate="0"/>
+    <default applyOnUpdate="0" expression="" field="id"/>
+    <default applyOnUpdate="0" expression="" field="shape"/>
+    <default applyOnUpdate="0" expression="" field="name"/>
+    <default applyOnUpdate="0" expression="" field="formula"/>
+    <default applyOnUpdate="0" expression="" field="formula_name"/>
+    <default applyOnUpdate="0" expression="" field="aere"/>
+    <default applyOnUpdate="0" expression="" field="grand"/>
+    <default applyOnUpdate="0" expression="" field="dbo"/>
+    <default applyOnUpdate="0" expression="" field="welec"/>
+    <default applyOnUpdate="0" expression="" field="eh"/>
+    <default applyOnUpdate="0" expression="" field="festock"/>
+    <default applyOnUpdate="0" expression="" field="mes"/>
+    <default applyOnUpdate="0" expression="" field="dbo5"/>
+    <default applyOnUpdate="0" expression="" field="tbentrant"/>
+    <default applyOnUpdate="0" expression="" field="tbsortant_s"/>
+    <default applyOnUpdate="0" expression="" field="ss_blocs"/>
+    <default applyOnUpdate="0" expression="" field="b_type"/>
+    <default applyOnUpdate="0" expression="" field="geom_ref"/>
+    <default applyOnUpdate="0" expression="" field="sur_bloc"/>
+    <default applyOnUpdate="0" expression="" field="model"/>
+    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Taille_du_stockage_10a2613d_7294_4663_a0af_30202da533cf', attribute:='val', value:=&quot;festock&quot;), 'fe')" field="festock_fe"/>
+    <default applyOnUpdate="0" expression="" field="festock_description"/>
   </defaults>
   <constraints>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="id" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="shape" exp_strength="0"/>
-    <constraint constraints="3" unique_strength="1" notnull_strength="1" field="name" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="formula" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="formula_name" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="aere" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="grand" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="dbo" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="welec" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="eh" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="festock" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="mes" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="dbo5" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="tbentrant" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="tbsortant_s" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="ss_blocs" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="b_type" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="geom_ref" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="sur_bloc" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="model" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="festock_fe" exp_strength="0"/>
-    <constraint constraints="0" unique_strength="0" notnull_strength="0" field="festock_description" exp_strength="0"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="id"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="shape"/>
+    <constraint constraints="3" notnull_strength="1" unique_strength="1" exp_strength="0" field="name"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="formula"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="formula_name"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="aere"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="grand"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="dbo"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="welec"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="eh"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="festock"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="mes"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="dbo5"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="tbentrant"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="tbsortant_s"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="ss_blocs"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="b_type"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="geom_ref"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="sur_bloc"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="model"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="festock_fe"/>
+    <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="festock_description"/>
   </constraints>
   <constraintExpressions>
     <constraint desc="" field="id" exp=""/>
@@ -488,30 +491,30 @@
   </constraintExpressions>
   <expressionfields/>
   <attributeactions/>
-  <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+  <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="">
     <columns>
-      <column type="field" width="-1" hidden="0" name="id"/>
-      <column type="field" width="-1" hidden="1" name="shape"/>
-      <column type="field" width="-1" hidden="0" name="name"/>
-      <column type="field" width="-1" hidden="1" name="formula"/>
-      <column type="field" width="-1" hidden="0" name="formula_name"/>
-      <column type="field" width="-1" hidden="0" name="grand"/>
-      <column type="field" width="-1" hidden="0" name="aere"/>
-      <column type="field" width="-1" hidden="0" name="dbo"/>
-      <column type="field" width="-1" hidden="0" name="eh"/>
-      <column type="field" width="-1" hidden="0" name="festock"/>
-      <column type="field" width="-1" hidden="0" name="tau_capture"/>
-      <column type="field" width="-1" hidden="0" name="dbo5"/>
-      <column type="field" width="-1" hidden="0" name="mes"/>
-      <column type="field" width="-1" hidden="0" name="tbsortant_s"/>
-      <column type="field" width="-1" hidden="0" name="ss_blocs"/>
-      <column type="field" width="-1" hidden="1" name="b_type"/>
-      <column type="field" width="-1" hidden="1" name="geom_ref"/>
-      <column type="field" width="-1" hidden="0" name="sur_bloc"/>
-      <column type="field" width="-1" hidden="0" name="model"/>
-      <column type="field" width="-1" hidden="0" name="festock_fe"/>
-      <column type="field" width="-1" hidden="0" name="festock_description"/>
-      <column type="actions" width="-1" hidden="1"/>
+      <column width="-1" hidden="0" name="id" type="field"/>
+      <column width="-1" hidden="1" name="shape" type="field"/>
+      <column width="-1" hidden="0" name="name" type="field"/>
+      <column width="-1" hidden="1" name="formula" type="field"/>
+      <column width="-1" hidden="0" name="formula_name" type="field"/>
+      <column width="-1" hidden="0" name="grand" type="field"/>
+      <column width="-1" hidden="0" name="aere" type="field"/>
+      <column width="-1" hidden="0" name="dbo" type="field"/>
+      <column width="-1" hidden="0" name="eh" type="field"/>
+      <column width="-1" hidden="0" name="festock" type="field"/>
+      <column width="-1" hidden="0" name="tau_capture" type="field"/>
+      <column width="-1" hidden="0" name="dbo5" type="field"/>
+      <column width="-1" hidden="0" name="mes" type="field"/>
+      <column width="-1" hidden="0" name="tbsortant_s" type="field"/>
+      <column width="-1" hidden="0" name="ss_blocs" type="field"/>
+      <column width="-1" hidden="1" name="b_type" type="field"/>
+      <column width="-1" hidden="1" name="geom_ref" type="field"/>
+      <column width="-1" hidden="0" name="sur_bloc" type="field"/>
+      <column width="-1" hidden="0" name="model" type="field"/>
+      <column width="-1" hidden="0" name="festock_fe" type="field"/>
+      <column width="-1" hidden="0" name="festock_description" type="field"/>
+      <column width="-1" hidden="1" type="actions"/>
     </columns>
   </attributetableconfig>
   <conditionalstyles>
@@ -527,211 +530,211 @@
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
   <attributeEditorForm>
-    <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-      <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+    <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+      <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
     </labelStyle>
     <attributeEditorField showLabel="1" index="2" name="name" horizontalStretch="0" verticalStretch="0">
-      <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-        <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+      <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+        <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
     </attributeEditorField>
     <attributeEditorField showLabel="1" index="19" name="model" horizontalStretch="0" verticalStretch="0">
-      <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-        <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+      <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+        <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
     </attributeEditorField>
-    <attributeEditorContainer collapsedExpressionEnabled="0" type="Tab" collapsed="0" groupBox="0" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Exploitation" horizontalStretch="0" verticalStretch="0">
-      <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-        <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+    <attributeEditorContainer showLabel="1" groupBox="0" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Exploitation" collapsed="0" horizontalStretch="0" verticalStretch="0" type="Tab" collapsedExpressionEnabled="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+        <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Niveau de détail 1" horizontalStretch="0" verticalStretch="0">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+      <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Niveau de détail 1" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+        <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+          <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
         </labelStyle>
         <attributeEditorField showLabel="1" index="9" name="eh" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="1" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Valeurs par défaut spécifiques" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+        <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Valeurs par défaut spécifiques" collapsed="1" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
           <attributeEditorField showLabel="1" index="5" name="aere" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Niveau de détail 2" horizontalStretch="0" verticalStretch="0">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+      <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Niveau de détail 2" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+        <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+          <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
         </labelStyle>
-        <attributeEditorField showLabel="1" index="11" name="mes" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+        <attributeEditorField showLabel="1" index="12" name="dbo5" horizontalStretch="0" verticalStretch="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField showLabel="1" index="12" name="dbo5" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+        <attributeEditorField showLabel="1" index="11" name="mes" horizontalStretch="0" verticalStretch="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
         <attributeEditorField showLabel="1" index="7" name="dbo" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="1" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Valeurs par défaut spécifiques" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+        <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Valeurs par défaut spécifiques" collapsed="1" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
           <attributeEditorField showLabel="1" index="5" name="aere" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
+            </labelStyle>
+          </attributeEditorField>
+          <attributeEditorField showLabel="1" index="5" name="aere" horizontalStretch="0" verticalStretch="0">
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField showLabel="1" index="6" name="grand" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
-            </labelStyle>
-          </attributeEditorField>
-          <attributeEditorField showLabel="1" index="5" name="aere" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Niveau de détail 3" horizontalStretch="0" verticalStretch="0">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+      <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Niveau de détail 3" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+        <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+          <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
         </labelStyle>
         <attributeEditorField showLabel="1" index="13" name="tbentrant" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="1" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Valeurs par défaut spécifiques" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+        <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Valeurs par défaut spécifiques" collapsed="1" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
           <attributeEditorField showLabel="1" index="5" name="aere" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Niveau de détail 6" horizontalStretch="0" verticalStretch="0">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+      <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Niveau de détail 6" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+        <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+          <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
         </labelStyle>
         <attributeEditorField showLabel="1" index="8" name="welec" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
       </attributeEditorContainer>
     </attributeEditorContainer>
-    <attributeEditorContainer collapsedExpressionEnabled="0" type="Tab" collapsed="0" groupBox="0" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Construction" horizontalStretch="0" verticalStretch="0">
-      <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-        <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+    <attributeEditorContainer showLabel="1" groupBox="0" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Construction" collapsed="0" horizontalStretch="0" verticalStretch="0" type="Tab" collapsedExpressionEnabled="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+        <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Niveau de détail 1" horizontalStretch="0" verticalStretch="0">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+      <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Niveau de détail 1" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+        <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+          <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
         </labelStyle>
-        <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="2" visibilityExpression="" name="FESTOCK" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+        <attributeEditorField showLabel="1" index="9" name="eh" horizontalStretch="0" verticalStretch="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
+          </labelStyle>
+        </attributeEditorField>
+        <attributeEditorContainer showLabel="1" groupBox="1" columnCount="2" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="FESTOCK" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
           <attributeEditorField showLabel="1" index="10" name="festock" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField showLabel="1" index="20" name="festock_fe" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
-        <attributeEditorField showLabel="1" index="9" name="eh" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
-          </labelStyle>
-        </attributeEditorField>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Niveau de détail 2" horizontalStretch="0" verticalStretch="0">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+      <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Niveau de détail 2" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+        <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+          <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
         </labelStyle>
         <attributeEditorField showLabel="1" index="11" name="mes" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="2" visibilityExpression="" name="FESTOCK" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
-          </labelStyle>
-          <attributeEditorField showLabel="1" index="10" name="festock" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
-            </labelStyle>
-          </attributeEditorField>
-          <attributeEditorField showLabel="1" index="20" name="festock_fe" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
-            </labelStyle>
-          </attributeEditorField>
-        </attributeEditorContainer>
         <attributeEditorField showLabel="1" index="12" name="dbo5" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
-      </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Niveau de détail 3" horizontalStretch="0" verticalStretch="0">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
-        </labelStyle>
-        <attributeEditorContainer collapsedExpressionEnabled="0" type="GroupBox" collapsed="0" groupBox="1" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="2" visibilityExpression="" name="FESTOCK" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+        <attributeEditorContainer showLabel="1" groupBox="1" columnCount="2" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="FESTOCK" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
           <attributeEditorField showLabel="1" index="10" name="festock" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField showLabel="1" index="20" name="festock_fe" horizontalStretch="0" verticalStretch="0">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
+      </attributeEditorContainer>
+      <attributeEditorContainer showLabel="1" groupBox="1" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Niveau de détail 3" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+        <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+          <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
+        </labelStyle>
         <attributeEditorField showLabel="1" index="13" name="tbentrant" horizontalStretch="0" verticalStretch="0">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
           </labelStyle>
         </attributeEditorField>
+        <attributeEditorContainer showLabel="1" groupBox="1" columnCount="2" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="FESTOCK" collapsed="0" horizontalStretch="0" verticalStretch="0" type="GroupBox" collapsedExpressionEnabled="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+            <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
+          </labelStyle>
+          <attributeEditorField showLabel="1" index="10" name="festock" horizontalStretch="0" verticalStretch="0">
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
+            </labelStyle>
+          </attributeEditorField>
+          <attributeEditorField showLabel="1" index="20" name="festock_fe" horizontalStretch="0" verticalStretch="0">
+            <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
+            </labelStyle>
+          </attributeEditorField>
+        </attributeEditorContainer>
       </attributeEditorContainer>
     </attributeEditorContainer>
-    <attributeEditorContainer collapsedExpressionEnabled="0" type="Tab" collapsed="0" groupBox="0" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Entrée" horizontalStretch="0" verticalStretch="0">
-      <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-        <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+    <attributeEditorContainer showLabel="1" groupBox="0" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Entrée" collapsed="0" horizontalStretch="0" verticalStretch="0" type="Tab" collapsedExpressionEnabled="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+        <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
     </attributeEditorContainer>
-    <attributeEditorContainer collapsedExpressionEnabled="0" type="Tab" collapsed="0" groupBox="0" collapsedExpression="" showLabel="1" visibilityExpressionEnabled="0" columnCount="1" visibilityExpression="" name="Sortie" horizontalStretch="0" verticalStretch="0">
-      <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-        <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+    <attributeEditorContainer showLabel="1" groupBox="0" columnCount="1" visibilityExpressionEnabled="0" visibilityExpression="" collapsedExpression="" name="Sortie" collapsed="0" horizontalStretch="0" verticalStretch="0" type="Tab" collapsedExpressionEnabled="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+        <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
       <attributeEditorField showLabel="1" index="14" name="tbsortant_s" horizontalStretch="0" verticalStretch="0">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont style="" italic="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" underline="0" strikethrough="0" bold="0"/>
+        <labelStyle labelColor="0,0,0,255" overrideLabelColor="0" overrideLabelFont="0">
+          <labelFont bold="0" strikethrough="0" underline="0" italic="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
         </labelStyle>
       </attributeEditorField>
     </attributeEditorContainer>
