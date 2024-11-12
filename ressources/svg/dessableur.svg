@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<svg width="1280" height="720" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+
+ <g class="layer">
+  <title>Layer 1</title>
+  <g id="svg_16" transform="translate(-75, 268) translate(335, 358) matrix(2.47176, 0, 0, 2.20369, -647.6, -1360.58)">
+   <rect fill="#DCEAF7" height="130" id="svg_3" stroke="#042433" stroke-miterlimit="8" stroke-width="2" transform="matrix(-1, 0, 0, 1, 589, 450)" width="327" x="0" y="0"/>
+   <path d="m262.5,450c0,-12.43 73.2,-22.5 163.5,-22.5c90.3,0 163.5,10.07 163.5,22.5c0,12.43 -73.2,22.5 -163.5,22.5c-90.3,0 -163.5,-10.07 -163.5,-22.5z" fill="#FFCC00" fill-rule="evenodd" id="svg_4" stroke="#000000" stroke-miterlimit="8" stroke-width="1.32"/>
+   <rect fill="#FFCC00" height="21" id="svg_5" transform="matrix(-1, 0, 0, 1, 589, 432)" width="327" x="0" y="0"/>
+   <rect fill="#F2AA84" height="18" id="svg_6" width="327" x="262" y="562"/>
+   <path d="m262.5,394c0,-12.43 73.2,-22.5 163.5,-22.5c90.3,0 163.5,10.07 163.5,22.5c0,12.43 -73.2,22.5 -163.5,22.5c-90.3,0 -163.5,-10.07 -163.5,-22.5z" fill="#000000" fill-opacity="0.05" fill-rule="evenodd" id="svg_7" stroke="#000000" stroke-miterlimit="8" stroke-width="1.32"/>
+   <path d="m589,394l0,186.28" fill="none" fill-rule="evenodd" id="svg_8" stroke="#000000" stroke-miterlimit="8" stroke-width="2"/>
+   <rect fill="#FFFFFF" height="28" id="svg_9" width="327" x="262" y="580"/>
+   <path d="m262,580l163.5,37l163.5,-37l-327,0z" fill="#F2AA84" fill-rule="evenodd" id="svg_10"/>
+   <path d="m262.5,562.5c0,-7.73 73.2,-14 163.5,-14c90.3,0 163.5,6.27 163.5,14c0,7.73 -73.2,14 -163.5,14c-90.3,0 -163.5,-6.27 -163.5,-14z" fill="#F2AA84" fill-rule="evenodd" id="svg_11" stroke="#000000" stroke-miterlimit="8" stroke-width="1.32"/>
+   <path d="m262,580l163.2,37.41" fill="none" fill-rule="evenodd" id="svg_12" stroke="#000000" stroke-miterlimit="8" stroke-width="2"/>
+   <path d="m426,617.41l163.2,-37.41" fill="none" fill-rule="evenodd" id="svg_13" stroke="#000000" stroke-miterlimit="8" stroke-width="2"/>
+   <path d="m262,394l0,186.28" fill="none" fill-rule="evenodd" id="svg_14" stroke="#000000" stroke-miterlimit="8" stroke-width="2"/>
+   <path d="m262.5,431c0,-12.43 73.2,-22.5 163.5,-22.5c90.3,0 163.5,10.07 163.5,22.5c0,12.43 -73.2,22.5 -163.5,22.5c-90.3,0 -163.5,-10.07 -163.5,-22.5z" fill="#FFCC00" fill-rule="evenodd" id="svg_15" stroke="#000000" stroke-miterlimit="8" stroke-width="1.32"/>
+  </g>
+ </g>
+</svg>

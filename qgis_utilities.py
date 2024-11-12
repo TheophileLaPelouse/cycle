@@ -48,14 +48,23 @@ _svg_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), 'ressources'
 _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
 _columns_to_hide = set(['shape', 'formula', 'b_type', 'geom_ref'])
-Alias = {'ngl' : 'NGL (kgNGL/an)', 'oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'milieu' : 'Milieu', 
-         'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont (t/an)', 'eh_fe' : ' ', 'w' : 'Welec (kWh/an)',
+Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'fech4_mil' : 'Milieu', 
+         'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont (t/an)', 'eh_fe' : ' ', 'welec' : 'Welec (kWh/an)',
          'dco_elim' : 'DCO éliminée (kgDCO/an)', 'tsejour' : 'Temps de séjour', 'tjour' : 'Stockage en jour', 'h' : 'Hauteur (m)', 'long' : 'Longueur (m)',
          'larg' : 'Largeur (m)', 'vit' : 'Vitesse (m/h)', 'tbsortant' : 'Tonne de boue en sortie (t/an)', 'e' : 'Epaisseur de voile (m)', 
          'taur' : 'Taux de recirculation', 'tauenterre' : 'Taux d\'enterrement', 'prop_l' : 'rapport longueur/largeur', 'vu' : 'Volume utile (m3)', 
          'vbiogaz' : 'Volume de biogaz produit (m3/an)', 'cad' : 'Cadence pelleteuse (m3/h)', 'gros' : 'Dégrillage supérieur à 20mm  (booléen)', 
          'compd' : 'Avec ou sans compactage (booléen)', 'compt' : 'Avec ou sans compactage (booléen)', 'qe_s' : 'Débit sortant (m3/j)', 
-         'munite' : 'Masse du dégrilleur (kg)', 'qmax' : 'Débit maximal (m3/j)'}
+         'munite_tamis' : 'Masse du tamis (kg)', 'munite_degrilleur' : 'Masse du dégrilleur (kg)', 'qmax' : 'Débit maximal (m3/j)', 
+         'qdechet' : 'Méthode de compactage', 'qdechet_fe':'','dbo5' : 'DBO5 (kgDBO5/an)', 'dbo5elim' : 'DBO5 éliminée (kgDBO5/an)', 
+         'w_dbo5_eau' : 'Consommation électrique en fonction de la DBO5 (kWh/an/DBO5)', 's_geom_eh' : 'Surface en fonction des EH (m2/EH)',
+         'tsables' : 'Tonne de sable (t/an)', 'tgraisses' : 'Tonne de graisses (t/an)', 'charge_bio' : 'Taux de charge', 'charge_bio_fe' : '',
+         'siccite_e' : 'siccité de la boue entrante', 'siccite_s' : 'siccité de la boue sortante', 'tee' : "Tonne d'eau évaporée (t/an)",
+         'festock' : 'Taille du stockage', 'festock_fe' : '', 'q_poly' : 'Quantité de polymère (kg/an)', 'transp_poly' : "Distance d'approxivisionnement du polymère (km)",
+         'q_chaux' : 'Quantité de chaux (kg/an)', 'transp_chaux' : "Distance d'approxivisionnement de la chaux (km)",
+         'q_fecl3' : 'Quantité de FeCl3 (kg/an)', 'transp_fecl3' : "Distance d'approxivisionnement du FeCl3 (km)",
+         'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
+         'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)"}
 
 ConstrOnly = set(['cad', 'e', 'tauenterre'])
 
@@ -454,6 +463,7 @@ class QGisProjectManager(QObject):
         for field in fieldnames :
             if field.endswith('_fe') :
                 field_fe.add(field[:-3])
+            layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
         lvlmax = 6
         in2tab = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
         in2tab_constr = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
