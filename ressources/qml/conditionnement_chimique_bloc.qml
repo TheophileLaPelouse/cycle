@@ -206,7 +206,10 @@
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation layerId="fecc_c20be4f4_1335_4393_a4b4_20abe6bd5e9f" strength="Association" id="Conditionnement_chimique_374fad40_3f26_4830_8847_c4deebebeeb3_fecc_fecc_c20be4f4_1335_4393_a4b4_20abe6bd5e9f_val" referencedLayer="fecc_c20be4f4_1335_4393_a4b4_20abe6bd5e9f" name="ref_fecc_conditionnement_chimique" layerName="fecc" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fecc_type_table&quot;" providerKey="postgres" referencingLayer="Conditionnement_chimique_374fad40_3f26_4830_8847_c4deebebeeb3">
+    <relation layerId="Taille_de_la_cuve_646fcc94_5fad_437c_b44f_d5a631563957" strength="Association" id="Conditionnement_chimique_374fad40_3f26_4830_8847_c4deebebeeb3_fecc_Taille_de_la_cuve_646fcc94_5fad_437c_b44f_d5a631563957_val" referencedLayer="Taille_de_la_cuve_646fcc94_5fad_437c_b44f_d5a631563957" name="ref_fecc_conditionnement_chimique" layerName="Taille de la cuve" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fecc_type_table&quot;" providerKey="postgres" referencingLayer="Conditionnement_chimique_374fad40_3f26_4830_8847_c4deebebeeb3">
+      <fieldRef referencingField="fecc" referencedField="val"/>
+    </relation>
+    <relation layerId="fecc_038c94e9_baa1_4a53_b150_897939df076b" strength="Association" id="Conditionnement_chimique_374fad40_3f26_4830_8847_c4deebebeeb3_fecc_fecc_038c94e9_baa1_4a53_b150_897939df076b_val" referencedLayer="fecc_038c94e9_baa1_4a53_b150_897939df076b" name="ref_fecc_conditionnement_chimique" layerName="fecc" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fecc_type_table&quot;" providerKey="postgres" referencingLayer="Conditionnement_chimique_374fad40_3f26_4830_8847_c4deebebeeb3">
       <fieldRef referencingField="fecc" referencedField="val"/>
     </relation>
   </referencedLayers>
@@ -423,7 +426,7 @@
     <alias index="11" name="Distance d'approxivisionnement du réactif anionique (km)" field="transp_anio"/>
     <alias index="12" name="Quantité de réactif cationique (kg/an)" field="q_catio"/>
     <alias index="13" name="Quantité de réactif anionique (kg/an)" field="q_anio"/>
-    <alias index="14" name="" field="fecc"/>
+    <alias index="14" name="Taille de la cuve" field="fecc"/>
     <alias index="15" name="Equivalent Habitants" field="eh"/>
     <alias index="16" name="" field="mes"/>
     <alias index="17" name="DBO5 (kgDBO5/an)" field="dbo5"/>
@@ -495,7 +498,7 @@
     <default applyOnUpdate="0" expression="" field="geom_ref"/>
     <default applyOnUpdate="0" expression="" field="sur_bloc"/>
     <default applyOnUpdate="0" expression="" field="model"/>
-    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='fecc_c20be4f4_1335_4393_a4b4_20abe6bd5e9f', attribute:='val', value:=&quot;fecc&quot;), 'fe')" field="fecc_fe"/>
+    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Taille_de_la_cuve_646fcc94_5fad_437c_b44f_d5a631563957', attribute:='val', value:=&quot;fecc&quot;), 'fe')" field="fecc_fe"/>
     <default applyOnUpdate="0" expression="" field="fecc_description"/>
   </defaults>
   <constraints>
@@ -559,7 +562,9 @@
     <constraint desc="" field="fecc_description" exp=""/>
   </constraintExpressions>
   <expressionfields/>
-  <attributeactions/>
+  <attributeactions>
+    <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+  </attributeactions>
   <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="">
     <columns>
       <column width="-1" hidden="0" name="id" type="field"/>

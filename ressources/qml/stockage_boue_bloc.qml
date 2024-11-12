@@ -206,10 +206,7 @@
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation layerId="Taille_du_stockage_10a2613d_7294_4663_a0af_30202da533cf" strength="Association" id="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b_festock_Taille_du_stockage_10a2613d_7294_4663_a0af_30202da533cf_val" referencedLayer="Taille_du_stockage_10a2613d_7294_4663_a0af_30202da533cf" name="ref_festock_stockage_boue" layerName="Taille du stockage" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" referencingLayer="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b">
-      <fieldRef referencingField="festock" referencedField="val"/>
-    </relation>
-    <relation layerId="festock_98d41167_33fb_4940_8323_1dceba05751e" strength="Association" id="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b_festock_festock_98d41167_33fb_4940_8323_1dceba05751e_val" referencedLayer="festock_98d41167_33fb_4940_8323_1dceba05751e" name="ref_festock_stockage_boue" layerName="festock" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" referencingLayer="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b">
+    <relation layerId="Taille_du_stockage_47e1e425_f0ad_49fe_a7f5_3726638d7b44" strength="Association" id="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b_festock_Taille_du_stockage_47e1e425_f0ad_49fe_a7f5_3726638d7b44_val" referencedLayer="Taille_du_stockage_47e1e425_f0ad_49fe_a7f5_3726638d7b44" name="ref_festock_stockage_boue" layerName="Taille du stockage" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" referencingLayer="Stockage_Boue_873c65a1_0486_4ff5_a859_d3ffd599ff5b">
       <fieldRef referencingField="festock" referencedField="val"/>
     </relation>
   </referencedLayers>
@@ -438,7 +435,7 @@
     <default applyOnUpdate="0" expression="" field="geom_ref"/>
     <default applyOnUpdate="0" expression="" field="sur_bloc"/>
     <default applyOnUpdate="0" expression="" field="model"/>
-    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Taille_du_stockage_10a2613d_7294_4663_a0af_30202da533cf', attribute:='val', value:=&quot;festock&quot;), 'fe')" field="festock_fe"/>
+    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Taille_du_stockage_47e1e425_f0ad_49fe_a7f5_3726638d7b44', attribute:='val', value:=&quot;festock&quot;), 'fe')" field="festock_fe"/>
     <default applyOnUpdate="0" expression="" field="festock_description"/>
   </defaults>
   <constraints>

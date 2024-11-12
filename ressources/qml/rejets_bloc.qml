@@ -312,16 +312,10 @@
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation layerId="Milieu_8814cce1_88d5_4547_a87c_d784d43f5ed3" strength="Association" id="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7_fech4_mil_Milieu_8814cce1_88d5_4547_a87c_d784d43f5ed3_val" referencedLayer="Milieu_8814cce1_88d5_4547_a87c_d784d43f5ed3" name="ref_fech4_mil_rejets" layerName="Milieu" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fech4_mil_type_table&quot;" providerKey="postgres" referencingLayer="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7">
+    <relation layerId="Milieu_f22400bb_8ac7_496e_b527_403c5c389db9" strength="Association" id="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7_fech4_mil_Milieu_f22400bb_8ac7_496e_b527_403c5c389db9_val" referencedLayer="Milieu_f22400bb_8ac7_496e_b527_403c5c389db9" name="ref_fech4_mil_rejets" layerName="Milieu" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fech4_mil_type_table&quot;" providerKey="postgres" referencingLayer="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7">
       <fieldRef referencingField="fech4_mil" referencedField="val"/>
     </relation>
-    <relation layerId="fech4_mil_11e2df03_b19f_4f62_b889_efd5cbbe65d4" strength="Association" id="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7_fech4_mil_fech4_mil_11e2df03_b19f_4f62_b889_efd5cbbe65d4_val" referencedLayer="fech4_mil_11e2df03_b19f_4f62_b889_efd5cbbe65d4" name="ref_fech4_mil_rejets" layerName="fech4_mil" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fech4_mil_type_table&quot;" providerKey="postgres" referencingLayer="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7">
-      <fieldRef referencingField="fech4_mil" referencedField="val"/>
-    </relation>
-    <relation layerId="Oxyg_ne_du_milieu_78e9cac2_ef37_4c1b_b9cf_2b825cb317bb" strength="Association" id="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7_fen2o_oxi_Oxyg_ne_du_milieu_78e9cac2_ef37_4c1b_b9cf_2b825cb317bb_val" referencedLayer="Oxyg_ne_du_milieu_78e9cac2_ef37_4c1b_b9cf_2b825cb317bb" name="ref_fen2o_oxi_rejets" layerName="Oxygène du milieu" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fen2o_oxi_type_table&quot;" providerKey="postgres" referencingLayer="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7">
-      <fieldRef referencingField="fen2o_oxi" referencedField="val"/>
-    </relation>
-    <relation layerId="fen2o_oxi_c2795394_b135_4d28_a3f9_12d2e60729ee" strength="Association" id="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7_fen2o_oxi_fen2o_oxi_c2795394_b135_4d28_a3f9_12d2e60729ee_val" referencedLayer="fen2o_oxi_c2795394_b135_4d28_a3f9_12d2e60729ee" name="ref_fen2o_oxi_rejets" layerName="fen2o_oxi" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fen2o_oxi_type_table&quot;" providerKey="postgres" referencingLayer="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7">
+    <relation layerId="Oxyg_ne_du_milieu_974714c1_3d2d_4db7_a82a_809bbf2ef4cf" strength="Association" id="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7_fen2o_oxi_Oxyg_ne_du_milieu_974714c1_3d2d_4db7_a82a_809bbf2ef4cf_val" referencedLayer="Oxyg_ne_du_milieu_974714c1_3d2d_4db7_a82a_809bbf2ef4cf" name="ref_fen2o_oxi_rejets" layerName="Oxygène du milieu" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fen2o_oxi_type_table&quot;" providerKey="postgres" referencingLayer="Rejets_230518b2_1694_4fcb_9448_bcf6c8c0f4d7">
       <fieldRef referencingField="fen2o_oxi" referencedField="val"/>
     </relation>
   </referencedLayers>
@@ -538,9 +532,9 @@
     <default applyOnUpdate="0" expression="" field="geom_ref"/>
     <default applyOnUpdate="0" expression="" field="sur_bloc"/>
     <default applyOnUpdate="0" expression="" field="model"/>
-    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Milieu_8814cce1_88d5_4547_a87c_d784d43f5ed3', attribute:='val', value:=&quot;fech4_mil&quot;), 'fe')" field="fech4_mil_fe"/>
+    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Milieu_f22400bb_8ac7_496e_b527_403c5c389db9', attribute:='val', value:=&quot;fech4_mil&quot;), 'fe')" field="fech4_mil_fe"/>
     <default applyOnUpdate="0" expression="" field="fech4_mil_description"/>
-    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Oxyg_ne_du_milieu_78e9cac2_ef37_4c1b_b9cf_2b825cb317bb', attribute:='val', value:=&quot;fen2o_oxi&quot;), 'fe')" field="fen2o_oxi_fe"/>
+    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Oxyg_ne_du_milieu_974714c1_3d2d_4db7_a82a_809bbf2ef4cf', attribute:='val', value:=&quot;fen2o_oxi&quot;), 'fe')" field="fen2o_oxi_fe"/>
     <default applyOnUpdate="0" expression="" field="fen2o_oxi_description"/>
   </defaults>
   <constraints>

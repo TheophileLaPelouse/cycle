@@ -423,7 +423,9 @@
     <constraint desc="" field="model" exp=""/>
   </constraintExpressions>
   <expressionfields/>
-  <attributeactions/>
+  <attributeactions>
+    <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+  </attributeactions>
   <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="">
     <columns>
       <column width="-1" hidden="0" name="id" type="field"/>

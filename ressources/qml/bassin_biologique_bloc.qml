@@ -312,10 +312,7 @@
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation layerId="Taux_de_charge_296c837a_c952_4b14_ba37_ddc37d9c5ae4" strength="Association" id="Bassin_biologique_ea5a2f4f_5f12_4048_870b_70786d6bd14d_charge_bio_Taux_de_charge_296c837a_c952_4b14_ba37_ddc37d9c5ae4_val" referencedLayer="Taux_de_charge_296c837a_c952_4b14_ba37_ddc37d9c5ae4" name="ref_charge_bio_bassin_biologique" layerName="Taux de charge" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;charge_bio_type_table&quot;" providerKey="postgres" referencingLayer="Bassin_biologique_ea5a2f4f_5f12_4048_870b_70786d6bd14d">
-      <fieldRef referencingField="charge_bio" referencedField="val"/>
-    </relation>
-    <relation layerId="charge_bio_baec6d08_e7bb_4a06_8423_2165d38d49e8" strength="Association" id="Bassin_biologique_ea5a2f4f_5f12_4048_870b_70786d6bd14d_charge_bio_charge_bio_baec6d08_e7bb_4a06_8423_2165d38d49e8_val" referencedLayer="charge_bio_baec6d08_e7bb_4a06_8423_2165d38d49e8" name="ref_charge_bio_bassin_biologique" layerName="charge_bio" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;charge_bio_type_table&quot;" providerKey="postgres" referencingLayer="Bassin_biologique_ea5a2f4f_5f12_4048_870b_70786d6bd14d">
+    <relation layerId="Taux_de_charge_ef97e245_c95e_409d_a064_56951d54d6ab" strength="Association" id="Bassin_biologique_ea5a2f4f_5f12_4048_870b_70786d6bd14d_charge_bio_Taux_de_charge_ef97e245_c95e_409d_a064_56951d54d6ab_val" referencedLayer="Taux_de_charge_ef97e245_c95e_409d_a064_56951d54d6ab" name="ref_charge_bio_bassin_biologique" layerName="Taux de charge" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;charge_bio_type_table&quot;" providerKey="postgres" referencingLayer="Bassin_biologique_ea5a2f4f_5f12_4048_870b_70786d6bd14d">
       <fieldRef referencingField="charge_bio" referencedField="val"/>
     </relation>
   </referencedLayers>
@@ -656,7 +653,7 @@
     <default applyOnUpdate="0" expression="" field="geom_ref"/>
     <default applyOnUpdate="0" expression="" field="sur_bloc"/>
     <default applyOnUpdate="0" expression="@current_model" field="model"/>
-    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Taux_de_charge_296c837a_c952_4b14_ba37_ddc37d9c5ae4', attribute:='val', value:=&quot;charge_bio&quot;), 'fe')" field="charge_bio_fe"/>
+    <default applyOnUpdate="1" expression="attribute(get_feature(layer:='Taux_de_charge_ef97e245_c95e_409d_a064_56951d54d6ab', attribute:='val', value:=&quot;charge_bio&quot;), 'fe')" field="charge_bio_fe"/>
     <default applyOnUpdate="0" expression="" field="charge_bio_description"/>
   </defaults>
   <constraints>

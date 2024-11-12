@@ -65,7 +65,8 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : '
          'q_fecl3' : 'Quantité de FeCl3 (kg/an)', 'transp_fecl3' : "Distance d'approxivisionnement du FeCl3 (km)",
          'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
          'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)", 
-         'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)'
+         'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)', 
+         'fecc' : 'Taille de la cuve'
          }
 
 ConstrOnly = set(['cad', 'e', 'tauenterre'])
@@ -333,13 +334,14 @@ class QGisProjectManager(QObject):
                 c+=1
             layer.setEditFormConfig(config)
         
-        # osmlayer = project.mapLayersByName('OSM') 
-        # if not osmlayer :
-        #     tms = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png&zmax=19&zmin=0'
-        #     osmlayer = QgsRasterLayer(tms,'OSM', 'wms')
-        #     root.insertLayer(-1, osmlayer)
+
         QGisProjectManager.load_qml(project, project_filename)
         project.write()
+        # urlWithParams = 'type=xyz&url=https://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857'
+        # rlayer = QgsRasterLayer(urlWithParams, 'OpenStreetMap', 'wms')
+        # if rlayer.isValid() : 
+        #     project.addMapLayer(rlayer)
+        # Je ne sais pas pourquoi ça marche quandje le fais depuis la console qgis mais pas là
     
     @staticmethod
     def hide_columns(layer, columns) :
