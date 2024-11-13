@@ -25,7 +25,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     if project_name : 
         path = os.path.join(_cycle_dir, project_name, 'custom_blocs.sql')
     
-    type_table = {'real' : 'real', 'integer' : 'integer', 'string' : 'varchar', 'list' : 'varchar[]'}
+    type_table = {'real' : 'real', 'integer' : 'integer', 'string' : 'varchar', 'list' : 'varchar[]', 'boolean' : 'boolean'}
     
     rows = dict(entrees, **sorties)
     

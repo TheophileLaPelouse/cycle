@@ -49,9 +49,10 @@ _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
 _columns_to_hide = set(['shape', 'formula', 'b_type', 'geom_ref'])
 Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'fech4_mil' : 'Milieu', 
-         'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont (t/an)', 'eh_fe' : ' ', 'welec' : 'Welec (kWh/an)',
+         'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont de la filière (t/an)', 'eh_fe' : ' ', 'welec' : 'Welec (kWh/an)',
          'dco_elim' : 'DCO éliminée (kgDCO/an)', 'tsejour' : 'Temps de séjour', 'tjour' : 'Stockage en jour', 'h' : 'Hauteur (m)', 'long' : 'Longueur (m)',
-         'larg' : 'Largeur (m)', 'vit' : 'Vitesse (m/h)', 'tbsortant' : 'Tonne de boue en sortie (t/an)', 'e' : 'Epaisseur de voile (m)', 
+         'larg' : 'Largeur (m)', 'vit' : 'Vitesse (m/h)', 'tbsortant' : 'Tonne de boue entrant (t/an)', 
+         'tbsortant_s' : 'Tonne de boue sortant (t/an)', 'e' : 'Epaisseur de voile (m)', 
          'taur' : 'Taux de recirculation', 'tauenterre' : 'Taux d\'enterrement', 'prop_l' : 'rapport longueur/largeur', 'vu' : 'Volume utile (m3)', 
          'vbiogaz' : 'Volume de biogaz produit (m3/an)', 'cad' : 'Cadence pelleteuse (m3/h)', 'gros' : 'Dégrillage supérieur à 20mm  (booléen)', 
          'compd' : 'Avec ou sans compactage (booléen)', 'compt' : 'Avec ou sans compactage (booléen)', 'qe_s' : 'Débit sortant (m3/j)', 
@@ -66,7 +67,7 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : '
          'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
          'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)", 
          'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)', 
-         'fecc' : 'Taille de la cuve'
+         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)'
          }
 
 ConstrOnly = set(['cad', 'e', 'tauenterre'])
@@ -453,7 +454,9 @@ class QGisProjectManager(QObject):
                 defval.setExpression(default_fe)
                 defval.setApplyOnUpdate(True)
                 layer.setDefaultValueDefinition(fe_idx, defval)
-            layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
+                layer.setFieldAlias(fe_idx, Alias.get(field, ''))
+            else : 
+                layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
         
         if rapid == 1 :
             for tab in config.tabs() :

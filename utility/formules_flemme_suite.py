@@ -271,7 +271,7 @@ def is_almost_equal(expr1, expr2):
 
 trad = {'co2_c' : 'CO2 construction', 'co2_e' : 'CO2 exploitation', 'ch4_c' : 'CH4 construction',
         'ch4_e' : 'CH4 exploitation', 'n2o_c' : 'N2O construction', 'n2o_e' : 'N2O exploitation'}
-types = {'réel' : 'real', 'entier' : 'integer', 'booléen' : 'integer', 'texte' : 'text', 'list' : 'list'}
+types = {'réel' : 'real', 'entier' : 'integer', 'booléen' : 'boolean', 'texte' : 'text', 'list' : 'list'}
 
 formula_name = {}
 formula_description = {}
