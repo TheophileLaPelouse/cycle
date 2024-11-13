@@ -1,4 +1,30 @@
 {
+    "Blocs abstraits": {
+        "Lien": {
+            "bloc": [
+                "Lien",
+                "api",
+                "lien_bloc",
+                "name"
+            ]
+        },
+        "Sur bloc": {
+            "bloc": [
+                "Sur bloc",
+                "api",
+                "sur_bloc_bloc",
+                "name"
+            ]
+        },
+        "Source": {
+            "bloc": [
+                "Source",
+                "api",
+                "source_bloc",
+                "name"
+            ]
+        }
+    },
     "Construction autre": {
         "B\u00e2timent d'exploitation": {
             "bloc": [
