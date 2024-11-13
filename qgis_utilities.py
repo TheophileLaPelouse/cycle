@@ -431,7 +431,8 @@ class QGisProjectManager(QObject):
     def update1qml(project, dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
         t1 = time.time()
         config = layer.editFormConfig()
-        config.setLayout(Qgis.AttributeFormLayout(1))
+        try : config.setLayout(Qgis.AttributeFormLayout(1))
+        except : pass
         # En attendant pour pas que ce soit toujours trop long de tout recharger, plus tard y'aura un json propre qui permettra de gérer les blocs
         if rapid == 1 :
             for tab in config.tabs() :
