@@ -1149,7 +1149,7 @@ create sequence ___.sechage_solaire_bloc_name_seq ;
 create table ___.sechage_solaire_bloc(
 id integer primary key,
 shape ___.geo_type not null default 'Point',
-geom geometry('LINESTRING', 2154) not null check(ST_IsValid(geom)),
+geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('sechage_solaire_bloc', abbreviation=>'sechage_solaire'),
 formula varchar[] default array['co2_c=febranche*ml']::varchar[],
 formula_name varchar[] default array['CO2 construction sechage_solaire 1']::varchar[],
