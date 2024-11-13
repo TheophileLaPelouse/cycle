@@ -1996,6 +1996,83 @@ select api.add_new_bloc('fpr', 'bloc', 'Point'
     
     ) ;
 
+
+
+
+alter type ___.bloc_type add value 'file_boue' ;
+commit ; 
+insert into ___.input_output values ('file_boue', array['eh']::varchar[], array['tbhaut']::varchar[], array[]::varchar[]) ;
+
+create sequence ___.file_boue_bloc_name_seq ;     
+
+
+
+
+
+create table ___.file_boue_bloc(
+id integer primary key,
+shape ___.geo_type not null default 'Polygon',
+geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
+name varchar not null default ___.unique_name('file_boue_bloc', abbreviation=>'file_boue_bloc'),
+formula varchar[] default array[]::varchar[],
+formula_name varchar[] default array[]::varchar[],
+eh real,
+tbhaut real,
+
+foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
+unique (name, id)
+);
+
+create table ___.file_boue_bloc_config(
+    like ___.file_boue_bloc,
+    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+    foreign key (id, name) references ___.file_boue_bloc(id, name) on delete cascade on update cascade,
+    primary key (id, config)
+) ; 
+
+select api.add_new_bloc('file_boue', 'bloc', 'Polygon' 
+    
+    ) ;
+
+alter type ___.bloc_type add value 'file_eau' ;
+commit ; 
+insert into ___.input_output values ('file_eau', array['eh', 'dco_elim']::varchar[], array[]::varchar[], array['Exploitation file eau']::varchar[]) ;
+
+create sequence ___.file_eau_bloc_name_seq ;     
+
+
+
+
+create table ___.file_eau_bloc(
+id integer primary key,
+shape ___.geo_type not null default 'Polygon',
+geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
+name varchar not null default ___.unique_name('file_eau_bloc', abbreviation=>'file_eau_bloc'),
+formula varchar[] default array['ch4_e = dco_elim*0.0002']::varchar[],
+formula_name varchar[] default array['Exploitation file eau']::varchar[],
+eh real,
+dco_elim real,
+
+foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
+unique (name, id)
+);
+
+create table ___.file_eau_bloc_config(
+    like ___.file_eau_bloc,
+    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+    foreign key (id, name) references ___.file_eau_bloc(id, name) on delete cascade on update cascade,
+    primary key (id, config)
+) ; 
+
+select api.add_new_bloc('file_eau', 'bloc', 'Polygon' 
+    
+    ) ;
+
+select api.add_new_formula('Exploitation file eau'::varchar, 'ch4_e = dco_elim*0.0002'::varchar, 5, ''::text) ;
+
+
+
+
 select api.add_new_formula('dco_s fpr 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
 select api.add_new_formula('ngl_s bassin_dorage 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant dessableurdegraisseur 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;

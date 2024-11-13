@@ -279,7 +279,7 @@ begin
     args := args[1:j] ;
     -- -- raise notice 'args finale %', args ;
     for i in 1..j loop 
-        -- -- raise notice 'args %', args[i] ;
+        -- raise notice'args %', args[i] ;
         if args[i] = '(' then 
             len := array_length(calc, 1) ; 
             if len < (idx + 1)*calc_sb_len then 
@@ -361,21 +361,26 @@ begin
             -- -- raise notice 'last_op %, args %', last_op, args[i] ;
             -- -- raise notice 'idx %', idx ; 
             last_op_length[idx] := last_op_length[idx] + 1 ;
+            k2 := 1 ;
+            -- raise notice'last_op to modif %', last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] ;
             for k in 1..last_op_length[idx] loop 
-                -- -- raise notice 'k %, last_op %', k, last_op[(idx-1)*last_op_sb_len+k] ;
-                -- -- raise notice 'args %', args[i] ;
-                -- -- raise notice 'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
-                if formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) then 
+                -- raise notice'k %, last_op %, k2 %', k, last_op[(idx-1)*last_op_sb_len+k], k2 ;
+                -- raise notice'args %', args[i] ;
+                -- raise notice'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
+                if k2 > k then 
+                    -- raise notice'temp_op %', temp_op ;
+                    temp_op2 := last_op[(idx-1)*last_op_sb_len+k2] ;
+                    last_op[(idx-1)*last_op_sb_len+k] := temp_op ; 
+                    temp_op := temp_op2 ;
+                    k2 := k2 + 1 ;
+                elseif formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) then 
                     temp_op := last_op[(idx-1)*last_op_sb_len+k] ;
                     last_op[(idx-1)*last_op_sb_len+k] := args[i] ;
-                    k2 := k + 1 ; 
+                    k2 := k + 2 ; 
                 end if ; 
-                if k2 > k then 
-                    temp_op2 := last_op[(idx-1)*last_op_sb_len+k2] ;
-                    last_op[(idx-1)*last_op_sb_len+k2] := temp_op ; 
-                    temp_op := temp_op2 ; 
-                end if ;
             end loop ;
+            -- raise notice'last_op modified %', last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] ;
+            -- raise notice'length after insert %', last_op_length ;
             -- à tester
             -- last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] := formula.insert_op(last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len], args[i]) ;
             
@@ -397,9 +402,9 @@ begin
                 flag_op[idx] := false ;
             end if ;
         end if ;
-        -- -- raise notice 'idx %, calc %', idx, calc ;
-        -- -- raise notice 'last_op %', last_op ;
-        -- -- raise notice 'calc_length %, last_op_length %', calc_length, last_op_length ;
+        -- -- raise noticeE'\n idx %, calc %', idx, calc ;
+        -- raise notice'last_op %', last_op ;
+        -- raise notice'calc_length %, last_op_length %', calc_length, last_op_length ;
     end loop ;
     if calc_length[idx] + last_op_length[idx] > calc_sb_len then 
         calc := formula.resize_array(calc, calc_sb_len, (calc_length[idx] + last_op_length[idx])+1) ;
@@ -411,7 +416,8 @@ begin
         -- calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
         calc_length[idx] := calc_length[idx] + last_op_length[idx] ;
     end if ; 
-    -- -- raise notice 'calc final %', calc ;
+    -- raise notice'expr début %', expr ; 
+    -- raise notice'calc final %', calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ;
     return calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ; 
 end ;
 $$ ;
@@ -449,41 +455,56 @@ begin
         new := calc[i] ;
         i:=i+1 ;
         if new ~ pat then 
+            -- raise notice 'on a un pattern %' , new ; 
             -- On récupère les deux valeurs de calcul
             val1 := calc_val[fin-1] ;
             incert1 := calc_incert[fin-1] ;
 
             val2 := calc_val[fin] ;
             incert2 := calc_incert[fin] ;
-            
+            -- raise notice 'val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
             fin := fin - 1 ;
             -- On calcule à chaque fois les incertitudes relatives et les valeurs réelles 
             case
             when new = '+' then 
                 -- somme des incertitudes
-                new_val := val1 + val2 ;
+                -- raise notice 'ici 7, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_incert := (incert1*val1 + incert2*val2)/(val1 + val2) ;
+                -- raise notice 'ici 8, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
             when new = '-' then 
+                -- raise notice 'ici 6, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_val := val1 - val2 ;
+                -- raise notice 'ici 5, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_incert := abs((incert1*val1 + incert2*val2)/(val1 - val2)) ;
             when new = '*' then
                 new_val := val1 * val2 ;
                 new_incert := sqrt(incert1^2 + incert2^2) ;
             when new = '/' then
+                -- raise notice 'ici 1, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_val := val1 / val2 ;
+                -- raise notice 'ici 2, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_incert := sqrt(incert1^2 + incert2^2) ;
             when new = '^' then
                 new_val := val1 ^ val2 ;
+                -- raise notice 'ici 3, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_incert := abs(val2) * incert1 ;
+                -- raise notice 'ici 4, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
             when new = '>' then
+                -- raise notice 'ici 11, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
                 new_val := (val1 > val2)::int::real ;
+                -- raise notice 'là2 ?' ;
                 new_incert := 0.0 ;
             when new = '<' then
+                -- raise notice 'ici 11, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
                 new_val := (val1 < val2)::int::real ;
+                -- raise notice 'là ?' ; 
                 new_incert := 0.0 ;
             end case ;
+            -- raise notice 'ici 9, val1 = %, incert1 = %', new_val, new_incert; 
             calc_val[fin] := new_val ;
+            -- raise notice 'ici 10, val1 = %, incert1 = %', new_val, new_incert; 
             calc_incert[fin] := new_incert ;
+            -- raise notice 'vent'  ;
         else
             if regexp_matches(new, '^[0-9]+(\.[0-9]+)?$') is not null then 
                 val1 := new::real ;
@@ -501,8 +522,8 @@ begin
         -- -- raise notice 'calc_val %', calc_val ;
         -- -- raise notice 'calc_incert %', calc_incert ;
     end loop ; 
-    -- -- raise notice 'val %', calc_val[fin] ;
-    -- -- raise notice 'incert %', calc_incert[fin] ;
+    raise notice 'val %', calc_val[fin] ;
+    raise notice 'incert %', calc_incert[fin] ;
     select into result calc_val[fin] as val, calc_incert[fin] as incert;
     return result ;
     

@@ -79,6 +79,12 @@
     },
     "Fili\u00e8re traitement": {
         "File boue": {
+            "bloc" : [
+                "File boue",
+                "api",
+                "file_boue_bloc",
+                "name"
+            ],
             "Centrifugeuse pour d\u00e9shydratation": {
                 "bloc": [
                     "Centrifugeuse pour d\u00e9shydratation",
@@ -225,6 +231,12 @@
             }
         },
         "File eau": {
+            "bloc" : [
+                "File eau",
+                "api",
+                "file_eau_bloc",
+                "name"
+            ],
             "Bassin biologique": {
                 "bloc": [
                     "Bassin biologique",

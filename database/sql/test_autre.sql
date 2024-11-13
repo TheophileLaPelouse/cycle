@@ -1,3 +1,34 @@
+do 
+$$
+declare 
+    s real ; 
+    i real ;
+    val1 real := 0.1;
+    incert1 real := 0;
+    val2 real := 46;
+    incert2 real := 0.5;
+    formula text := 'co2_c=(febet*e*rhobet*(24*eh*qe_eh + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit';
+    -- (febet*e*rhobet*(24*eh*qe_eh*(taur + 1) + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh*(taur + 1)/vit)^0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh*(taur + 1)/vit)^0.5)^2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit
+    reduced_f text := '3.14159*h*vit*(e + 5.52791*(eh*qe_eh*(taur + 1)/vit)^0.5)' ;
+    eh real := 10 ; 
+    qe_eh real := 0.12 ; 
+    vit real := 60 ; 
+begin 
+    s := (val1 ^ val2)::real;
+    raise notice 'jusqu''ici c''est bon' ; 
+    i := abs(val2) * incert1 ;
+    raise notice 's %, i %', s, i ;
+    create temp table inp_out (name text, val real, incert real) ;
+    insert into inp_out values('eh', 10, 0.1) ;
+    insert into inp_out values('qe_eh', 0.12, 0.01) ;
+    insert into inp_out values('vit', 60, 0.5) ;
+
+    raise notice 'result %', formula.calc_incertitudes((formula.write_formula(reduced_f))) ;
+    drop table inp_out ;
+end ;
+$$ ;
+
+-- insert into api.clarificateur_bloc(model, geom, eh) values('bonjour', 'POINT(0 0)', 10) ;
 -- create or replace function formula.insert_op(operators varchar[], op varchar)
 -- returns varchar[]
 -- language plpgsql

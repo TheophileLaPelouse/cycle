@@ -434,6 +434,27 @@ class QGisProjectManager(QObject):
         try : config.setLayout(Qgis.AttributeFormLayout(1))
         except : pass
         # En attendant pour pas que ce soit toujours trop long de tout recharger, plus tard y'aura un json propre qui permettra de gérer les blocs
+        fieldnames = [f.name() for f in layer.fields()]
+        field_fe = set()
+        
+        for field in fieldnames :
+            if field == 'model' : 
+                defval = QgsDefaultValue()
+                defval.setExpression("@current_model")
+                layer.setDefaultValueDefinition(layer.fields().indexFromName(field), defval)
+                
+            if field.endswith('_fe') :
+                field_fe.add(field[:-3])
+                defval = QgsDefaultValue()
+                fe_idx = layer.fields().indexFromName(field)
+                prop_id = dico_layer[Alias.get(field[:-3], field[:-3])][1]
+                default_fe = layer.defaultValueDefinition(fe_idx)
+                default_fe = f"attribute(get_feature(layer:='{prop_id}', attribute:='val', value:=\"{field}\"), 'fe')"
+                defval.setExpression(default_fe)
+                defval.setApplyOnUpdate(True)
+                layer.setDefaultValueDefinition(fe_idx, defval)
+            layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
+        
         if rapid == 1 :
             for tab in config.tabs() :
                 if tab.name() in ['Exploitation', 'Construction'] : 
@@ -461,14 +482,7 @@ class QGisProjectManager(QObject):
         output_tab = QgsAttributeEditorContainer('Sortie', None)
         output_tab.setType(Qgis.AttributeEditorContainerType(1))
         config.addTab(output_tab)
-        
-        fieldnames = [f.name() for f in layer.fields()]
-        field_fe = set()
-        
-        for field in fieldnames :
-            if field.endswith('_fe') :
-                field_fe.add(field[:-3])
-            layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
+            
         lvlmax = 6
         in2tab = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
         in2tab_constr = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
@@ -498,28 +512,28 @@ class QGisProjectManager(QObject):
             for val in group_field : 
                 idx = layer.fields().indexFromName(val)
                 if val in field_fe :
-                    container = QgsAttributeEditorContainer(val.upper(), level_container[c_or_e][lvl])
+                    container = QgsAttributeEditorContainer(Alias.get(val, val).upper(), level_container[c_or_e][lvl])
                     container.setColumnCount(2)
                     container.addChildElement(attrfield(val, idx, container))
                     fe_idx = layer.fields().indexFromName(val+'_fe')
                     container.addChildElement(attrfield(val+"_fe", fe_idx, container))
                     # alias 
-                    layer.setFieldAlias(fe_idx, Alias.get(val+"_fe", ''))
-                    layer.setFieldAlias(idx, Alias.get(val, ''))
+                    # layer.setFieldAlias(fe_idx, Alias.get(val+"_fe", ''))
+                    # layer.setFieldAlias(idx, Alias.get(val, ''))
                     
-                    # default value
-                    defval = QgsDefaultValue()
-                    # prop_layer = project.mapLayersByName(Alias.get(val, val))[0]
-                    prop_layer = dico_layer[Alias.get(val, val)][0]
-                    default_fe = layer.defaultValueDefinition(fe_idx)
-                    default_fe = default_fe.expression()
-                    #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
+                    # # default value
+                    # defval = QgsDefaultValue()
+                    # # prop_layer = project.mapLayersByName(Alias.get(val, val))[0]
+                    # prop_layer = dico_layer[Alias.get(val, val)][0]
+                    # default_fe = layer.defaultValueDefinition(fe_idx)
+                    # default_fe = default_fe.expression()
+                    # #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
                     
-                    # default_fe = re.sub("layer:='[^']+'", f"layer:='{prop_layer.id()}'", default_fe)
-                    default_fe = f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=\"{val}\"), 'fe')"
-                    defval.setExpression(default_fe)
-                    defval.setApplyOnUpdate(True)
-                    layer.setDefaultValueDefinition(fe_idx, defval)
+                    # # default_fe = re.sub("layer:='[^']+'", f"layer:='{prop_layer.id()}'", default_fe)
+                    # default_fe = f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=\"{val}\"), 'fe')"
+                    # defval.setExpression(default_fe)
+                    # defval.setApplyOnUpdate(True)
+                    # layer.setDefaultValueDefinition(fe_idx, defval)
                     # indexOf = indexFromName d'après la doc
                     # On va faire un test pas opti : 
                     if val.upper() not in level_container_children[c_or_e][lvl] :
@@ -569,44 +583,26 @@ class QGisProjectManager(QObject):
             # print("sortie", val, idx)
             if val in field_fe : 
                 
-                container = QgsAttributeEditorContainer(val.upper(), tab)
+                container = QgsAttributeEditorContainer(Alias.get(val, val).upper(), tab)
                 container.setColumnCount(2)
                 container.addChildElement(attrfield(val, idx, container))
                 fe_idx = layer.fields().indexFromName(val+'_fe')
                 container.addChildElement(attrfield(val+"_fe", fe_idx, container))
-                if val not in treated : 
-                    # alias 
-                    layer.setFieldAlias(fe_idx, Alias.get(val+"_fe", ''))
-                    layer.setFieldAlias(idx, Alias.get(val, ''))
-                    
-                    # default value
-                    defval = QgsDefaultValue()
-                    prop_layer = project.mapLayersByName(Alias.get(val, val))[0]
-                    default_fe = layer.defaultValueDefinition(fe_idx)
-                    default_fe = default_fe.expression()
-                    #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
-                    
-                    default_fe = re.sub("layer:='[^']+'", f"layer:='{prop_layer.id()}'", default_fe)
-                    defval.setExpression(default_fe)
-                    defval.setApplyOnUpdate(True)
-                    layer.setDefaultValueDefinition(fe_idx, defval)
                 tab.addChildElement(container)
             else:
-                if val not in treated :  
-                    layer.setFieldAlias(idx, Alias.get(val, ''))
                 tab.addChildElement(attrfield(val, idx, tab))
                 
         for val in inp_outs['out'] : 
             addval2tab(val, output_tab)
-            inp = val
-            if inp[:-2] in inp_outs['inp'] :
-                inp = inp[:-2]
-            elif inp[:-2]+"_e" in inp_outs['inp'] :
-                inp = inp[:-2]+"_e"
-            elif inp + "_e" in inp_outs['inp'] :
-                inp = inp + "_e"
-            if inp in inp_outs['inp'] :
+        for val in inp_outs['inp'] : 
+            flag_in = False
+            if val[-2:] == '_e' : 
+                flag_in = True
+            elif val + '_s' in inp_outs['out'] :
+                flag_in = True
+            if flag_in :
                 addval2tab(val, input_tab)
+                 
         t4 = time.time()
         print('temps après boucle 2', t4-t3)
         layer.setEditFormConfig(config)

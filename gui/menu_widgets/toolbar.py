@@ -5,6 +5,7 @@ Main cycle menu
 import os
 import warnings
 from pathlib import Path
+import qgis
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QCheckBox, QLabel, QAction, QLineEdit, QDockWidget, QWidget, QSizePolicy, QComboBox
@@ -265,8 +266,8 @@ class CycleToolbar(QToolBar):
         layers = iface.mapCanvas().layers()
         print("Bonjour")
         for layer in layers : 
-            print(layer.geometryType())
-            if layer.geometryType().name == 'Point' : 
+            
+            if isinstance(layer, qgis._core.QgsVectorLayer) and layer.geometryType().name == 'Point' : 
                 print(layer.name())
                 print(layer.renderer().referenceScale())
                 r = layer.renderer()
