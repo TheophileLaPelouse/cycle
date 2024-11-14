@@ -2,7 +2,7 @@
 
 alter type ___.bloc_type add value 'tamis' ;
 commit ; 
-insert into ___.input_output values ('tamis', array['eh', 'qmax', 'munite_tamis', 'welec', 'compt', 'qe', 'dbo5', 'mes']::varchar[], array['qe_s']::varchar[], array['CO2 construction tamis 2', 'tbentrant chaulage 2', 'CO2 construction tamis 1', 'CO2 exploitation tamis 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('tamis', array['eh', 'qmax', 'munite_tamis', 'welec', 'compt', 'qe', 'dbo5', 'mes']::varchar[], array['qe_s']::varchar[], array['CO2 construction tamis 2', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction tamis 1', 'CO2 exploitation tamis 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.tamis_bloc_name_seq ;     
 
@@ -15,7 +15,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('tamis_bloc', abbreviation=>'tamis'),
 formula varchar[] default array['co2_c=fepoids*munite_tamis*qe/qmax', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=eh*fepoids*munite_tamis*qe_eh/qmax', 'co2_e=eh*fedechet*rhodechet*(compt*qdechet_tamis_comp - qdechet_tamis_ncomp*(compt - 1))', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['CO2 construction tamis 2', 'tbentrant chaulage 2', 'CO2 construction tamis 1', 'CO2 exploitation tamis 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['CO2 construction tamis 2', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction tamis 1', 'CO2 exploitation tamis 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6']::varchar[],
 eh real,
 qmax real default 270::real,
 munite_tamis real default 210::real,
@@ -42,7 +42,7 @@ select api.add_new_bloc('tamis', 'bloc', 'Point'
     ) ;
 
 select api.add_new_formula('CO2 construction tamis 2'::varchar, 'co2_c=fepoids*munite_tamis*qe/qmax'::varchar, 2, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction tamis 1'::varchar, 'co2_c=eh*fepoids*munite_tamis*qe_eh/qmax'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 exploitation tamis 1'::varchar, 'co2_e=eh*fedechet*rhodechet*(compt*qdechet_tamis_comp - qdechet_tamis_ncomp*(compt - 1))'::varchar, 1, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
@@ -54,7 +54,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 alter type ___.bloc_type add value 'decanteur_lamellaire' ;
 commit ; 
-insert into ___.input_output values ('decanteur_lamellaire', array['prod_e', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'tauenterre', 'h', 'larg', 'e', 'long', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction decanteur_lamellaire 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[]) ;
+insert into ___.input_output values ('decanteur_lamellaire', array['prod_e', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'tauenterre', 'h', 'larg', 'e', 'long', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction decanteur_lamellaire 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.decanteur_lamellaire_bloc_name_seq ;     
 
@@ -100,7 +100,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('decanteur_lamellaire_bloc', abbreviation=>'decanteur_lamellaire'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'co2_c=febet*e*rhobet*(larg*long + 2*larg*(h + e) + 2*long*(h + e)) + feevac*rhoterre*tauenterre*(h + e)*(e + larg)*(e + long) + fefonda*(e + larg)*(e + long) + fepelle*cad*tauenterre*(h + e)*(e + larg)*(e + long)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction decanteur_lamellaire 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction decanteur_lamellaire 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 eh real,
 abatdco real,
@@ -196,16 +196,16 @@ select api.add_new_bloc('decanteur_lamellaire', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('CO2 construction decanteur_lamellaire 3'::varchar, 'co2_c=febet*e*rhobet*(larg*long + 2*larg*(h + e) + 2*long*(h + e)) + feevac*rhoterre*tauenterre*(h + e)*(e + larg)*(e + long) + fefonda*(e + larg)*(e + long) + fepelle*cad*tauenterre*(h + e)*(e + larg)*(e + long)'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
 
 
 
@@ -213,7 +213,7 @@ select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::va
 
 alter type ___.bloc_type add value 'digesteur__methaniseur' ;
 commit ; 
-insert into ___.input_output values ('digesteur__methaniseur', array['tbsortant', 'tau_abattement', 'eh', 'dbo5', 'mes', 'vbiogaz', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CH4 exploitation digesteur__methaniseur 3', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction digesteur__methaniseur 4', 'CO2 exploitation digesteur__methaniseur 3', 'CO2 construction digesteur__methaniseur 3', 'tbsortant_s digesteur_aerobie 3']::varchar[]) ;
+insert into ___.input_output values ('digesteur__methaniseur', array['tbsortant', 'tau_abattement', 'eh', 'dbo5', 'mes', 'vbiogaz', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CH4 exploitation digesteur__methaniseur 3', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction digesteur__methaniseur 4', 'CO2 exploitation digesteur__methaniseur 3', 'CO2 construction digesteur__methaniseur 3', 'tbsortant_s digesteur__methaniseur 3']::varchar[]) ;
 
 create sequence ___.digesteur__methaniseur_bloc_name_seq ;     
 
@@ -226,7 +226,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('digesteur__methaniseur_bloc', abbreviation=>'digesteur__methaniseur'),
 formula varchar[] default array['ch4_e=tbsortant*tau_fuite*vol_ms', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec', 'co2_c=feobj_dan*vbiogaz', 'co2_e=feelec*tbsortant*welec_dan', 'co2_c=225*feobj_dan*tbsortant', 'tbsortant_s=tbsortant*tau_abattement']::varchar[],
-formula_name varchar[] default array['CH4 exploitation digesteur__methaniseur 3', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction digesteur__methaniseur 4', 'CO2 exploitation digesteur__methaniseur 3', 'CO2 construction digesteur__methaniseur 3', 'tbsortant_s digesteur_aerobie 3']::varchar[],
+formula_name varchar[] default array['CH4 exploitation digesteur__methaniseur 3', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction digesteur__methaniseur 4', 'CO2 exploitation digesteur__methaniseur 3', 'CO2 construction digesteur__methaniseur 3', 'tbsortant_s digesteur__methaniseur 3']::varchar[],
 tbsortant real,
 tau_abattement real default 0.4::real,
 eh real,
@@ -252,13 +252,13 @@ select api.add_new_bloc('digesteur__methaniseur', 'bloc', 'Point'
     ) ;
 
 select api.add_new_formula('CH4 exploitation digesteur__methaniseur 3'::varchar, 'ch4_e=tbsortant*tau_fuite*vol_ms'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
 select api.add_new_formula('CO2 construction digesteur__methaniseur 4'::varchar, 'co2_c=feobj_dan*vbiogaz'::varchar, 4, ''::text) ;
 select api.add_new_formula('CO2 exploitation digesteur__methaniseur 3'::varchar, 'co2_e=feelec*tbsortant*welec_dan'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 construction digesteur__methaniseur 3'::varchar, 'co2_c=225*feobj_dan*tbsortant'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbsortant_s digesteur_aerobie 3'::varchar, 'tbsortant_s=tbsortant*tau_abattement'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbsortant_s digesteur__methaniseur 3'::varchar, 'tbsortant_s=tbsortant*tau_abattement'::varchar, 3, ''::text) ;
 
 
 
@@ -266,7 +266,7 @@ select api.add_new_formula('tbsortant_s digesteur_aerobie 3'::varchar, 'tbsortan
 
 alter type ___.bloc_type add value 'degazage' ;
 commit ; 
-insert into ___.input_output values ('degazage', array['prod_e', 'tauenterre', 'h', 'vit', 'eh', 'e', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'qe', 'dco', 'ntk', 'dbo5', 'mes', 'vu', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction dessableurdegraisseur 2', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3', 'CO2 construction degazage 1']::varchar[]) ;
+insert into ___.input_output values ('degazage', array['prod_e', 'tauenterre', 'h', 'vit', 'eh', 'e', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'qe', 'dco', 'ntk', 'dbo5', 'mes', 'vu', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction degazage 2', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3', 'CO2 construction dessableurdegraisseur 1']::varchar[]) ;
 
 create sequence ___.degazage_bloc_name_seq ;     
 
@@ -279,7 +279,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('degazage_bloc', abbreviation=>'degazage'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=(febet*e*rhobet*(3.14159*h*vit*(e + 5.52791*(qe/vit)**0.5) + 24*qe) + 24.0*vit*(0.3618*e + (qe/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit', 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)', 'co2_c=(febet*e*rhobet*(24*eh*qe_eh + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction dessableurdegraisseur 2', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3', 'CO2 construction degazage 1']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction degazage 2', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3', 'CO2 construction dessableurdegraisseur 1']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 tauenterre real default 0.75::real,
 h real default 5::real,
@@ -376,18 +376,18 @@ select api.add_new_bloc('degazage', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
-select api.add_new_formula('CO2 construction dessableurdegraisseur 2'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h*vit*(e + 5.52791*(qe/vit)**0.5) + 24*qe) + 24.0*vit*(0.3618*e + (qe/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 construction degazage 2'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h*vit*(e + 5.52791*(qe/vit)**0.5) + 24*qe) + 24.0*vit*(0.3618*e + (qe/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_cylindrique 3'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('CO2 construction degazage 1'::varchar, 'co2_c=(febet*e*rhobet*(24*eh*qe_eh + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 1, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 construction dessableurdegraisseur 1'::varchar, 'co2_c=(febet*e*rhobet*(24*eh*qe_eh + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 1, ''::text) ;
 
 
 
@@ -395,7 +395,7 @@ select api.add_new_formula('CO2 construction degazage 1'::varchar, 'co2_c=(febet
 
 alter type ___.bloc_type add value 'compostage' ;
 commit ; 
-insert into ___.input_output values ('compostage', array['eh', 'tbsortant', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CH4 exploitation compostage 3', 'CO2 exploitation compostage 3', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction compostage 2', 'CO2 exploitation compostage 3', 'CO2 construction compostage 1', 'CO2 construction compostage 3', 'CO2 elec 6', 'N2O exploitation compostage 3']::varchar[]) ;
+insert into ___.input_output values ('compostage', array['eh', 'tbsortant', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CH4 exploitation compostage 3', 'CO2 exploitation compostage 3', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction compostage 2', 'CO2 exploitation compostage 3', 'CO2 construction compostage 1', 'CO2 construction compostage 3', 'CO2 elec 6', 'N2O exploitation compostage 3']::varchar[]) ;
 
 create sequence ___.compostage_bloc_name_seq ;     
 
@@ -408,7 +408,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('compostage_bloc', abbreviation=>'compostage'),
 formula varchar[] default array['ch4_e=tbsortant*ch4_compost', 'co2_e=feelec*tbsortant*welec_compost', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=0.0005*fecompost*nbjour*(dbo5 + mes)', 'co2_e=fegazole*tbsortant*gazole_compost', 'co2_c=0.0005*eh*fecompost*nbjour*(dbo5_eh + mes_eh)', 'co2_c=fecompost*tbentrant', 'co2_e=feelec*welec', 'n2o_e=tbsortant*n2o_compost']::varchar[],
-formula_name varchar[] default array['CH4 exploitation compostage 3', 'CO2 exploitation compostage 3', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction compostage 2', 'CO2 exploitation compostage 3', 'CO2 construction compostage 1', 'CO2 construction compostage 3', 'CO2 elec 6', 'N2O exploitation compostage 3']::varchar[],
+formula_name varchar[] default array['CH4 exploitation compostage 3', 'CO2 exploitation compostage 3', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction compostage 2', 'CO2 exploitation compostage 3', 'CO2 construction compostage 1', 'CO2 construction compostage 3', 'CO2 elec 6', 'N2O exploitation compostage 3']::varchar[],
 eh real,
 tbsortant real,
 dbo5 real,
@@ -434,7 +434,7 @@ select api.add_new_bloc('compostage', 'bloc', 'Point'
 
 select api.add_new_formula('CH4 exploitation compostage 3'::varchar, 'ch4_e=tbsortant*ch4_compost'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 exploitation compostage 3'::varchar, 'co2_e=feelec*tbsortant*welec_compost'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction compostage 2'::varchar, 'co2_c=0.0005*fecompost*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 exploitation compostage 3'::varchar, 'co2_e=fegazole*tbsortant*gazole_compost'::varchar, 3, ''::text) ;
@@ -449,7 +449,7 @@ select api.add_new_formula('N2O exploitation compostage 3'::varchar, 'n2o_e=tbso
 
 alter type ___.bloc_type add value 'sechage_solaire' ;
 commit ; 
-insert into ___.input_output values ('sechage_solaire', array['siccite_e', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['siccite_s', 'tbsortant_s']::varchar[], array['tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction sechage_solaire 1', 'CO2 elec 6', 'CO2 construction sechage_solaire 3', 'CO2 construction sechage_solaire 2']::varchar[]) ;
+insert into ___.input_output values ('sechage_solaire', array['siccite_e', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['siccite_s', 'tbsortant_s']::varchar[], array['tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction sechage_solaire 1', 'CO2 elec 6', 'CO2 construction sechage_solaire 3', 'CO2 construction sechage_solaire 2']::varchar[]) ;
 
 create sequence ___.sechage_solaire_bloc_name_seq ;     
 
@@ -462,7 +462,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('sechage_solaire_bloc', abbreviation=>'sechage_solaire'),
 formula varchar[] default array['tbentrant=0.0005*nbjour*(dbo5 + mes)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=((feobj50_ss)*(eh>10000)*(eh<100000)+(feobj100_ss)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_e=feelec*welec', 'co2_c=((feobj50_ss)*(eh>10000)*(eh<100000)+(feobj100_ss)*(eh>100000))*tbentrant', 'co2_c=((feobj50_ss)*(eh>10000)*(eh<100000)+(feobj100_ss)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)']::varchar[],
-formula_name varchar[] default array['tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction sechage_solaire 1', 'CO2 elec 6', 'CO2 construction sechage_solaire 3', 'CO2 construction sechage_solaire 2']::varchar[],
+formula_name varchar[] default array['tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction sechage_solaire 1', 'CO2 elec 6', 'CO2 construction sechage_solaire 3', 'CO2 construction sechage_solaire 2']::varchar[],
 siccite_e real,
 eh real,
 dbo5 real,
@@ -487,7 +487,7 @@ select api.add_new_bloc('sechage_solaire', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction sechage_solaire 1'::varchar, 'co2_c=((feobj50_ss)*(eh>10000)*(eh<100000)+(feobj100_ss)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
@@ -500,7 +500,7 @@ select api.add_new_formula('CO2 construction sechage_solaire 2'::varchar, 'co2_c
 
 alter type ___.bloc_type add value 'usine' ;
 commit ; 
-insert into ___.input_output values ('usine', array['eh', 'd_vie', 'welec', 'qe', 'dbo5', 'mes']::varchar[], array[]::varchar[], array['tbentrant chaulage 2', 'CO2 construction usine 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction usine 2', 'CO2 exploitation usine 2', 'CO2 elec 6', 'CO2 exploitation usine 1']::varchar[]) ;
+insert into ___.input_output values ('usine', array['eh', 'd_vie', 'welec', 'qe', 'dbo5', 'mes']::varchar[], array[]::varchar[], array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction usine 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction usine 2', 'CO2 exploitation usine 2', 'CO2 elec 6', 'CO2 exploitation usine 1']::varchar[]) ;
 
 create sequence ___.usine_bloc_name_seq ;     
 
@@ -513,7 +513,7 @@ shape ___.geo_type not null default 'Polygon',
 geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('usine_bloc', abbreviation=>'usine'),
 formula varchar[] default array['tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=eh*fetraitement_c*nbjour*qe_eh/d_vie', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=fetraitement_c*nbjour*qe/d_vie', 'co2_e=fetraitement_e*nbjour*qe', 'co2_e=feelec*welec', 'co2_e=eh*fetraitement_e*nbjour*qe_eh']::varchar[],
-formula_name varchar[] default array['tbentrant chaulage 2', 'CO2 construction usine 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction usine 2', 'CO2 exploitation usine 2', 'CO2 elec 6', 'CO2 exploitation usine 1']::varchar[],
+formula_name varchar[] default array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction usine 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction usine 2', 'CO2 exploitation usine 2', 'CO2 elec 6', 'CO2 exploitation usine 1']::varchar[],
 eh real,
 d_vie real default 1::real,
 welec real,
@@ -536,7 +536,7 @@ select api.add_new_bloc('usine', 'bloc', 'Polygon'
     
     ) ;
 
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction usine 1'::varchar, 'co2_c=eh*fetraitement_c*nbjour*qe_eh/d_vie'::varchar, 1, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction usine 2'::varchar, 'co2_c=fetraitement_c*nbjour*qe/d_vie'::varchar, 2, ''::text) ;
@@ -550,7 +550,7 @@ select api.add_new_formula('CO2 exploitation usine 1'::varchar, 'co2_e=eh*fetrai
 
 alter type ___.bloc_type add value 'bassin_dorage' ;
 commit ; 
-insert into ___.input_output values ('bassin_dorage', array['prod_e', 'tauenterre', 'h', 'tsejour', 'eh', 'e', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'qe', 'dco', 'ntk', 'dbo5', 'mes', 'vu', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction bassin_dorage 1', 'CO2 construction bassin_dorage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[]) ;
+insert into ___.input_output values ('bassin_dorage', array['prod_e', 'tauenterre', 'h', 'tsejour', 'eh', 'e', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'qe', 'dco', 'ntk', 'dbo5', 'mes', 'vu', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction bassin_dorage 1', 'CO2 construction bassin_dorage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.bassin_dorage_bloc_name_seq ;     
 
@@ -563,7 +563,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('bassin_dorage_bloc', abbreviation=>'bassin_dorage'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'co2_c=(febet*e*rhobet*(24*eh*qe_eh*tsejour + 3.14159*h**2*(e + 5.52791*(eh*qe_eh*tsejour/h)**0.5)) + 24.0*h*(0.3618*e + (eh*qe_eh*tsejour/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(qe*tsejour/h)**0.5) + 24*qe*tsejour) + 24.0*h*(0.3618*e + (qe*tsejour/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction bassin_dorage 1', 'CO2 construction bassin_dorage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction bassin_dorage 1', 'CO2 construction bassin_dorage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 tauenterre real default 0.75::real,
 h real default 4::real,
@@ -660,18 +660,18 @@ select api.add_new_bloc('bassin_dorage', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_dorage 1'::varchar, 'co2_c=(febet*e*rhobet*(24*eh*qe_eh*tsejour + 3.14159*h**2*(e + 5.52791*(eh*qe_eh*tsejour/h)**0.5)) + 24.0*h*(0.3618*e + (eh*qe_eh*tsejour/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_dorage 2'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(qe*tsejour/h)**0.5) + 24*qe*tsejour) + 24.0*h*(0.3618*e + (qe*tsejour/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_cylindrique 3'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
 
 
 
@@ -679,7 +679,7 @@ select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::va
 
 alter type ___.bloc_type add value 'degrilleur' ;
 commit ; 
-insert into ___.input_output values ('degrilleur', array['welec', 'eh', 'qdechet', 'qmax', 'munite_degrilleur', 'qe', 'dbo5', 'mes']::varchar[], array['qe_s']::varchar[], array['tbentrant chaulage 2', 'CO2 exploitation degrilleur 1', 'CO2 construction degrilleur 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction degrilleur 1', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('degrilleur', array['welec', 'eh', 'qdechet', 'qmax', 'munite_degrilleur', 'qe', 'dbo5', 'mes']::varchar[], array['qe_s']::varchar[], array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation degrilleur 1', 'CO2 construction degrilleur 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction degrilleur 1', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.degrilleur_bloc_name_seq ;     
 
@@ -698,7 +698,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('degrilleur_bloc', abbreviation=>'degrilleur'),
 formula varchar[] default array['tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=eh*fedechet*qdechet*rhodechet', 'co2_c=fepoids*munite_degrilleur*qe/qmax', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=eh*fepoids*munite_degrilleur*qe_eh/qmax', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['tbentrant chaulage 2', 'CO2 exploitation degrilleur 1', 'CO2 construction degrilleur 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction degrilleur 1', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation degrilleur 1', 'CO2 construction degrilleur 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction degrilleur 1', 'CO2 elec 6']::varchar[],
 welec real,
 eh real,
 qdechet ___.qdechet_type not null default 'Compactage avec piston' references ___.qdechet_type_table(val),
@@ -724,7 +724,7 @@ select api.add_new_bloc('degrilleur', 'bloc', 'Point'
     ,additional_columns => '{qdechet_type_table.FE as qdechet_FE, qdechet_type_table.description as qdechet_description}'
     ,additional_join => 'left join ___.qdechet_type_table on qdechet_type_table.val = c.qdechet ') ;
 
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 exploitation degrilleur 1'::varchar, 'co2_e=eh*fedechet*qdechet*rhodechet'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction degrilleur 2'::varchar, 'co2_c=fepoids*munite_degrilleur*qe/qmax'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
@@ -737,7 +737,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 alter type ___.bloc_type add value 'filtre_a_bande' ;
 commit ; 
-insert into ___.input_output values ('filtre_a_bande', array['q_poly', 'transp_poly', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly grilles_degouttage 6', 'tbentrant chaulage 2', 'CO2 construction filtre_a_bande 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction filtre_a_bande 1', 'CO2 construction filtre_a_bande 2', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('filtre_a_bande', array['q_poly', 'transp_poly', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction filtre_a_bande 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction filtre_a_bande 1', 'CO2 construction filtre_a_bande 2', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.filtre_a_bande_bloc_name_seq ;     
 
@@ -750,7 +750,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('filtre_a_bande_bloc', abbreviation=>'filtre_a_bande'),
 formula varchar[] default array['co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=((feobj10_fb)*(eh<10000)+(feobj50_fb)*(eh>10000)*(eh<100000)+(feobj100_fb)*(eh>100000))*tbentrant', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=((feobj10_fb)*(eh<10000)+(feobj50_fb)*(eh>10000)*(eh<100000)+(feobj100_fb)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_c=((feobj10_fb)*(eh<10000)+(feobj50_fb)*(eh>10000)*(eh<100000)+(feobj100_fb)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['CO2 exploitation q_poly grilles_degouttage 6', 'tbentrant chaulage 2', 'CO2 construction filtre_a_bande 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction filtre_a_bande 1', 'CO2 construction filtre_a_bande 2', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction filtre_a_bande 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction filtre_a_bande 1', 'CO2 construction filtre_a_bande 2', 'CO2 elec 6']::varchar[],
 q_poly real default 5::real,
 transp_poly real default 50::real,
 eh real,
@@ -775,8 +775,8 @@ select api.add_new_bloc('filtre_a_bande', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('CO2 exploitation q_poly grilles_degouttage 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation q_poly centrifugeuse_pour_epais 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction filtre_a_bande 3'::varchar, 'co2_c=((feobj10_fb)*(eh<10000)+(feobj50_fb)*(eh>10000)*(eh<100000)+(feobj100_fb)*(eh>100000))*tbentrant'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction filtre_a_bande 1'::varchar, 'co2_c=((feobj10_fb)*(eh<10000)+(feobj50_fb)*(eh>10000)*(eh<100000)+(feobj100_fb)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)'::varchar, 1, ''::text) ;
@@ -789,7 +789,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 alter type ___.bloc_type add value 'mbbr' ;
 commit ; 
-insert into ___.input_output values ('mbbr', array['prod_e', 's_v', 'h', 'tauenterre', 'e', 'tau_remp', 'smateriau', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'vu', 'welec']::varchar[], array['dbo5_s', 'ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'CO2 construction mbbr 3', 'ngl_s fpr 3', 'dco_s lagunage 3']::varchar[]) ;
+insert into ___.input_output values ('mbbr', array['prod_e', 's_v', 'h', 'tauenterre', 'e', 'tau_remp', 'smateriau', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'vu', 'welec']::varchar[], array['dbo5_s', 'ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'CO2 construction mbbr 3', 'ngl_s bassin_biologique 3', 'dco_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.mbbr_bloc_name_seq ;     
 
@@ -802,7 +802,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('mbbr_bloc', abbreviation=>'mbbr'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'co2_c=(febet*e*rhobet*(3.14159*h**2*s_v*tau_remp*(e + 5.52791*(smateriau/(h*s_v*tau_remp))**0.5) + 24*smateriau) + 24.0*h*s_v*tau_remp*(0.3618*e + (smateriau/(h*s_v*tau_remp))**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/(h*s_v*tau_remp)', 'ngl_s=ntk*(1 - abatngl)', 'dco_s=dco*(1 - abatdco)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'CO2 construction mbbr 3', 'ngl_s fpr 3', 'dco_s lagunage 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'CO2 construction mbbr 3', 'ngl_s bassin_biologique 3', 'dco_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 s_v real default 500::real,
 h real default 4::real,
@@ -901,17 +901,17 @@ select api.add_new_bloc('mbbr', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_cylindrique 3'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 construction mbbr 3'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*s_v*tau_remp*(e + 5.52791*(smateriau/(h*s_v*tau_remp))**0.5) + 24*smateriau) + 24.0*h*s_v*tau_remp*(0.3618*e + (smateriau/(h*s_v*tau_remp))**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/(h*s_v*tau_remp)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
 
 
 
@@ -1077,7 +1077,7 @@ select api.add_new_formula('CO2 construction excavation 5'::varchar, 'co2_c=vter
 
 alter type ___.bloc_type add value 'brm' ;
 commit ; 
-insert into ___.input_output values ('brm', array['prod_e', 'e', 'tauenterre', 'h', 'vu', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction bassin_cylindrique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[]) ;
+insert into ___.input_output values ('brm', array['prod_e', 'e', 'tauenterre', 'h', 'vu', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction bassin_cylindrique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.brm_bloc_name_seq ;     
 
@@ -1090,7 +1090,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('brm_bloc', abbreviation=>'brm'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction bassin_cylindrique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction bassin_cylindrique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 e real default 0.25::real,
 tauenterre real default 0.75::real,
@@ -1185,16 +1185,16 @@ select api.add_new_bloc('brm', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_cylindrique 3'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
 
 
 
@@ -1202,7 +1202,7 @@ select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::va
 
 alter type ___.bloc_type add value 'lagunage' ;
 commit ; 
-insert into ___.input_output values ('lagunage', array['prod_e', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[]) ;
+insert into ___.input_output values ('lagunage', array['prod_e', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.lagunage_bloc_name_seq ;     
 
@@ -1215,7 +1215,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('lagunage_bloc', abbreviation=>'lagunage'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 eh real,
 abatdco real,
@@ -1306,15 +1306,15 @@ select api.add_new_bloc('lagunage', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
 
 
 
@@ -1322,7 +1322,7 @@ select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::va
 
 alter type ___.bloc_type add value 'stockage_boue' ;
 commit ; 
-insert into ___.input_output values ('stockage_boue', array['dbo', 'aere', 'grand', 'welec', 'eh', 'festock', 'dbo5', 'mes', 'tbentrant']::varchar[], array['tbsortant_s']::varchar[], array['tbentrant chaulage 2', 'CO2 exploitation stockage_boue 2', 'CO2 construction stockage_boue 2', 'CH4 exploitation stockage_boue 2', 'CO2 construction stockage_boue 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction stockage_boue 3', 'CO2 exploitation stockage_boue 1', 'CO2 exploitation stockage_boue 3', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('stockage_boue', array['dbo', 'aere', 'grand', 'welec', 'eh', 'festock', 'dbo5', 'mes', 'tbentrant']::varchar[], array['tbsortant_s']::varchar[], array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation stockage_boue 2', 'CO2 construction stockage_boue 2', 'CH4 exploitation stockage_boue 2', 'CO2 construction stockage_boue 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction stockage_boue 3', 'CO2 exploitation stockage_boue 1', 'CO2 exploitation stockage_boue 3', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.stockage_boue_bloc_name_seq ;     
 
@@ -1341,7 +1341,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('stockage_boue_bloc', abbreviation=>'stockage_boue'),
 formula varchar[] default array['tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.0005*fesilo_aere*nbjour*aere*(dbo5 + mes)', 'co2_c=0.0005*festock*nbjour*(dbo5 + mes)', 'ch4_e=-dbo*(aere - 1)*(fesilo_grand*grand - fesilo_petit*(grand - 1))', 'co2_c=0.0005*eh*festock*nbjour*(dbo5_eh + mes_eh)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=festock*tbentrant', 'co2_e=0.0005*eh*fesilo_aere*nbjour*aere*(dbo5_eh + mes_eh)', 'co2_e=fesilo_aere*tbentrant*aere', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['tbentrant chaulage 2', 'CO2 exploitation stockage_boue 2', 'CO2 construction stockage_boue 2', 'CH4 exploitation stockage_boue 2', 'CO2 construction stockage_boue 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction stockage_boue 3', 'CO2 exploitation stockage_boue 1', 'CO2 exploitation stockage_boue 3', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation stockage_boue 2', 'CO2 construction stockage_boue 2', 'CH4 exploitation stockage_boue 2', 'CO2 construction stockage_boue 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction stockage_boue 3', 'CO2 exploitation stockage_boue 1', 'CO2 exploitation stockage_boue 3', 'CO2 elec 6']::varchar[],
 dbo real,
 aere boolean default 0::boolean,
 grand boolean default 0::boolean,
@@ -1368,7 +1368,7 @@ select api.add_new_bloc('stockage_boue', 'bloc', 'Point'
     ,additional_columns => '{festock_type_table.FE as festock_FE, festock_type_table.description as festock_description}'
     ,additional_join => 'left join ___.festock_type_table on festock_type_table.val = c.festock ') ;
 
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 exploitation stockage_boue 2'::varchar, 'co2_e=0.0005*fesilo_aere*nbjour*aere*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction stockage_boue 2'::varchar, 'co2_c=0.0005*festock*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CH4 exploitation stockage_boue 2'::varchar, 'ch4_e=-dbo*(aere - 1)*(fesilo_grand*grand - fesilo_petit*(grand - 1))'::varchar, 2, ''::text) ;
@@ -1385,7 +1385,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 alter type ___.bloc_type add value 'filiere_eau' ;
 commit ; 
-insert into ___.input_output values ('filiere_eau', array['prod_e', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[]) ;
+insert into ___.input_output values ('filiere_eau', array['prod_e', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.filiere_eau_bloc_name_seq ;     
 
@@ -1398,7 +1398,7 @@ shape ___.geo_type not null default 'Polygon',
 geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('filiere_eau_bloc', abbreviation=>'filiere_eau'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 eh real,
 abatdco real,
@@ -1489,15 +1489,15 @@ select api.add_new_bloc('filiere_eau', 'bloc', 'Polygon'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
 
 
 
@@ -1505,7 +1505,7 @@ select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::va
 
 alter type ___.bloc_type add value 'grilles_degouttage' ;
 commit ; 
-insert into ___.input_output values ('grilles_degouttage', array['tbsortant', 'q_poly', 'transp_poly', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly grilles_degouttage 6', 'tbentrant chaulage 2', 'CO2 construction grilles_degouttage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation grilles_degouttage 3', 'CO2 construction grilles_degouttage 1', 'CO2 construction grilles_degouttage 3', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('grilles_degouttage', array['tbsortant', 'q_poly', 'transp_poly', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction grilles_degouttage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation grilles_degouttage 3', 'CO2 construction grilles_degouttage 1', 'CO2 construction grilles_degouttage 3', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.grilles_degouttage_bloc_name_seq ;     
 
@@ -1518,7 +1518,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('grilles_degouttage_bloc', abbreviation=>'grilles_degouttage'),
 formula varchar[] default array['co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=((feobj10_ge)*(eh<10000)+(feobj50_ge)*(eh>10000)*(eh<100000)+(feobj100_ge)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*tbsortant*welec_ge', 'co2_c=((feobj10_ge)*(eh<10000)+(feobj50_ge)*(eh>10000)*(eh<100000)+(feobj100_ge)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_c=((feobj10_ge)*(eh<10000)+(feobj50_ge)*(eh>10000)*(eh<100000)+(feobj100_ge)*(eh>100000))*tbentrant', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['CO2 exploitation q_poly grilles_degouttage 6', 'tbentrant chaulage 2', 'CO2 construction grilles_degouttage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation grilles_degouttage 3', 'CO2 construction grilles_degouttage 1', 'CO2 construction grilles_degouttage 3', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction grilles_degouttage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation grilles_degouttage 3', 'CO2 construction grilles_degouttage 1', 'CO2 construction grilles_degouttage 3', 'CO2 elec 6']::varchar[],
 tbsortant real,
 q_poly real default 5::real,
 transp_poly real default 50::real,
@@ -1544,8 +1544,8 @@ select api.add_new_bloc('grilles_degouttage', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('CO2 exploitation q_poly grilles_degouttage 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation q_poly centrifugeuse_pour_epais 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction grilles_degouttage 2'::varchar, 'co2_c=((feobj10_ge)*(eh<10000)+(feobj50_ge)*(eh>10000)*(eh<100000)+(feobj100_ge)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 exploitation grilles_degouttage 3'::varchar, 'co2_e=feelec*tbsortant*welec_ge'::varchar, 3, ''::text) ;
@@ -1559,7 +1559,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 alter type ___.bloc_type add value 'tables_degouttage' ;
 commit ; 
-insert into ___.input_output values ('tables_degouttage', array['q_poly', 'transp_poly', 'tbsortant', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly grilles_degouttage 6', 'CO2 exploitation tables_degouttage 3', 'CO2 construction tables_degouttage 2', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction tables_degouttage 3', 'CO2 elec 6', 'CO2 construction tables_degouttage 1']::varchar[]) ;
+insert into ___.input_output values ('tables_degouttage', array['q_poly', 'transp_poly', 'tbsortant', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'CO2 exploitation tables_degouttage 3', 'CO2 construction tables_degouttage 2', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction tables_degouttage 3', 'CO2 elec 6', 'CO2 construction tables_degouttage 1']::varchar[]) ;
 
 create sequence ___.tables_degouttage_bloc_name_seq ;     
 
@@ -1572,7 +1572,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('tables_degouttage_bloc', abbreviation=>'tables_degouttage'),
 formula varchar[] default array['co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)', 'co2_e=feelec*tbsortant*welec_te', 'co2_c=((feobj10_te)*(eh<10000)+(feobj50_te)*(eh>10000)*(eh<100000)+(feobj100_te)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=((feobj10_te)*(eh<10000)+(feobj50_te)*(eh>10000)*(eh<100000)+(feobj100_te)*(eh>100000))*tbentrant', 'co2_e=feelec*welec', 'co2_c=((feobj10_te)*(eh<10000)+(feobj50_te)*(eh>10000)*(eh<100000)+(feobj100_te)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)']::varchar[],
-formula_name varchar[] default array['CO2 exploitation q_poly grilles_degouttage 6', 'CO2 exploitation tables_degouttage 3', 'CO2 construction tables_degouttage 2', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction tables_degouttage 3', 'CO2 elec 6', 'CO2 construction tables_degouttage 1']::varchar[],
+formula_name varchar[] default array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'CO2 exploitation tables_degouttage 3', 'CO2 construction tables_degouttage 2', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction tables_degouttage 3', 'CO2 elec 6', 'CO2 construction tables_degouttage 1']::varchar[],
 q_poly real default 5::real,
 transp_poly real default 50::real,
 tbsortant real,
@@ -1598,10 +1598,10 @@ select api.add_new_bloc('tables_degouttage', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('CO2 exploitation q_poly grilles_degouttage 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
+select api.add_new_formula('CO2 exploitation q_poly centrifugeuse_pour_epais 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
 select api.add_new_formula('CO2 exploitation tables_degouttage 3'::varchar, 'co2_e=feelec*tbsortant*welec_te'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 construction tables_degouttage 2'::varchar, 'co2_c=((feobj10_te)*(eh<10000)+(feobj50_te)*(eh>10000)*(eh<100000)+(feobj100_te)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)'::varchar, 2, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction tables_degouttage 3'::varchar, 'co2_c=((feobj10_te)*(eh<10000)+(feobj50_te)*(eh>10000)*(eh<100000)+(feobj100_te)*(eh>100000))*tbentrant'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
@@ -1613,7 +1613,7 @@ select api.add_new_formula('CO2 construction tables_degouttage 1'::varchar, 'co2
 
 alter type ___.bloc_type add value 'pompe' ;
 commit ; 
-insert into ___.input_output values ('pompe', array['mpompe', 'welec']::varchar[], array[]::varchar[], array['CO2 construction pompe 5', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('pompe', array['mpompe', 'welec']::varchar[], array[]::varchar[], array['CO2 construction poste_de_refoulement 5', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.pompe_bloc_name_seq ;     
 
@@ -1626,7 +1626,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('pompe_bloc', abbreviation=>'pompe'),
 formula varchar[] default array['co2_c=fepoids*mpompe', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['CO2 construction pompe 5', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['CO2 construction poste_de_refoulement 5', 'CO2 elec 6']::varchar[],
 mpompe real,
 welec real,
 
@@ -1645,7 +1645,7 @@ select api.add_new_bloc('pompe', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('CO2 construction pompe 5'::varchar, 'co2_c=fepoids*mpompe'::varchar, 5, ''::text) ;
+select api.add_new_formula('CO2 construction poste_de_refoulement 5'::varchar, 'co2_c=fepoids*mpompe'::varchar, 5, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
 
 
@@ -1693,7 +1693,7 @@ select api.add_new_formula('CO2 construction branchement 1'::varchar, 'co2_c=feb
 
 alter type ___.bloc_type add value 'clarificateur' ;
 commit ; 
-insert into ___.input_output values ('clarificateur', array['prod_e', 'tauenterre', 'h', 'vit', 'eh', 'e', 'taur', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'qe', 'dco', 'ntk', 'dbo5', 'mes', 'vu', 'welec']::varchar[], array['tbentrant_s', 'ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction clarificateur 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'CO2 construction clarificateur 2', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[]) ;
+insert into ___.input_output values ('clarificateur', array['prod_e', 'tauenterre', 'h', 'vit', 'eh', 'e', 'taur', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'qe', 'dco', 'ntk', 'dbo5', 'mes', 'vu', 'welec']::varchar[], array['tbentrant_s', 'ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction clarificateur 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'CO2 construction clarificateur 2', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.clarificateur_bloc_name_seq ;     
 
@@ -1706,7 +1706,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('clarificateur_bloc', abbreviation=>'clarificateur'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'co2_c=(febet*e*rhobet*(24*eh*qe_eh*(taur + 1) + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh*(taur + 1)/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh*(taur + 1)/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'co2_c=(febet*e*rhobet*(3.14159*h*vit*(e + 5.52791*(qe*(taur + 1)/vit)**0.5) + 24*qe*(taur + 1)) + 24.0*vit*(0.3618*e + (qe*(taur + 1)/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction clarificateur 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'CO2 construction clarificateur 2', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction clarificateur 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'CO2 construction clarificateur 2', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 tauenterre real default 0.75::real,
 h real default 3::real,
@@ -1805,18 +1805,18 @@ select api.add_new_bloc('clarificateur', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('CO2 construction clarificateur 1'::varchar, 'co2_c=(febet*e*rhobet*(24*eh*qe_eh*(taur + 1) + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh*(taur + 1)/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh*(taur + 1)/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 1, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_cylindrique 3'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 construction clarificateur 2'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h*vit*(e + 5.52791*(qe*(taur + 1)/vit)**0.5) + 24*qe*(taur + 1)) + 24.0*vit*(0.3618*e + (qe*(taur + 1)/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 2, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
 
 
 
@@ -1824,7 +1824,7 @@ select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::va
 
 alter type ___.bloc_type add value 'epaississement_statique' ;
 commit ; 
-insert into ___.input_output values ('epaississement_statique', array['eh', 'tbsortant', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['tbentrant chaulage 2', 'CO2 exploitation epaississement_statique 3', 'CO2 construction epaississement_statique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction epaississement_statique 1', 'CO2 elec 6', 'CO2 construction epaississement_statique 2']::varchar[]) ;
+insert into ___.input_output values ('epaississement_statique', array['eh', 'tbsortant', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation epaississement_statique 3', 'CO2 construction epaississement_statique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction epaississement_statique 1', 'CO2 elec 6', 'CO2 construction epaississement_statique 2']::varchar[]) ;
 
 create sequence ___.epaississement_statique_bloc_name_seq ;     
 
@@ -1837,7 +1837,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('epaississement_statique_bloc', abbreviation=>'epaississement_statique'),
 formula varchar[] default array['tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=feelec*tbsortant*welec_es', 'co2_c=((feobj10_es)*(eh<10000)+(feobj50_es)*(eh>10000)*(eh<100000)+(feobj100_es)*(eh>100000))*tbentrant', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=((feobj10_es)*(eh<10000)+(feobj50_es)*(eh>10000)*(eh<100000)+(feobj100_es)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_e=feelec*welec', 'co2_c=((feobj10_es)*(eh<10000)+(feobj50_es)*(eh>10000)*(eh<100000)+(feobj100_es)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)']::varchar[],
-formula_name varchar[] default array['tbentrant chaulage 2', 'CO2 exploitation epaississement_statique 3', 'CO2 construction epaississement_statique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction epaississement_statique 1', 'CO2 elec 6', 'CO2 construction epaississement_statique 2']::varchar[],
+formula_name varchar[] default array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation epaississement_statique 3', 'CO2 construction epaississement_statique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction epaississement_statique 1', 'CO2 elec 6', 'CO2 construction epaississement_statique 2']::varchar[],
 eh real,
 tbsortant real,
 dbo5 real,
@@ -1861,7 +1861,7 @@ select api.add_new_bloc('epaississement_statique', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 exploitation epaississement_statique 3'::varchar, 'co2_e=feelec*tbsortant*welec_es'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 construction epaississement_statique 3'::varchar, 'co2_c=((feobj10_es)*(eh<10000)+(feobj50_es)*(eh>10000)*(eh<100000)+(feobj100_es)*(eh>100000))*tbentrant'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
@@ -1917,7 +1917,7 @@ select api.add_new_formula('CO2 construction bassin_cylindrique 3'::varchar, 'co
 
 alter type ___.bloc_type add value 'dessableurdegraisseur' ;
 commit ; 
-insert into ___.input_output values ('dessableurdegraisseur', array['prod_e', 'w_dbo5_eau', 'dbo5elim', 'eh', 'conc', 'lavage', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'tauenterre', 'h', 'vit', 'e', 'abatdco', 'abatngl', 'qe', 'dco', 'ntk', 'dbo5', 'mes', 'tsables', 'tgraisses', 'vu', 'welec']::varchar[], array['qe_s', 'ngl_s', 'dco_s']::varchar[], array['CO2 exploitation dessableurdegraisseur 1', 'ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation dessableurdegraisseur 3', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction dessableurdegraisseur 2', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3', 'CO2 construction degazage 1']::varchar[]) ;
+insert into ___.input_output values ('dessableurdegraisseur', array['prod_e', 'w_dbo5_eau', 'dbo5elim', 'eh', 'conc', 'lavage', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'tauenterre', 'h', 'vit', 'e', 'abatdco', 'abatngl', 'qe', 'dco', 'ntk', 'dbo5', 'mes', 'tsables', 'tgraisses', 'vu', 'welec']::varchar[], array['qe_s', 'ngl_s', 'dco_s']::varchar[], array['CO2 exploitation dessableurdegraisseur 1', 'ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation dessableurdegraisseur 3', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction degazage 2', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3', 'CO2 construction dessableurdegraisseur 1']::varchar[]) ;
 
 create sequence ___.dessableurdegraisseur_bloc_name_seq ;     
 
@@ -1930,7 +1930,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('dessableurdegraisseur_bloc', abbreviation=>'dessableurdegraisseur'),
 formula varchar[] default array['co2_e=eh*(fedechet*dgraisses*(lgraisses_c*conc - lgraisses_nc*(conc - 1)) + fesables*(lavage*sables_lavé - sables_nlavé*(lavage - 1)))', 'ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=fedechet*tgraisses + fesables*tsables', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=(febet*e*rhobet*(3.14159*h*vit*(e + 5.52791*(qe/vit)**0.5) + 24*qe) + 24.0*vit*(0.3618*e + (qe/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit', 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)', 'co2_c=(febet*e*rhobet*(24*eh*qe_eh + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit']::varchar[],
-formula_name varchar[] default array['CO2 exploitation dessableurdegraisseur 1', 'ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation dessableurdegraisseur 3', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction dessableurdegraisseur 2', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3', 'CO2 construction degazage 1']::varchar[],
+formula_name varchar[] default array['CO2 exploitation dessableurdegraisseur 1', 'ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation dessableurdegraisseur 3', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction degazage 2', 'CO2 construction bassin_cylindrique 3', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3', 'CO2 construction dessableurdegraisseur 1']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 w_dbo5_eau real,
 dbo5elim real,
@@ -2032,19 +2032,19 @@ select api.add_new_bloc('dessableurdegraisseur', 'bloc', 'Point'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
 select api.add_new_formula('CO2 exploitation dessableurdegraisseur 1'::varchar, 'co2_e=eh*(fedechet*dgraisses*(lgraisses_c*conc - lgraisses_nc*(conc - 1)) + fesables*(lavage*sables_lavé - sables_nlavé*(lavage - 1)))'::varchar, 1, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 exploitation dessableurdegraisseur 3'::varchar, 'co2_e=fedechet*tgraisses + fesables*tsables'::varchar, 3, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
-select api.add_new_formula('CO2 construction dessableurdegraisseur 2'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h*vit*(e + 5.52791*(qe/vit)**0.5) + 24*qe) + 24.0*vit*(0.3618*e + (qe/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 construction degazage 2'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h*vit*(e + 5.52791*(qe/vit)**0.5) + 24*qe) + 24.0*vit*(0.3618*e + (qe/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_cylindrique 3'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('CO2 construction degazage 1'::varchar, 'co2_c=(febet*e*rhobet*(24*eh*qe_eh + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 1, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 construction dessableurdegraisseur 1'::varchar, 'co2_c=(febet*e*rhobet*(24*eh*qe_eh + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit'::varchar, 1, ''::text) ;
 
 
 
@@ -2052,7 +2052,7 @@ select api.add_new_formula('CO2 construction degazage 1'::varchar, 'co2_c=(febet
 
 alter type ___.bloc_type add value 'centrifugeuse_pour_epais' ;
 commit ; 
-insert into ___.input_output values ('centrifugeuse_pour_epais', array['q_poly', 'transp_poly', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly grilles_degouttage 6', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction centrifugeuse_pour_epais 2', 'CO2 elec 6', 'CO2 construction centrifugeuse_pour_epais 1', 'CO2 construction centrifugeuse_pour_epais 3']::varchar[]) ;
+insert into ___.input_output values ('centrifugeuse_pour_epais', array['q_poly', 'transp_poly', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction centrifugeuse_pour_epais 2', 'CO2 elec 6', 'CO2 construction centrifugeuse_pour_epais 1', 'CO2 construction centrifugeuse_pour_epais 3']::varchar[]) ;
 
 create sequence ___.centrifugeuse_pour_epais_bloc_name_seq ;     
 
@@ -2065,7 +2065,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('centrifugeuse_pour_epais_bloc', abbreviation=>'centrifugeuse_pour_epais'),
 formula varchar[] default array['co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=((feobj10_ce)*(eh<10000)+(feobj50_ce)*(eh>10000)*(eh<100000)+(feobj100_ce)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'co2_e=feelec*welec', 'co2_c=((feobj10_ce)*(eh<10000)+(feobj50_ce)*(eh>10000)*(eh<100000)+(feobj100_ce)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_c=((feobj10_ce)*(eh<10000)+(feobj50_ce)*(eh>10000)*(eh<100000)+(feobj100_ce)*(eh>100000))*tbentrant']::varchar[],
-formula_name varchar[] default array['CO2 exploitation q_poly grilles_degouttage 6', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction centrifugeuse_pour_epais 2', 'CO2 elec 6', 'CO2 construction centrifugeuse_pour_epais 1', 'CO2 construction centrifugeuse_pour_epais 3']::varchar[],
+formula_name varchar[] default array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction centrifugeuse_pour_epais 2', 'CO2 elec 6', 'CO2 construction centrifugeuse_pour_epais 1', 'CO2 construction centrifugeuse_pour_epais 3']::varchar[],
 q_poly real default 0::real,
 transp_poly real default 50::real,
 eh real,
@@ -2090,8 +2090,8 @@ select api.add_new_bloc('centrifugeuse_pour_epais', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('CO2 exploitation q_poly grilles_degouttage 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation q_poly centrifugeuse_pour_epais 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction centrifugeuse_pour_epais 2'::varchar, 'co2_c=((feobj10_ce)*(eh<10000)+(feobj50_ce)*(eh>10000)*(eh<100000)+(feobj100_ce)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
@@ -2104,7 +2104,7 @@ select api.add_new_formula('CO2 construction centrifugeuse_pour_epais 3'::varcha
 
 alter type ___.bloc_type add value 'bassin_biologique' ;
 commit ; 
-insert into ___.input_output values ('bassin_biologique', array['prod_e', 'tauenterre', 'h', 'eh', 'charge_bio', 'e', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dbo5', 'dco', 'ntk', 'mes', 'vu', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction bassin_biologique 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 construction bassin_biologique 2', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[]) ;
+insert into ___.input_output values ('bassin_biologique', array['prod_e', 'tauenterre', 'h', 'eh', 'charge_bio', 'e', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dbo5', 'dco', 'ntk', 'mes', 'vu', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction bassin_biologique 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 construction bassin_biologique 2', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.bassin_biologique_bloc_name_seq ;     
 
@@ -2123,7 +2123,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('bassin_biologique_bloc', abbreviation=>'bassin_biologique'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'co2_c=(febet*e*rhobet*(24*dbo5 + 3.14159*h**2*charge_bio*(e + 5.52791*(dbo5/(h*charge_bio))**0.5)) + 24.0*h*charge_bio*(0.3618*e + (dbo5/(h*charge_bio))**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/(h*charge_bio)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h', 'co2_c=(febet*e*rhobet*(24*eh*dbo5_eh + 3.14159*h**2*charge_bio*(e + 5.52791*(eh*dbo5_eh/(h*charge_bio))**0.5)) + 24.0*h*charge_bio*(0.3618*e + (eh*dbo5_eh/(h*charge_bio))**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/(h*charge_bio)', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'CO2 construction bassin_biologique 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 construction bassin_biologique 2', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'CO2 construction bassin_biologique 2', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction bassin_cylindrique 3', 'CO2 construction bassin_biologique 2', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 tauenterre real default 0.75::real,
 h real default 4::real,
@@ -2219,18 +2219,18 @@ select api.add_new_bloc('bassin_biologique', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description, charge_bio_type_table.FE as charge_bio_FE, charge_bio_type_table.description as charge_bio_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e  join ___.charge_bio_type_table on charge_bio_type_table.val = c.charge_bio ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_biologique 2'::varchar, 'co2_c=(febet*e*rhobet*(24*dbo5 + 3.14159*h**2*charge_bio*(e + 5.52791*(dbo5/(h*charge_bio))**0.5)) + 24.0*h*charge_bio*(0.3618*e + (dbo5/(h*charge_bio))**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/(h*charge_bio)'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_cylindrique 3'::varchar, 'co2_c=(febet*e*rhobet*(3.14159*h**2*(e + 5.52791*(vu/h)**0.5) + 24*vu) + 24.0*h*(0.3618*e + (vu/h)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/h'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 construction bassin_biologique 2'::varchar, 'co2_c=(febet*e*rhobet*(24*eh*dbo5_eh + 3.14159*h**2*charge_bio*(e + 5.52791*(eh*dbo5_eh/(h*charge_bio))**0.5)) + 24.0*h*charge_bio*(0.3618*e + (eh*dbo5_eh/(h*charge_bio))**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/(h*charge_bio)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
 
 
 
@@ -2238,7 +2238,7 @@ select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::va
 
 alter type ___.bloc_type add value 'filtre_a_presse' ;
 commit ; 
-insert into ___.input_output values ('filtre_a_presse', array['transp_fecl3', 'transp_poly', 'transp_chaux', 'q_poly', 'q_chaux', 'q_fecl3', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 construction filtre_a_presse 1', 'tbentrant chaulage 2', 'CO2 exploitation intrant filtre_a_presse 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction filtre_a_presse 3', 'CO2 construction filtre_a_presse 2']::varchar[]) ;
+insert into ___.input_output values ('filtre_a_presse', array['transp_fecl3', 'transp_poly', 'transp_chaux', 'q_poly', 'q_chaux', 'q_fecl3', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 construction filtre_a_presse 1', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant filtre_a_presse 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction filtre_a_presse 3', 'CO2 construction filtre_a_presse 2']::varchar[]) ;
 
 create sequence ___.filtre_a_presse_bloc_name_seq ;     
 
@@ -2251,7 +2251,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('filtre_a_presse_bloc', abbreviation=>'filtre_a_presse'),
 formula varchar[] default array['co2_c=((feobj10_fp)*(eh<10000)+(feobj50_fp)*(eh>10000)*(eh<100000)+(feobj100_fp)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=fepolymere*q_poly + 0.001*fetransp*q_poly*transp_poly + 0.001*q_chaux*(1000*fechaux + fetransp*transp_chaux) + 0.001*q_fecl3*(1000*fefecl3 + fetransp*transp_fecl3)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec', 'co2_c=((feobj10_fp)*(eh<10000)+(feobj50_fp)*(eh>10000)*(eh<100000)+(feobj100_fp)*(eh>100000))*tbentrant', 'co2_c=((feobj10_fp)*(eh<10000)+(feobj50_fp)*(eh>10000)*(eh<100000)+(feobj100_fp)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)']::varchar[],
-formula_name varchar[] default array['CO2 construction filtre_a_presse 1', 'tbentrant chaulage 2', 'CO2 exploitation intrant filtre_a_presse 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction filtre_a_presse 3', 'CO2 construction filtre_a_presse 2']::varchar[],
+formula_name varchar[] default array['CO2 construction filtre_a_presse 1', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant filtre_a_presse 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction filtre_a_presse 3', 'CO2 construction filtre_a_presse 2']::varchar[],
 transp_fecl3 real,
 transp_poly real default 50::real,
 transp_chaux real,
@@ -2281,7 +2281,7 @@ select api.add_new_bloc('filtre_a_presse', 'bloc', 'Point'
     ) ;
 
 select api.add_new_formula('CO2 construction filtre_a_presse 1'::varchar, 'co2_c=((feobj10_fp)*(eh<10000)+(feobj50_fp)*(eh>10000)*(eh<100000)+(feobj100_fp)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)'::varchar, 1, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 exploitation intrant filtre_a_presse 6'::varchar, 'co2_e=fepolymere*q_poly + 0.001*fetransp*q_poly*transp_poly + 0.001*q_chaux*(1000*fechaux + fetransp*transp_chaux) + 0.001*q_fecl3*(1000*fefecl3 + fetransp*transp_fecl3)'::varchar, 6, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
@@ -2294,7 +2294,7 @@ select api.add_new_formula('CO2 construction filtre_a_presse 2'::varchar, 'co2_c
 
 alter type ___.bloc_type add value 'fpr' ;
 commit ; 
-insert into ___.input_output values ('fpr', array['prod_e', 's_geom_eh', 'h', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'CO2 construction fpr 1', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[]) ;
+insert into ___.input_output values ('fpr', array['prod_e', 's_geom_eh', 'h', 'eh', 'abatdco', 'abatngl', 'w_dbo5_eau', 'dbo5elim', 'transp_kmno4', 'q_catio', 'transp_catio', 'q_ca_poudre', 'q_nitrique', 'q_soude_c', 'transp_hcl', 'transp_ca_neuf', 'transp_sulf', 'q_kmno4', 'transp_nahso3', 'transp_mhetanol', 'transp_citrique', 'transp_poly', 'q_soude', 'q_mhetanol', 'transp_oxyl', 'transp_rei', 'q_sulf', 'q_anti_mousse', 'q_rei', 'q_poly', 'q_chaux', 'q_sulf_sod', 'transp_sable_t', 'q_ethanol', 'q_nahso3', 'q_ca_regen', 'q_antiscalant', 'q_phosphorique', 'transp_phosphorique', 'transp_chaux', 'transp_cl2', 'transp_ca_regen', 'q_caco3', 'q_cl2', 'transp_naclo3', 'transp_soude', 'q_h2o2', 'q_sulf_alu', 'q_anio', 'q_uree', 'transp_soude_c', 'transp_ca_poudre', 'transp_anio', 'q_hcl', 'transp_caco3', 'q_citrique', 'q_oxyl', 'transp_anti_mousse', 'transp_sulf_alu', 'transp_antiscalant', 'q_sable_t', 'transp_sulf_sod', 'transp_uree', 'transp_ethanol', 'q_ca_neuf', 'transp_nitrique', 'transp_h2o2', 'q_naclo3', 'dco', 'ntk', 'dbo5', 'mes', 'welec']::varchar[], array['ngl_s', 'dco_s', 'qe_s']::varchar[], array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'CO2 construction fpr 1', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[]) ;
 
 create sequence ___.fpr_bloc_name_seq ;     
 
@@ -2307,7 +2307,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('fpr_bloc', abbreviation=>'fpr'),
 formula varchar[] default array['ngl_s=eh*ntk_eh*(1 - abatngl)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec', 'co2_e=feelec*dbo5elim*w_dbo5_eau', 'dco_s=eh*dco_eh*(1 - abatdco)', 'co2_c=eh*s_geom_eh*(feevac*h*rhoterre + fegeom + fepelle*h*cad)', 'dco_s=dco*(1 - abatdco)', 'ngl_s=ntk*(1 - abatngl)']::varchar[],
-formula_name varchar[] default array['ngl_s fpr 3', 'tbentrant chaulage 2', 'CO2 exploitation intrant degazage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation degazage 3', 'dco_s lagunage 3', 'CO2 construction fpr 1', 'dco_s lagunage 3', 'ngl_s fpr 3']::varchar[],
+formula_name varchar[] default array['ngl_s bassin_biologique 3', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation intrant bassin_biologique 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 exploitation lagunage 3', 'dco_s bassin_biologique 3', 'CO2 construction fpr 1', 'dco_s bassin_biologique 3', 'ngl_s bassin_biologique 3']::varchar[],
 prod_e ___.prod_e_type not null default 'Sulfate de sodium' references ___.prod_e_type_table(val),
 s_geom_eh real default 1.5::real,
 h real default 2::real,
@@ -2400,16 +2400,16 @@ select api.add_new_bloc('fpr', 'bloc', 'Point'
     ,additional_columns => '{prod_e_type_table.FE as prod_e_FE, prod_e_type_table.description as prod_e_description}'
     ,additional_join => 'left join ___.prod_e_type_table on prod_e_type_table.val = c.prod_e ') ;
 
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
-select api.add_new_formula('CO2 exploitation intrant degazage 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=eh*ntk_eh*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation intrant bassin_biologique 6'::varchar, 'co2_e=0.001*q_anio*(fetransp*transp_anio + 1000*fe_anio) + 0.001*q_anti_mousse*(fetransp*transp_anti_mousse + 1000*fe_anti_mousse) + 0.001*q_antiscalant*(fetransp*transp_antiscalant + 1000*fe_antiscalant) + 0.001*q_ca_neuf*(fetransp*transp_ca_neuf + 1000*fe_ca_neuf) + 0.001*q_ca_poudre*(fetransp*transp_ca_poudre + 1000*fe_ca_poudre) + 0.001*q_ca_regen*(fetransp*transp_ca_regen + 1000*fe_ca_regen) + 0.001*q_caco3*(fetransp*transp_caco3 + 1000*fe_caco3) + 0.001*q_catio*(fetransp*transp_catio + 1000*fe_catio) + 0.001*q_chaux*(fetransp*transp_chaux + 1000*fe_chaux) + 0.001*q_citrique*(fetransp*transp_citrique + 1000*fe_citrique) + 0.001*q_cl2*(fetransp*transp_cl2 + 1000*fe_cl2) + 0.001*q_ethanol*(fetransp*transp_ethanol + 1000*fe_ethanol) + 0.001*q_h2o2*(fetransp*transp_h2o2 + 1000*fe_h2o2) + 0.001*q_hcl*(fetransp*transp_hcl + 1000*fe_hcl) + 0.001*q_kmno4*(fetransp*transp_kmno4 + 1000*fe_kmno4) + 0.001*q_mhetanol*(fetransp*transp_mhetanol + 1000*fe_mhetanol) + 0.001*q_naclo3*(fetransp*transp_naclo3 + 1000*fe_naclo3) + 0.001*q_nahso3*(fetransp*transp_nahso3 + 1000*fe_nahso3) + 0.001*q_nitrique*(fetransp*transp_nitrique + 1000*fe_nitrique) + 0.001*q_oxyl*(fetransp*transp_oxyl + 1000*fe_oxyl) + 0.001*q_phosphorique*(fetransp*transp_phosphorique + 1000*fe_phosphorique) + 0.001*q_poly*(fetransp*transp_poly + 1000*fe_poly) + 0.001*q_rei*(fetransp*transp_rei + 1000*fe_rei) + 0.001*q_sable_t*(fetransp*transp_sable_t + 1000*fe_sable_t) + 0.001*q_soude*(fetransp*transp_soude + 1000*fe_soude) + 0.001*q_soude_c*(fetransp*transp_soude_c + 1000*fe_soude_c) + 0.001*q_sulf*(fetransp*transp_sulf + 1000*fe_sulf) + 0.001*q_sulf_alu*(fetransp*transp_sulf_alu + 1000*fe_sulf_alu) + 0.001*q_sulf_sod*(fetransp*transp_sulf_sod + 1000*fe_sulf_sod) + 0.001*q_uree*(fetransp*transp_uree + 1000*fe_uree)'::varchar, 6, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('CO2 exploitation degazage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('CO2 exploitation lagunage 3'::varchar, 'co2_e=feelec*dbo5elim*w_dbo5_eau'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=eh*dco_eh*(1 - abatdco)'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 construction fpr 1'::varchar, 'co2_c=eh*s_geom_eh*(feevac*h*rhoterre + fegeom + fepelle*h*cad)'::varchar, 1, ''::text) ;
-select api.add_new_formula('dco_s lagunage 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
-select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
+select api.add_new_formula('dco_s bassin_biologique 3'::varchar, 'dco_s=dco*(1 - abatdco)'::varchar, 3, ''::text) ;
+select api.add_new_formula('ngl_s bassin_biologique 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::varchar, 3, ''::text) ;
 
 
 
@@ -2417,7 +2417,7 @@ select api.add_new_formula('ngl_s fpr 3'::varchar, 'ngl_s=ntk*(1 - abatngl)'::va
 
 alter type ___.bloc_type add value 'filiere_boue' ;
 commit ; 
-insert into ___.input_output values ('filiere_boue', array['eh', 'welec', 'dbo5', 'mes']::varchar[], array['tbsortant_s']::varchar[], array['CO2 elec 6', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1']::varchar[]) ;
+insert into ___.input_output values ('filiere_boue', array['eh', 'welec', 'dbo5', 'mes']::varchar[], array['tbsortant_s']::varchar[], array['CO2 elec 6', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1']::varchar[]) ;
 
 create sequence ___.filiere_boue_bloc_name_seq ;     
 
@@ -2430,7 +2430,7 @@ shape ___.geo_type not null default 'Polygon',
 geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('filiere_boue_bloc', abbreviation=>'filiere_boue'),
 formula varchar[] default array['co2_e=feelec*welec', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)']::varchar[],
-formula_name varchar[] default array['CO2 elec 6', 'tbentrant chaulage 2', 'tbentrant centrifugeuse_pour_deshy 1']::varchar[],
+formula_name varchar[] default array['CO2 elec 6', 'tbentrant centrifugeuse_pour_deshy 2', 'tbentrant centrifugeuse_pour_deshy 1']::varchar[],
 eh real,
 welec real,
 dbo5 real,
@@ -2453,7 +2453,7 @@ select api.add_new_bloc('filiere_boue', 'bloc', 'Polygon'
     ) ;
 
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 
 
@@ -2462,7 +2462,7 @@ select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbe
 
 alter type ___.bloc_type add value 'conditionnement_thermiqu' ;
 commit ; 
-insert into ___.input_output values ('conditionnement_thermiqu', array['eh', 'vboue', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['tbentrant chaulage 2', 'CO2 exploitation conditionnement_thermiqu 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction conditionnement_thermiqu 1', 'CO2 construction conditionnement_thermiqu 2', 'CO2 construction conditionnement_thermiqu 3']::varchar[]) ;
+insert into ___.input_output values ('conditionnement_thermiqu', array['eh', 'vboue', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation conditionnement_thermiqu 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction conditionnement_thermiqu 1', 'CO2 construction conditionnement_thermiqu 2', 'CO2 construction conditionnement_thermiqu 3']::varchar[]) ;
 
 create sequence ___.conditionnement_thermiqu_bloc_name_seq ;     
 
@@ -2475,7 +2475,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('conditionnement_thermiqu_bloc', abbreviation=>'conditionnement_thermiqu'),
 formula varchar[] default array['tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=feelec*vboue*welec_ct', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec', 'co2_c=((feobj50_ct)*(eh>10000)*(eh<100000)+(feobj100_ct)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_c=((feobj50_ct)*(eh>10000)*(eh<100000)+(feobj100_ct)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'co2_c=((feobj50_ct)*(eh>10000)*(eh<100000)+(feobj100_ct)*(eh>100000))*tbentrant']::varchar[],
-formula_name varchar[] default array['tbentrant chaulage 2', 'CO2 exploitation conditionnement_thermiqu 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction conditionnement_thermiqu 1', 'CO2 construction conditionnement_thermiqu 2', 'CO2 construction conditionnement_thermiqu 3']::varchar[],
+formula_name varchar[] default array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation conditionnement_thermiqu 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 elec 6', 'CO2 construction conditionnement_thermiqu 1', 'CO2 construction conditionnement_thermiqu 2', 'CO2 construction conditionnement_thermiqu 3']::varchar[],
 eh real,
 vboue real,
 dbo5 real,
@@ -2499,7 +2499,7 @@ select api.add_new_bloc('conditionnement_thermiqu', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 exploitation conditionnement_thermiqu 3'::varchar, 'co2_e=feelec*vboue*welec_ct'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
@@ -2513,7 +2513,7 @@ select api.add_new_formula('CO2 construction conditionnement_thermiqu 3'::varcha
 
 alter type ___.bloc_type add value 'centrifugeuse_pour_deshy' ;
 commit ; 
-insert into ___.input_output values ('centrifugeuse_pour_deshy', array['direct', 'tbsortant', 'q_poly', 'transp_poly', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly grilles_degouttage 6', 'tbentrant chaulage 2', 'CO2 construction centrifugeuse_pour_deshy 1', 'CO2 construction centrifugeuse_pour_deshy 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation centrifugeuse_pour_deshy 3', 'CO2 elec 6', 'CO2 construction centrifugeuse_pour_deshy 2']::varchar[]) ;
+insert into ___.input_output values ('centrifugeuse_pour_deshy', array['direct', 'tbsortant', 'q_poly', 'transp_poly', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction centrifugeuse_pour_deshy 1', 'CO2 construction centrifugeuse_pour_deshy 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation centrifugeuse_pour_deshy 3', 'CO2 elec 6', 'CO2 construction centrifugeuse_pour_deshy 2']::varchar[]) ;
 
 create sequence ___.centrifugeuse_pour_deshy_bloc_name_seq ;     
 
@@ -2526,7 +2526,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('centrifugeuse_pour_deshy_bloc', abbreviation=>'centrifugeuse_pour_deshy'),
 formula varchar[] default array['co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=((feobj10_cd)*(eh<10000)+(feobj50_cd)*(eh>10000)*(eh<100000)+(feobj100_cd)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_c=((feobj10_cd)*(eh<10000)+(feobj50_cd)*(eh>10000)*(eh<100000)+(feobj100_cd)*(eh>100000))*tbentrant', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*tbsortant*(-welec_cd*direct + welec_cd + welec_direct*direct)', 'co2_e=feelec*welec', 'co2_c=((feobj10_cd)*(eh<10000)+(feobj50_cd)*(eh>10000)*(eh<100000)+(feobj100_cd)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)']::varchar[],
-formula_name varchar[] default array['CO2 exploitation q_poly grilles_degouttage 6', 'tbentrant chaulage 2', 'CO2 construction centrifugeuse_pour_deshy 1', 'CO2 construction centrifugeuse_pour_deshy 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation centrifugeuse_pour_deshy 3', 'CO2 elec 6', 'CO2 construction centrifugeuse_pour_deshy 2']::varchar[],
+formula_name varchar[] default array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction centrifugeuse_pour_deshy 1', 'CO2 construction centrifugeuse_pour_deshy 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation centrifugeuse_pour_deshy 3', 'CO2 elec 6', 'CO2 construction centrifugeuse_pour_deshy 2']::varchar[],
 direct boolean default 0::boolean,
 tbsortant real,
 q_poly real default 10::real,
@@ -2553,8 +2553,8 @@ select api.add_new_bloc('centrifugeuse_pour_deshy', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('CO2 exploitation q_poly grilles_degouttage 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('CO2 exploitation q_poly centrifugeuse_pour_epais 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction centrifugeuse_pour_deshy 1'::varchar, 'co2_c=((feobj10_cd)*(eh<10000)+(feobj50_cd)*(eh>10000)*(eh<100000)+(feobj100_cd)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction centrifugeuse_pour_deshy 3'::varchar, 'co2_c=((feobj10_cd)*(eh<10000)+(feobj50_cd)*(eh>10000)*(eh<100000)+(feobj100_cd)*(eh>100000))*tbentrant'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
@@ -2568,7 +2568,7 @@ select api.add_new_formula('CO2 construction centrifugeuse_pour_deshy 2'::varcha
 
 alter type ___.bloc_type add value 'digesteur_aerobie' ;
 commit ; 
-insert into ___.input_output values ('digesteur_aerobie', array['eh', 'tau_abattement', 'tbsortant', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 construction digesteur_aerobie 1', 'tbentrant chaulage 2', 'CO2 construction digesteur_aerobie 3', 'CO2 exploitation digesteur_aerobie 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction digesteur_aerobie 2', 'CO2 elec 6', 'tbsortant_s digesteur_aerobie 3']::varchar[]) ;
+insert into ___.input_output values ('digesteur_aerobie', array['eh', 'tau_abattement', 'tbsortant', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 construction digesteur_aerobie 1', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction digesteur_aerobie 3', 'CO2 exploitation digesteur_aerobie 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction digesteur_aerobie 2', 'CO2 elec 6', 'tbsortant_s digesteur__methaniseur 3']::varchar[]) ;
 
 create sequence ___.digesteur_aerobie_bloc_name_seq ;     
 
@@ -2581,7 +2581,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('digesteur_aerobie_bloc', abbreviation=>'digesteur_aerobie'),
 formula varchar[] default array['co2_c=((feobj10_da)*(eh<10000)+(feobj50_da)*(eh>10000)*(eh<100000)+(feobj100_da)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=((feobj10_da)*(eh<10000)+(feobj50_da)*(eh>10000)*(eh<100000)+(feobj100_da)*(eh>100000))*tbentrant', 'co2_e=feelec*tbsortant*welec_da', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=((feobj10_da)*(eh<10000)+(feobj50_da)*(eh>10000)*(eh<100000)+(feobj100_da)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'co2_e=feelec*welec', 'tbsortant_s=tbsortant*tau_abattement']::varchar[],
-formula_name varchar[] default array['CO2 construction digesteur_aerobie 1', 'tbentrant chaulage 2', 'CO2 construction digesteur_aerobie 3', 'CO2 exploitation digesteur_aerobie 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction digesteur_aerobie 2', 'CO2 elec 6', 'tbsortant_s digesteur_aerobie 3']::varchar[],
+formula_name varchar[] default array['CO2 construction digesteur_aerobie 1', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction digesteur_aerobie 3', 'CO2 exploitation digesteur_aerobie 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction digesteur_aerobie 2', 'CO2 elec 6', 'tbsortant_s digesteur__methaniseur 3']::varchar[],
 eh real,
 tau_abattement real default 35::real,
 tbsortant real,
@@ -2607,13 +2607,13 @@ select api.add_new_bloc('digesteur_aerobie', 'bloc', 'Point'
     ) ;
 
 select api.add_new_formula('CO2 construction digesteur_aerobie 1'::varchar, 'co2_c=((feobj10_da)*(eh<10000)+(feobj50_da)*(eh>10000)*(eh<100000)+(feobj100_da)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)'::varchar, 1, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction digesteur_aerobie 3'::varchar, 'co2_c=((feobj10_da)*(eh<10000)+(feobj50_da)*(eh>10000)*(eh<100000)+(feobj100_da)*(eh>100000))*tbentrant'::varchar, 3, ''::text) ;
 select api.add_new_formula('CO2 exploitation digesteur_aerobie 3'::varchar, 'co2_e=feelec*tbsortant*welec_da'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction digesteur_aerobie 2'::varchar, 'co2_c=((feobj10_da)*(eh<10000)+(feobj50_da)*(eh>10000)*(eh<100000)+(feobj100_da)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
-select api.add_new_formula('tbsortant_s digesteur_aerobie 3'::varchar, 'tbsortant_s=tbsortant*tau_abattement'::varchar, 3, ''::text) ;
+select api.add_new_formula('tbsortant_s digesteur__methaniseur 3'::varchar, 'tbsortant_s=tbsortant*tau_abattement'::varchar, 3, ''::text) ;
 
 
 
@@ -2621,7 +2621,7 @@ select api.add_new_formula('tbsortant_s digesteur_aerobie 3'::varchar, 'tbsortan
 
 alter type ___.bloc_type add value 'chaulage' ;
 commit ; 
-insert into ___.input_output values ('chaulage', array['eh', 'dbo5', 'mes', 'tbentrant', 'transp_chaux', 'q_chaux', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 construction chaulage 2', 'tbentrant chaulage 2', 'CO2 exploitation q_chaux chaulage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction chaulage 1', 'CO2 construction chaulage 3', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('chaulage', array['eh', 'dbo5', 'mes', 'tbentrant', 'transp_chaux', 'q_chaux', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 construction chaulage 2', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation q_chaux chaulage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction chaulage 1', 'CO2 construction chaulage 3', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.chaulage_bloc_name_seq ;     
 
@@ -2634,7 +2634,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('chaulage_bloc', abbreviation=>'chaulage'),
 formula varchar[] default array['co2_c=((feobj10_ch)*(eh<10000)+(feobj50_ch)*(eh>10000)*(eh<100000)+(feobj100_ch)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_e=0.001*q_chaux*(1000*fechaux + fetransp*transp_chaux)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_c=((feobj10_ch)*(eh<10000)+(feobj50_ch)*(eh>10000)*(eh<100000)+(feobj100_ch)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_c=((feobj10_ch)*(eh<10000)+(feobj50_ch)*(eh>10000)*(eh<100000)+(feobj100_ch)*(eh>100000))*tbentrant', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['CO2 construction chaulage 2', 'tbentrant chaulage 2', 'CO2 exploitation q_chaux chaulage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction chaulage 1', 'CO2 construction chaulage 3', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['CO2 construction chaulage 2', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 exploitation q_chaux chaulage 6', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 construction chaulage 1', 'CO2 construction chaulage 3', 'CO2 elec 6']::varchar[],
 eh real,
 dbo5 real,
 mes real,
@@ -2660,7 +2660,7 @@ select api.add_new_bloc('chaulage', 'bloc', 'Point'
     ) ;
 
 select api.add_new_formula('CO2 construction chaulage 2'::varchar, 'co2_c=((feobj10_ch)*(eh<10000)+(feobj50_ch)*(eh>10000)*(eh<100000)+(feobj100_ch)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)'::varchar, 2, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 exploitation q_chaux chaulage 6'::varchar, 'co2_e=0.001*q_chaux*(1000*fechaux + fetransp*transp_chaux)'::varchar, 6, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction chaulage 1'::varchar, 'co2_c=((feobj10_ch)*(eh<10000)+(feobj50_ch)*(eh>10000)*(eh<100000)+(feobj100_ch)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)'::varchar, 1, ''::text) ;
@@ -2712,20 +2712,27 @@ select api.add_new_formula('CO2 construction cloture 2'::varchar, 'co2_c=feclot*
 
 alter type ___.bloc_type add value 'batiment_dexploitation' ;
 commit ; 
-insert into ___.input_output values ('batiment_dexploitation', array['welec']::varchar[], array[]::varchar[], array['CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('batiment_dexploitation', array['s', 'feexpl', 'welec']::varchar[], array[]::varchar[], array['CO2 elec 6', 'CO2 construction batiment_dexploitation 6']::varchar[]) ;
 
 create sequence ___.batiment_dexploitation_bloc_name_seq ;     
 
+create type ___.feexpl_type as enum ('Structure en béton', 'Structure métallique');
 
+create table ___.feexpl_type_table(val ___.feexpl_type primary key, FE real, incert real default 0, description text);
+insert into ___.feexpl_type_table(val) values ('Structure en béton') ;
+insert into ___.feexpl_type_table(val) values ('Structure métallique') ;
 
+select template.basic_view('feexpl_type_table') ;
 
 create table ___.batiment_dexploitation_bloc(
 id integer primary key,
 shape ___.geo_type not null default 'Polygon',
 geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('batiment_dexploitation_bloc', abbreviation=>'batiment_dexploitation'),
-formula varchar[] default array['co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['CO2 elec 6']::varchar[],
+formula varchar[] default array['co2_e=feelec*welec', 'co2_c=feexpl*s']::varchar[],
+formula_name varchar[] default array['CO2 elec 6', 'CO2 construction batiment_dexploitation 6']::varchar[],
+s real,
+feexpl ___.feexpl_type not null default 'Structure en béton' references ___.feexpl_type_table(val),
 welec real,
 
 foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
@@ -2740,10 +2747,11 @@ create table ___.batiment_dexploitation_bloc_config(
 ) ; 
 
 select api.add_new_bloc('batiment_dexploitation', 'bloc', 'Polygon' 
-    
-    ) ;
+    ,additional_columns => '{feexpl_type_table.FE as feexpl_FE, feexpl_type_table.description as feexpl_description}'
+    ,additional_join => 'left join ___.feexpl_type_table on feexpl_type_table.val = c.feexpl ') ;
 
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
+select api.add_new_formula('CO2 construction batiment_dexploitation 6'::varchar, 'co2_c=feexpl*s'::varchar, 6, ''::text) ;
 
 
 
@@ -2751,7 +2759,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 alter type ___.bloc_type add value 'conditionnement_chimique' ;
 commit ; 
-insert into ___.input_output values ('conditionnement_chimique', array['transp_fecl3', 'q_catio', 'transp_catio', 'q_chaux', 'q_anio', 'transp_anio', 'transp_chaux', 'q_fecl3', 'vboue', 'fecc', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['tbentrant chaulage 2', 'CO2 construction conditionnement_chimique 2', 'CO2 construction conditionnement_chimique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation conditionnement_chimique 3', 'CO2 exploitation intrant conditionnement_chimique 6', 'CO2 construction conditionnement_chimique 1', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('conditionnement_chimique', array['transp_fecl3', 'q_catio', 'transp_catio', 'q_chaux', 'q_anio', 'transp_anio', 'transp_chaux', 'q_fecl3', 'vboue', 'fecc', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction conditionnement_chimique 2', 'CO2 construction conditionnement_chimique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation conditionnement_chimique 3', 'CO2 exploitation intrant conditionnement_chimique 6', 'CO2 construction conditionnement_chimique 1', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.conditionnement_chimique_bloc_name_seq ;     
 
@@ -2770,7 +2778,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('conditionnement_chimique_bloc', abbreviation=>'conditionnement_chimique'),
 formula varchar[] default array['tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=0.0005*fecc*nbjour*(dbo5 + mes)', 'co2_c=fecc*tbentrant', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*vboue*welec_cc', 'co2_e=0.001*q_anio*(1000*feanionique + fetransp*transp_anio) + 0.001*q_catio*(1000*fecationique + fetransp*transp_catio) + 0.001*q_chaux*(1000*fechaux + fetransp*transp_chaux) + 0.001*q_fecl3*(1000*fefecl3 + fetransp*transp_fecl3)', 'co2_c=0.0005*eh*fecc*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['tbentrant chaulage 2', 'CO2 construction conditionnement_chimique 2', 'CO2 construction conditionnement_chimique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation conditionnement_chimique 3', 'CO2 exploitation intrant conditionnement_chimique 6', 'CO2 construction conditionnement_chimique 1', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction conditionnement_chimique 2', 'CO2 construction conditionnement_chimique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation conditionnement_chimique 3', 'CO2 exploitation intrant conditionnement_chimique 6', 'CO2 construction conditionnement_chimique 1', 'CO2 elec 6']::varchar[],
 transp_fecl3 real,
 q_catio real,
 transp_catio real,
@@ -2803,7 +2811,7 @@ select api.add_new_bloc('conditionnement_chimique', 'bloc', 'Point'
     ,additional_columns => '{fecc_type_table.FE as fecc_FE, fecc_type_table.description as fecc_description}'
     ,additional_join => 'left join ___.fecc_type_table on fecc_type_table.val = c.fecc ') ;
 
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction conditionnement_chimique 2'::varchar, 'co2_c=0.0005*fecc*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction conditionnement_chimique 3'::varchar, 'co2_c=fecc*tbentrant'::varchar, 3, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
@@ -2818,7 +2826,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 alter type ___.bloc_type add value 'flottateur' ;
 commit ; 
-insert into ___.input_output values ('flottateur', array['q_poly', 'transp_poly', 'tbsortant', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly grilles_degouttage 6', 'CO2 construction flottateur 2', 'tbentrant chaulage 2', 'CO2 construction flottateur 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation flottateur 3', 'CO2 construction flottateur 3', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('flottateur', array['q_poly', 'transp_poly', 'tbsortant', 'eh', 'dbo5', 'mes', 'tbentrant', 'welec']::varchar[], array['tbsortant_s']::varchar[], array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'CO2 construction flottateur 2', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction flottateur 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation flottateur 3', 'CO2 construction flottateur 3', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.flottateur_bloc_name_seq ;     
 
@@ -2831,7 +2839,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('flottateur_bloc', abbreviation=>'flottateur'),
 formula varchar[] default array['co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)', 'co2_c=((feobj10_flot)*(eh<10000)+(feobj50_flot)*(eh>10000)*(eh<100000)+(feobj100_flot)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=((feobj10_flot)*(eh<10000)+(feobj50_flot)*(eh>10000)*(eh<100000)+(feobj100_flot)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*tbsortant*welec_flot', 'co2_c=((feobj10_flot)*(eh<10000)+(feobj50_flot)*(eh>10000)*(eh<100000)+(feobj100_flot)*(eh>100000))*tbentrant', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['CO2 exploitation q_poly grilles_degouttage 6', 'CO2 construction flottateur 2', 'tbentrant chaulage 2', 'CO2 construction flottateur 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation flottateur 3', 'CO2 construction flottateur 3', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['CO2 exploitation q_poly centrifugeuse_pour_epais 6', 'CO2 construction flottateur 2', 'tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction flottateur 1', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation flottateur 3', 'CO2 construction flottateur 3', 'CO2 elec 6']::varchar[],
 q_poly real default 0::real,
 transp_poly real default 50::real,
 tbsortant real,
@@ -2857,9 +2865,9 @@ select api.add_new_bloc('flottateur', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('CO2 exploitation q_poly grilles_degouttage 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
+select api.add_new_formula('CO2 exploitation q_poly centrifugeuse_pour_epais 6'::varchar, 'co2_e=0.001*q_poly*(1000*fepolymere + fetransp*transp_poly)'::varchar, 6, ''::text) ;
 select api.add_new_formula('CO2 construction flottateur 2'::varchar, 'co2_c=((feobj10_flot)*(eh<10000)+(feobj50_flot)*(eh>10000)*(eh<100000)+(feobj100_flot)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)'::varchar, 2, ''::text) ;
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction flottateur 1'::varchar, 'co2_c=((feobj10_flot)*(eh<10000)+(feobj50_flot)*(eh>10000)*(eh<100000)+(feobj100_flot)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)'::varchar, 1, ''::text) ;
 select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 1'::varchar, 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 exploitation flottateur 3'::varchar, 'co2_e=feelec*tbsortant*welec_flot'::varchar, 3, ''::text) ;
@@ -2872,7 +2880,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 alter type ___.bloc_type add value 'poste_de_refoulement' ;
 commit ; 
-insert into ___.input_output values ('poste_de_refoulement', array['mpompe', 'welec']::varchar[], array[]::varchar[], array['CO2 construction pompe 5', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('poste_de_refoulement', array['mpompe', 'welec']::varchar[], array[]::varchar[], array['CO2 construction poste_de_refoulement 5', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.poste_de_refoulement_bloc_name_seq ;     
 
@@ -2885,7 +2893,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('poste_de_refoulement_bloc', abbreviation=>'poste_de_refoulement'),
 formula varchar[] default array['co2_c=fepoids*mpompe', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['CO2 construction pompe 5', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['CO2 construction poste_de_refoulement 5', 'CO2 elec 6']::varchar[],
 mpompe real,
 welec real,
 
@@ -2904,7 +2912,7 @@ select api.add_new_bloc('poste_de_refoulement', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('CO2 construction pompe 5'::varchar, 'co2_c=fepoids*mpompe'::varchar, 5, ''::text) ;
+select api.add_new_formula('CO2 construction poste_de_refoulement 5'::varchar, 'co2_c=fepoids*mpompe'::varchar, 5, ''::text) ;
 select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar, 6, ''::text) ;
 
 
@@ -3051,7 +3059,7 @@ select api.add_new_formula('CH4 exploitation rejets 1'::varchar, 'ch4_e=eh*fech4
 
 alter type ___.bloc_type add value 'sechage_thermique' ;
 commit ; 
-insert into ___.input_output values ('sechage_thermique', array['siccite_e', 'eh', 'tbsortant', 'pelletisation', 'dbo5', 'mes', 'tbentrant', 'tee', 'welec']::varchar[], array['siccite_s', 'tbsortant_s']::varchar[], array['tbentrant chaulage 2', 'CO2 construction sechage_thermique 2', 'CO2 construction sechage_thermique 1', 'CO2 construction sechage_thermique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation sechage_thermique 4', 'CO2 exploitation sechage_thermique 3', 'CO2 elec 6']::varchar[]) ;
+insert into ___.input_output values ('sechage_thermique', array['siccite_e', 'eh', 'tbsortant', 'pelletisation', 'dbo5', 'mes', 'tbentrant', 'tee', 'welec']::varchar[], array['siccite_s', 'tbsortant_s']::varchar[], array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction sechage_thermique 2', 'CO2 construction sechage_thermique 1', 'CO2 construction sechage_thermique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation sechage_thermique 4', 'CO2 exploitation sechage_thermique 3', 'CO2 elec 6']::varchar[]) ;
 
 create sequence ___.sechage_thermique_bloc_name_seq ;     
 
@@ -3064,7 +3072,7 @@ shape ___.geo_type not null default 'Point',
 geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
 name varchar not null default ___.unique_name('sechage_thermique_bloc', abbreviation=>'sechage_thermique'),
 formula varchar[] default array['tbentrant=0.0005*nbjour*(dbo5 + mes)', 'co2_c=((feobj50_st)*(eh>10000)*(eh<100000)+(feobj100_st)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)', 'co2_c=((feobj50_st)*(eh>10000)*(eh<100000)+(feobj100_st)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)', 'co2_c=((feobj50_st)*(eh>10000)*(eh<100000)+(feobj100_st)*(eh>100000))*tbentrant', 'tbentrant=0.0005*eh*nbjour*(dbo5_eh + mes_eh)', 'co2_e=feelec*(24*nbjour*pth*tee - tbsortant*(welec_st_nopell*(pelletisation - 1) - welec_st_pell*pelletisation))', 'co2_e=feelec*tbsortant*(24*nbjour*pth*(siccite_e - siccite_s) - welec_st_nopell*(pelletisation - 1) + welec_st_pell*pelletisation)', 'co2_e=feelec*welec']::varchar[],
-formula_name varchar[] default array['tbentrant chaulage 2', 'CO2 construction sechage_thermique 2', 'CO2 construction sechage_thermique 1', 'CO2 construction sechage_thermique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation sechage_thermique 4', 'CO2 exploitation sechage_thermique 3', 'CO2 elec 6']::varchar[],
+formula_name varchar[] default array['tbentrant centrifugeuse_pour_deshy 2', 'CO2 construction sechage_thermique 2', 'CO2 construction sechage_thermique 1', 'CO2 construction sechage_thermique 3', 'tbentrant centrifugeuse_pour_deshy 1', 'CO2 exploitation sechage_thermique 4', 'CO2 exploitation sechage_thermique 3', 'CO2 elec 6']::varchar[],
 siccite_e real,
 eh real,
 tbsortant real,
@@ -3092,7 +3100,7 @@ select api.add_new_bloc('sechage_thermique', 'bloc', 'Point'
     
     ) ;
 
-select api.add_new_formula('tbentrant chaulage 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
+select api.add_new_formula('tbentrant centrifugeuse_pour_deshy 2'::varchar, 'tbentrant=0.0005*nbjour*(dbo5 + mes)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction sechage_thermique 2'::varchar, 'co2_c=((feobj50_st)*(eh>10000)*(eh<100000)+(feobj100_st)*(eh>100000))*((dbo5/2+mes/2)/1000*nbjour)'::varchar, 2, ''::text) ;
 select api.add_new_formula('CO2 construction sechage_thermique 1'::varchar, 'co2_c=((feobj50_st)*(eh>10000)*(eh<100000)+(feobj100_st)*(eh>100000))*(((dbo5_eh*eh)/2+(mes_eh*eh)/2)/1000*nbjour)'::varchar, 1, ''::text) ;
 select api.add_new_formula('CO2 construction sechage_thermique 3'::varchar, 'co2_c=((feobj50_st)*(eh>10000)*(eh<100000)+(feobj100_st)*(eh>100000))*tbentrant'::varchar, 3, ''::text) ;
@@ -3103,6 +3111,7 @@ select api.add_new_formula('CO2 elec 6'::varchar, 'co2_e=feelec*welec'::varchar,
 
 
 
+update ___.feexpl_type_table set fe = 825.0, incert = 0.0, description = 'kgCO2eq/m2 [8]' where val = 'Structure en béton' ;
 update ___.qdechet_type_table set fe = 1.12, incert = 0.5, description = 'compactage avec vis [1]' where val = 'Compactage avec vis' ;
 update ___.fen2o_oxi_type_table set fe = 0.0034, incert = 0.45, description = 'kgN2O/kgNGL rejeté [2] peu oxygéné (par défault)' where val = 'Peu oxygéné' ;
 update ___.qdechet_type_table set fe = 0.99, incert = 0.4, description = 'compactage piston [1]' where val = 'Compactage avec piston' ;
@@ -3110,6 +3119,7 @@ update ___.fech4_mil_type_table set fe = 0.048, incert = 0.3, description = 'kgC
 update ___.charge_bio_type_table set fe = 1.1, incert = 0.35, description = 'kgDBO5/m3/j charge moyenne [11]' where val = 'Charge moyenne' ;
 update ___.festock_type_table set fe = 0.0352, incert = 0.0, description = 'kgCO2eq/tMS silo de 5m3 [10]' where val = 'Silo de 5m3' ;
 update ___.fen2o_oxi_type_table set fe = 0.0007, incert = 0.45, description = 'kgN2O/kgNGL rejeté [2] Bien oxygéné' where val = 'Bien oxygéné' ;
+update ___.feexpl_type_table set fe = 275.0, incert = 0.0, description = '' where val = 'Structure métallique' ;
 update ___.fecc_type_table set fe = 0.0009, incert = 0.0, description = '' where val = 'Cuve moyenne' ;
 update ___.charge_bio_type_table set fe = 0.5, incert = 0.35, description = 'kgDBO5/m3/j charge faible [11]' where val = 'Charge faible' ;
 update ___.fech4_mil_type_table set fe = 0.009, incert = 0.3, description = 'kgCH4/kgDCO rejeté [2] autres' where val = 'Autres' ;

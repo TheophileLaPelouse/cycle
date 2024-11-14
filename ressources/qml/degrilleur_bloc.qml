@@ -312,7 +312,7 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="D_grilleur_0ba01276_31b0_42c5_91e5_f122f2167588" referencedLayer="M_thode_de_compactage_84cb6c63_f67b_4f46_9797_97b1de4aab21" layerId="M_thode_de_compactage_84cb6c63_f67b_4f46_9797_97b1de4aab21" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" providerKey="postgres" name="ref_qdechet_degrilleur" id="D_grilleur_0ba01276_31b0_42c5_91e5_f122f2167588_qdechet_M_thode_de_compactage_84cb6c63_f67b_4f46_9797_97b1de4aab21_val" layerName="Méthode de compactage">
+    <relation referencingLayer="D_grilleur_ce3baf5e_5b24_4fe3_abd1_180d86ee7c2f" referencedLayer="M_thode_de_compactage_c5a01564_c07a_405a_8140_82bcfb7ff704" layerId="M_thode_de_compactage_c5a01564_c07a_405a_8140_82bcfb7ff704" strength="Association" dataSource="dbname='lol11' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" providerKey="postgres" name="ref_qdechet_degrilleur" id="D_grilleur_ce3baf5e_5b24_4fe3_abd1_180d86ee7c2f_qdechet_M_thode_de_compactage_c5a01564_c07a_405a_8140_82bcfb7ff704_val" layerName="Méthode de compactage">
       <fieldRef referencedField="val" referencingField="qdechet"/>
     </relation>
   </referencedLayers>
@@ -517,7 +517,7 @@
     <alias index="16" name="geom_ref" field="geom_ref"/>
     <alias index="17" name="sur_bloc" field="sur_bloc"/>
     <alias index="18" name="model" field="model"/>
-    <alias index="19" name="" field="qdechet_fe"/>
+    <alias index="19" name="Volume de déchet (L/EH/an)" field="qdechet_fe"/>
     <alias index="20" name="qdechet_description" field="qdechet_description"/>
   </aliases>
   <splitPolicies>
@@ -563,7 +563,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="qdechet_fe" expression="attribute(get_feature(layer:='M_thode_de_compactage_84cb6c63_f67b_4f46_9797_97b1de4aab21', attribute:='val', value:=&quot;qdechet&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="qdechet_fe" expression="attribute(get_feature(layer:='M_thode_de_compactage_c5a01564_c07a_405a_8140_82bcfb7ff704', attribute:='val', value:=&quot;qdechet&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="qdechet_description" expression=""/>
   </defaults>
   <constraints>
@@ -683,7 +683,7 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception générale" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -723,7 +723,7 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception générale" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -748,7 +748,7 @@ def my_form_open(dialog, layer, feature):
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 2" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception détaillée" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

@@ -206,7 +206,7 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="Stockage_Boue_c14ad9a6_82c5_4af5_90a8_b346659a1db8" referencedLayer="Taille_du_stockage_a15ef115_7fd2_4938_acb7_2e8923b5535c" layerId="Taille_du_stockage_a15ef115_7fd2_4938_acb7_2e8923b5535c" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" name="ref_festock_stockage_boue" id="Stockage_Boue_c14ad9a6_82c5_4af5_90a8_b346659a1db8_festock_Taille_du_stockage_a15ef115_7fd2_4938_acb7_2e8923b5535c_val" layerName="Taille du stockage">
+    <relation referencingLayer="Stockage_Boue_d0de4f7c_d274_4f33_92bb_313e7a1a20ae" referencedLayer="Taille_du_stockage_f54ec064_7d71_4191_9188_dd55f2b07a29" layerId="Taille_du_stockage_f54ec064_7d71_4191_9188_dd55f2b07a29" strength="Association" dataSource="dbname='lol11' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" name="ref_festock_stockage_boue" id="Stockage_Boue_d0de4f7c_d274_4f33_92bb_313e7a1a20ae_festock_Taille_du_stockage_f54ec064_7d71_4191_9188_dd55f2b07a29_val" layerName="Taille du stockage">
       <fieldRef referencedField="val" referencingField="festock"/>
     </relation>
   </referencedLayers>
@@ -372,9 +372,9 @@
     <alias index="2" name="name" field="name"/>
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="dbo" field="dbo"/>
-    <alias index="6" name="aere" field="aere"/>
-    <alias index="7" name="grand" field="grand"/>
+    <alias index="5" name="DBO (kgDBO/an)" field="dbo"/>
+    <alias index="6" name="Avec aération" field="aere"/>
+    <alias index="7" name="Diamètre supérieur à 2m" field="grand"/>
     <alias index="8" name="Welec (kWh/an)" field="welec"/>
     <alias index="9" name="Equivalent Habitants" field="eh"/>
     <alias index="10" name="Taille du stockage" field="festock"/>
@@ -435,7 +435,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="festock_fe" expression="attribute(get_feature(layer:='Taille_du_stockage_a15ef115_7fd2_4938_acb7_2e8923b5535c', attribute:='val', value:=&quot;festock&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="festock_fe" expression="attribute(get_feature(layer:='Taille_du_stockage_f54ec064_7d71_4191_9188_dd55f2b07a29', attribute:='val', value:=&quot;festock&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="festock_description" expression=""/>
   </defaults>
   <constraints>
@@ -544,7 +544,7 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception générale" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -564,7 +564,7 @@
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 2" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception détaillée" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -604,7 +604,7 @@
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -639,7 +639,7 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception générale" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -664,7 +664,7 @@
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 2" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception détaillée" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -694,7 +694,7 @@
           </labelStyle>
         </attributeEditorField>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

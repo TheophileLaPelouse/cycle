@@ -312,10 +312,10 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="Rejets_ba93a7be_c2c5_42ae_a1d6_7cc2cfbb4f40" referencedLayer="Milieu_a3f78331_9146_4ddc_80a1_5a24c733da85" layerId="Milieu_a3f78331_9146_4ddc_80a1_5a24c733da85" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fech4_mil_type_table&quot;" providerKey="postgres" name="ref_fech4_mil_rejets" id="Rejets_ba93a7be_c2c5_42ae_a1d6_7cc2cfbb4f40_fech4_mil_Milieu_a3f78331_9146_4ddc_80a1_5a24c733da85_val" layerName="Milieu">
+    <relation referencingLayer="Rejets_7309a8e6_a0f4_4f9e_a348_ea2a3030e250" referencedLayer="Milieu_5fc53bc4_dbbe_4d79_9147_d5b85fbcf6ba" layerId="Milieu_5fc53bc4_dbbe_4d79_9147_d5b85fbcf6ba" strength="Association" dataSource="dbname='lol11' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fech4_mil_type_table&quot;" providerKey="postgres" name="ref_fech4_mil_rejets" id="Rejets_7309a8e6_a0f4_4f9e_a348_ea2a3030e250_fech4_mil_Milieu_5fc53bc4_dbbe_4d79_9147_d5b85fbcf6ba_val" layerName="Milieu">
       <fieldRef referencedField="val" referencingField="fech4_mil"/>
     </relation>
-    <relation referencingLayer="Rejets_ba93a7be_c2c5_42ae_a1d6_7cc2cfbb4f40" referencedLayer="Oxyg_ne_du_milieu_31ff8de2_517c_4298_bc5e_3e109487398c" layerId="Oxyg_ne_du_milieu_31ff8de2_517c_4298_bc5e_3e109487398c" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fen2o_oxi_type_table&quot;" providerKey="postgres" name="ref_fen2o_oxi_rejets" id="Rejets_ba93a7be_c2c5_42ae_a1d6_7cc2cfbb4f40_fen2o_oxi_Oxyg_ne_du_milieu_31ff8de2_517c_4298_bc5e_3e109487398c_val" layerName="Oxygène du milieu">
+    <relation referencingLayer="Rejets_7309a8e6_a0f4_4f9e_a348_ea2a3030e250" referencedLayer="Oxyg_ne_du_milieu_3f66ce68_cdd4_4e37_b974_3f91386006b2" layerId="Oxyg_ne_du_milieu_3f66ce68_cdd4_4e37_b974_3f91386006b2" strength="Association" dataSource="dbname='lol11' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fen2o_oxi_type_table&quot;" providerKey="postgres" name="ref_fen2o_oxi_rejets" id="Rejets_7309a8e6_a0f4_4f9e_a348_ea2a3030e250_fen2o_oxi_Oxyg_ne_du_milieu_3f66ce68_cdd4_4e37_b974_3f91386006b2_val" layerName="Oxygène du milieu">
       <fieldRef referencedField="val" referencingField="fen2o_oxi"/>
     </relation>
   </referencedLayers>
@@ -486,9 +486,9 @@
     <alias index="14" name="geom_ref" field="geom_ref"/>
     <alias index="15" name="sur_bloc" field="sur_bloc"/>
     <alias index="16" name="model" field="model"/>
-    <alias index="17" name="" field="fech4_mil_fe"/>
+    <alias index="17" name="FE" field="fech4_mil_fe"/>
     <alias index="18" name="fech4_mil_description" field="fech4_mil_description"/>
-    <alias index="19" name="" field="fen2o_oxi_fe"/>
+    <alias index="19" name="FE" field="fen2o_oxi_fe"/>
     <alias index="20" name="fen2o_oxi_description" field="fen2o_oxi_description"/>
   </aliases>
   <splitPolicies>
@@ -532,9 +532,9 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="fech4_mil_fe" expression="attribute(get_feature(layer:='Milieu_a3f78331_9146_4ddc_80a1_5a24c733da85', attribute:='val', value:=&quot;fech4_mil&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="fech4_mil_fe" expression="attribute(get_feature(layer:='Milieu_5fc53bc4_dbbe_4d79_9147_d5b85fbcf6ba', attribute:='val', value:=&quot;fech4_mil&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="fech4_mil_description" expression=""/>
-    <default applyOnUpdate="1" field="fen2o_oxi_fe" expression="attribute(get_feature(layer:='Oxyg_ne_du_milieu_31ff8de2_517c_4298_bc5e_3e109487398c', attribute:='val', value:=&quot;fen2o_oxi&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="fen2o_oxi_fe" expression="attribute(get_feature(layer:='Oxyg_ne_du_milieu_3f66ce68_cdd4_4e37_b974_3f91386006b2', attribute:='val', value:=&quot;fen2o_oxi&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="fen2o_oxi_description" expression=""/>
   </defaults>
   <constraints>
@@ -659,7 +659,7 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception générale" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -714,7 +714,7 @@ def my_form_open(dialog, layer, feature):
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 2" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception détaillée" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

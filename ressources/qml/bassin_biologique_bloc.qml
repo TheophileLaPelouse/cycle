@@ -312,10 +312,10 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="Bassin_biologique_9905efe5_08d3_4fd2_ab49_b42dc5892091" referencedLayer="Taux_de_charge_ff21430d_f9f3_4e16_89d9_ad10dbc2bf94" layerId="Taux_de_charge_ff21430d_f9f3_4e16_89d9_ad10dbc2bf94" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;charge_bio_type_table&quot;" providerKey="postgres" name="ref_charge_bio_bassin_biologique" id="Bassin_biologique_9905efe5_08d3_4fd2_ab49_b42dc5892091_charge_bio_Taux_de_charge_ff21430d_f9f3_4e16_89d9_ad10dbc2bf94_val" layerName="Taux de charge">
+    <relation referencingLayer="Bassin_biologique_c18c094e_649a_4e1d_9a4c_dd1d19cd7c85" referencedLayer="Taux_de_charge_80e29bf3_284c_4655_910c_2b4ccfd20995" layerId="Taux_de_charge_80e29bf3_284c_4655_910c_2b4ccfd20995" strength="Association" dataSource="dbname='lol11' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;charge_bio_type_table&quot;" providerKey="postgres" name="ref_charge_bio_bassin_biologique" id="Bassin_biologique_c18c094e_649a_4e1d_9a4c_dd1d19cd7c85_charge_bio_Taux_de_charge_80e29bf3_284c_4655_910c_2b4ccfd20995_val" layerName="Taux de charge">
       <fieldRef referencedField="val" referencingField="charge_bio"/>
     </relation>
-    <relation referencingLayer="Bassin_biologique_9905efe5_08d3_4fd2_ab49_b42dc5892091" referencedLayer="Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f" layerId="Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_bassin_biologique" id="Bassin_biologique_9905efe5_08d3_4fd2_ab49_b42dc5892091_prod_e_Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f_val" layerName="Intrant">
+    <relation referencingLayer="Bassin_biologique_c18c094e_649a_4e1d_9a4c_dd1d19cd7c85" referencedLayer="Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d" layerId="Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d" strength="Association" dataSource="dbname='lol11' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_bassin_biologique" id="Bassin_biologique_c18c094e_649a_4e1d_9a4c_dd1d19cd7c85_prod_e_Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d_val" layerName="Intrant">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
   </referencedLayers>
@@ -1094,9 +1094,9 @@
     <alias index="86" name="geom_ref" field="geom_ref"/>
     <alias index="87" name="sur_bloc" field="sur_bloc"/>
     <alias index="88" name="model" field="model"/>
-    <alias index="89" name="" field="prod_e_fe"/>
+    <alias index="89" name="FE" field="prod_e_fe"/>
     <alias index="90" name="prod_e_description" field="prod_e_description"/>
-    <alias index="91" name="" field="charge_bio_fe"/>
+    <alias index="91" name="Valeur (kgDBO5/m3/j)" field="charge_bio_fe"/>
     <alias index="92" name="charge_bio_description" field="charge_bio_description"/>
   </aliases>
   <splitPolicies>
@@ -1284,9 +1284,9 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="prod_e_description" expression=""/>
-    <default applyOnUpdate="1" field="charge_bio_fe" expression="attribute(get_feature(layer:='Taux_de_charge_ff21430d_f9f3_4e16_89d9_ad10dbc2bf94', attribute:='val', value:=&quot;charge_bio&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="charge_bio_fe" expression="attribute(get_feature(layer:='Taux_de_charge_80e29bf3_284c_4655_910c_2b4ccfd20995', attribute:='val', value:=&quot;charge_bio&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="charge_bio_description" expression=""/>
   </defaults>
   <constraints>
@@ -1555,7 +1555,7 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -2040,7 +2040,7 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 2" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception détaillée" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -2090,7 +2090,7 @@ def my_form_open(dialog, layer, feature):
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

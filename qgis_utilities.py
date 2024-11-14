@@ -54,20 +54,23 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : '
          'larg' : 'Largeur (m)', 'vit' : 'Vitesse (m/h)', 'tbsortant' : 'Tonne de boue entrant (t/an)', 
          'tbsortant_s' : 'Tonne de boue sortant (t/an)', 'e' : 'Epaisseur de voile (m)', 
          'taur' : 'Taux de recirculation', 'tauenterre' : 'Taux d\'enterrement', 'prop_l' : 'rapport longueur/largeur', 'vu' : 'Volume utile (m3)', 
-         'vbiogaz' : 'Volume de biogaz produit (m3/an)', 'cad' : 'Cadence pelleteuse (m3/h)', 'gros' : 'Dégrillage supérieur à 20mm  (booléen)', 
-         'compd' : 'Avec ou sans compactage (booléen)', 'compt' : 'Avec ou sans compactage (booléen)', 'qe_s' : 'Débit sortant (m3/j)', 
+         'vbiogaz' : 'Volume de biogaz produit (m3/an)', 'cad' : 'Cadence pelleteuse (m3/h)', 'gros' : 'Dégrillage supérieur à 20mm', 
+         'compd' : 'Avec ou sans compactage', 'compt' : 'Avec ou sans compactage', 'qe_s' : 'Débit sortant (m3/j)', 
          'munite_tamis' : 'Masse du tamis (kg)', 'munite_degrilleur' : 'Masse du dégrilleur (kg)', 'qmax' : 'Débit maximal (m3/j)', 
-         'qdechet' : 'Méthode de compactage', 'qdechet_fe':'','dbo5' : 'DBO5 (kgDBO5/an)', 'dbo5elim' : 'DBO5 éliminée (kgDBO5/an)', 
+         'qdechet' : 'Méthode de compactage', 'qdechet_fe':'Volume de déchet (L/EH/an)','dbo5' : 'DBO5 (kgDBO5/an)', 'dbo5elim' : 'DBO5 éliminée (kgDBO5/an)', 
          'w_dbo5_eau' : 'Consommation électrique en fonction de la DBO5 (kWh/an/DBO5)', 's_geom_eh' : 'Surface en fonction des EH (m2/EH)',
-         'tsables' : 'Tonne de sable (t/an)', 'tgraisses' : 'Tonne de graisses (t/an)', 'charge_bio' : 'Taux de charge', 'charge_bio_fe' : '',
-         'siccite_e' : 'siccité de la boue entrante', 'siccite_s' : 'siccité de la boue sortante', 'tee' : "Tonne d'eau évaporée (t/an)",
+         'tsables' : 'Tonne de sable (t/an)', 'tgraisses' : 'Tonne de graisses (t/an)', 'charge_bio' : 'Taux de charge', 'charge_bio_fe' : 'Valeur (kgDBO5/m3/j)',
+         'siccite_e' : 'Siccité de la boue entrante', 'siccite_s' : 'Siccité de la boue sortante', 'tee' : "Tonne d'eau évaporée (t/an)",
          'festock' : 'Taille du stockage', 'festock_fe' : '', 'q_poly' : 'Quantité de polymère (kg/an)', 'transp_poly' : "Distance d'approxivisionnement du polymère (km)",
          'q_chaux' : 'Quantité de chaux (kg/an)', 'transp_chaux' : "Distance d'approxivisionnement de la chaux (km)",
          'q_fecl3' : 'Quantité de FeCl3 (kg/an)', 'transp_fecl3' : "Distance d'approxivisionnement du FeCl3 (km)",
          'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
          'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)", 
          'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)', 
-         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)', 'prod_e' : 'Intrant'
+         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)', 'prod_e' : 'Intrant', 'pelletisation' : 'Présence de pelletisation',
+         'lavage' : 'Sables lavé ?', 'conc' : 'Graisses concentrées ?', 'aere' : 'Avec aération', 'grand' : 'Diamètre supérieur à 2m', 
+         'dbo' : 'DBO (kgDBO/an)', 'Niveau de détail 1' : 'Conception générale', 'Niveau de détail 2' : 'Conception détaillée',
+         'Niveau de détail 3' : 'Etude de faisabilité', 'Niveau de détail 4' : 'Conception très détaillée'
          }
 Alias_intrant = produits_chimiques = {
     "q_hcl": "Acide chlorhydrique",
@@ -486,7 +489,7 @@ class QGisProjectManager(QObject):
                 defval.setExpression(default_fe)
                 defval.setApplyOnUpdate(True)
                 layer.setDefaultValueDefinition(fe_idx, defval)
-                layer.setFieldAlias(fe_idx, Alias.get(field, ' '))
+                layer.setFieldAlias(fe_idx, Alias.get(field, 'FE'))
             elif field.startswith('q_') or field.startswith('transp_') : 
                 field_intrant.add(field)
                 if field.startswith('q_') :
@@ -528,8 +531,8 @@ class QGisProjectManager(QObject):
         in2tab = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
         in2tab_constr = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
         in2tab_default = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
-        level_container = {'constr' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, constr_tab) for k in range(lvlmax+1)},
-                        'expl' : {k : QgsAttributeEditorContainer('Niveau de détail %d' % k, expl_tab) for k in range(lvlmax+1)}, 
+        level_container = {'constr' : {k : QgsAttributeEditorContainer(Alias.get('Niveau de détail %d' % k, 'Niveau de détail %d' % k), constr_tab) for k in range(lvlmax+1)},
+                        'expl' : {k : QgsAttributeEditorContainer(Alias.get('Niveau de détail %d' % k, 'Niveau de détail %d' % k), expl_tab) for k in range(lvlmax+1)}, 
                         }
         constr_container = {'constr' : {k:QgsAttributeEditorContainer('Valeurs par défaut construction', constr_tab) for k in range(lvlmax+1)}, 
                             'expl' : {k:QgsAttributeEditorContainer('Valeurs par défaut construction', expl_tab) for k in range(lvlmax+1)}}
@@ -550,7 +553,8 @@ class QGisProjectManager(QObject):
                     c_or_e = 'expl'
                 else :
                     return set()
-            flag_intrant = False
+            flag_intrant2 = False
+            flag_intrant1 = 'prod_e' in fieldnames 
             for val in group_field : 
                 idx = layer.fields().indexFromName(val)
                 if val in field_fe :
@@ -581,27 +585,26 @@ class QGisProjectManager(QObject):
                     if val.upper() not in level_container_children[c_or_e][lvl] :
                         level_container[c_or_e][lvl].addChildElement(container)
                         level_container_children[c_or_e][lvl].add(val.upper()) 
-                elif val in field_intrant :
-                    if not flag_intrant :
-                        flag_intrant = True
-                        if 'prod_e' in fieldnames : 
-                            field_prod = layer.fields().indexFromName('prod_e')
-                            level_container[c_or_e][lvl].addChildElement(attrfield('prod_e', field_prod, level_container[c_or_e][lvl]))
-                            level_container_children[c_or_e][lvl].add(field_prod)
-                            for intr in field_intrant : 
-                                if intr.startswith('q_') :
-                                    q_intr = intr 
-                                    transp_intr = 'transp_'+intr[2:]
-                                else : 
-                                    q_intr = 'q_'+intr[7:]
-                                    transp_intr = intr
-                                if intr == q_intr : 
-                                    row = QgsAttributeEditorContainer(intr, level_container[c_or_e][lvl])
-                                    row.setType(Qgis.AttributeEditorContainerType(2))
-                                    row.setVisibilityExpression(QgsOptionalExpression(QgsExpression(f"\"prod_e\" = '{Alias_intrant[q_intr]}'")))
-                                    row.addChildElement(attrfield(q_intr, layer.fields().indexFromName(q_intr), row))
-                                    row.addChildElement(attrfield(transp_intr, layer.fields().indexFromName(transp_intr), row))
-                                    level_container[c_or_e][lvl].addChildElement(row)
+                elif val in field_intrant and flag_intrant1 :
+                    if not flag_intrant2 :
+                        flag_intrant2 = True
+                        field_prod = layer.fields().indexFromName('prod_e')
+                        level_container[c_or_e][lvl].addChildElement(attrfield('prod_e', field_prod, level_container[c_or_e][lvl]))
+                        level_container_children[c_or_e][lvl].add(field_prod)
+                        for intr in field_intrant : 
+                            if intr.startswith('q_') :
+                                q_intr = intr 
+                                transp_intr = 'transp_'+intr[2:]
+                            else : 
+                                q_intr = 'q_'+intr[7:]
+                                transp_intr = intr
+                            if intr == q_intr : 
+                                row = QgsAttributeEditorContainer(intr, level_container[c_or_e][lvl])
+                                row.setType(Qgis.AttributeEditorContainerType(2))
+                                row.setVisibilityExpression(QgsOptionalExpression(QgsExpression(f"\"prod_e\" = '{Alias_intrant[q_intr]}'")))
+                                row.addChildElement(attrfield(q_intr, layer.fields().indexFromName(q_intr), row))
+                                row.addChildElement(attrfield(transp_intr, layer.fields().indexFromName(transp_intr), row))
+                                level_container[c_or_e][lvl].addChildElement(row)
                             
                 elif val in f_inputs : 
                     if val not in level_container_children[c_or_e][lvl] :
@@ -666,12 +669,17 @@ class QGisProjectManager(QObject):
                 flag_in = True
             if flag_in :
                 addval2tab(val, input_tab)
+        
+        for field in field_fe : 
+            idx = layer.fields().indexFromName(field[:-3])
+            layer.setFieldAlias(idx, ' ')
                  
         t4 = time.time()
         print('temps après boucle 2', t4-t3)
         layer.setEditFormConfig(config)
         print('temps edit form config', time.time()-t4)
         layer.saveNamedStyle(qml)
+        
         return
                 
                 

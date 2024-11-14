@@ -340,13 +340,13 @@
     <alias index="2" name="name" field="name"/>
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="siccité de la boue entrante" field="siccite_e"/>
+    <alias index="5" name="Siccité de la boue entrante" field="siccite_e"/>
     <alias index="6" name="Equivalent Habitants" field="eh"/>
     <alias index="7" name="DBO5 (kgDBO5/an)" field="dbo5"/>
     <alias index="8" name="Matière en suspension (kgMES/an)" field="mes"/>
     <alias index="9" name="Tonne de boue en amont de la filière (t/an)" field="tbentrant"/>
     <alias index="10" name="Welec (kWh/an)" field="welec"/>
-    <alias index="11" name="siccité de la boue sortante" field="siccite_s"/>
+    <alias index="11" name="Siccité de la boue sortante" field="siccite_s"/>
     <alias index="12" name="Tonne de boue sortant (t/an)" field="tbsortant_s"/>
     <alias index="13" name="ss_blocs" field="ss_blocs"/>
     <alias index="14" name="b_type" field="b_type"/>
@@ -497,7 +497,7 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception générale" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -507,7 +507,7 @@
           </labelStyle>
         </attributeEditorField>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 2" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception détaillée" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -527,7 +527,7 @@
           </labelStyle>
         </attributeEditorField>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

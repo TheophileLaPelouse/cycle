@@ -206,7 +206,7 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="MBBR_bfc151d1_a72b_43fe_b350_02ee30841b09" referencedLayer="Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f" layerId="Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_mbbr" id="MBBR_bfc151d1_a72b_43fe_b350_02ee30841b09_prod_e_Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f_val" layerName="Intrant">
+    <relation referencingLayer="MBBR_e5f277c2_bc61_47a2_b335_b164becc2f14" referencedLayer="Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d" layerId="Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d" strength="Association" dataSource="dbname='lol11' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_mbbr" id="MBBR_e5f277c2_bc61_47a2_b335_b164becc2f14_prod_e_Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d_val" layerName="Intrant">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
   </referencedLayers>
@@ -963,7 +963,7 @@
     <alias index="89" name="geom_ref" field="geom_ref"/>
     <alias index="90" name="sur_bloc" field="sur_bloc"/>
     <alias index="91" name="model" field="model"/>
-    <alias index="92" name="" field="prod_e_fe"/>
+    <alias index="92" name="FE" field="prod_e_fe"/>
     <alias index="93" name="prod_e_description" field="prod_e_description"/>
   </aliases>
   <splitPolicies>
@@ -1155,7 +1155,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="prod_e_description" expression=""/>
   </defaults>
   <constraints>
@@ -1478,7 +1478,7 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -1963,7 +1963,7 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

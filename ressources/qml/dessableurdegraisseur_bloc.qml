@@ -312,7 +312,7 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="Dessableur_D_graisseur_58c50523_0c2e_4468_8a03_5f4a2c35157e" referencedLayer="Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f" layerId="Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_dessableurdegraisseur" id="Dessableur_D_graisseur_58c50523_0c2e_4468_8a03_5f4a2c35157e_prod_e_Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f_val" layerName="Intrant">
+    <relation referencingLayer="Dessableur_D_graisseur_95f51c9a_89dc_4f72_ac96_ed7808388e39" referencedLayer="Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d" layerId="Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d" strength="Association" dataSource="dbname='lol11' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_dessableurdegraisseur" id="Dessableur_D_graisseur_95f51c9a_89dc_4f72_ac96_ed7808388e39_prod_e_Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d_val" layerName="Intrant">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
   </referencedLayers>
@@ -1032,8 +1032,8 @@
     <alias index="6" name="Consommation électrique en fonction de la DBO5 (kWh/an/DBO5)" field="w_dbo5_eau"/>
     <alias index="7" name="DBO5 éliminée (kgDBO5/an)" field="dbo5elim"/>
     <alias index="8" name="Equivalent Habitants" field="eh"/>
-    <alias index="9" name="conc" field="conc"/>
-    <alias index="10" name="lavage" field="lavage"/>
+    <alias index="9" name="Graisses concentrées ?" field="conc"/>
+    <alias index="10" name="Sables lavé ?" field="lavage"/>
     <alias index="11" name="Distance d'approxivisionnement" field="transp_kmno4"/>
     <alias index="12" name="Quantité de Résine cationique" field="q_catio"/>
     <alias index="13" name="Distance d'approxivisionnement" field="transp_catio"/>
@@ -1117,7 +1117,7 @@
     <alias index="91" name="geom_ref" field="geom_ref"/>
     <alias index="92" name="sur_bloc" field="sur_bloc"/>
     <alias index="93" name="model" field="model"/>
-    <alias index="94" name="" field="prod_e_fe"/>
+    <alias index="94" name="FE" field="prod_e_fe"/>
     <alias index="95" name="prod_e_description" field="prod_e_description"/>
   </aliases>
   <splitPolicies>
@@ -1313,7 +1313,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_12b33be6_9c7f_4bfa_b3b6_1a3f8abe068f', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="prod_e_description" expression=""/>
   </defaults>
   <constraints>
@@ -1598,7 +1598,7 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception générale" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -1623,7 +1623,7 @@ def my_form_open(dialog, layer, feature):
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -2118,7 +2118,7 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception générale" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -2158,7 +2158,7 @@ def my_form_open(dialog, layer, feature):
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 2" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Conception détaillée" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -2198,7 +2198,7 @@ def my_form_open(dialog, layer, feature):
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Etude de faisabilité" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

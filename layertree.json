@@ -364,6 +364,20 @@
                 "fech4_mil"
             ]
         ],
+        "feexpl": [
+            "feexpl",
+            "api",
+            "feexpl_type_table",
+            "val"
+        ],
+        "feexpl__ref": [
+            [
+                "ref_feexpl_batiment_dexploitation",
+                "val",
+                "B\u00e2timent d'exploitation",
+                "feexpl"
+            ]
+        ],
         "fen2o_oxi": [
             "fen2o_oxi",
             "api",
