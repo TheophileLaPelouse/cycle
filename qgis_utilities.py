@@ -461,7 +461,7 @@ class QGisProjectManager(QObject):
                         
                             
     @staticmethod
-    def update1qml(project, dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
+    def update1qml(project, dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
         t1 = time.time()
         config = layer.editFormConfig()
         try : config.setLayout(Qgis.AttributeFormLayout(1))
