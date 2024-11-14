@@ -242,14 +242,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="mpompe" configurationFlags="NoFlag">
+    <field name="vbet" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="vbet" configurationFlags="NoFlag">
+    <field name="mpompe" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -298,8 +298,8 @@
     <alias index="2" name="name" field="name"/>
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="mpompe" field="mpompe"/>
-    <alias index="6" name="vbet" field="vbet"/>
+    <alias index="5" name="vbet" field="vbet"/>
+    <alias index="6" name="mpompe" field="mpompe"/>
     <alias index="7" name="ss_blocs" field="ss_blocs"/>
     <alias index="8" name="b_type" field="b_type"/>
     <alias index="9" name="geom_ref" field="geom_ref"/>
@@ -312,8 +312,8 @@
     <policy policy="Duplicate" field="name"/>
     <policy policy="Duplicate" field="formula"/>
     <policy policy="Duplicate" field="formula_name"/>
-    <policy policy="Duplicate" field="mpompe"/>
     <policy policy="Duplicate" field="vbet"/>
+    <policy policy="Duplicate" field="mpompe"/>
     <policy policy="Duplicate" field="ss_blocs"/>
     <policy policy="Duplicate" field="b_type"/>
     <policy policy="Duplicate" field="geom_ref"/>
@@ -326,8 +326,8 @@
     <default applyOnUpdate="0" field="name" expression=""/>
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
-    <default applyOnUpdate="0" field="mpompe" expression=""/>
     <default applyOnUpdate="0" field="vbet" expression=""/>
+    <default applyOnUpdate="0" field="mpompe" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
     <default applyOnUpdate="0" field="b_type" expression=""/>
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
@@ -340,8 +340,8 @@
     <constraint constraints="3" exp_strength="0" unique_strength="1" notnull_strength="1" field="name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mpompe"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vbet"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mpompe"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="b_type"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="geom_ref"/>
@@ -354,8 +354,8 @@
     <constraint exp="" desc="" field="name"/>
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
-    <constraint exp="" desc="" field="mpompe"/>
     <constraint exp="" desc="" field="vbet"/>
+    <constraint exp="" desc="" field="mpompe"/>
     <constraint exp="" desc="" field="ss_blocs"/>
     <constraint exp="" desc="" field="b_type"/>
     <constraint exp="" desc="" field="geom_ref"/>
@@ -421,12 +421,12 @@
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="6" verticalStretch="0" name="vbet" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="5" verticalStretch="0" name="vbet" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="5" verticalStretch="0" name="mpompe" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="6" verticalStretch="0" name="mpompe" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>

@@ -461,7 +461,7 @@ class QGisProjectManager(QObject):
                         
                             
     @staticmethod
-    def update1qml(project, dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
+    def update1qml(project, dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
         t1 = time.time()
         config = layer.editFormConfig()
         try : config.setLayout(Qgis.AttributeFormLayout(1))
@@ -482,11 +482,11 @@ class QGisProjectManager(QObject):
                 fe_idx = layer.fields().indexFromName(field)
                 prop_id = dico_layer[Alias.get(field[:-3], field[:-3])][1]
                 default_fe = layer.defaultValueDefinition(fe_idx)
-                default_fe = f"attribute(get_feature(layer:='{prop_id}', attribute:='val', value:=\"{field}\"), 'fe')"
+                default_fe = f"attribute(get_feature(layer:='{prop_id}', attribute:='val', value:=\"{field[:-3]}\"), 'fe')"
                 defval.setExpression(default_fe)
                 defval.setApplyOnUpdate(True)
                 layer.setDefaultValueDefinition(fe_idx, defval)
-                layer.setFieldAlias(fe_idx, Alias.get(field, ''))
+                layer.setFieldAlias(fe_idx, Alias.get(field, ' '))
             elif field.startswith('q_') or field.startswith('transp_') : 
                 field_intrant.add(field)
                 if field.startswith('q_') :

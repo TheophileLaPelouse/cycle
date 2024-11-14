@@ -249,14 +249,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="tbsortant" configurationFlags="NoFlag">
+    <field name="tau_abattement" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="tau_abattement" configurationFlags="NoFlag">
+    <field name="tbsortant" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -341,8 +341,8 @@
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
     <alias index="5" name="Equivalent Habitants" field="eh"/>
-    <alias index="6" name="Tonne de boue entrant (t/an)" field="tbsortant"/>
-    <alias index="7" name="tau_abattement" field="tau_abattement"/>
+    <alias index="6" name="tau_abattement" field="tau_abattement"/>
+    <alias index="7" name="Tonne de boue entrant (t/an)" field="tbsortant"/>
     <alias index="8" name="DBO5 (kgDBO5/an)" field="dbo5"/>
     <alias index="9" name="Matière en suspension (kgMES/an)" field="mes"/>
     <alias index="10" name="Tonne de boue en amont de la filière (t/an)" field="tbentrant"/>
@@ -361,8 +361,8 @@
     <policy policy="Duplicate" field="formula"/>
     <policy policy="Duplicate" field="formula_name"/>
     <policy policy="Duplicate" field="eh"/>
-    <policy policy="Duplicate" field="tbsortant"/>
     <policy policy="Duplicate" field="tau_abattement"/>
+    <policy policy="Duplicate" field="tbsortant"/>
     <policy policy="Duplicate" field="dbo5"/>
     <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="tbentrant"/>
@@ -381,8 +381,8 @@
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
-    <default applyOnUpdate="0" field="tbsortant" expression=""/>
     <default applyOnUpdate="0" field="tau_abattement" expression=""/>
+    <default applyOnUpdate="0" field="tbsortant" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
     <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="tbentrant" expression=""/>
@@ -401,8 +401,8 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tau_abattement"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbentrant"/>
@@ -421,8 +421,8 @@
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
     <constraint exp="" desc="" field="eh"/>
-    <constraint exp="" desc="" field="tbsortant"/>
     <constraint exp="" desc="" field="tau_abattement"/>
+    <constraint exp="" desc="" field="tbsortant"/>
     <constraint exp="" desc="" field="dbo5"/>
     <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="tbentrant"/>
@@ -492,7 +492,7 @@
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="6" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="7" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -563,7 +563,7 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorField index="6" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
+      <attributeEditorField index="7" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

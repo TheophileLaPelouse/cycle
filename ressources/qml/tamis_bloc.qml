@@ -374,14 +374,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="munite_tamis" configurationFlags="NoFlag">
+    <field name="qmax" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="qmax" configurationFlags="NoFlag">
+    <field name="munite_tamis" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -409,14 +409,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="mes" configurationFlags="NoFlag">
+    <field name="dbo5" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="dbo5" configurationFlags="NoFlag">
+    <field name="mes" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -486,13 +486,13 @@
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
     <alias index="5" name="Equivalent Habitants" field="eh"/>
-    <alias index="6" name="Masse du tamis (kg)" field="munite_tamis"/>
-    <alias index="7" name="Débit maximal (m3/j)" field="qmax"/>
+    <alias index="6" name="Débit maximal (m3/j)" field="qmax"/>
+    <alias index="7" name="Masse du tamis (kg)" field="munite_tamis"/>
     <alias index="8" name="Welec (kWh/an)" field="welec"/>
     <alias index="9" name="Avec ou sans compactage (booléen)" field="compt"/>
     <alias index="10" name="Débit entrant (m3/j)" field="qe"/>
-    <alias index="11" name="Matière en suspension (kgMES/an)" field="mes"/>
-    <alias index="12" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="11" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="12" name="Matière en suspension (kgMES/an)" field="mes"/>
     <alias index="13" name="Débit sortant (m3/j)" field="qe_s"/>
     <alias index="14" name="ss_blocs" field="ss_blocs"/>
     <alias index="15" name="b_type" field="b_type"/>
@@ -507,13 +507,13 @@
     <policy policy="DefaultValue" field="formula"/>
     <policy policy="DefaultValue" field="formula_name"/>
     <policy policy="Duplicate" field="eh"/>
-    <policy policy="Duplicate" field="munite_tamis"/>
     <policy policy="Duplicate" field="qmax"/>
+    <policy policy="Duplicate" field="munite_tamis"/>
     <policy policy="Duplicate" field="welec"/>
     <policy policy="Duplicate" field="compt"/>
     <policy policy="Duplicate" field="qe"/>
-    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="dbo5"/>
+    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="qe_s"/>
     <policy policy="DefaultValue" field="ss_blocs"/>
     <policy policy="Duplicate" field="b_type"/>
@@ -528,13 +528,13 @@
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
-    <default applyOnUpdate="0" field="munite_tamis" expression=""/>
     <default applyOnUpdate="0" field="qmax" expression=""/>
+    <default applyOnUpdate="0" field="munite_tamis" expression=""/>
     <default applyOnUpdate="0" field="welec" expression=""/>
     <default applyOnUpdate="0" field="compt" expression=""/>
     <default applyOnUpdate="0" field="qe" expression=""/>
-    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
+    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="qe_s" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
     <default applyOnUpdate="0" field="b_type" expression=""/>
@@ -549,13 +549,13 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="munite_tamis"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qmax"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="munite_tamis"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="compt"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qe"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qe_s"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="b_type"/>
@@ -570,13 +570,13 @@
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
     <constraint exp="" desc="" field="eh"/>
-    <constraint exp="" desc="" field="munite_tamis"/>
     <constraint exp="" desc="" field="qmax"/>
+    <constraint exp="" desc="" field="munite_tamis"/>
     <constraint exp="" desc="" field="welec"/>
     <constraint exp="" desc="" field="compt"/>
     <constraint exp="" desc="" field="qe"/>
-    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="dbo5"/>
+    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="qe_s"/>
     <constraint exp="" desc="" field="ss_blocs"/>
     <constraint exp="" desc="" field="b_type"/>
@@ -699,12 +699,12 @@ def my_form_open(dialog, layer, feature):
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="6" verticalStretch="0" name="munite_tamis" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="7" verticalStretch="0" name="munite_tamis" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
-          <attributeEditorField index="7" verticalStretch="0" name="qmax" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="6" verticalStretch="0" name="qmax" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
@@ -724,12 +724,12 @@ def my_form_open(dialog, layer, feature):
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="6" verticalStretch="0" name="munite_tamis" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="7" verticalStretch="0" name="munite_tamis" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
-          <attributeEditorField index="7" verticalStretch="0" name="qmax" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="6" verticalStretch="0" name="qmax" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>

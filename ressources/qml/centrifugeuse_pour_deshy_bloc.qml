@@ -242,14 +242,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="q_poly" configurationFlags="NoFlag">
-      <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="transp_poly" configurationFlags="NoFlag">
+    <field name="direct" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -263,7 +256,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="direct" configurationFlags="NoFlag">
+    <field name="q_poly" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="transp_poly" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -354,10 +354,10 @@
     <alias index="2" name="name" field="name"/>
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="Quantité de Floculant" field="q_poly"/>
-    <alias index="6" name="Distance d'approxivisionnement" field="transp_poly"/>
-    <alias index="7" name="Tonne de boue entrant (t/an)" field="tbsortant"/>
-    <alias index="8" name="direct" field="direct"/>
+    <alias index="5" name="direct" field="direct"/>
+    <alias index="6" name="Tonne de boue entrant (t/an)" field="tbsortant"/>
+    <alias index="7" name="Quantité de Floculant" field="q_poly"/>
+    <alias index="8" name="Distance d'approxivisionnement" field="transp_poly"/>
     <alias index="9" name="Equivalent Habitants" field="eh"/>
     <alias index="10" name="DBO5 (kgDBO5/an)" field="dbo5"/>
     <alias index="11" name="Matière en suspension (kgMES/an)" field="mes"/>
@@ -376,10 +376,10 @@
     <policy policy="Duplicate" field="name"/>
     <policy policy="Duplicate" field="formula"/>
     <policy policy="Duplicate" field="formula_name"/>
+    <policy policy="Duplicate" field="direct"/>
+    <policy policy="Duplicate" field="tbsortant"/>
     <policy policy="Duplicate" field="q_poly"/>
     <policy policy="Duplicate" field="transp_poly"/>
-    <policy policy="Duplicate" field="tbsortant"/>
-    <policy policy="Duplicate" field="direct"/>
     <policy policy="Duplicate" field="eh"/>
     <policy policy="Duplicate" field="dbo5"/>
     <policy policy="Duplicate" field="mes"/>
@@ -398,10 +398,10 @@
     <default applyOnUpdate="0" field="name" expression=""/>
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
+    <default applyOnUpdate="0" field="direct" expression=""/>
+    <default applyOnUpdate="0" field="tbsortant" expression=""/>
     <default applyOnUpdate="0" field="q_poly" expression=""/>
     <default applyOnUpdate="0" field="transp_poly" expression=""/>
-    <default applyOnUpdate="0" field="tbsortant" expression=""/>
-    <default applyOnUpdate="0" field="direct" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
     <default applyOnUpdate="0" field="mes" expression=""/>
@@ -420,10 +420,10 @@
     <constraint constraints="3" exp_strength="0" unique_strength="1" notnull_strength="1" field="name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="direct"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_poly"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_poly"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="direct"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
@@ -442,10 +442,10 @@
     <constraint exp="" desc="" field="name"/>
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
+    <constraint exp="" desc="" field="direct"/>
+    <constraint exp="" desc="" field="tbsortant"/>
     <constraint exp="" desc="" field="q_poly"/>
     <constraint exp="" desc="" field="transp_poly"/>
-    <constraint exp="" desc="" field="tbsortant"/>
-    <constraint exp="" desc="" field="direct"/>
     <constraint exp="" desc="" field="eh"/>
     <constraint exp="" desc="" field="dbo5"/>
     <constraint exp="" desc="" field="mes"/>
@@ -517,7 +517,7 @@
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="7" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="6" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -526,7 +526,7 @@
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="8" verticalStretch="0" name="direct" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="5" verticalStretch="0" name="direct" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
@@ -598,7 +598,7 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorField index="7" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
+      <attributeEditorField index="6" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>

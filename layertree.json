@@ -400,33 +400,9 @@
         ],
         "prod_e__ref": [
             [
-                "ref_prod_e_dessableurdegraisseur",
+                "ref_prod_e_decanteur_lamellaire",
                 "val",
-                "Dessableur-D\u00e9graisseur",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_bassin_dorage",
-                "val",
-                "Bassin d'orage",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_clarificateur",
-                "val",
-                "Clarificateur",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_bassin_biologique",
-                "val",
-                "Bassin biologique",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_lagunage",
-                "val",
-                "Lagunage",
+                "D\u00e9canteur lamellaire",
                 "prod_e"
             ],
             [
@@ -436,21 +412,9 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_decanteur_lamellaire",
+                "ref_prod_e_bassin_dorage",
                 "val",
-                "D\u00e9canteur lamellaire",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_filiere_eau",
-                "val",
-                "Fili\u00e8re eau",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_fpr",
-                "val",
-                "FPR",
+                "Bassin d'orage",
                 "prod_e"
             ],
             [
@@ -463,6 +427,42 @@
                 "ref_prod_e_brm",
                 "val",
                 "BRM",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_lagunage",
+                "val",
+                "Lagunage",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_filiere_eau",
+                "val",
+                "Fili\u00e8re eau",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_clarificateur",
+                "val",
+                "Clarificateur",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_dessableurdegraisseur",
+                "val",
+                "Dessableur-D\u00e9graisseur",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_bassin_biologique",
+                "val",
+                "Bassin biologique",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_fpr",
+                "val",
+                "FPR",
                 "prod_e"
             ]
         ],

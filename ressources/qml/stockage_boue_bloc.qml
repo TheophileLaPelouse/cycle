@@ -206,7 +206,7 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="Stockage_Boue_462ce5ec_5e18_4603_acb6_f74c3e3c7a34" referencedLayer="Taille_du_stockage_bd683923_2c80_4408_81d5_2c66d382ca23" layerId="Taille_du_stockage_bd683923_2c80_4408_81d5_2c66d382ca23" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" name="ref_festock_stockage_boue" id="Stockage_Boue_462ce5ec_5e18_4603_acb6_f74c3e3c7a34_festock_Taille_du_stockage_bd683923_2c80_4408_81d5_2c66d382ca23_val" layerName="Taille du stockage">
+    <relation referencingLayer="Stockage_Boue_c14ad9a6_82c5_4af5_90a8_b346659a1db8" referencedLayer="Taille_du_stockage_a15ef115_7fd2_4938_acb7_2e8923b5535c" layerId="Taille_du_stockage_a15ef115_7fd2_4938_acb7_2e8923b5535c" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" providerKey="postgres" name="ref_festock_stockage_boue" id="Stockage_Boue_c14ad9a6_82c5_4af5_90a8_b346659a1db8_festock_Taille_du_stockage_a15ef115_7fd2_4938_acb7_2e8923b5535c_val" layerName="Taille du stockage">
       <fieldRef referencedField="val" referencingField="festock"/>
     </relation>
   </referencedLayers>
@@ -246,7 +246,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="grand" configurationFlags="NoFlag">
+    <field name="dbo" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -260,14 +260,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="dbo" configurationFlags="NoFlag">
-      <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="eh" configurationFlags="NoFlag">
+    <field name="grand" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -281,6 +274,13 @@
         </config>
       </editWidget>
     </field>
+    <field name="eh" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
     <field name="festock" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
@@ -288,14 +288,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="mes" configurationFlags="NoFlag">
+    <field name="dbo5" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="dbo5" configurationFlags="NoFlag">
+    <field name="mes" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -372,14 +372,14 @@
     <alias index="2" name="name" field="name"/>
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="grand" field="grand"/>
+    <alias index="5" name="dbo" field="dbo"/>
     <alias index="6" name="aere" field="aere"/>
-    <alias index="7" name="dbo" field="dbo"/>
-    <alias index="8" name="Equivalent Habitants" field="eh"/>
-    <alias index="9" name="Welec (kWh/an)" field="welec"/>
+    <alias index="7" name="grand" field="grand"/>
+    <alias index="8" name="Welec (kWh/an)" field="welec"/>
+    <alias index="9" name="Equivalent Habitants" field="eh"/>
     <alias index="10" name="Taille du stockage" field="festock"/>
-    <alias index="11" name="Matière en suspension (kgMES/an)" field="mes"/>
-    <alias index="12" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="11" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="12" name="Matière en suspension (kgMES/an)" field="mes"/>
     <alias index="13" name="Tonne de boue en amont de la filière (t/an)" field="tbentrant"/>
     <alias index="14" name="Tonne de boue sortant (t/an)" field="tbsortant_s"/>
     <alias index="15" name="ss_blocs" field="ss_blocs"/>
@@ -396,14 +396,14 @@
     <policy policy="Duplicate" field="name"/>
     <policy policy="Duplicate" field="formula"/>
     <policy policy="Duplicate" field="formula_name"/>
-    <policy policy="Duplicate" field="grand"/>
-    <policy policy="Duplicate" field="aere"/>
     <policy policy="Duplicate" field="dbo"/>
-    <policy policy="Duplicate" field="eh"/>
+    <policy policy="Duplicate" field="aere"/>
+    <policy policy="Duplicate" field="grand"/>
     <policy policy="Duplicate" field="welec"/>
+    <policy policy="Duplicate" field="eh"/>
     <policy policy="Duplicate" field="festock"/>
-    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="dbo5"/>
+    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="tbentrant"/>
     <policy policy="Duplicate" field="tbsortant_s"/>
     <policy policy="Duplicate" field="ss_blocs"/>
@@ -420,14 +420,14 @@
     <default applyOnUpdate="0" field="name" expression=""/>
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
-    <default applyOnUpdate="0" field="grand" expression=""/>
-    <default applyOnUpdate="0" field="aere" expression=""/>
     <default applyOnUpdate="0" field="dbo" expression=""/>
-    <default applyOnUpdate="0" field="eh" expression=""/>
+    <default applyOnUpdate="0" field="aere" expression=""/>
+    <default applyOnUpdate="0" field="grand" expression=""/>
     <default applyOnUpdate="0" field="welec" expression=""/>
+    <default applyOnUpdate="0" field="eh" expression=""/>
     <default applyOnUpdate="0" field="festock" expression=""/>
-    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
+    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="tbentrant" expression=""/>
     <default applyOnUpdate="0" field="tbsortant_s" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
@@ -435,7 +435,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="festock_fe" expression="attribute(get_feature(layer:='Taille_du_stockage_bd683923_2c80_4408_81d5_2c66d382ca23', attribute:='val', value:=&quot;festock_fe&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="festock_fe" expression="attribute(get_feature(layer:='Taille_du_stockage_a15ef115_7fd2_4938_acb7_2e8923b5535c', attribute:='val', value:=&quot;festock&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="festock_description" expression=""/>
   </defaults>
   <constraints>
@@ -444,14 +444,14 @@
     <constraint constraints="3" exp_strength="0" unique_strength="1" notnull_strength="1" field="name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="grand"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="aere"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="aere"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="grand"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="festock"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbentrant"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant_s"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
@@ -468,14 +468,14 @@
     <constraint exp="" desc="" field="name"/>
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
-    <constraint exp="" desc="" field="grand"/>
-    <constraint exp="" desc="" field="aere"/>
     <constraint exp="" desc="" field="dbo"/>
-    <constraint exp="" desc="" field="eh"/>
+    <constraint exp="" desc="" field="aere"/>
+    <constraint exp="" desc="" field="grand"/>
     <constraint exp="" desc="" field="welec"/>
+    <constraint exp="" desc="" field="eh"/>
     <constraint exp="" desc="" field="festock"/>
-    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="dbo5"/>
+    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="tbentrant"/>
     <constraint exp="" desc="" field="tbsortant_s"/>
     <constraint exp="" desc="" field="ss_blocs"/>
@@ -548,7 +548,7 @@
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="8" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="9" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -568,17 +568,17 @@
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="12" verticalStretch="0" name="dbo5" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="11" verticalStretch="0" name="dbo5" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="11" verticalStretch="0" name="mes" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="12" verticalStretch="0" name="mes" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="7" verticalStretch="0" name="dbo" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="5" verticalStretch="0" name="dbo" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -597,7 +597,7 @@
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
-          <attributeEditorField index="5" verticalStretch="0" name="grand" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="7" verticalStretch="0" name="grand" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
@@ -628,7 +628,7 @@
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="9" verticalStretch="0" name="welec" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="8" verticalStretch="0" name="welec" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -643,7 +643,7 @@
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="8" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="9" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -683,12 +683,12 @@
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
-        <attributeEditorField index="11" verticalStretch="0" name="mes" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="12" verticalStretch="0" name="mes" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="12" verticalStretch="0" name="dbo5" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="11" verticalStretch="0" name="dbo5" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>

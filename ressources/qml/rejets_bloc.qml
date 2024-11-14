@@ -312,10 +312,10 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="Rejets_5a492c0d_ff6c_4208_b181_2eefe2d82a18" referencedLayer="Milieu_50fda925_c614_4b46_bf32_ebd349ef3ee4" layerId="Milieu_50fda925_c614_4b46_bf32_ebd349ef3ee4" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fech4_mil_type_table&quot;" providerKey="postgres" name="ref_fech4_mil_rejets" id="Rejets_5a492c0d_ff6c_4208_b181_2eefe2d82a18_fech4_mil_Milieu_50fda925_c614_4b46_bf32_ebd349ef3ee4_val" layerName="Milieu">
+    <relation referencingLayer="Rejets_ba93a7be_c2c5_42ae_a1d6_7cc2cfbb4f40" referencedLayer="Milieu_a3f78331_9146_4ddc_80a1_5a24c733da85" layerId="Milieu_a3f78331_9146_4ddc_80a1_5a24c733da85" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fech4_mil_type_table&quot;" providerKey="postgres" name="ref_fech4_mil_rejets" id="Rejets_ba93a7be_c2c5_42ae_a1d6_7cc2cfbb4f40_fech4_mil_Milieu_a3f78331_9146_4ddc_80a1_5a24c733da85_val" layerName="Milieu">
       <fieldRef referencedField="val" referencingField="fech4_mil"/>
     </relation>
-    <relation referencingLayer="Rejets_5a492c0d_ff6c_4208_b181_2eefe2d82a18" referencedLayer="Oxyg_ne_du_milieu_28a40515_51ac_43ed_815e_fd06f787a2ab" layerId="Oxyg_ne_du_milieu_28a40515_51ac_43ed_815e_fd06f787a2ab" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fen2o_oxi_type_table&quot;" providerKey="postgres" name="ref_fen2o_oxi_rejets" id="Rejets_5a492c0d_ff6c_4208_b181_2eefe2d82a18_fen2o_oxi_Oxyg_ne_du_milieu_28a40515_51ac_43ed_815e_fd06f787a2ab_val" layerName="Oxygène du milieu">
+    <relation referencingLayer="Rejets_ba93a7be_c2c5_42ae_a1d6_7cc2cfbb4f40" referencedLayer="Oxyg_ne_du_milieu_31ff8de2_517c_4298_bc5e_3e109487398c" layerId="Oxyg_ne_du_milieu_31ff8de2_517c_4298_bc5e_3e109487398c" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fen2o_oxi_type_table&quot;" providerKey="postgres" name="ref_fen2o_oxi_rejets" id="Rejets_ba93a7be_c2c5_42ae_a1d6_7cc2cfbb4f40_fen2o_oxi_Oxyg_ne_du_milieu_31ff8de2_517c_4298_bc5e_3e109487398c_val" layerName="Oxygène du milieu">
       <fieldRef referencedField="val" referencingField="fen2o_oxi"/>
     </relation>
   </referencedLayers>
@@ -376,15 +376,15 @@
         </config>
       </editWidget>
     </field>
-    <field name="fen2o_oxi" configurationFlags="NoFlag">
-      <editWidget type="RelationReference">
+    <field name="abatngl" configurationFlags="NoFlag">
+      <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="abatngl" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+    <field name="fen2o_oxi" configurationFlags="NoFlag">
+      <editWidget type="RelationReference">
         <config>
           <Option/>
         </config>
@@ -477,8 +477,8 @@
     <alias index="5" name="Equivalent Habitants" field="eh"/>
     <alias index="6" name="abatdco" field="abatdco"/>
     <alias index="7" name="Milieu" field="fech4_mil"/>
-    <alias index="8" name="Oxygène du milieu" field="fen2o_oxi"/>
-    <alias index="9" name="abatngl" field="abatngl"/>
+    <alias index="8" name="abatngl" field="abatngl"/>
+    <alias index="9" name="Oxygène du milieu" field="fen2o_oxi"/>
     <alias index="10" name="DCO (kgDCO/an)" field="dco"/>
     <alias index="11" name="NGL (kgNGL/an)" field="ngl"/>
     <alias index="12" name="ss_blocs" field="ss_blocs"/>
@@ -500,8 +500,8 @@
     <policy policy="Duplicate" field="eh"/>
     <policy policy="Duplicate" field="abatdco"/>
     <policy policy="Duplicate" field="fech4_mil"/>
-    <policy policy="Duplicate" field="fen2o_oxi"/>
     <policy policy="Duplicate" field="abatngl"/>
+    <policy policy="Duplicate" field="fen2o_oxi"/>
     <policy policy="Duplicate" field="dco"/>
     <policy policy="Duplicate" field="ngl"/>
     <policy policy="Duplicate" field="ss_blocs"/>
@@ -523,8 +523,8 @@
     <default applyOnUpdate="0" field="eh" expression=""/>
     <default applyOnUpdate="0" field="abatdco" expression=""/>
     <default applyOnUpdate="0" field="fech4_mil" expression=""/>
-    <default applyOnUpdate="0" field="fen2o_oxi" expression=""/>
     <default applyOnUpdate="0" field="abatngl" expression=""/>
+    <default applyOnUpdate="0" field="fen2o_oxi" expression=""/>
     <default applyOnUpdate="0" field="dco" expression=""/>
     <default applyOnUpdate="0" field="ngl" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
@@ -532,9 +532,9 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="fech4_mil_fe" expression="attribute(get_feature(layer:='Milieu_50fda925_c614_4b46_bf32_ebd349ef3ee4', attribute:='val', value:=&quot;fech4_mil_fe&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="fech4_mil_fe" expression="attribute(get_feature(layer:='Milieu_a3f78331_9146_4ddc_80a1_5a24c733da85', attribute:='val', value:=&quot;fech4_mil&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="fech4_mil_description" expression=""/>
-    <default applyOnUpdate="1" field="fen2o_oxi_fe" expression="attribute(get_feature(layer:='Oxyg_ne_du_milieu_28a40515_51ac_43ed_815e_fd06f787a2ab', attribute:='val', value:=&quot;fen2o_oxi_fe&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="fen2o_oxi_fe" expression="attribute(get_feature(layer:='Oxyg_ne_du_milieu_31ff8de2_517c_4298_bc5e_3e109487398c', attribute:='val', value:=&quot;fen2o_oxi&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="fen2o_oxi_description" expression=""/>
   </defaults>
   <constraints>
@@ -546,8 +546,8 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="abatdco"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="fech4_mil"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="fen2o_oxi"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="abatngl"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="fen2o_oxi"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dco"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ngl"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
@@ -569,8 +569,8 @@
     <constraint exp="" desc="" field="eh"/>
     <constraint exp="" desc="" field="abatdco"/>
     <constraint exp="" desc="" field="fech4_mil"/>
-    <constraint exp="" desc="" field="fen2o_oxi"/>
     <constraint exp="" desc="" field="abatngl"/>
+    <constraint exp="" desc="" field="fen2o_oxi"/>
     <constraint exp="" desc="" field="dco"/>
     <constraint exp="" desc="" field="ngl"/>
     <constraint exp="" desc="" field="ss_blocs"/>
@@ -687,7 +687,7 @@ def my_form_open(dialog, layer, feature):
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="8" verticalStretch="0" name="fen2o_oxi" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="9" verticalStretch="0" name="fen2o_oxi" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
@@ -707,7 +707,7 @@ def my_form_open(dialog, layer, feature):
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
-          <attributeEditorField index="9" verticalStretch="0" name="abatngl" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="8" verticalStretch="0" name="abatngl" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
@@ -747,7 +747,7 @@ def my_form_open(dialog, layer, feature):
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="8" verticalStretch="0" name="fen2o_oxi" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="9" verticalStretch="0" name="fen2o_oxi" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>

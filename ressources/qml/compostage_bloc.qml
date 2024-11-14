@@ -382,14 +382,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="mes" configurationFlags="NoFlag">
+    <field name="dbo5" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="dbo5" configurationFlags="NoFlag">
+    <field name="mes" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -474,8 +474,8 @@
     <alias index="4" name="formula_name" field="formula_name"/>
     <alias index="5" name="Equivalent Habitants" field="eh"/>
     <alias index="6" name="Tonne de boue entrant (t/an)" field="tbsortant"/>
-    <alias index="7" name="Matière en suspension (kgMES/an)" field="mes"/>
-    <alias index="8" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="7" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="8" name="Matière en suspension (kgMES/an)" field="mes"/>
     <alias index="9" name="Tonne de boue en amont de la filière (t/an)" field="tbentrant"/>
     <alias index="10" name="Welec (kWh/an)" field="welec"/>
     <alias index="11" name="Tonne de boue sortant (t/an)" field="tbsortant_s"/>
@@ -493,8 +493,8 @@
     <policy policy="DefaultValue" field="formula_name"/>
     <policy policy="Duplicate" field="eh"/>
     <policy policy="Duplicate" field="tbsortant"/>
-    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="dbo5"/>
+    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="tbentrant"/>
     <policy policy="Duplicate" field="welec"/>
     <policy policy="Duplicate" field="tbsortant_s"/>
@@ -512,8 +512,8 @@
     <default applyOnUpdate="0" field="formula_name" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
     <default applyOnUpdate="0" field="tbsortant" expression=""/>
-    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
+    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="tbentrant" expression=""/>
     <default applyOnUpdate="0" field="welec" expression=""/>
     <default applyOnUpdate="0" field="tbsortant_s" expression=""/>
@@ -531,8 +531,8 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbentrant"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant_s"/>
@@ -550,8 +550,8 @@
     <constraint exp="" desc="" field="formula_name"/>
     <constraint exp="" desc="" field="eh"/>
     <constraint exp="" desc="" field="tbsortant"/>
-    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="dbo5"/>
+    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="tbentrant"/>
     <constraint exp="" desc="" field="welec"/>
     <constraint exp="" desc="" field="tbsortant_s"/>
@@ -665,12 +665,12 @@ def my_form_open(dialog, layer, feature):
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="8" verticalStretch="0" name="dbo5" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="7" verticalStretch="0" name="dbo5" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="7" verticalStretch="0" name="mes" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="8" verticalStretch="0" name="mes" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>

@@ -312,7 +312,7 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="D_grilleur_2a439a9d_e4d8_438d_8c3c_66e028feda77" referencedLayer="M_thode_de_compactage_c38da863_1a14_4aca_8358_013d7a96056b" layerId="M_thode_de_compactage_c38da863_1a14_4aca_8358_013d7a96056b" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" providerKey="postgres" name="ref_qdechet_degrilleur" id="D_grilleur_2a439a9d_e4d8_438d_8c3c_66e028feda77_qdechet_M_thode_de_compactage_c38da863_1a14_4aca_8358_013d7a96056b_val" layerName="Méthode de compactage">
+    <relation referencingLayer="D_grilleur_0ba01276_31b0_42c5_91e5_f122f2167588" referencedLayer="M_thode_de_compactage_84cb6c63_f67b_4f46_9797_97b1de4aab21" layerId="M_thode_de_compactage_84cb6c63_f67b_4f46_9797_97b1de4aab21" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" providerKey="postgres" name="ref_qdechet_degrilleur" id="D_grilleur_0ba01276_31b0_42c5_91e5_f122f2167588_qdechet_M_thode_de_compactage_84cb6c63_f67b_4f46_9797_97b1de4aab21_val" layerName="Méthode de compactage">
       <fieldRef referencedField="val" referencingField="qdechet"/>
     </relation>
   </referencedLayers>
@@ -371,6 +371,13 @@
         </config>
       </editWidget>
     </field>
+    <field name="welec" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
     <field name="eh" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
@@ -379,13 +386,6 @@
       </editWidget>
     </field>
     <field name="qdechet" configurationFlags="NoFlag">
-      <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="welec" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -413,14 +413,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="mes" configurationFlags="NoFlag">
+    <field name="dbo5" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="dbo5" configurationFlags="NoFlag">
+    <field name="mes" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -503,14 +503,14 @@
     <alias index="2" name="name" field="name"/>
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="Equivalent Habitants" field="eh"/>
-    <alias index="6" name="Méthode de compactage" field="qdechet"/>
-    <alias index="7" name="Welec (kWh/an)" field="welec"/>
+    <alias index="5" name="Welec (kWh/an)" field="welec"/>
+    <alias index="6" name="Equivalent Habitants" field="eh"/>
+    <alias index="7" name="Méthode de compactage" field="qdechet"/>
     <alias index="8" name="Débit maximal (m3/j)" field="qmax"/>
     <alias index="9" name="Masse du dégrilleur (kg)" field="munite_degrilleur"/>
     <alias index="10" name="Débit entrant (m3/j)" field="qe"/>
-    <alias index="11" name="Matière en suspension (kgMES/an)" field="mes"/>
-    <alias index="12" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="11" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="12" name="Matière en suspension (kgMES/an)" field="mes"/>
     <alias index="13" name="Débit sortant (m3/j)" field="qe_s"/>
     <alias index="14" name="ss_blocs" field="ss_blocs"/>
     <alias index="15" name="b_type" field="b_type"/>
@@ -526,14 +526,14 @@
     <policy policy="DefaultValue" field="name"/>
     <policy policy="DefaultValue" field="formula"/>
     <policy policy="DefaultValue" field="formula_name"/>
+    <policy policy="Duplicate" field="welec"/>
     <policy policy="Duplicate" field="eh"/>
     <policy policy="Duplicate" field="qdechet"/>
-    <policy policy="Duplicate" field="welec"/>
     <policy policy="Duplicate" field="qmax"/>
     <policy policy="Duplicate" field="munite_degrilleur"/>
     <policy policy="Duplicate" field="qe"/>
-    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="dbo5"/>
+    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="qe_s"/>
     <policy policy="DefaultValue" field="ss_blocs"/>
     <policy policy="Duplicate" field="b_type"/>
@@ -549,21 +549,21 @@
     <default applyOnUpdate="0" field="name" expression=""/>
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
+    <default applyOnUpdate="0" field="welec" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
     <default applyOnUpdate="0" field="qdechet" expression=""/>
-    <default applyOnUpdate="0" field="welec" expression=""/>
     <default applyOnUpdate="0" field="qmax" expression=""/>
     <default applyOnUpdate="0" field="munite_degrilleur" expression=""/>
     <default applyOnUpdate="0" field="qe" expression=""/>
-    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
+    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="qe_s" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
     <default applyOnUpdate="0" field="b_type" expression=""/>
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="qdechet_fe" expression="attribute(get_feature(layer:='M_thode_de_compactage_c38da863_1a14_4aca_8358_013d7a96056b', attribute:='val', value:=&quot;qdechet_fe&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="qdechet_fe" expression="attribute(get_feature(layer:='M_thode_de_compactage_84cb6c63_f67b_4f46_9797_97b1de4aab21', attribute:='val', value:=&quot;qdechet&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="qdechet_description" expression=""/>
   </defaults>
   <constraints>
@@ -572,14 +572,14 @@
     <constraint constraints="3" exp_strength="0" unique_strength="1" notnull_strength="1" field="name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qdechet"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qmax"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="munite_degrilleur"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qe"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qe_s"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="b_type"/>
@@ -595,14 +595,14 @@
     <constraint exp="" desc="" field="name"/>
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
+    <constraint exp="" desc="" field="welec"/>
     <constraint exp="" desc="" field="eh"/>
     <constraint exp="" desc="" field="qdechet"/>
-    <constraint exp="" desc="" field="welec"/>
     <constraint exp="" desc="" field="qmax"/>
     <constraint exp="" desc="" field="munite_degrilleur"/>
     <constraint exp="" desc="" field="qe"/>
-    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="dbo5"/>
+    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="qe_s"/>
     <constraint exp="" desc="" field="ss_blocs"/>
     <constraint exp="" desc="" field="b_type"/>
@@ -687,7 +687,7 @@ def my_form_open(dialog, layer, feature):
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="5" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="6" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -696,7 +696,7 @@ def my_form_open(dialog, layer, feature):
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="6" verticalStretch="0" name="qdechet" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="7" verticalStretch="0" name="qdechet" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
@@ -712,7 +712,7 @@ def my_form_open(dialog, layer, feature):
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="7" verticalStretch="0" name="welec" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="5" verticalStretch="0" name="welec" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -727,7 +727,7 @@ def my_form_open(dialog, layer, feature):
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="5" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="6" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>

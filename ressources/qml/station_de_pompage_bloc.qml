@@ -242,14 +242,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="tauenterre" configurationFlags="NoFlag">
+    <field name="e" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="vu" configurationFlags="NoFlag">
+    <field name="tauenterre" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -263,7 +263,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="e" configurationFlags="NoFlag">
+    <field name="vu" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -312,10 +312,10 @@
     <alias index="2" name="name" field="name"/>
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="Taux d'enterrement" field="tauenterre"/>
-    <alias index="6" name="Volume utile (m3)" field="vu"/>
+    <alias index="5" name="Epaisseur de voile (m)" field="e"/>
+    <alias index="6" name="Taux d'enterrement" field="tauenterre"/>
     <alias index="7" name="Hauteur (m)" field="h"/>
-    <alias index="8" name="Epaisseur de voile (m)" field="e"/>
+    <alias index="8" name="Volume utile (m3)" field="vu"/>
     <alias index="9" name="ss_blocs" field="ss_blocs"/>
     <alias index="10" name="b_type" field="b_type"/>
     <alias index="11" name="geom_ref" field="geom_ref"/>
@@ -328,10 +328,10 @@
     <policy policy="Duplicate" field="name"/>
     <policy policy="Duplicate" field="formula"/>
     <policy policy="Duplicate" field="formula_name"/>
-    <policy policy="Duplicate" field="tauenterre"/>
-    <policy policy="Duplicate" field="vu"/>
-    <policy policy="Duplicate" field="h"/>
     <policy policy="Duplicate" field="e"/>
+    <policy policy="Duplicate" field="tauenterre"/>
+    <policy policy="Duplicate" field="h"/>
+    <policy policy="Duplicate" field="vu"/>
     <policy policy="Duplicate" field="ss_blocs"/>
     <policy policy="Duplicate" field="b_type"/>
     <policy policy="Duplicate" field="geom_ref"/>
@@ -344,10 +344,10 @@
     <default applyOnUpdate="0" field="name" expression=""/>
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
-    <default applyOnUpdate="0" field="tauenterre" expression=""/>
-    <default applyOnUpdate="0" field="vu" expression=""/>
-    <default applyOnUpdate="0" field="h" expression=""/>
     <default applyOnUpdate="0" field="e" expression=""/>
+    <default applyOnUpdate="0" field="tauenterre" expression=""/>
+    <default applyOnUpdate="0" field="h" expression=""/>
+    <default applyOnUpdate="0" field="vu" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
     <default applyOnUpdate="0" field="b_type" expression=""/>
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
@@ -360,10 +360,10 @@
     <constraint constraints="3" exp_strength="0" unique_strength="1" notnull_strength="1" field="name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tauenterre"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vu"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="h"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="e"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tauenterre"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="h"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vu"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="b_type"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="geom_ref"/>
@@ -376,10 +376,10 @@
     <constraint exp="" desc="" field="name"/>
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
-    <constraint exp="" desc="" field="tauenterre"/>
-    <constraint exp="" desc="" field="vu"/>
-    <constraint exp="" desc="" field="h"/>
     <constraint exp="" desc="" field="e"/>
+    <constraint exp="" desc="" field="tauenterre"/>
+    <constraint exp="" desc="" field="h"/>
+    <constraint exp="" desc="" field="vu"/>
     <constraint exp="" desc="" field="ss_blocs"/>
     <constraint exp="" desc="" field="b_type"/>
     <constraint exp="" desc="" field="geom_ref"/>
@@ -451,7 +451,7 @@
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="6" verticalStretch="0" name="vu" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="8" verticalStretch="0" name="vu" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -460,12 +460,12 @@
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="8" verticalStretch="0" name="e" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="5" verticalStretch="0" name="e" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
-          <attributeEditorField index="5" verticalStretch="0" name="tauenterre" horizontalStretch="0" showLabel="1">
+          <attributeEditorField index="6" verticalStretch="0" name="tauenterre" horizontalStretch="0" showLabel="1">
             <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
               <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
             </labelStyle>

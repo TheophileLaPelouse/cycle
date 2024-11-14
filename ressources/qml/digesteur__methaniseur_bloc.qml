@@ -263,14 +263,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="mes" configurationFlags="NoFlag">
+    <field name="dbo5" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="dbo5" configurationFlags="NoFlag">
+    <field name="mes" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -343,8 +343,8 @@
     <alias index="5" name="Tonne de boue entrant (t/an)" field="tbsortant"/>
     <alias index="6" name="tau_abattement" field="tau_abattement"/>
     <alias index="7" name="Equivalent Habitants" field="eh"/>
-    <alias index="8" name="Matière en suspension (kgMES/an)" field="mes"/>
-    <alias index="9" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="8" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="9" name="Matière en suspension (kgMES/an)" field="mes"/>
     <alias index="10" name="Volume de biogaz produit (m3/an)" field="vbiogaz"/>
     <alias index="11" name="Welec (kWh/an)" field="welec"/>
     <alias index="12" name="Tonne de boue sortant (t/an)" field="tbsortant_s"/>
@@ -363,8 +363,8 @@
     <policy policy="Duplicate" field="tbsortant"/>
     <policy policy="Duplicate" field="tau_abattement"/>
     <policy policy="Duplicate" field="eh"/>
-    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="dbo5"/>
+    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="vbiogaz"/>
     <policy policy="Duplicate" field="welec"/>
     <policy policy="Duplicate" field="tbsortant_s"/>
@@ -383,8 +383,8 @@
     <default applyOnUpdate="0" field="tbsortant" expression=""/>
     <default applyOnUpdate="0" field="tau_abattement" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
-    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
+    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="vbiogaz" expression=""/>
     <default applyOnUpdate="0" field="welec" expression=""/>
     <default applyOnUpdate="0" field="tbsortant_s" expression=""/>
@@ -403,8 +403,8 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tau_abattement"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vbiogaz"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant_s"/>
@@ -423,8 +423,8 @@
     <constraint exp="" desc="" field="tbsortant"/>
     <constraint exp="" desc="" field="tau_abattement"/>
     <constraint exp="" desc="" field="eh"/>
-    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="dbo5"/>
+    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="vbiogaz"/>
     <constraint exp="" desc="" field="welec"/>
     <constraint exp="" desc="" field="tbsortant_s"/>

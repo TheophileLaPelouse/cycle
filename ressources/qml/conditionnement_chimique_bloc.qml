@@ -206,7 +206,7 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="Conditionnement_chimique_0c722394_fe02_49c8_bf9f_d2d32d558019" referencedLayer="Taille_de_la_cuve_36f92425_5559_4d48_b7ae_8d402f9c3e42" layerId="Taille_de_la_cuve_36f92425_5559_4d48_b7ae_8d402f9c3e42" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fecc_type_table&quot;" providerKey="postgres" name="ref_fecc_conditionnement_chimique" id="Conditionnement_chimique_0c722394_fe02_49c8_bf9f_d2d32d558019_fecc_Taille_de_la_cuve_36f92425_5559_4d48_b7ae_8d402f9c3e42_val" layerName="Taille de la cuve">
+    <relation referencingLayer="Conditionnement_chimique_d7a96f23_60ca_4129_8cdd_87fa27e922eb" referencedLayer="Taille_de_la_cuve_62166f99_5e32_48cf_9f4b_4cb2bfa4f396" layerId="Taille_de_la_cuve_62166f99_5e32_48cf_9f4b_4cb2bfa4f396" strength="Association" dataSource="dbname='lol9' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;fecc_type_table&quot;" providerKey="postgres" name="ref_fecc_conditionnement_chimique" id="Conditionnement_chimique_d7a96f23_60ca_4129_8cdd_87fa27e922eb_fecc_Taille_de_la_cuve_62166f99_5e32_48cf_9f4b_4cb2bfa4f396_val" layerName="Taille de la cuve">
       <fieldRef referencedField="val" referencingField="fecc"/>
     </relation>
   </referencedLayers>
@@ -260,28 +260,14 @@
         </config>
       </editWidget>
     </field>
+    <field name="transp_catio" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
     <field name="q_chaux" configurationFlags="NoFlag">
-      <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="transp_chaux" configurationFlags="NoFlag">
-      <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="transp_anio" configurationFlags="NoFlag">
-      <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="q_fecl3" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -295,7 +281,21 @@
         </config>
       </editWidget>
     </field>
-    <field name="transp_catio" configurationFlags="NoFlag">
+    <field name="transp_anio" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="transp_chaux" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="q_fecl3" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -416,12 +416,12 @@
     <alias index="4" name="formula_name" field="formula_name"/>
     <alias index="5" name="Distance d'approxivisionnement" field="transp_fecl3"/>
     <alias index="6" name="Quantité de Résine cationique" field="q_catio"/>
-    <alias index="7" name="Quantité de Chaux" field="q_chaux"/>
-    <alias index="8" name="Distance d'approxivisionnement" field="transp_chaux"/>
-    <alias index="9" name="Distance d'approxivisionnement" field="transp_anio"/>
-    <alias index="10" name="Quantité de Chlorure ferrique" field="q_fecl3"/>
-    <alias index="11" name="Quantité de Résine anionique" field="q_anio"/>
-    <alias index="12" name="Distance d'approxivisionnement" field="transp_catio"/>
+    <alias index="7" name="Distance d'approxivisionnement" field="transp_catio"/>
+    <alias index="8" name="Quantité de Chaux" field="q_chaux"/>
+    <alias index="9" name="Quantité de Résine anionique" field="q_anio"/>
+    <alias index="10" name="Distance d'approxivisionnement" field="transp_anio"/>
+    <alias index="11" name="Distance d'approxivisionnement" field="transp_chaux"/>
+    <alias index="12" name="Quantité de Chlorure ferrique" field="q_fecl3"/>
     <alias index="13" name="Volume de boue entrante (m3/an)" field="vboue"/>
     <alias index="14" name="Taille de la cuve" field="fecc"/>
     <alias index="15" name="Equivalent Habitants" field="eh"/>
@@ -446,12 +446,12 @@
     <policy policy="Duplicate" field="formula_name"/>
     <policy policy="Duplicate" field="transp_fecl3"/>
     <policy policy="Duplicate" field="q_catio"/>
-    <policy policy="Duplicate" field="q_chaux"/>
-    <policy policy="Duplicate" field="transp_chaux"/>
-    <policy policy="Duplicate" field="transp_anio"/>
-    <policy policy="Duplicate" field="q_fecl3"/>
-    <policy policy="Duplicate" field="q_anio"/>
     <policy policy="Duplicate" field="transp_catio"/>
+    <policy policy="Duplicate" field="q_chaux"/>
+    <policy policy="Duplicate" field="q_anio"/>
+    <policy policy="Duplicate" field="transp_anio"/>
+    <policy policy="Duplicate" field="transp_chaux"/>
+    <policy policy="Duplicate" field="q_fecl3"/>
     <policy policy="Duplicate" field="vboue"/>
     <policy policy="Duplicate" field="fecc"/>
     <policy policy="Duplicate" field="eh"/>
@@ -476,12 +476,12 @@
     <default applyOnUpdate="0" field="formula_name" expression=""/>
     <default applyOnUpdate="0" field="transp_fecl3" expression=""/>
     <default applyOnUpdate="0" field="q_catio" expression=""/>
-    <default applyOnUpdate="0" field="q_chaux" expression=""/>
-    <default applyOnUpdate="0" field="transp_chaux" expression=""/>
-    <default applyOnUpdate="0" field="transp_anio" expression=""/>
-    <default applyOnUpdate="0" field="q_fecl3" expression=""/>
-    <default applyOnUpdate="0" field="q_anio" expression=""/>
     <default applyOnUpdate="0" field="transp_catio" expression=""/>
+    <default applyOnUpdate="0" field="q_chaux" expression=""/>
+    <default applyOnUpdate="0" field="q_anio" expression=""/>
+    <default applyOnUpdate="0" field="transp_anio" expression=""/>
+    <default applyOnUpdate="0" field="transp_chaux" expression=""/>
+    <default applyOnUpdate="0" field="q_fecl3" expression=""/>
     <default applyOnUpdate="0" field="vboue" expression=""/>
     <default applyOnUpdate="0" field="fecc" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
@@ -495,7 +495,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="fecc_fe" expression="attribute(get_feature(layer:='Taille_de_la_cuve_36f92425_5559_4d48_b7ae_8d402f9c3e42', attribute:='val', value:=&quot;fecc_fe&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="fecc_fe" expression="attribute(get_feature(layer:='Taille_de_la_cuve_62166f99_5e32_48cf_9f4b_4cb2bfa4f396', attribute:='val', value:=&quot;fecc&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="fecc_description" expression=""/>
   </defaults>
   <constraints>
@@ -506,12 +506,12 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_fecl3"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_catio"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_chaux"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_chaux"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_anio"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_fecl3"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_anio"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_catio"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_chaux"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_anio"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_anio"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_chaux"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_fecl3"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vboue"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="fecc"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
@@ -536,12 +536,12 @@
     <constraint exp="" desc="" field="formula_name"/>
     <constraint exp="" desc="" field="transp_fecl3"/>
     <constraint exp="" desc="" field="q_catio"/>
-    <constraint exp="" desc="" field="q_chaux"/>
-    <constraint exp="" desc="" field="transp_chaux"/>
-    <constraint exp="" desc="" field="transp_anio"/>
-    <constraint exp="" desc="" field="q_fecl3"/>
-    <constraint exp="" desc="" field="q_anio"/>
     <constraint exp="" desc="" field="transp_catio"/>
+    <constraint exp="" desc="" field="q_chaux"/>
+    <constraint exp="" desc="" field="q_anio"/>
+    <constraint exp="" desc="" field="transp_anio"/>
+    <constraint exp="" desc="" field="transp_chaux"/>
+    <constraint exp="" desc="" field="q_fecl3"/>
     <constraint exp="" desc="" field="vboue"/>
     <constraint exp="" desc="" field="fecc"/>
     <constraint exp="" desc="" field="eh"/>

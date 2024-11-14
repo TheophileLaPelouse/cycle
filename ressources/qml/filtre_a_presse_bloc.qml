@@ -256,13 +256,6 @@
         </config>
       </editWidget>
     </field>
-    <field name="q_chaux" configurationFlags="NoFlag">
-      <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
     <field name="transp_chaux" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
@@ -271,6 +264,13 @@
       </editWidget>
     </field>
     <field name="q_poly" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="q_chaux" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -370,9 +370,9 @@
     <alias index="4" name="formula_name" field="formula_name"/>
     <alias index="5" name="Distance d'approxivisionnement" field="transp_fecl3"/>
     <alias index="6" name="Distance d'approxivisionnement" field="transp_poly"/>
-    <alias index="7" name="Quantité de Chaux" field="q_chaux"/>
-    <alias index="8" name="Distance d'approxivisionnement" field="transp_chaux"/>
-    <alias index="9" name="Quantité de Floculant" field="q_poly"/>
+    <alias index="7" name="Distance d'approxivisionnement" field="transp_chaux"/>
+    <alias index="8" name="Quantité de Floculant" field="q_poly"/>
+    <alias index="9" name="Quantité de Chaux" field="q_chaux"/>
     <alias index="10" name="Quantité de Chlorure ferrique" field="q_fecl3"/>
     <alias index="11" name="Equivalent Habitants" field="eh"/>
     <alias index="12" name="DBO5 (kgDBO5/an)" field="dbo5"/>
@@ -394,9 +394,9 @@
     <policy policy="Duplicate" field="formula_name"/>
     <policy policy="Duplicate" field="transp_fecl3"/>
     <policy policy="Duplicate" field="transp_poly"/>
-    <policy policy="Duplicate" field="q_chaux"/>
     <policy policy="Duplicate" field="transp_chaux"/>
     <policy policy="Duplicate" field="q_poly"/>
+    <policy policy="Duplicate" field="q_chaux"/>
     <policy policy="Duplicate" field="q_fecl3"/>
     <policy policy="Duplicate" field="eh"/>
     <policy policy="Duplicate" field="dbo5"/>
@@ -418,9 +418,9 @@
     <default applyOnUpdate="0" field="formula_name" expression=""/>
     <default applyOnUpdate="0" field="transp_fecl3" expression=""/>
     <default applyOnUpdate="0" field="transp_poly" expression=""/>
-    <default applyOnUpdate="0" field="q_chaux" expression=""/>
     <default applyOnUpdate="0" field="transp_chaux" expression=""/>
     <default applyOnUpdate="0" field="q_poly" expression=""/>
+    <default applyOnUpdate="0" field="q_chaux" expression=""/>
     <default applyOnUpdate="0" field="q_fecl3" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
@@ -442,9 +442,9 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_fecl3"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_poly"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_chaux"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_chaux"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_poly"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_chaux"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_fecl3"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
@@ -466,9 +466,9 @@
     <constraint exp="" desc="" field="formula_name"/>
     <constraint exp="" desc="" field="transp_fecl3"/>
     <constraint exp="" desc="" field="transp_poly"/>
-    <constraint exp="" desc="" field="q_chaux"/>
     <constraint exp="" desc="" field="transp_chaux"/>
     <constraint exp="" desc="" field="q_poly"/>
+    <constraint exp="" desc="" field="q_chaux"/>
     <constraint exp="" desc="" field="q_fecl3"/>
     <constraint exp="" desc="" field="eh"/>
     <constraint exp="" desc="" field="dbo5"/>

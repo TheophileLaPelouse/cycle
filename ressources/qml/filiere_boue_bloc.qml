@@ -248,14 +248,14 @@
         </config>
       </editWidget>
     </field>
-    <field name="mes" configurationFlags="NoFlag">
+    <field name="dbo5" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="dbo5" configurationFlags="NoFlag">
+    <field name="mes" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -313,8 +313,8 @@
     <alias index="4" name="formula_name" field="formula_name"/>
     <alias index="5" name="Equivalent Habitants" field="eh"/>
     <alias index="6" name="Welec (kWh/an)" field="welec"/>
-    <alias index="7" name="Matière en suspension (kgMES/an)" field="mes"/>
-    <alias index="8" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="7" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="8" name="Matière en suspension (kgMES/an)" field="mes"/>
     <alias index="9" name="Tonne de boue sortant (t/an)" field="tbsortant_s"/>
     <alias index="10" name="ss_blocs" field="ss_blocs"/>
     <alias index="11" name="b_type" field="b_type"/>
@@ -330,8 +330,8 @@
     <policy policy="Duplicate" field="formula_name"/>
     <policy policy="Duplicate" field="eh"/>
     <policy policy="Duplicate" field="welec"/>
-    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="dbo5"/>
+    <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="tbsortant_s"/>
     <policy policy="Duplicate" field="ss_blocs"/>
     <policy policy="Duplicate" field="b_type"/>
@@ -347,8 +347,8 @@
     <default applyOnUpdate="0" field="formula_name" expression=""/>
     <default applyOnUpdate="0" field="eh" expression=""/>
     <default applyOnUpdate="0" field="welec" expression=""/>
-    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
+    <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="tbsortant_s" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
     <default applyOnUpdate="0" field="b_type" expression=""/>
@@ -364,8 +364,8 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant_s"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="b_type"/>
@@ -381,8 +381,8 @@
     <constraint exp="" desc="" field="formula_name"/>
     <constraint exp="" desc="" field="eh"/>
     <constraint exp="" desc="" field="welec"/>
-    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="dbo5"/>
+    <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="tbsortant_s"/>
     <constraint exp="" desc="" field="ss_blocs"/>
     <constraint exp="" desc="" field="b_type"/>
