@@ -1,30 +1,4 @@
 {
-    "Blocs abstraits": {
-        "Lien": {
-            "bloc": [
-                "Lien",
-                "api",
-                "lien_bloc",
-                "name"
-            ]
-        },
-        "Sur bloc": {
-            "bloc": [
-                "Sur bloc",
-                "api",
-                "sur_bloc_bloc",
-                "name"
-            ]
-        },
-        "Source": {
-            "bloc": [
-                "Source",
-                "api",
-                "source_bloc",
-                "name"
-            ]
-        }
-    },
     "Construction autre": {
         "B\u00e2timent d'exploitation": {
             "bloc": [
@@ -79,12 +53,6 @@
     },
     "Fili\u00e8re traitement": {
         "File boue": {
-            "bloc" : [
-                "File boue",
-                "api",
-                "file_boue_bloc",
-                "name"
-            ],
             "Centrifugeuse pour d\u00e9shydratation": {
                 "bloc": [
                     "Centrifugeuse pour d\u00e9shydratation",
@@ -133,11 +101,11 @@
                     "name"
                 ]
             },
-            "Digesteur ana\u00e9robie": {
+            "Digesteur / M\u00e9thaniseur": {
                 "bloc": [
-                    "Digesteur ana\u00e9robie",
+                    "Digesteur / M\u00e9thaniseur",
                     "api",
-                    "digesteur_anaerobie_bloc",
+                    "digesteur__methaniseur_bloc",
                     "name"
                 ]
             },
@@ -231,12 +199,14 @@
             }
         },
         "File eau": {
-            "bloc" : [
-                "File eau",
-                "api",
-                "file_eau_bloc",
-                "name"
-            ],
+            "BRM": {
+                "bloc": [
+                    "BRM",
+                    "api",
+                    "brm_bloc",
+                    "name"
+                ]
+            },
             "Bassin biologique": {
                 "bloc": [
                     "Bassin biologique",
@@ -309,6 +279,14 @@
                     "name"
                 ]
             },
+            "MBBR": {
+                "bloc": [
+                    "MBBR",
+                    "api",
+                    "mbbr_bloc",
+                    "name"
+                ]
+            },
             "Tamis": {
                 "bloc": [
                     "Tamis",
@@ -317,6 +295,22 @@
                     "name"
                 ]
             }
+        },
+        "Fili\u00e8re boue": {
+            "bloc": [
+                "Fili\u00e8re boue",
+                "api",
+                "filiere_boue_bloc",
+                "name"
+            ]
+        },
+        "Fili\u00e8re eau": {
+            "bloc": [
+                "Fili\u00e8re eau",
+                "api",
+                "filiere_eau_bloc",
+                "name"
+            ]
         },
         "Rejets": {
             "bloc": [
@@ -398,6 +392,80 @@
                 "festock"
             ]
         ],
+        "prod_e": [
+            "prod_e",
+            "api",
+            "prod_e_type_table",
+            "val"
+        ],
+        "prod_e__ref": [
+            [
+                "ref_prod_e_dessableurdegraisseur",
+                "val",
+                "Dessableur-D\u00e9graisseur",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_bassin_dorage",
+                "val",
+                "Bassin d'orage",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_clarificateur",
+                "val",
+                "Clarificateur",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_bassin_biologique",
+                "val",
+                "Bassin biologique",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_lagunage",
+                "val",
+                "Lagunage",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_degazage",
+                "val",
+                "D\u00e9gazage",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_decanteur_lamellaire",
+                "val",
+                "D\u00e9canteur lamellaire",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_filiere_eau",
+                "val",
+                "Fili\u00e8re eau",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_fpr",
+                "val",
+                "FPR",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_mbbr",
+                "val",
+                "MBBR",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_brm",
+                "val",
+                "BRM",
+                "prod_e"
+            ]
+        ],
         "qdechet": [
             "qdechet",
             "api",
@@ -438,5 +506,13 @@
                 "name"
             ]
         }
+    },
+    "Usine": {
+        "bloc": [
+            "Usine",
+            "api",
+            "usine_bloc",
+            "name"
+        ]
     }
 }

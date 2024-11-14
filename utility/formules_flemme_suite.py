@@ -8,8 +8,8 @@ Created on Tue Nov  5 09:52:26 2024
 import pandas as pd
 
 # Load the Excel file
-# file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
-file_path = '/Users/theophilemounier/Documents/stage_hydra2/emission GES _ traitement.xlsx'
+file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
+# file_path = '/Users/theophilemounier/Documents/stage_hydra2/emission GES _ traitement.xlsx'
 xls = pd.ExcelFile(file_path)
 #%%
 # Load the specific sheet
@@ -17,7 +17,7 @@ df = pd.read_excel(xls, 'Recap_formule', header=None, dtype=str)
 df.fillna('', inplace=True)
 # Extract the relevant data (from line 28 to the end, columns H to P)
 data_f_inp = df.iloc[30:, 7:17]
-data_global = df.iloc[30:, 1:5]
+data_global = df.iloc[29:, 1:5]
 #%%
 # Initialize a dictionary to store the separated tables
 def dico_f_inp(data) : 
@@ -50,7 +50,7 @@ def dico_f_inp(data) :
             # else : 
             #     raise Exception('Ma ref est dégueu %s : ligne %d' % (ref, index))
             
-        elif row[7] and all(row[i] == '' for i in range(8,16)) :
+        elif not row[7].strip().startswith('ref') and row[7] and all(row[i] == '' for i in range(8,16)) :
             
             if name : 
                 dico[name] = {'f' : current_f, 'inp' : current_inp, 'shape' : shape}
@@ -64,16 +64,19 @@ def dico_f_inp(data) :
             current_f = {}
             current_inp = {}
     
+    if name : 
+        dico[name] = {'f' : current_f, 'inp' : current_inp, 'shape' : shape}
+    
     print('flag_ref', flag_ref)
     for name, refs in flag_ref.items() :
-        if name == 'Dégazage': print('REF', refs)
+        if name == 'Filière eau': print('REF', refs)
         while refs :
             ref = refs.pop()
             
             for key in dico[ref]['f'] : 
                 
                 if key not in dico[name]['f'] : 
-                    if name == 'Dégazage': print(key)
+                    if name == 'Filière eau': print(key)
                     dico[name]['f'][key] = set()
                     flag = True
                 else :
@@ -84,12 +87,11 @@ def dico_f_inp(data) :
                     dico[name]['f'][key] = dico[name]['f'][key].union(dico[ref]['f'][key])
             for key in dico[ref]['inp'] : 
                 # if key=='d_vie' : 
-                    # print(current_inp['d_vie'])
+                if name == 'Filière eau': print(key, key not in dico[name]['inp'])
                 if key not in dico[name]['inp'] : 
                     dico[name]['inp'][key] = dico[ref]['inp'][key]
 
-    if name : 
-        dico[name] = {'f' : current_f, 'inp' : current_inp, 'shape' : shape}
+    
     
     return dico
     
@@ -101,25 +103,26 @@ def global_values(data) :
             try : 
                 value = float(row[2].replace(',', '.'))
             except : 
-                print('\n', index, row)
+                # print('\n', index, row)
                 value = None
             try : 
                 incertitude = float(row[3].replace(',', '.'))/100
             except : 
                 incertitude = 0
-                print('\n', index, row)
+                # print('\n', index, row)
             dico[row[1]] = [value, incertitude, row[4]] # value, incertitude, comment
     return dico
 
-    
-#%%
 dico_bloc = dico_f_inp(data_f_inp)
 dico_global = global_values(data_global)
+    
+#%%
+
 dico_formules = {}
 
 import formules_flemmes as ff
-# specifiques_bloc = ['Général', 'Général eau', 'Bassin cylindrique', 'Bassin biologique']
-# specifiques_bloc = ["Général boue", "Général", "Conditionnement chimique"]
+# specifiques_bloc = ['Général', 'Général eau', 'Bassin cylindrique', "Déchets", "Dessableur-Dégraisseur"]
+# specifiques_bloc = ["Général boue", "Général", "Déchets", "Dessableur-Dégraisseur"]
 # specifiques_bloc = ["Pompe", "Poste de refoulement"]
 # specifiques_bloc = ["Tamis", 'Déchets']
 inp_and_out = set(['TBentrant'])
@@ -330,6 +333,20 @@ for bloc in dico_formules :
                 type_ = types.get(d['inp'][inp][2], 'real')
                 if default : 
                     default = d['inp'][inp][0]
+                if type_ == 'list' : 
+                    for val in dico_global : 
+                        if val.lower().startswith(inp) and '(' in val: 
+                            # print(val)
+                            val_tot = val
+                            val = val_tot.split('(')[1].split(')')[0]
+                            gen_val = val_tot.split('(')[0].strip().lower()
+                            if not possible_values.get(inp) : 
+                                possible_values[inp] = set()
+                            possible_values[inp].add(val)
+                            if not global_type_table.get(gen_val) : 
+                                global_type_table[gen_val] = set()
+                            fe, incertitude, comment = dico_global[val_tot]
+                            global_type_table[gen_val].add((val, fe, incertitude, comment))
                 inputs[inp] = type_
                 default_values[inp] = default
             elif inp[-2:] == '_s' : 
@@ -492,7 +509,7 @@ for bloc in args_bloc :
         
 _cycle_dir = os.path.join(os.path.expanduser('~'), '.cycle')
 
-def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], formula_description = {}, path = os.path.join(os.path.dirname(__file__), 'excel_bloc.sql'), mode = 'a'):
+def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], formula_description = {}, path = '', mode = 'a'):
     """
     Crée un nouveau bloc dans la base de donnée en écrivant de base dans un fichier sql local,
     sûrement que plus tard on pourra le faire sur une base de donnée en ligne 
@@ -507,7 +524,7 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     if project_name : 
         path = os.path.join(_cycle_dir, project_name, 'custom_blocs.sql')
     
-    type_table = {'real' : 'real', 'integer' : 'integer', 'string' : 'varchar', 'list' : 'varchar[]'}
+    type_table = {'real' : 'real', 'integer' : 'integer', 'string' : 'varchar', 'boolean' : 'boolean'}
     
     rows = dict(entrees, **sorties)
     
@@ -517,19 +534,22 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     view_join = "additional_join => 'left"
     view_col = "additional_columns => '{"
     columns = ''
+    with open(path, 'r') as f : 
+        precedent = f.read()
     for key, value in rows.items(): 
         # print("value", value)
         if value == "list" :
         # Dans le cas où on une liste de valeur, nous allons créer un nouveau tableau pour stocker les valeurs possibles
         # Donc on doit en plus ajouter une colonne qui y fait référence dans le bloc
         # Ainsi que les colonnes additionnelles et les jointures dans le bloc.
-            table_types += f"create table ___.{key}_type_table(val ___.{key}_type primary key, FE real, incert real default 0, description text);\n"
-            new_type += f"create type ___.{key}_type as enum ("
-            for k in possible_values[key] : 
-                new_type += f"'{k}', "
-                table_types += f"insert into ___.{key}_type_table(val) values ('{k}') ;\n"
-            new_type = new_type[:-2] + ");\n"
-            table_types_view += f"select template.basic_view('{key}_type_table') ;\n"
+            if not f"create table ___.{key}_type_table" in precedent :
+                table_types += f"create table ___.{key}_type_table(val ___.{key}_type primary key, FE real, incert real default 0, description text);\n"
+                new_type += f"create type ___.{key}_type as enum ("
+                for k in possible_values[key] : 
+                    new_type += f"'{k}', "
+                    table_types += f"insert into ___.{key}_type_table(val) values ('{k}') ;\n"
+                new_type = new_type[:-2] + ");\n"
+                table_types_view += f"select template.basic_view('{key}_type_table') ;\n"
             
             view_col += f"{key}_type_table.FE as {key}_FE, {key}_type_table.description as {key}_description, "
             # à la fin on enlèvera la dernière virgule et on mettre une acolade fermante
@@ -542,7 +562,9 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
             view_join += f" join ___.{key}_type_table on {key}_type_table.val = c.{key} "
         else : line = f"{key} {type_table[value]}"
         if default_values.get(key) : 
-            line += f" default {default_values[key]}"
+            if value in type_table : 
+                line += f" default {default_values[key]}::{type_table[value]}"
+            else : line += f" default {default_values[key]}"
         line += ',\n'
         columns += line     
     
@@ -601,7 +623,7 @@ select api.add_new_bloc('{name}', 'bloc', '{shape}'
 {to_insert_formulas}
 """
     # print(query)
-    with open(path, mode) as f :
+    with open(path, mode, encoding='utf-8') as f :
         f.write(query)
         f.write('\n\n')
     
@@ -626,12 +648,16 @@ for bloc in args_bloc :
 from json_utils import json_map, save_to_json
 
 layertree = {
+    'Usine' : '',
     'Filière traitement' : {
+        'Filière eau' : '',
         'File eau' : {
             'Tamis' : '',
             'Dégrilleur' : '',
             'Clarificateur' : '',
             'Bassin biologique' : '',
+            'MBBR' : '',
+            'BRM' : '',
             'Décanteur lamellaire' : '',
             'Dessableur-Dégraisseur' : '',
             'Bassin d\'orage' : '',
@@ -639,6 +665,7 @@ layertree = {
             'FPR' : '',
             'Lagunage' : ''
         }, 
+        'Filière boue' : '',
         'File boue' : {
             'Stockage Boue' : '',
             'Conditionnement chimique' : '',
@@ -652,7 +679,7 @@ layertree = {
             'Filtre à bande' : '',
             'Filtre à presse' : '',
             'LSPR' : '',
-            'Digesteur anaérobie' : '',
+            'Digesteur / Méthaniseur' : '',
             'Digesteur aérobie' : '',
             'Chaulage' : '',
             'Compostage' : '',
@@ -677,7 +704,7 @@ layertree = {
         'Clôture' : ''
     }
 }
-# layertree = {"Tables d'égouttage" : ''}
+# layertree = {"Dessableur-Dégraisseur" : ''}
 
 def replace_key(key, string) : 
     if isinstance(string, str) :
@@ -720,12 +747,13 @@ for val in dico_global :
         
         if val in global_type_table : 
             for value in global_type_table[val] :
-                queries.add(f"update ___.{val}_type_table set fe = {value[1]}, incert = {value[2]}, description = '{value[3]}' where val = '{value[0]}' ;\n")
+                if value[1] : 
+                    queries.add(f"update ___.{val}_type_table set fe = {value[1]}, incert = {value[2]}, description = '{value[3]}' where val = '{value[0]}' ;\n")
     else : 
         if dico_global[val][0] : 
             queries_global.add(f"insert into ___.global_values(name, val, incert, comment) values ('{val.strip().lower()}', {dico_global[val][0]}, {dico_global[val][1]}, '{dico_global[val][2].replace("'", "''")}') ;\n")
         
-with open(os.path.join(os.path.dirname(__file__), '..', 'database', 'sql', 'blocs.sql'), 'a') as f :
+with open(os.path.join(os.path.dirname(__file__), '..', 'database', 'sql', 'blocs.sql'), 'a', encoding='utf-8') as f :
     for q in queries : 
         f.write(q)
     f.write('\n\n')

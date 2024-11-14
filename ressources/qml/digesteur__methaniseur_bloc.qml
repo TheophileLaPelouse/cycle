@@ -29,7 +29,7 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleLine" enabled="1" id="{e3381980-0036-43bb-a0a4-620122049f8e}">
+        <layer pass="0" locked="0" class="SimpleLine" enabled="1" id="{a0dd060a-3dde-4cd1-9b6c-cde2f910c8dc}">
           <Option type="Map">
             <Option type="QString" name="align_dash_pattern" value="0"/>
             <Option type="QString" name="capstyle" value="square"/>
@@ -41,7 +41,7 @@
             <Option type="QString" name="dash_pattern_offset_unit" value="MM"/>
             <Option type="QString" name="draw_inside_polygon" value="0"/>
             <Option type="QString" name="joinstyle" value="bevel"/>
-            <Option type="QString" name="line_color" value="255,158,23,255"/>
+            <Option type="QString" name="line_color" value="229,182,54,255"/>
             <Option type="QString" name="line_style" value="solid"/>
             <Option type="QString" name="line_width" value="0.6"/>
             <Option type="QString" name="line_width_unit" value="MM"/>
@@ -78,15 +78,15 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleFill" enabled="1" id="{bff03151-468b-4fc4-8e65-ba0bd307e62d}">
+        <layer pass="0" locked="0" class="SimpleFill" enabled="1" id="{abfe2425-b83e-4d12-bf4d-f6a257b4a86a}">
           <Option type="Map">
             <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="color" value="255,158,23,255"/>
+            <Option type="QString" name="color" value="229,182,54,255"/>
             <Option type="QString" name="joinstyle" value="bevel"/>
             <Option type="QString" name="offset" value="0,0"/>
             <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
             <Option type="QString" name="offset_unit" value="MM"/>
-            <Option type="QString" name="outline_color" value="182,113,16,255"/>
+            <Option type="QString" name="outline_color" value="164,130,39,255"/>
             <Option type="QString" name="outline_style" value="solid"/>
             <Option type="QString" name="outline_width" value="0.2"/>
             <Option type="QString" name="outline_width_unit" value="MM"/>
@@ -111,18 +111,18 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleMarker" enabled="1" id="{73e18b6b-9d7e-4d4b-8cd8-7669aea0bcd9}">
+        <layer pass="0" locked="0" class="SimpleMarker" enabled="1" id="{fe6c6a4d-aef1-433d-a160-562b6db46119}">
           <Option type="Map">
             <Option type="QString" name="angle" value="0"/>
             <Option type="QString" name="cap_style" value="square"/>
-            <Option type="QString" name="color" value="255,158,23,255"/>
+            <Option type="QString" name="color" value="229,182,54,255"/>
             <Option type="QString" name="horizontal_anchor_point" value="1"/>
             <Option type="QString" name="joinstyle" value="bevel"/>
             <Option type="QString" name="name" value="diamond"/>
             <Option type="QString" name="offset" value="0,0"/>
             <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
             <Option type="QString" name="offset_unit" value="MM"/>
-            <Option type="QString" name="outline_color" value="182,113,16,255"/>
+            <Option type="QString" name="outline_color" value="164,130,39,255"/>
             <Option type="QString" name="outline_style" value="solid"/>
             <Option type="QString" name="outline_width" value="0.2"/>
             <Option type="QString" name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
@@ -154,11 +154,11 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleMarker" enabled="1" id="{8e4405a8-d1ee-4463-831c-77e5eea53681}">
+        <layer pass="0" locked="0" class="SimpleMarker" enabled="1" id="{314d62a3-5432-49e2-b505-f9529340566f}">
           <Option type="Map">
             <Option type="QString" name="angle" value="0"/>
             <Option type="QString" name="cap_style" value="square"/>
-            <Option type="QString" name="color" value="183,72,75,255"/>
+            <Option type="QString" name="color" value="225,89,137,255"/>
             <Option type="QString" name="horizontal_anchor_point" value="1"/>
             <Option type="QString" name="joinstyle" value="bevel"/>
             <Option type="QString" name="name" value="circle"/>
@@ -242,14 +242,56 @@
         </config>
       </editWidget>
     </field>
-    <field name="mpompe" configurationFlags="NoFlag">
+    <field name="tbsortant" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="vbet" configurationFlags="NoFlag">
+    <field name="tau_abattement" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="eh" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="mes" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="dbo5" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="vbiogaz" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="welec" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="tbsortant_s" configurationFlags="NoFlag">
       <editWidget type="">
         <config>
           <Option/>
@@ -298,13 +340,19 @@
     <alias index="2" name="name" field="name"/>
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="mpompe" field="mpompe"/>
-    <alias index="6" name="vbet" field="vbet"/>
-    <alias index="7" name="ss_blocs" field="ss_blocs"/>
-    <alias index="8" name="b_type" field="b_type"/>
-    <alias index="9" name="geom_ref" field="geom_ref"/>
-    <alias index="10" name="sur_bloc" field="sur_bloc"/>
-    <alias index="11" name="model" field="model"/>
+    <alias index="5" name="Tonne de boue entrant (t/an)" field="tbsortant"/>
+    <alias index="6" name="tau_abattement" field="tau_abattement"/>
+    <alias index="7" name="Equivalent Habitants" field="eh"/>
+    <alias index="8" name="Matière en suspension (kgMES/an)" field="mes"/>
+    <alias index="9" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="10" name="Volume de biogaz produit (m3/an)" field="vbiogaz"/>
+    <alias index="11" name="Welec (kWh/an)" field="welec"/>
+    <alias index="12" name="Tonne de boue sortant (t/an)" field="tbsortant_s"/>
+    <alias index="13" name="ss_blocs" field="ss_blocs"/>
+    <alias index="14" name="b_type" field="b_type"/>
+    <alias index="15" name="geom_ref" field="geom_ref"/>
+    <alias index="16" name="sur_bloc" field="sur_bloc"/>
+    <alias index="17" name="model" field="model"/>
   </aliases>
   <splitPolicies>
     <policy policy="Duplicate" field="id"/>
@@ -312,8 +360,14 @@
     <policy policy="Duplicate" field="name"/>
     <policy policy="Duplicate" field="formula"/>
     <policy policy="Duplicate" field="formula_name"/>
-    <policy policy="Duplicate" field="mpompe"/>
-    <policy policy="Duplicate" field="vbet"/>
+    <policy policy="Duplicate" field="tbsortant"/>
+    <policy policy="Duplicate" field="tau_abattement"/>
+    <policy policy="Duplicate" field="eh"/>
+    <policy policy="Duplicate" field="mes"/>
+    <policy policy="Duplicate" field="dbo5"/>
+    <policy policy="Duplicate" field="vbiogaz"/>
+    <policy policy="Duplicate" field="welec"/>
+    <policy policy="Duplicate" field="tbsortant_s"/>
     <policy policy="Duplicate" field="ss_blocs"/>
     <policy policy="Duplicate" field="b_type"/>
     <policy policy="Duplicate" field="geom_ref"/>
@@ -326,8 +380,14 @@
     <default applyOnUpdate="0" field="name" expression=""/>
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
-    <default applyOnUpdate="0" field="mpompe" expression=""/>
-    <default applyOnUpdate="0" field="vbet" expression=""/>
+    <default applyOnUpdate="0" field="tbsortant" expression=""/>
+    <default applyOnUpdate="0" field="tau_abattement" expression=""/>
+    <default applyOnUpdate="0" field="eh" expression=""/>
+    <default applyOnUpdate="0" field="mes" expression=""/>
+    <default applyOnUpdate="0" field="dbo5" expression=""/>
+    <default applyOnUpdate="0" field="vbiogaz" expression=""/>
+    <default applyOnUpdate="0" field="welec" expression=""/>
+    <default applyOnUpdate="0" field="tbsortant_s" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
     <default applyOnUpdate="0" field="b_type" expression=""/>
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
@@ -340,8 +400,14 @@
     <constraint constraints="3" exp_strength="0" unique_strength="1" notnull_strength="1" field="name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mpompe"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vbet"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tau_abattement"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vbiogaz"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tbsortant_s"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="b_type"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="geom_ref"/>
@@ -354,8 +420,14 @@
     <constraint exp="" desc="" field="name"/>
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
-    <constraint exp="" desc="" field="mpompe"/>
-    <constraint exp="" desc="" field="vbet"/>
+    <constraint exp="" desc="" field="tbsortant"/>
+    <constraint exp="" desc="" field="tau_abattement"/>
+    <constraint exp="" desc="" field="eh"/>
+    <constraint exp="" desc="" field="mes"/>
+    <constraint exp="" desc="" field="dbo5"/>
+    <constraint exp="" desc="" field="vbiogaz"/>
+    <constraint exp="" desc="" field="welec"/>
+    <constraint exp="" desc="" field="tbsortant_s"/>
     <constraint exp="" desc="" field="ss_blocs"/>
     <constraint exp="" desc="" field="b_type"/>
     <constraint exp="" desc="" field="geom_ref"/>
@@ -371,9 +443,14 @@
       <column hidden="0" type="field" name="name" width="-1"/>
       <column hidden="1" type="field" name="formula" width="-1"/>
       <column hidden="0" type="field" name="formula_name" width="-1"/>
-      <column hidden="0" type="field" name="mpompe" width="-1"/>
-      <column hidden="0" type="field" name="vbet" width="-1"/>
+      <column hidden="0" type="field" name="tbsortant" width="-1"/>
+      <column hidden="0" type="field" name="tau_abattement" width="-1"/>
+      <column hidden="0" type="field" name="eh" width="-1"/>
+      <column hidden="0" type="field" name="mes" width="-1"/>
+      <column hidden="0" type="field" name="dbo5" width="-1"/>
+      <column hidden="0" type="field" name="vbiogaz" width="-1"/>
       <column hidden="0" type="field" name="welec" width="-1"/>
+      <column hidden="0" type="field" name="tbsortant_s" width="-1"/>
       <column hidden="0" type="field" name="ss_blocs" width="-1"/>
       <column hidden="1" type="field" name="b_type" width="-1"/>
       <column hidden="1" type="field" name="geom_ref" width="-1"/>
@@ -403,7 +480,7 @@
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
     </attributeEditorField>
-    <attributeEditorField index="11" verticalStretch="0" name="model" horizontalStretch="0" showLabel="1">
+    <attributeEditorField index="17" verticalStretch="0" name="model" horizontalStretch="0" showLabel="1">
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
@@ -412,21 +489,46 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
+          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
+        </labelStyle>
+        <attributeEditorField index="5" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
+          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
+            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
+          </labelStyle>
+        </attributeEditorField>
+      </attributeEditorContainer>
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 6" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
+          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
+        </labelStyle>
+        <attributeEditorField index="11" verticalStretch="0" name="welec" horizontalStretch="0" showLabel="1">
+          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
+            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
+          </labelStyle>
+        </attributeEditorField>
+      </attributeEditorContainer>
     </attributeEditorContainer>
     <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="Tab" name="Construction" groupBox="0" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 5" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="6" verticalStretch="0" name="vbet" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="5" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="5" verticalStretch="0" name="mpompe" horizontalStretch="0" showLabel="1">
+      </attributeEditorContainer>
+      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 4" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
+        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
+          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
+        </labelStyle>
+        <attributeEditorField index="10" verticalStretch="0" name="vbiogaz" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -437,11 +539,21 @@
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
+      <attributeEditorField index="5" verticalStretch="0" name="tbsortant" horizontalStretch="0" showLabel="1">
+        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
+          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
+        </labelStyle>
+      </attributeEditorField>
     </attributeEditorContainer>
     <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="Tab" name="Sortie" groupBox="0" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
+      <attributeEditorField index="12" verticalStretch="0" name="tbsortant_s" horizontalStretch="0" showLabel="1">
+        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
+          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
+        </labelStyle>
+      </attributeEditorField>
     </attributeEditorContainer>
   </attributeEditorForm>
   <editable/>

@@ -27,7 +27,7 @@ import os
 from pathlib import Path
 import re
 import tempfile
-from qgis.core import Qgis, QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsRelation, QgsRelationContext, QgsSettings, QgsSnappingConfig, QgsTolerance, qgsfunction, QgsMessageLog, QgsMeshLayer, QgsAttributeEditorContainer, QgsAttributeEditorField as attrfield, QgsDefaultValue, QgsRasterLayer
+from qgis.core import Qgis, QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsRelation, QgsRelationContext, QgsSettings, QgsSnappingConfig, QgsTolerance, qgsfunction, QgsMessageLog, QgsMeshLayer, QgsAttributeEditorContainer, QgsAttributeEditorField as attrfield, QgsDefaultValue, QgsRasterLayer, QgsExpression, QgsOptionalExpression
 from qgis.utils import iface
 from qgis.gui import QgsEditorWidgetFactory, QgsEditorWidgetWrapper, QgsEditorConfigWidget
 from qgis.PyQt.QtCore import QObject, QSettings, QCoreApplication, QFile
@@ -67,9 +67,41 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : '
          'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
          'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)", 
          'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)', 
-         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)'
+         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)', 'prod_e' : 'Intrant'
          }
-
+Alias_intrant = produits_chimiques = {
+    "q_hcl": "Acide chlorhydrique",
+    "q_citrique": "Acide citrique",
+    "q_phosphorique": "Acide phosphorique",
+    "q_nitrique": "Acide nitrique",
+    "q_sulf": "Acide sulfurique",
+    "q_ethanol": "Éthanol",
+    "q_antiscalant": "Antiscalants",
+    "q_nahso3": "Bisulfite de sodium",
+    "q_caco3": "Carbonate de calcium",
+    "q_soude_c": "Cristaux de soude",
+    "q_ca_regen": "Régénérant de calcium",
+    "q_ca_neuf": "Calcium neuf",
+    "q_ca_poudre": "Poudre de calcium",
+    "q_chaux": "Chaux",
+    "q_cl2": "Chlore",
+    "q_naclo3": "Chlorate de sodium",
+    "q_anti_mousse": "Antimousse",
+    "q_mhetanol": "Méthanol",
+    "q_oxyl": "Oxygène liquide",
+    "q_kmno4": "Permanganate de potassium",
+    "q_h2o2": "Peroxyde d’hydrogène",
+    "q_poly": "Floculant",
+    "q_anio": "Résine anionique",
+    "q_catio": "Résine cationique",
+    "q_rei": "Résine échangeuse d’ions",
+    "q_sable_t": "Sable de filtration",
+    "q_soude": "Soude",
+    "q_sulf_alu": "Sulfate d’aluminium",
+    "q_sulf_sod": "Sulfate de sodium",
+    "q_uree": "Urée", 
+    "q_fecl3": "Chlorure ferrique"
+}
 ConstrOnly = set(['cad', 'e', 'tauenterre'])
 
 class MessageBarLogger:
@@ -437,7 +469,7 @@ class QGisProjectManager(QObject):
         # En attendant pour pas que ce soit toujours trop long de tout recharger, plus tard y'aura un json propre qui permettra de gérer les blocs
         fieldnames = [f.name() for f in layer.fields()]
         field_fe = set()
-        
+        field_intrant = set()
         for field in fieldnames :
             if field == 'model' : 
                 defval = QgsDefaultValue()
@@ -455,6 +487,12 @@ class QGisProjectManager(QObject):
                 defval.setApplyOnUpdate(True)
                 layer.setDefaultValueDefinition(fe_idx, defval)
                 layer.setFieldAlias(fe_idx, Alias.get(field, ''))
+            elif field.startswith('q_') or field.startswith('transp_') : 
+                field_intrant.add(field)
+                if field.startswith('q_') :
+                    layer.setFieldAlias(layer.fields().indexFromName(field), 'Quantité de '+Alias_intrant[field])
+                else : 
+                    layer.setFieldAlias(layer.fields().indexFromName(field), 'Distance d\'approxivisionnement')
             else : 
                 layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
         
@@ -512,6 +550,7 @@ class QGisProjectManager(QObject):
                     c_or_e = 'expl'
                 else :
                     return set()
+            flag_intrant = False
             for val in group_field : 
                 idx = layer.fields().indexFromName(val)
                 if val in field_fe :
@@ -541,7 +580,29 @@ class QGisProjectManager(QObject):
                     # On va faire un test pas opti : 
                     if val.upper() not in level_container_children[c_or_e][lvl] :
                         level_container[c_or_e][lvl].addChildElement(container)
-                        level_container_children[c_or_e][lvl].add(val.upper())  
+                        level_container_children[c_or_e][lvl].add(val.upper()) 
+                elif val in field_intrant :
+                    if not flag_intrant :
+                        flag_intrant = True
+                        if 'prod_e' in fieldnames : 
+                            field_prod = layer.fields().indexFromName('prod_e')
+                            level_container[c_or_e][lvl].addChildElement(attrfield('prod_e', field_prod, level_container[c_or_e][lvl]))
+                            level_container_children[c_or_e][lvl].add(field_prod)
+                            for intr in field_intrant : 
+                                if intr.startswith('q_') :
+                                    q_intr = intr 
+                                    transp_intr = 'transp_'+intr[2:]
+                                else : 
+                                    q_intr = 'q_'+intr[7:]
+                                    transp_intr = intr
+                                if intr == q_intr : 
+                                    row = QgsAttributeEditorContainer(intr, level_container[c_or_e][lvl])
+                                    row.setType(Qgis.AttributeEditorContainerType(2))
+                                    row.setVisibilityExpression(QgsOptionalExpression(QgsExpression(f"\"prod_e\" = '{Alias_intrant[q_intr]}'")))
+                                    row.addChildElement(attrfield(q_intr, layer.fields().indexFromName(q_intr), row))
+                                    row.addChildElement(attrfield(transp_intr, layer.fields().indexFromName(transp_intr), row))
+                                    level_container[c_or_e][lvl].addChildElement(row)
+                            
                 elif val in f_inputs : 
                     if val not in level_container_children[c_or_e][lvl] :
                         if val in ConstrOnly : 
@@ -556,7 +617,7 @@ class QGisProjectManager(QObject):
                         # print("c_or_e", c_or_e, lvl, val)
                         level_container[c_or_e][lvl].addChildElement(attrfield(val, idx, level_container[c_or_e][lvl]))
                         level_container_children[c_or_e][lvl].add(val)
-                        layer.setFieldAlias(idx, Alias.get(val, ''))
+                        # layer.setFieldAlias(idx, Alias.get(val, ''))
                 in2tab[c_or_e][lvl] = True
             return set(group_field)
         treated = set()

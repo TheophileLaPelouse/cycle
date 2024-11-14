@@ -658,7 +658,11 @@ begin
             query := 'select incert from api.'||col||'_type_table where fe = $1 ;'; 
             execute query into incertitude using items.val ;
         else 
-            query := 'select '''||col||''' as name, '||col||'::real as val from ___.'||b_typ||'_bloc where id = $1 ; '  ; 
+            if type_ = 'boolean' then 
+                query := 'select '''||col||''' as name, '||col||'::int::real as val from ___.'||b_typ||'_bloc where id = $1 ; '  ; 
+            else
+                query := 'select '''||col||''' as name, '||col||'::real as val from ___.'||b_typ||'_bloc where id = $1 ; '  ; 
+            end if ; 
             execute query into items using id_bloc ;
             incertitude := 0.0 ;
         end if ;
@@ -744,7 +748,11 @@ begin
     -- update b_typ_bloc 
     foreach col in array colnames loop
         select data_type from information_schema.columns where table_name = b_typ||'_bloc' and column_name = col limit 1 into type_ ; 
-        if type_ != 'USER-DEFINED' then 
+        if type_ = 'boolean' then 
+            query := 'update ___.'||b_typ||'_bloc set '||col||' = (select val from inp_out where name = '''||col||''' and val is not null)::int::boolean 
+            where id = '||id_bloc||' and '||col||' is null;' ; 
+            execute query ;
+        elseif type_ != 'USER-DEFINED' then 
             query := 'update ___.'||b_typ||'_bloc set '||col||' = (select val from inp_out where name = '''||col||''' and val is not null) 
             where id = '||id_bloc||' and '||col||' is null;' ; 
             execute query ;

@@ -1,12 +1,12 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis simplifyDrawingTol="1" simplifyMaxScale="1" symbologyReferenceScale="-1" maxScale="0" simplifyLocal="1" labelsEnabled="0" hasScaleBasedVisibilityFlag="0" readOnly="0" minScale="100000000" simplifyAlgorithm="0" styleCategories="AllStyleCategories" simplifyDrawingHints="0" version="3.34.9-Prizren">
+<qgis simplifyDrawingTol="1" simplifyMaxScale="1" symbologyReferenceScale="-1" maxScale="0" simplifyLocal="1" labelsEnabled="0" hasScaleBasedVisibilityFlag="0" readOnly="0" minScale="100000000" simplifyAlgorithm="0" styleCategories="AllStyleCategories" simplifyDrawingHints="1" version="3.34.9-Prizren">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
     <Searchable>1</Searchable>
     <Private>0</Private>
   </flags>
-  <temporal limitMode="0" durationUnit="min" mode="0" startExpression="" endField="" enabled="0" endExpression="" startField="" durationField="id" fixedDuration="0" accumulate="0">
+  <temporal limitMode="0" durationUnit="min" mode="0" startExpression="" endField="" enabled="0" endExpression="" startField="" durationField="" fixedDuration="0" accumulate="0">
     <fixedRange>
       <start></start>
       <end></end>
@@ -29,7 +29,7 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleLine" enabled="1" id="{e18e9db5-2789-41d3-9d54-3dc2303e23a1}">
+        <layer pass="0" locked="0" class="SimpleLine" enabled="1" id="{9ecf195f-561a-4596-a6eb-867bf7e2276b}">
           <Option type="Map">
             <Option type="QString" name="align_dash_pattern" value="0"/>
             <Option type="QString" name="capstyle" value="square"/>
@@ -41,7 +41,7 @@
             <Option type="QString" name="dash_pattern_offset_unit" value="MM"/>
             <Option type="QString" name="draw_inside_polygon" value="0"/>
             <Option type="QString" name="joinstyle" value="bevel"/>
-            <Option type="QString" name="line_color" value="152,125,183,255"/>
+            <Option type="QString" name="line_color" value="231,113,72,255"/>
             <Option type="QString" name="line_style" value="solid"/>
             <Option type="QString" name="line_width" value="0.6"/>
             <Option type="QString" name="line_width_unit" value="MM"/>
@@ -78,15 +78,15 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleFill" enabled="1" id="{20bc88a1-ba14-4161-9ebf-9cff3a7aa1aa}">
+        <layer pass="0" locked="0" class="SimpleFill" enabled="1" id="{16ec7700-37cf-425c-9120-1b0306ded42b}">
           <Option type="Map">
             <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="color" value="152,125,183,255"/>
+            <Option type="QString" name="color" value="231,113,72,255"/>
             <Option type="QString" name="joinstyle" value="bevel"/>
             <Option type="QString" name="offset" value="0,0"/>
             <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
             <Option type="QString" name="offset_unit" value="MM"/>
-            <Option type="QString" name="outline_color" value="109,89,131,255"/>
+            <Option type="QString" name="outline_color" value="165,81,51,255"/>
             <Option type="QString" name="outline_style" value="solid"/>
             <Option type="QString" name="outline_width" value="0.2"/>
             <Option type="QString" name="outline_width_unit" value="MM"/>
@@ -111,18 +111,18 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleMarker" enabled="1" id="{a1007bbc-2c92-443d-82bc-9eb54c965b0b}">
+        <layer pass="0" locked="0" class="SimpleMarker" enabled="1" id="{e990603c-c9a6-4fba-b8f4-5f5600db6b05}">
           <Option type="Map">
             <Option type="QString" name="angle" value="0"/>
             <Option type="QString" name="cap_style" value="square"/>
-            <Option type="QString" name="color" value="152,125,183,255"/>
+            <Option type="QString" name="color" value="231,113,72,255"/>
             <Option type="QString" name="horizontal_anchor_point" value="1"/>
             <Option type="QString" name="joinstyle" value="bevel"/>
             <Option type="QString" name="name" value="diamond"/>
             <Option type="QString" name="offset" value="0,0"/>
             <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
             <Option type="QString" name="offset_unit" value="MM"/>
-            <Option type="QString" name="outline_color" value="109,89,131,255"/>
+            <Option type="QString" name="outline_color" value="165,81,51,255"/>
             <Option type="QString" name="outline_style" value="solid"/>
             <Option type="QString" name="outline_width" value="0.2"/>
             <Option type="QString" name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
@@ -146,7 +146,7 @@
   </elevation>
   <renderer-v2 forceraster="0" symbollevels="0" type="singleSymbol" referencescale="-1" enableorderby="0">
     <symbols>
-      <symbol frame_rate="10" alpha="1" type="marker" name="0" is_animated="0" force_rhr="0" clip_to_extent="1">
+      <symbol frame_rate="10" alpha="1" type="fill" name="0" is_animated="0" force_rhr="0" clip_to_extent="1">
         <data_defined_properties>
           <Option type="Map">
             <Option type="QString" name="name" value=""/>
@@ -154,26 +154,19 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" locked="0" class="SvgMarker" enabled="1" id="{5104d956-5ea0-4a30-9058-12e47c8a4a65}">
+        <layer pass="0" locked="0" class="SimpleFill" enabled="1" id="{1d21ff5d-09fe-40b4-b757-b5c42e47b553}">
           <Option type="Map">
-            <Option type="QString" name="angle" value="0"/>
-            <Option type="QString" name="color" value="231,113,72,255"/>
-            <Option type="QString" name="fixedAspectRatio" value="0"/>
-            <Option type="QString" name="horizontal_anchor_point" value="1"/>
-            <Option type="QString" name="name" value="dessableur.svg"/>
-            <Option type="QString" name="offset" value="-0.39999999999999974,-0.00000000000000006"/>
+            <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+            <Option type="QString" name="color" value="183,72,75,255"/>
+            <Option type="QString" name="joinstyle" value="bevel"/>
+            <Option type="QString" name="offset" value="0,0"/>
             <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
             <Option type="QString" name="offset_unit" value="MM"/>
             <Option type="QString" name="outline_color" value="35,35,35,255"/>
-            <Option type="QString" name="outline_width" value="0"/>
-            <Option type="QString" name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+            <Option type="QString" name="outline_style" value="solid"/>
+            <Option type="QString" name="outline_width" value="0.26"/>
             <Option type="QString" name="outline_width_unit" value="MM"/>
-            <Option name="parameters"/>
-            <Option type="QString" name="scale_method" value="diameter"/>
-            <Option type="QString" name="size" value="14.8"/>
-            <Option type="QString" name="size_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="size_unit" value="MM"/>
-            <Option type="QString" name="vertical_anchor_point" value="1"/>
+            <Option type="QString" name="style" value="solid"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
@@ -190,187 +183,61 @@
   </renderer-v2>
   <selection mode="Default">
     <selectionColor invalid="1"/>
-    <selectionSymbol>
-      <symbol frame_rate="10" alpha="1" type="marker" name="" is_animated="0" force_rhr="0" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option type="QString" name="name" value=""/>
-            <Option name="properties"/>
-            <Option type="QString" name="type" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleMarker" enabled="1" id="{647467b8-5072-4a15-a45b-72ed04d72930}">
-          <Option type="Map">
-            <Option type="QString" name="angle" value="0"/>
-            <Option type="QString" name="cap_style" value="square"/>
-            <Option type="QString" name="color" value="255,0,0,255"/>
-            <Option type="QString" name="horizontal_anchor_point" value="1"/>
-            <Option type="QString" name="joinstyle" value="bevel"/>
-            <Option type="QString" name="name" value="circle"/>
-            <Option type="QString" name="offset" value="0,0"/>
-            <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="offset_unit" value="MM"/>
-            <Option type="QString" name="outline_color" value="35,35,35,255"/>
-            <Option type="QString" name="outline_style" value="solid"/>
-            <Option type="QString" name="outline_width" value="0"/>
-            <Option type="QString" name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="outline_width_unit" value="MM"/>
-            <Option type="QString" name="scale_method" value="diameter"/>
-            <Option type="QString" name="size" value="2"/>
-            <Option type="QString" name="size_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="size_unit" value="MM"/>
-            <Option type="QString" name="vertical_anchor_point" value="1"/>
-          </Option>
-          <data_defined_properties>
-            <Option type="Map">
-              <Option type="QString" name="name" value=""/>
-              <Option name="properties"/>
-              <Option type="QString" name="type" value="collection"/>
-            </Option>
-          </data_defined_properties>
-        </layer>
-      </symbol>
-    </selectionSymbol>
   </selection>
   <customproperties>
-    <Option type="Map">
-      <Option type="int" name="embeddedWidgets/count" value="0"/>
-      <Option type="invalid" name="variableNames"/>
-      <Option type="invalid" name="variableValues"/>
-    </Option>
+    <Option/>
   </customproperties>
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>1</layerOpacity>
-  <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
-    <DiagramCategory rotationOffset="270" width="15" minScaleDenominator="0" barWidth="5" diagramOrientation="Up" sizeType="MM" spacingUnitScale="3x:0,0,0,0,0,0" opacity="1" penColor="#000000" spacing="5" lineSizeType="MM" minimumSize="0" labelPlacementMethod="XHeight" penWidth="0" enabled="0" direction="0" lineSizeScale="3x:0,0,0,0,0,0" backgroundColor="#ffffff" spacingUnit="MM" penAlpha="255" sizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" scaleBasedVisibility="0" scaleDependency="Area" height="15" showAxis="1" maxScaleDenominator="1e+08">
-      <fontProperties description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-      <attribute colorOpacity="1" label="" field="" color="#000000"/>
-      <axisSymbol>
-        <symbol frame_rate="10" alpha="1" type="line" name="" is_animated="0" force_rhr="0" clip_to_extent="1">
-          <data_defined_properties>
-            <Option type="Map">
-              <Option type="QString" name="name" value=""/>
-              <Option name="properties"/>
-              <Option type="QString" name="type" value="collection"/>
-            </Option>
-          </data_defined_properties>
-          <layer pass="0" locked="0" class="SimpleLine" enabled="1" id="{e8d7b82a-91f7-43c7-beac-45daf65e06f4}">
-            <Option type="Map">
-              <Option type="QString" name="align_dash_pattern" value="0"/>
-              <Option type="QString" name="capstyle" value="square"/>
-              <Option type="QString" name="customdash" value="5;2"/>
-              <Option type="QString" name="customdash_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-              <Option type="QString" name="customdash_unit" value="MM"/>
-              <Option type="QString" name="dash_pattern_offset" value="0"/>
-              <Option type="QString" name="dash_pattern_offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-              <Option type="QString" name="dash_pattern_offset_unit" value="MM"/>
-              <Option type="QString" name="draw_inside_polygon" value="0"/>
-              <Option type="QString" name="joinstyle" value="bevel"/>
-              <Option type="QString" name="line_color" value="35,35,35,255"/>
-              <Option type="QString" name="line_style" value="solid"/>
-              <Option type="QString" name="line_width" value="0.26"/>
-              <Option type="QString" name="line_width_unit" value="MM"/>
-              <Option type="QString" name="offset" value="0"/>
-              <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-              <Option type="QString" name="offset_unit" value="MM"/>
-              <Option type="QString" name="ring_filter" value="0"/>
-              <Option type="QString" name="trim_distance_end" value="0"/>
-              <Option type="QString" name="trim_distance_end_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-              <Option type="QString" name="trim_distance_end_unit" value="MM"/>
-              <Option type="QString" name="trim_distance_start" value="0"/>
-              <Option type="QString" name="trim_distance_start_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-              <Option type="QString" name="trim_distance_start_unit" value="MM"/>
-              <Option type="QString" name="tweak_dash_pattern_on_corners" value="0"/>
-              <Option type="QString" name="use_custom_dash" value="0"/>
-              <Option type="QString" name="width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            </Option>
-            <data_defined_properties>
-              <Option type="Map">
-                <Option type="QString" name="name" value=""/>
-                <Option name="properties"/>
-                <Option type="QString" name="type" value="collection"/>
-              </Option>
-            </data_defined_properties>
-          </layer>
-        </symbol>
-      </axisSymbol>
-    </DiagramCategory>
-  </SingleCategoryDiagramRenderer>
-  <DiagramLayerSettings priority="0" zIndex="0" placement="0" dist="0" showAll="1" linePlacementFlags="18" obstacle="0">
-    <properties>
-      <Option type="Map">
-        <Option type="QString" name="name" value=""/>
-        <Option name="properties"/>
-        <Option type="QString" name="type" value="collection"/>
-      </Option>
-    </properties>
-  </DiagramLayerSettings>
   <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
-    <activeChecks/>
+    <activeChecks type="StringList">
+      <Option type="QString" value=""/>
+    </activeChecks>
     <checkConfiguration/>
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencingLayer="Dessableur_D_graisseur_695d1608_9686_40d5_b7ca_b1dd5c7775a1" referencedLayer="Intrant_3e6bf177_eb80_4b39_9f9f_cf28780e149d" layerId="Intrant_3e6bf177_eb80_4b39_9f9f_cf28780e149d" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_dessableurdegraisseur" id="Dessableur_D_graisseur_695d1608_9686_40d5_b7ca_b1dd5c7775a1_prod_e_Intrant_3e6bf177_eb80_4b39_9f9f_cf28780e149d_val" layerName="Intrant">
+    <relation referencingLayer="Fili_re_eau_97d2eb80_d4a3_43b0_82cd_2c12438c9d33" referencedLayer="Intrant_3e6bf177_eb80_4b39_9f9f_cf28780e149d" layerId="Intrant_3e6bf177_eb80_4b39_9f9f_cf28780e149d" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_filiere_eau" id="Fili_re_eau_97d2eb80_d4a3_43b0_82cd_2c12438c9d33_prod_e_Intrant_3e6bf177_eb80_4b39_9f9f_cf28780e149d_val" layerName="Intrant">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
-    <relation referencingLayer="Dessableur_D_graisseur_695d1608_9686_40d5_b7ca_b1dd5c7775a1" referencedLayer="prod_e_dc824681_8e81_4153_acff_a1a240f6b5e0" layerId="prod_e_dc824681_8e81_4153_acff_a1a240f6b5e0" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_dessableurdegraisseur" id="Dessableur_D_graisseur_695d1608_9686_40d5_b7ca_b1dd5c7775a1_prod_e_prod_e_dc824681_8e81_4153_acff_a1a240f6b5e0_val" layerName="prod_e">
+    <relation referencingLayer="Fili_re_eau_97d2eb80_d4a3_43b0_82cd_2c12438c9d33" referencedLayer="prod_e_dc824681_8e81_4153_acff_a1a240f6b5e0" layerId="prod_e_dc824681_8e81_4153_acff_a1a240f6b5e0" strength="Association" dataSource="dbname='lol8' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" providerKey="postgres" name="ref_prod_e_filiere_eau" id="Fili_re_eau_97d2eb80_d4a3_43b0_82cd_2c12438c9d33_prod_e_prod_e_dc824681_8e81_4153_acff_a1a240f6b5e0_val" layerName="prod_e">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
   </referencedLayers>
   <fieldConfiguration>
     <field name="id" configurationFlags="NoFlag">
-      <editWidget type="Range">
+      <editWidget type="">
         <config>
-          <Option type="Map">
-            <Option type="bool" name="AllowNull" value="true"/>
-            <Option type="int" name="Max" value="2147483647"/>
-            <Option type="int" name="Min" value="-2147483648"/>
-            <Option type="int" name="Precision" value="0"/>
-            <Option type="int" name="Step" value="1"/>
-            <Option type="QString" name="Style" value="SpinBox"/>
-          </Option>
+          <Option/>
         </config>
       </editWidget>
     </field>
     <field name="shape" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
-          <Option type="Map">
-            <Option type="bool" name="IsMultiline" value="false"/>
-            <Option type="bool" name="UseHtml" value="false"/>
-          </Option>
+          <Option/>
         </config>
       </editWidget>
     </field>
     <field name="name" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
-          <Option type="Map">
-            <Option type="bool" name="IsMultiline" value="false"/>
-            <Option type="bool" name="UseHtml" value="false"/>
-          </Option>
+          <Option/>
         </config>
       </editWidget>
     </field>
     <field name="formula" configurationFlags="NoFlag">
-      <editWidget type="List">
+      <editWidget type="">
         <config>
-          <Option type="Map">
-            <Option type="bool" name="EmptyIsEmptyArray" value="false"/>
-            <Option type="bool" name="EmptyIsNull" value="true"/>
-          </Option>
+          <Option/>
         </config>
       </editWidget>
     </field>
     <field name="formula_name" configurationFlags="NoFlag">
-      <editWidget type="List">
+      <editWidget type="">
         <config>
-          <Option type="Map">
-            <Option type="bool" name="EmptyIsEmptyArray" value="false"/>
-            <Option type="bool" name="EmptyIsNull" value="true"/>
-          </Option>
+          <Option/>
         </config>
       </editWidget>
     </field>
@@ -381,36 +248,36 @@
         </config>
       </editWidget>
     </field>
+    <field name="eh" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="abatdco" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="abatngl" configurationFlags="NoFlag">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
     <field name="dbo5elim" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="w_dbo5_eau" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="lavage" configurationFlags="NoFlag">
       <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="conc" configurationFlags="NoFlag">
-      <editWidget type="">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="eh" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
@@ -836,177 +703,94 @@
         </config>
       </editWidget>
     </field>
-    <field name="tauenterre" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="vit" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="h" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="e" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="abatdco" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="abatngl" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="qe" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
     <field name="dco" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="ntk" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="mes" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="dbo5" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="tsables" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="tgraisses" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="vu" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="welec" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="qe_s" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="ngl_s" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="dco_s" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="qe_s" configurationFlags="NoFlag">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="ss_blocs" configurationFlags="NoFlag">
-      <editWidget type="List">
+      <editWidget type="">
         <config>
-          <Option type="Map">
-            <Option type="bool" name="EmptyIsEmptyArray" value="false"/>
-            <Option type="bool" name="EmptyIsNull" value="true"/>
-          </Option>
+          <Option/>
         </config>
       </editWidget>
     </field>
     <field name="b_type" configurationFlags="NoFlag">
-      <editWidget type="Enumeration">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="geom_ref" configurationFlags="NoFlag">
-      <editWidget type="Geometry">
+      <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
     <field name="sur_bloc" configurationFlags="NoFlag">
-      <editWidget type="Range">
+      <editWidget type="">
         <config>
-          <Option type="Map">
-            <Option type="bool" name="AllowNull" value="true"/>
-            <Option type="int" name="Max" value="2147483647"/>
-            <Option type="int" name="Min" value="-2147483648"/>
-            <Option type="int" name="Precision" value="0"/>
-            <Option type="int" name="Step" value="1"/>
-            <Option type="QString" name="Style" value="SpinBox"/>
-          </Option>
+          <Option/>
         </config>
       </editWidget>
     </field>
     <field name="model" configurationFlags="NoFlag">
-      <editWidget type="TextEdit">
+      <editWidget type="">
         <config>
-          <Option type="Map">
-            <Option type="bool" name="IsMultiline" value="false"/>
-            <Option type="bool" name="UseHtml" value="false"/>
-          </Option>
+          <Option/>
         </config>
       </editWidget>
     </field>
@@ -1032,11 +816,11 @@
     <alias index="3" name="formula" field="formula"/>
     <alias index="4" name="formula_name" field="formula_name"/>
     <alias index="5" name="Intrant" field="prod_e"/>
-    <alias index="6" name="DBO5 éliminée (kgDBO5/an)" field="dbo5elim"/>
-    <alias index="7" name="Consommation électrique en fonction de la DBO5 (kWh/an/DBO5)" field="w_dbo5_eau"/>
-    <alias index="8" name="lavage" field="lavage"/>
-    <alias index="9" name="conc" field="conc"/>
-    <alias index="10" name="Equivalent Habitants" field="eh"/>
+    <alias index="6" name="Equivalent Habitants" field="eh"/>
+    <alias index="7" name="abatdco" field="abatdco"/>
+    <alias index="8" name="abatngl" field="abatngl"/>
+    <alias index="9" name="DBO5 éliminée (kgDBO5/an)" field="dbo5elim"/>
+    <alias index="10" name="Consommation électrique en fonction de la DBO5 (kWh/an/DBO5)" field="w_dbo5_eau"/>
     <alias index="11" name="Quantité de Soude" field="q_soude"/>
     <alias index="12" name="Quantité de Acide sulfurique" field="q_sulf"/>
     <alias index="13" name="Distance d'approxivisionnement" field="transp_sable_t"/>
@@ -1097,44 +881,34 @@
     <alias index="68" name="Quantité de Acide nitrique" field="q_nitrique"/>
     <alias index="69" name="Distance d'approxivisionnement" field="transp_sulf"/>
     <alias index="70" name="Distance d'approxivisionnement" field="transp_nahso3"/>
-    <alias index="71" name="Taux d'enterrement" field="tauenterre"/>
-    <alias index="72" name="Vitesse (m/h)" field="vit"/>
-    <alias index="73" name="Hauteur (m)" field="h"/>
-    <alias index="74" name="Epaisseur de voile (m)" field="e"/>
-    <alias index="75" name="abatdco" field="abatdco"/>
-    <alias index="76" name="abatngl" field="abatngl"/>
-    <alias index="77" name="Débit entrant (m3/j)" field="qe"/>
-    <alias index="78" name="DCO (kgDCO/an)" field="dco"/>
-    <alias index="79" name="ntk" field="ntk"/>
-    <alias index="80" name="Matière en suspension (kgMES/an)" field="mes"/>
-    <alias index="81" name="DBO5 (kgDBO5/an)" field="dbo5"/>
-    <alias index="82" name="Tonne de sable (t/an)" field="tsables"/>
-    <alias index="83" name="Tonne de graisses (t/an)" field="tgraisses"/>
-    <alias index="84" name="Volume utile (m3)" field="vu"/>
-    <alias index="85" name="Welec (kWh/an)" field="welec"/>
-    <alias index="86" name="Débit sortant (m3/j)" field="qe_s"/>
-    <alias index="87" name="ngl_s" field="ngl_s"/>
-    <alias index="88" name="dco_s" field="dco_s"/>
-    <alias index="89" name="ss_blocs" field="ss_blocs"/>
-    <alias index="90" name="b_type" field="b_type"/>
-    <alias index="91" name="geom_ref" field="geom_ref"/>
-    <alias index="92" name="sur_bloc" field="sur_bloc"/>
-    <alias index="93" name="model" field="model"/>
-    <alias index="94" name="" field="prod_e_fe"/>
-    <alias index="95" name="prod_e_description" field="prod_e_description"/>
+    <alias index="71" name="DCO (kgDCO/an)" field="dco"/>
+    <alias index="72" name="ntk" field="ntk"/>
+    <alias index="73" name="Matière en suspension (kgMES/an)" field="mes"/>
+    <alias index="74" name="DBO5 (kgDBO5/an)" field="dbo5"/>
+    <alias index="75" name="Welec (kWh/an)" field="welec"/>
+    <alias index="76" name="ngl_s" field="ngl_s"/>
+    <alias index="77" name="dco_s" field="dco_s"/>
+    <alias index="78" name="Débit sortant (m3/j)" field="qe_s"/>
+    <alias index="79" name="ss_blocs" field="ss_blocs"/>
+    <alias index="80" name="b_type" field="b_type"/>
+    <alias index="81" name="geom_ref" field="geom_ref"/>
+    <alias index="82" name="sur_bloc" field="sur_bloc"/>
+    <alias index="83" name="model" field="model"/>
+    <alias index="84" name="" field="prod_e_fe"/>
+    <alias index="85" name="prod_e_description" field="prod_e_description"/>
   </aliases>
   <splitPolicies>
-    <policy policy="DefaultValue" field="id"/>
+    <policy policy="Duplicate" field="id"/>
     <policy policy="Duplicate" field="shape"/>
-    <policy policy="DefaultValue" field="name"/>
-    <policy policy="DefaultValue" field="formula"/>
-    <policy policy="DefaultValue" field="formula_name"/>
+    <policy policy="Duplicate" field="name"/>
+    <policy policy="Duplicate" field="formula"/>
+    <policy policy="Duplicate" field="formula_name"/>
     <policy policy="Duplicate" field="prod_e"/>
+    <policy policy="Duplicate" field="eh"/>
+    <policy policy="Duplicate" field="abatdco"/>
+    <policy policy="Duplicate" field="abatngl"/>
     <policy policy="Duplicate" field="dbo5elim"/>
     <policy policy="Duplicate" field="w_dbo5_eau"/>
-    <policy policy="Duplicate" field="lavage"/>
-    <policy policy="Duplicate" field="conc"/>
-    <policy policy="Duplicate" field="eh"/>
     <policy policy="Duplicate" field="q_soude"/>
     <policy policy="Duplicate" field="q_sulf"/>
     <policy policy="Duplicate" field="transp_sable_t"/>
@@ -1195,29 +969,19 @@
     <policy policy="Duplicate" field="q_nitrique"/>
     <policy policy="Duplicate" field="transp_sulf"/>
     <policy policy="Duplicate" field="transp_nahso3"/>
-    <policy policy="Duplicate" field="tauenterre"/>
-    <policy policy="Duplicate" field="vit"/>
-    <policy policy="Duplicate" field="h"/>
-    <policy policy="Duplicate" field="e"/>
-    <policy policy="Duplicate" field="abatdco"/>
-    <policy policy="Duplicate" field="abatngl"/>
-    <policy policy="Duplicate" field="qe"/>
     <policy policy="Duplicate" field="dco"/>
     <policy policy="Duplicate" field="ntk"/>
     <policy policy="Duplicate" field="mes"/>
     <policy policy="Duplicate" field="dbo5"/>
-    <policy policy="Duplicate" field="tsables"/>
-    <policy policy="Duplicate" field="tgraisses"/>
-    <policy policy="Duplicate" field="vu"/>
     <policy policy="Duplicate" field="welec"/>
-    <policy policy="Duplicate" field="qe_s"/>
     <policy policy="Duplicate" field="ngl_s"/>
     <policy policy="Duplicate" field="dco_s"/>
-    <policy policy="DefaultValue" field="ss_blocs"/>
+    <policy policy="Duplicate" field="qe_s"/>
+    <policy policy="Duplicate" field="ss_blocs"/>
     <policy policy="Duplicate" field="b_type"/>
-    <policy policy="DefaultValue" field="geom_ref"/>
-    <policy policy="DefaultValue" field="sur_bloc"/>
-    <policy policy="DefaultValue" field="model"/>
+    <policy policy="Duplicate" field="geom_ref"/>
+    <policy policy="Duplicate" field="sur_bloc"/>
+    <policy policy="Duplicate" field="model"/>
     <policy policy="Duplicate" field="prod_e_fe"/>
     <policy policy="Duplicate" field="prod_e_description"/>
   </splitPolicies>
@@ -1228,11 +992,11 @@
     <default applyOnUpdate="0" field="formula" expression=""/>
     <default applyOnUpdate="0" field="formula_name" expression=""/>
     <default applyOnUpdate="0" field="prod_e" expression=""/>
+    <default applyOnUpdate="0" field="eh" expression=""/>
+    <default applyOnUpdate="0" field="abatdco" expression=""/>
+    <default applyOnUpdate="0" field="abatngl" expression=""/>
     <default applyOnUpdate="0" field="dbo5elim" expression=""/>
     <default applyOnUpdate="0" field="w_dbo5_eau" expression=""/>
-    <default applyOnUpdate="0" field="lavage" expression=""/>
-    <default applyOnUpdate="0" field="conc" expression=""/>
-    <default applyOnUpdate="0" field="eh" expression=""/>
     <default applyOnUpdate="0" field="q_soude" expression=""/>
     <default applyOnUpdate="0" field="q_sulf" expression=""/>
     <default applyOnUpdate="0" field="transp_sable_t" expression=""/>
@@ -1293,24 +1057,14 @@
     <default applyOnUpdate="0" field="q_nitrique" expression=""/>
     <default applyOnUpdate="0" field="transp_sulf" expression=""/>
     <default applyOnUpdate="0" field="transp_nahso3" expression=""/>
-    <default applyOnUpdate="0" field="tauenterre" expression=""/>
-    <default applyOnUpdate="0" field="vit" expression=""/>
-    <default applyOnUpdate="0" field="h" expression=""/>
-    <default applyOnUpdate="0" field="e" expression=""/>
-    <default applyOnUpdate="0" field="abatdco" expression=""/>
-    <default applyOnUpdate="0" field="abatngl" expression=""/>
-    <default applyOnUpdate="0" field="qe" expression=""/>
     <default applyOnUpdate="0" field="dco" expression=""/>
     <default applyOnUpdate="0" field="ntk" expression=""/>
     <default applyOnUpdate="0" field="mes" expression=""/>
     <default applyOnUpdate="0" field="dbo5" expression=""/>
-    <default applyOnUpdate="0" field="tsables" expression=""/>
-    <default applyOnUpdate="0" field="tgraisses" expression=""/>
-    <default applyOnUpdate="0" field="vu" expression=""/>
     <default applyOnUpdate="0" field="welec" expression=""/>
-    <default applyOnUpdate="0" field="qe_s" expression=""/>
     <default applyOnUpdate="0" field="ngl_s" expression=""/>
     <default applyOnUpdate="0" field="dco_s" expression=""/>
+    <default applyOnUpdate="0" field="qe_s" expression=""/>
     <default applyOnUpdate="0" field="ss_blocs" expression=""/>
     <default applyOnUpdate="0" field="b_type" expression=""/>
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
@@ -1326,11 +1080,11 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="formula_name"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="prod_e"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="abatdco"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="abatngl"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5elim"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="w_dbo5_eau"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="lavage"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="conc"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="eh"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_soude"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_sulf"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_sable_t"/>
@@ -1391,29 +1145,19 @@
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="q_nitrique"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_sulf"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="transp_nahso3"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tauenterre"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vit"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="h"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="e"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="abatdco"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="abatngl"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qe"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dco"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ntk"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="mes"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dbo5"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tsables"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="tgraisses"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="vu"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="welec"/>
-    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qe_s"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ngl_s"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="dco_s"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="qe_s"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="ss_blocs"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="b_type"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="geom_ref"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="sur_bloc"/>
-    <constraint constraints="1" exp_strength="0" unique_strength="0" notnull_strength="1" field="model"/>
+    <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="model"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="prod_e_fe"/>
     <constraint constraints="0" exp_strength="0" unique_strength="0" notnull_strength="0" field="prod_e_description"/>
   </constraints>
@@ -1424,11 +1168,11 @@
     <constraint exp="" desc="" field="formula"/>
     <constraint exp="" desc="" field="formula_name"/>
     <constraint exp="" desc="" field="prod_e"/>
+    <constraint exp="" desc="" field="eh"/>
+    <constraint exp="" desc="" field="abatdco"/>
+    <constraint exp="" desc="" field="abatngl"/>
     <constraint exp="" desc="" field="dbo5elim"/>
     <constraint exp="" desc="" field="w_dbo5_eau"/>
-    <constraint exp="" desc="" field="lavage"/>
-    <constraint exp="" desc="" field="conc"/>
-    <constraint exp="" desc="" field="eh"/>
     <constraint exp="" desc="" field="q_soude"/>
     <constraint exp="" desc="" field="q_sulf"/>
     <constraint exp="" desc="" field="transp_sable_t"/>
@@ -1489,24 +1233,14 @@
     <constraint exp="" desc="" field="q_nitrique"/>
     <constraint exp="" desc="" field="transp_sulf"/>
     <constraint exp="" desc="" field="transp_nahso3"/>
-    <constraint exp="" desc="" field="tauenterre"/>
-    <constraint exp="" desc="" field="vit"/>
-    <constraint exp="" desc="" field="h"/>
-    <constraint exp="" desc="" field="e"/>
-    <constraint exp="" desc="" field="abatdco"/>
-    <constraint exp="" desc="" field="abatngl"/>
-    <constraint exp="" desc="" field="qe"/>
     <constraint exp="" desc="" field="dco"/>
     <constraint exp="" desc="" field="ntk"/>
     <constraint exp="" desc="" field="mes"/>
     <constraint exp="" desc="" field="dbo5"/>
-    <constraint exp="" desc="" field="tsables"/>
-    <constraint exp="" desc="" field="tgraisses"/>
-    <constraint exp="" desc="" field="vu"/>
     <constraint exp="" desc="" field="welec"/>
-    <constraint exp="" desc="" field="qe_s"/>
     <constraint exp="" desc="" field="ngl_s"/>
     <constraint exp="" desc="" field="dco_s"/>
+    <constraint exp="" desc="" field="qe_s"/>
     <constraint exp="" desc="" field="ss_blocs"/>
     <constraint exp="" desc="" field="b_type"/>
     <constraint exp="" desc="" field="geom_ref"/>
@@ -1516,42 +1250,92 @@
     <constraint exp="" desc="" field="prod_e_description"/>
   </constraintExpressions>
   <expressionfields/>
-  <attributeactions>
-    <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-  </attributeactions>
+  <attributeactions/>
   <attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
     <columns>
       <column hidden="0" type="field" name="id" width="-1"/>
       <column hidden="1" type="field" name="shape" width="-1"/>
       <column hidden="0" type="field" name="name" width="-1"/>
       <column hidden="1" type="field" name="formula" width="-1"/>
-      <column hidden="0" type="field" name="sur_bloc" width="-1"/>
-      <column hidden="0" type="field" name="model" width="-1"/>
-      <column hidden="0" type="field" name="ss_blocs" width="-1"/>
       <column hidden="0" type="field" name="formula_name" width="-1"/>
-      <column hidden="1" type="field" name="b_type" width="-1"/>
-      <column hidden="1" type="field" name="geom_ref" width="-1"/>
-      <column hidden="0" type="field" name="w_dbo5_eau" width="-1"/>
-      <column hidden="0" type="field" name="dbo5elim" width="-1"/>
-      <column hidden="0" type="field" name="e" width="-1"/>
       <column hidden="0" type="field" name="eh" width="-1"/>
-      <column hidden="0" type="field" name="vit" width="-1"/>
-      <column hidden="0" type="field" name="h" width="-1"/>
-      <column hidden="0" type="field" name="tauenterre" width="-1"/>
       <column hidden="0" type="field" name="abatdco" width="-1"/>
       <column hidden="0" type="field" name="abatngl" width="-1"/>
-      <column hidden="0" type="field" name="qe" width="-1"/>
+      <column hidden="0" type="field" name="q_kmno4" width="-1"/>
+      <column hidden="0" type="field" name="transp_uree" width="-1"/>
+      <column hidden="0" type="field" name="transp_sable_t" width="-1"/>
+      <column hidden="0" type="field" name="q_anio" width="-1"/>
+      <column hidden="0" type="field" name="transp_hcl" width="-1"/>
+      <column hidden="0" type="field" name="q_soude_c" width="-1"/>
+      <column hidden="0" type="field" name="q_antiscalant" width="-1"/>
+      <column hidden="0" type="field" name="transp_ca_poudre" width="-1"/>
+      <column hidden="0" type="field" name="q_soude" width="-1"/>
+      <column hidden="0" type="field" name="q_nitrique" width="-1"/>
+      <column hidden="0" type="field" name="transp_soude" width="-1"/>
+      <column hidden="0" type="field" name="transp_catio" width="-1"/>
+      <column hidden="0" type="field" name="q_anti_mousse" width="-1"/>
+      <column hidden="0" type="field" name="q_ethanol" width="-1"/>
+      <column hidden="0" type="field" name="q_cl2" width="-1"/>
+      <column hidden="0" type="field" name="q_poly" width="-1"/>
+      <column hidden="0" type="field" name="q_rei" width="-1"/>
+      <column hidden="0" type="field" name="transp_ca_regen" width="-1"/>
+      <column hidden="0" type="field" name="transp_kmno4" width="-1"/>
+      <column hidden="0" type="field" name="q_mhetanol" width="-1"/>
+      <column hidden="0" type="field" name="q_sable_t" width="-1"/>
+      <column hidden="0" type="field" name="transp_citrique" width="-1"/>
+      <column hidden="0" type="field" name="transp_ethanol" width="-1"/>
+      <column hidden="0" type="field" name="q_citrique" width="-1"/>
+      <column hidden="0" type="field" name="q_sulf_alu" width="-1"/>
+      <column hidden="0" type="field" name="q_caco3" width="-1"/>
+      <column hidden="0" type="field" name="q_nahso3" width="-1"/>
+      <column hidden="0" type="field" name="q_h2o2" width="-1"/>
+      <column hidden="0" type="field" name="transp_anti_mousse" width="-1"/>
+      <column hidden="0" type="field" name="q_ca_regen" width="-1"/>
+      <column hidden="0" type="field" name="transp_antiscalant" width="-1"/>
+      <column hidden="0" type="field" name="q_ca_neuf" width="-1"/>
+      <column hidden="0" type="field" name="transp_rei" width="-1"/>
+      <column hidden="0" type="field" name="transp_cl2" width="-1"/>
+      <column hidden="0" type="field" name="q_hcl" width="-1"/>
+      <column hidden="0" type="field" name="q_ca_poudre" width="-1"/>
+      <column hidden="0" type="field" name="transp_sulf_sod" width="-1"/>
+      <column hidden="0" type="field" name="transp_soude_c" width="-1"/>
+      <column hidden="0" type="field" name="q_chaux" width="-1"/>
+      <column hidden="0" type="field" name="q_sulf_sod" width="-1"/>
+      <column hidden="0" type="field" name="q_oxyl" width="-1"/>
+      <column hidden="0" type="field" name="q_sulf" width="-1"/>
+      <column hidden="0" type="field" name="transp_sulf" width="-1"/>
+      <column hidden="0" type="field" name="q_uree" width="-1"/>
+      <column hidden="0" type="field" name="transp_ca_neuf" width="-1"/>
+      <column hidden="0" type="field" name="q_naclo3" width="-1"/>
+      <column hidden="0" type="field" name="transp_nahso3" width="-1"/>
+      <column hidden="0" type="field" name="transp_chaux" width="-1"/>
+      <column hidden="0" type="field" name="transp_naclo3" width="-1"/>
+      <column hidden="0" type="field" name="transp_phosphorique" width="-1"/>
+      <column hidden="0" type="field" name="transp_mhetanol" width="-1"/>
+      <column hidden="0" type="field" name="transp_sulf_alu" width="-1"/>
+      <column hidden="0" type="field" name="transp_caco3" width="-1"/>
+      <column hidden="0" type="field" name="transp_h2o2" width="-1"/>
+      <column hidden="0" type="field" name="transp_oxyl" width="-1"/>
+      <column hidden="0" type="field" name="transp_poly" width="-1"/>
+      <column hidden="0" type="field" name="transp_nitrique" width="-1"/>
+      <column hidden="0" type="field" name="q_phosphorique" width="-1"/>
+      <column hidden="0" type="field" name="q_catio" width="-1"/>
+      <column hidden="0" type="field" name="transp_anio" width="-1"/>
+      <column hidden="0" type="field" name="w_dbo5_eau" width="-1"/>
+      <column hidden="0" type="field" name="dbo5elim" width="-1"/>
       <column hidden="0" type="field" name="dco" width="-1"/>
       <column hidden="0" type="field" name="ntk" width="-1"/>
       <column hidden="0" type="field" name="mes" width="-1"/>
       <column hidden="0" type="field" name="dbo5" width="-1"/>
-      <column hidden="0" type="field" name="tgraisses" width="-1"/>
-      <column hidden="0" type="field" name="tsables" width="-1"/>
-      <column hidden="0" type="field" name="vu" width="-1"/>
       <column hidden="0" type="field" name="welec" width="-1"/>
-      <column hidden="0" type="field" name="qe_s" width="-1"/>
       <column hidden="0" type="field" name="ngl_s" width="-1"/>
       <column hidden="0" type="field" name="dco_s" width="-1"/>
+      <column hidden="0" type="field" name="qe_s" width="-1"/>
+      <column hidden="0" type="field" name="ss_blocs" width="-1"/>
+      <column hidden="1" type="field" name="b_type" width="-1"/>
+      <column hidden="1" type="field" name="geom_ref" width="-1"/>
+      <column hidden="0" type="field" name="sur_bloc" width="-1"/>
+      <column hidden="0" type="field" name="model" width="-1"/>
       <column hidden="1" type="actions" width="-1"/>
     </columns>
   </attributetableconfig>
@@ -1564,23 +1348,7 @@
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
   <editforminitfilepath></editforminitfilepath>
-  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-Les formulaires QGIS peuvent avoir une fonction Python qui est appelée lorsque le formulaire est
-ouvert.
-
-Utilisez cette fonction pour ajouter une logique supplémentaire à vos formulaires.
-
-Entrez le nom de la fonction dans le champ 
-"Fonction d'initialisation Python".
-Voici un exemple:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-    geom = feature.geometry()
-    control = dialog.findChild(QWidget, "MyLineEdit")
-]]></editforminitcode>
+  <editforminitcode><![CDATA[]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
   <attributeEditorForm>
@@ -1592,7 +1360,7 @@ def my_form_open(dialog, layer, feature):
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
     </attributeEditorField>
-    <attributeEditorField index="93" verticalStretch="0" name="model" horizontalStretch="0" showLabel="1">
+    <attributeEditorField index="83" verticalStretch="0" name="model" horizontalStretch="0" showLabel="1">
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
@@ -1601,51 +1369,16 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-        </labelStyle>
-        <attributeEditorField index="10" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-        </attributeEditorField>
-        <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Valeurs par défaut spécifiques" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="1" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-          <attributeEditorField index="8" verticalStretch="0" name="lavage" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-          <attributeEditorField index="9" verticalStretch="0" name="conc" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-        </attributeEditorContainer>
-      </attributeEditorContainer>
       <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="7" verticalStretch="0" name="w_dbo5_eau" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="10" verticalStretch="0" name="w_dbo5_eau" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="6" verticalStretch="0" name="dbo5elim" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-        </attributeEditorField>
-        <attributeEditorField index="82" verticalStretch="0" name="tsables" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-        </attributeEditorField>
-        <attributeEditorField index="83" verticalStretch="0" name="tgraisses" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="9" verticalStretch="0" name="dbo5elim" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -1655,7 +1388,7 @@ def my_form_open(dialog, layer, feature):
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorField index="85" verticalStretch="0" name="welec" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="75" verticalStretch="0" name="welec" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
@@ -2121,121 +1854,6 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 1" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-        </labelStyle>
-        <attributeEditorField index="10" verticalStretch="0" name="eh" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-        </attributeEditorField>
-        <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Valeurs par défaut construction" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="1" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-          <attributeEditorField index="71" verticalStretch="0" name="tauenterre" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-          <attributeEditorField index="74" verticalStretch="0" name="e" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-        </attributeEditorContainer>
-        <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Valeurs par défaut spécifiques" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="1" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-          <attributeEditorField index="72" verticalStretch="0" name="vit" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-          <attributeEditorField index="73" verticalStretch="0" name="h" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-        </attributeEditorContainer>
-      </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 2" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-        </labelStyle>
-        <attributeEditorField index="77" verticalStretch="0" name="qe" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-        </attributeEditorField>
-        <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Valeurs par défaut construction" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="1" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-          <attributeEditorField index="71" verticalStretch="0" name="tauenterre" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-          <attributeEditorField index="74" verticalStretch="0" name="e" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-        </attributeEditorContainer>
-        <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Valeurs par défaut spécifiques" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="1" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-          <attributeEditorField index="72" verticalStretch="0" name="vit" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-          <attributeEditorField index="73" verticalStretch="0" name="h" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-        </attributeEditorContainer>
-      </attributeEditorContainer>
-      <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Niveau de détail 3" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-        </labelStyle>
-        <attributeEditorField index="84" verticalStretch="0" name="vu" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-        </attributeEditorField>
-        <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Valeurs par défaut construction" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="1" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-          <attributeEditorField index="74" verticalStretch="0" name="e" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-          <attributeEditorField index="71" verticalStretch="0" name="tauenterre" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-        </attributeEditorContainer>
-        <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="GroupBox" name="Valeurs par défaut spécifiques" groupBox="1" visibilityExpressionEnabled="0" columnCount="1" collapsed="1" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
-          <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-            <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-          </labelStyle>
-          <attributeEditorField index="73" verticalStretch="0" name="h" horizontalStretch="0" showLabel="1">
-            <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-              <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-            </labelStyle>
-          </attributeEditorField>
-        </attributeEditorContainer>
-      </attributeEditorContainer>
     </attributeEditorContainer>
     <attributeEditorContainer collapsedExpressionEnabled="0" verticalStretch="0" type="Tab" name="Entrée" groupBox="0" visibilityExpressionEnabled="0" columnCount="1" collapsed="0" collapsedExpression="" visibilityExpression="" horizontalStretch="0" showLabel="1">
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
@@ -2250,18 +1868,13 @@ def my_form_open(dialog, layer, feature):
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
-        <attributeEditorField index="94" verticalStretch="0" name="prod_e_fe" horizontalStretch="0" showLabel="1">
+        <attributeEditorField index="84" verticalStretch="0" name="prod_e_fe" horizontalStretch="0" showLabel="1">
           <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
             <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
           </labelStyle>
         </attributeEditorField>
       </attributeEditorContainer>
-      <attributeEditorField index="77" verticalStretch="0" name="qe" horizontalStretch="0" showLabel="1">
-        <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
-          <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
-        </labelStyle>
-      </attributeEditorField>
-      <attributeEditorField index="78" verticalStretch="0" name="dco" horizontalStretch="0" showLabel="1">
+      <attributeEditorField index="71" verticalStretch="0" name="dco" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
@@ -2271,131 +1884,29 @@ def my_form_open(dialog, layer, feature):
       <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
         <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorField index="86" verticalStretch="0" name="qe_s" horizontalStretch="0" showLabel="1">
+      <attributeEditorField index="76" verticalStretch="0" name="ngl_s" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
       </attributeEditorField>
-      <attributeEditorField index="87" verticalStretch="0" name="ngl_s" horizontalStretch="0" showLabel="1">
+      <attributeEditorField index="77" verticalStretch="0" name="dco_s" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
       </attributeEditorField>
-      <attributeEditorField index="88" verticalStretch="0" name="dco_s" horizontalStretch="0" showLabel="1">
+      <attributeEditorField index="78" verticalStretch="0" name="qe_s" horizontalStretch="0" showLabel="1">
         <labelStyle overrideLabelFont="0" overrideLabelColor="0" labelColor="0,0,0,255">
           <labelFont description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style="" italic="0" underline="0" bold="0" strikethrough="0"/>
         </labelStyle>
       </attributeEditorField>
     </attributeEditorContainer>
   </attributeEditorForm>
-  <editable>
-    <field name="abatdco" editable="1"/>
-    <field name="abatngl" editable="1"/>
-    <field name="b_type" editable="1"/>
-    <field name="co2" editable="1"/>
-    <field name="dbo5" editable="1"/>
-    <field name="dbo5elim" editable="1"/>
-    <field name="dco" editable="1"/>
-    <field name="dco_s" editable="1"/>
-    <field name="e" editable="1"/>
-    <field name="eh" editable="1"/>
-    <field name="formula" editable="1"/>
-    <field name="formula_name" editable="1"/>
-    <field name="geom_ref" editable="1"/>
-    <field name="h" editable="1"/>
-    <field name="id" editable="0"/>
-    <field name="mes" editable="1"/>
-    <field name="model" editable="1"/>
-    <field name="name" editable="1"/>
-    <field name="ngl_s" editable="1"/>
-    <field name="ntk" editable="1"/>
-    <field name="q" editable="1"/>
-    <field name="qe" editable="1"/>
-    <field name="qe_s" editable="1"/>
-    <field name="shape" editable="1"/>
-    <field name="ss_blocs" editable="0"/>
-    <field name="sur_bloc" editable="0"/>
-    <field name="tauenterre" editable="1"/>
-    <field name="tgraisses" editable="1"/>
-    <field name="tsables" editable="1"/>
-    <field name="vit" editable="1"/>
-    <field name="vu" editable="1"/>
-    <field name="w_dbo5_eau" editable="1"/>
-    <field name="welec" editable="1"/>
-  </editable>
-  <labelOnTop>
-    <field labelOnTop="0" name="abatdco"/>
-    <field labelOnTop="0" name="abatngl"/>
-    <field labelOnTop="0" name="b_type"/>
-    <field labelOnTop="0" name="co2"/>
-    <field labelOnTop="0" name="dbo5"/>
-    <field labelOnTop="0" name="dbo5elim"/>
-    <field labelOnTop="0" name="dco"/>
-    <field labelOnTop="0" name="dco_s"/>
-    <field labelOnTop="0" name="e"/>
-    <field labelOnTop="0" name="eh"/>
-    <field labelOnTop="0" name="formula"/>
-    <field labelOnTop="0" name="formula_name"/>
-    <field labelOnTop="0" name="geom_ref"/>
-    <field labelOnTop="0" name="h"/>
-    <field labelOnTop="0" name="id"/>
-    <field labelOnTop="0" name="mes"/>
-    <field labelOnTop="0" name="model"/>
-    <field labelOnTop="0" name="name"/>
-    <field labelOnTop="0" name="ngl_s"/>
-    <field labelOnTop="0" name="ntk"/>
-    <field labelOnTop="0" name="q"/>
-    <field labelOnTop="0" name="qe"/>
-    <field labelOnTop="0" name="qe_s"/>
-    <field labelOnTop="0" name="shape"/>
-    <field labelOnTop="0" name="ss_blocs"/>
-    <field labelOnTop="0" name="sur_bloc"/>
-    <field labelOnTop="0" name="tauenterre"/>
-    <field labelOnTop="0" name="tgraisses"/>
-    <field labelOnTop="0" name="tsables"/>
-    <field labelOnTop="0" name="vit"/>
-    <field labelOnTop="0" name="vu"/>
-    <field labelOnTop="0" name="w_dbo5_eau"/>
-    <field labelOnTop="0" name="welec"/>
-  </labelOnTop>
-  <reuseLastValue>
-    <field name="abatdco" reuseLastValue="0"/>
-    <field name="abatngl" reuseLastValue="0"/>
-    <field name="b_type" reuseLastValue="0"/>
-    <field name="co2" reuseLastValue="0"/>
-    <field name="dbo5" reuseLastValue="0"/>
-    <field name="dbo5elim" reuseLastValue="0"/>
-    <field name="dco" reuseLastValue="0"/>
-    <field name="dco_s" reuseLastValue="0"/>
-    <field name="e" reuseLastValue="0"/>
-    <field name="eh" reuseLastValue="0"/>
-    <field name="formula" reuseLastValue="0"/>
-    <field name="formula_name" reuseLastValue="0"/>
-    <field name="geom_ref" reuseLastValue="0"/>
-    <field name="h" reuseLastValue="0"/>
-    <field name="id" reuseLastValue="0"/>
-    <field name="mes" reuseLastValue="0"/>
-    <field name="model" reuseLastValue="0"/>
-    <field name="name" reuseLastValue="0"/>
-    <field name="ngl_s" reuseLastValue="0"/>
-    <field name="ntk" reuseLastValue="0"/>
-    <field name="q" reuseLastValue="0"/>
-    <field name="qe" reuseLastValue="0"/>
-    <field name="qe_s" reuseLastValue="0"/>
-    <field name="shape" reuseLastValue="0"/>
-    <field name="ss_blocs" reuseLastValue="0"/>
-    <field name="sur_bloc" reuseLastValue="0"/>
-    <field name="tauenterre" reuseLastValue="0"/>
-    <field name="tgraisses" reuseLastValue="0"/>
-    <field name="tsables" reuseLastValue="0"/>
-    <field name="vit" reuseLastValue="0"/>
-    <field name="vu" reuseLastValue="0"/>
-    <field name="w_dbo5_eau" reuseLastValue="0"/>
-    <field name="welec" reuseLastValue="0"/>
-  </reuseLastValue>
+  <editable/>
+  <labelOnTop/>
+  <reuseLastValue/>
   <dataDefinedFieldProperties/>
   <widgets/>
-  <previewExpression>"name"</previewExpression>
+  <previewExpression></previewExpression>
   <mapTip enabled="1"></mapTip>
-  <layerGeometryType>0</layerGeometryType>
+  <layerGeometryType>2</layerGeometryType>
 </qgis>
