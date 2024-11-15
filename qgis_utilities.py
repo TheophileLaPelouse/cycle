@@ -49,10 +49,10 @@ _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
 _columns_to_hide = set(['shape', 'formula', 'b_type', 'geom_ref'])
 Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'fech4_mil' : 'Milieu', 
-         'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont de la filière (t/an)', 'eh_fe' : ' ', 'welec' : 'Welec (kWh/an)',
+         'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont de la filière boue (tMS/an)', 'eh_fe' : ' ', 'welec' : 'Welec (kWh/an)',
          'dco_elim' : 'DCO éliminée (kgDCO/an)', 'tsejour' : 'Temps de séjour', 'tjour' : 'Stockage en jour', 'h' : 'Hauteur (m)', 'long' : 'Longueur (m)',
-         'larg' : 'Largeur (m)', 'vit' : 'Vitesse (m/h)', 'tbsortant' : 'Tonne de boue entrant (t/an)', 
-         'tbsortant_s' : 'Tonne de boue sortant (t/an)', 'e' : 'Epaisseur de voile (m)', 
+         'larg' : 'Largeur (m)', 'vit' : 'Vitesse (m/h)', 'tbsortant' : 'Tonne de boue entrant (tMS/an)', 
+         'tbsortant_s' : 'Tonne de boue sortant (tMS/an)', 'e' : 'Epaisseur de voile (m)', 
          'taur' : 'Taux de recirculation', 'tauenterre' : 'Taux d\'enterrement', 'prop_l' : 'rapport longueur/largeur', 'vu' : 'Volume utile (m3)', 
          'vbiogaz' : 'Volume de biogaz produit (m3/an)', 'cad' : 'Cadence pelleteuse (m3/h)', 'gros' : 'Dégrillage supérieur à 20mm', 
          'compd' : 'Avec ou sans compactage', 'compt' : 'Avec ou sans compactage', 'qe_s' : 'Débit sortant (m3/j)', 
@@ -61,7 +61,7 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : '
          'w_dbo5_eau' : 'Consommation électrique en fonction de la DBO5 (kWh/an/DBO5)', 's_geom_eh' : 'Surface en fonction des EH (m2/EH)',
          'tsables' : 'Tonne de sable (t/an)', 'tgraisses' : 'Tonne de graisses (t/an)', 'charge_bio' : 'Taux de charge', 'charge_bio_fe' : 'Valeur (kgDBO5/m3/j)',
          'siccite_e' : 'Siccité de la boue entrante', 'siccite_s' : 'Siccité de la boue sortante', 'tee' : "Tonne d'eau évaporée (t/an)",
-         'festock' : 'Taille du stockage', 'festock_fe' : '', 'q_poly' : 'Quantité de polymère (kg/an)', 'transp_poly' : "Distance d'approxivisionnement du polymère (km)",
+         'festock' : 'Taille du stockage', 'q_poly' : 'Quantité de polymère (kg/an)', 'transp_poly' : "Distance d'approxivisionnement du polymère (km)",
          'q_chaux' : 'Quantité de chaux (kg/an)', 'transp_chaux' : "Distance d'approxivisionnement de la chaux (km)",
          'q_fecl3' : 'Quantité de FeCl3 (kg/an)', 'transp_fecl3' : "Distance d'approxivisionnement du FeCl3 (km)",
          'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
