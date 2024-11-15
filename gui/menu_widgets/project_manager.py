@@ -20,7 +20,7 @@ from ...qgis_utilities import MessageBarLogger, QGisProjectManager
 from ...utility.string import normalized_name
 from ...service import get_service, set_service, services
 from qgis import processing
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsRasterLayer
 
 _bold = QFont()
 _bold.setWeight(QFont.Bold)
@@ -179,7 +179,18 @@ class ProjectManager(QDialog):
         raw_f_inputs = project.fetchone("select api.select_default_input_output() ;")
         f_inputs = raw_f_inputs[0]
         QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output, f_inputs) 
+        
+        Qproject = QgsProject.instance()
         urlWithParams = 'type=xyz&url=https://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857'
+        layers = Qproject.mapLayersByName('OpenStreetMap')
+        if not layers : 
+            rlayer = QgsRasterLayer(urlWithParams, 'OpenStreetMap', 'wms')
+            if rlayer.isValid() : 
+                Qproject.addMapLayer(rlayer)
+                root = Qproject.layerTreeRoot()
+                root.addLayer(rlayer)
+                root.removeLayer(root.findLayers()[0].layer())
+                Qproject.write()
 
         if model_name is not None:
             project.current_model = model_name

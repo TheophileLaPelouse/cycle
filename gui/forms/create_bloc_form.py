@@ -365,9 +365,9 @@ class CreateBlocWidget(QDialog):
         norm_name = normalized_name(self.bloc_name.text())
         
         # create db bloc and load it
-        
+        sql_path = os.path.join(self.__project.directory, 'custom_blocs.sql')
         query = write_sql_bloc(self.__project_name, norm_name, self.geom.currentText(), self.input, self.output, self.default_values, 
-                       self.possible_values, f'{norm_name}_bloc', self.formula, self.formula_description)
+                       self.possible_values, f'{norm_name}_bloc', self.formula, self.formula_description, path=sql_path)
         print("bonjour1")
         load_custom(self.__project_name, query=query)
         print("bonjour 2")

@@ -10,7 +10,7 @@ _custom_sql_dir = os.path.join(_cycle_dir, 'sql')
 if not os.path.exists(_custom_sql_dir):
     os.makedirs(_custom_sql_dir) 
 
-def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], formula_description = {}, path = os.path.join(_custom_sql_dir, 'custom_bloc.sql'), mode = 'a'):
+def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values = {}, possible_values = {}, abbreviation = '', formula = [], formula_description = {}, path = '', mode = 'a'):
     """
     Crée un nouveau bloc dans la base de donnée en écrivant de base dans un fichier sql local,
     sûrement que plus tard on pourra le faire sur une base de donnée en ligne 
@@ -24,8 +24,9 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     # print("possible_values", possible_values)
     if project_name : 
         path = os.path.join(_cycle_dir, project_name, 'custom_blocs.sql')
+        # Changer pour que ça soit dans le dossier du projet pareil pour le chemin de layertree
     
-    type_table = {'real' : 'real', 'integer' : 'integer', 'string' : 'varchar', 'list' : 'varchar[]', 'boolean' : 'boolean'}
+    type_table = {'real' : 'real', 'integer' : 'integer', 'string' : 'varchar', 'boolean' : 'boolean'}
     
     rows = dict(entrees, **sorties)
     
@@ -35,19 +36,22 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     view_join = "additional_join => 'left"
     view_col = "additional_columns => '{"
     columns = ''
+    with open(path, 'r') as f : 
+        precedent = f.read()
     for key, value in rows.items(): 
         # print("value", value)
         if value == "list" :
         # Dans le cas où on une liste de valeur, nous allons créer un nouveau tableau pour stocker les valeurs possibles
         # Donc on doit en plus ajouter une colonne qui y fait référence dans le bloc
         # Ainsi que les colonnes additionnelles et les jointures dans le bloc.
-            table_types += f"create table ___.{key}_type_table(val ___.{key}_type primary key, FE real, incert real default 0, description text);\n"
-            new_type += f"create type ___.{key}_type as enum ("
-            for k in possible_values[key] : 
-                new_type += f"'{k}', "
-                table_types += f"insert into ___.{key}_type_table(val) values ('{k}') ;\n"
-            new_type = new_type[:-2] + ");\n"
-            table_types_view += f"select template.basic_view('{key}_type_table') ;\n"
+            if not f"create table ___.{key}_type_table" in precedent :
+                table_types += f"create table ___.{key}_type_table(val ___.{key}_type primary key, FE real, incert real default 0, description text);\n"
+                new_type += f"create type ___.{key}_type as enum ("
+                for k in possible_values[key] : 
+                    new_type += f"'{k}', "
+                    table_types += f"insert into ___.{key}_type_table(val) values ('{k}') ;\n"
+                new_type = new_type[:-2] + ");\n"
+                table_types_view += f"select template.basic_view('{key}_type_table') ;\n"
             
             view_col += f"{key}_type_table.FE as {key}_FE, {key}_type_table.description as {key}_description, "
             # à la fin on enlèvera la dernière virgule et on mettre une acolade fermante
@@ -60,7 +64,9 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
             view_join += f" join ___.{key}_type_table on {key}_type_table.val = c.{key} "
         else : line = f"{key} {type_table[value]}"
         if default_values.get(key) : 
-            line += f" default {default_values[key]}"
+            if value in type_table : 
+                line += f" default {default_values[key]}::{type_table[value]}"
+            else : line += f" default {default_values[key]}"
         line += ',\n'
         columns += line     
     
@@ -119,7 +125,7 @@ select api.add_new_bloc('{name}', 'bloc', '{shape}'
 {to_insert_formulas}
 """
     # print(query)
-    with open(path, mode) as f :
+    with open(path, mode, encoding='utf-8') as f :
         f.write(query)
         f.write('\n\n')
     
