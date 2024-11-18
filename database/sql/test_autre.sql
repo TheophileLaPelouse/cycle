@@ -5,11 +5,12 @@ declare
     i real ;
     val1 real := 0.1;
     incert1 real := 0;
-    val2 real := 46;
+    val2 real := 40;
     incert2 real := 0.5;
     formula text := 'co2_c=(febet*e*rhobet*(24*eh*qe_eh + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh/vit)**0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit';
     -- (febet*e*rhobet*(24*eh*qe_eh*(taur + 1) + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh*(taur + 1)/vit)^0.5)) + 24.0*vit*(0.3618*e + (eh*qe_eh*(taur + 1)/vit)^0.5)^2*(feevac*rhoterre*tauenterre*(h + e) + fefonda + fepelle*cad*tauenterre*(h + e)))/vit
-    reduced_f text := '3.14159*h*vit*(e + 5.52791*(eh*qe_eh*(taur + 1)/vit)^0.5)' ;
+    -- reduced_f text := '(0.3618*e + (qe/vit)^0.5)^2*(vac*rho*tau*(h + e) + fefonda + fepelle*cad*tau*(h + e))' ;
+    reduced_f text := 'vac*rho*tau*(h + e)^2 + fefonda + fepelle*cad' ;
     eh real := 10 ; 
     qe_eh real := 0.12 ; 
     vit real := 60 ; 
@@ -20,8 +21,16 @@ begin
     raise notice 's %, i %', s, i ;
     create temp table inp_out (name text, val real, incert real) ;
     insert into inp_out values('eh', 10, 0.1) ;
-    insert into inp_out values('qe_eh', 0.12, 0.01) ;
+    insert into inp_out values('qe', 20, 0.01) ;
     insert into inp_out values('vit', 60, 0.5) ;
+    insert into inp_out values('vac', 3, 0.1) ;
+    insert into inp_out values('rho', 4, 0.1) ;
+    insert into inp_out values('tau', 5, 0.1) ;
+    insert into inp_out values('h', 6, 0.1) ;
+    insert into inp_out values('e', 7, 0.1) ;
+    insert into inp_out values('fefonda', 8, 0.1) ;
+    insert into inp_out values('fepelle', 9, 0.1) ;
+    insert into inp_out values('cad', 11, 0.1) ;
 
     raise notice 'result %', formula.calc_incertitudes((formula.write_formula(reduced_f))) ;
     drop table inp_out ;
@@ -742,71 +751,71 @@ $$ ;
 --     return to_return ;
 -- end ;
 -- $$ ;
-do $$
-declare 
-    tab integer[] := array[1, 2, 3, 4, 5] ;
-    tab2 integer[] := array[1, 2, 3, 4, 5] ;
-    i integer := 1 ;
-    j integer := 2 ;
-begin 
-    tab2[2:4] := tab[1:3] ;
-    raise notice 'tab %', tab[1:5] ;
-    tab2[i:j] := tab[i:j] ;
-end ;
-$$ ;
+-- do $$
+-- declare 
+--     tab integer[] := array[1, 2, 3, 4, 5] ;
+--     tab2 integer[] := array[1, 2, 3, 4, 5] ;
+--     i integer := 1 ;
+--     j integer := 2 ;
+-- begin 
+--     tab2[2:4] := tab[1:3] ;
+--     raise notice 'tab %', tab[1:5] ;
+--     tab2[i:j] := tab[i:j] ;
+-- end ;
+-- $$ ;
 
-create or replace function formula.resize_array(tab text[], len_sb integer, new_size integer)
-returns text[]
-language plpgsql 
-as $$ 
-declare 
-    resized text[];
-    n integer ; 
-    n_sub integer ; 
-    i integer;
-    j integer;
-begin
+-- create or replace function formula.resize_array(tab text[], len_sb integer, new_size integer)
+-- returns text[]
+-- language plpgsql 
+-- as $$ 
+-- declare 
+--     resized text[];
+--     n integer ; 
+--     n_sub integer ; 
+--     i integer;
+--     j integer;
+-- begin
 
-    n = array_length(tab, 1) ;
-    n_sub = (n/len_sb)::integer ; 
-    resized := array_fill(''::text, array[n_sub*new_size]) ;
-    for i in 0..n_sub-1 loop
-        for j in 1..len_sb loop
-            resized[i*new_size+j] := tab[i*len_sb+j] ;
-        -- resized[i*new_size+1:i*new_size+len_sb] := tab[i*len_sb+1:i*len_sb+len_sb] ;
-        end loop ;
-    end loop ;
-    return resized ; 
-end ;
-$$ ; 
+--     n = array_length(tab, 1) ;
+--     n_sub = (n/len_sb)::integer ; 
+--     resized := array_fill(''::text, array[n_sub*new_size]) ;
+--     for i in 0..n_sub-1 loop
+--         for j in 1..len_sb loop
+--             resized[i*new_size+j] := tab[i*len_sb+j] ;
+--         -- resized[i*new_size+1:i*new_size+len_sb] := tab[i*len_sb+1:i*len_sb+len_sb] ;
+--         end loop ;
+--     end loop ;
+--     return resized ; 
+-- end ;
+-- $$ ; 
 
-create or replace function formula.resize_array(tab text[], len_sb integer, new_size integer)
-returns text[]
-language plpgsql 
-as $$ 
-declare 
-    resized text[];
-    n integer ; 
-    n_sub integer ; 
-    i integer;
-    j integer;
-begin
+-- create or replace function formula.resize_array(tab text[], len_sb integer, new_size integer)
+-- returns text[]
+-- language plpgsql 
+-- as $$ 
+-- declare 
+--     resized text[];
+--     n integer ; 
+--     n_sub integer ; 
+--     i integer;
+--     j integer;
+-- begin
 
-    n = array_length(tab, 1) ;
-    n_sub = (n/len_sb)::integer ; 
-    resized := array_fill(''::text, array[n_sub*new_size]) ;
-    for i in 0..n_sub-1 loop
-        resized[i*new_size+1:i*new_size+len_sb] := tab[i*len_sb+1:i*len_sb+len_sb] ;
-    end loop ;
-    return resized ; 
-end ;
-$$ ; 
+--     n = array_length(tab, 1) ;
+--     n_sub = (n/len_sb)::integer ; 
+--     resized := array_fill(''::text, array[n_sub*new_size]) ;
+--     for i in 0..n_sub-1 loop
+--         resized[i*new_size+1:i*new_size+len_sb] := tab[i*len_sb+1:i*len_sb+len_sb] ;
+--     end loop ;
+--     return resized ; 
+-- end ;
+-- $$ ; 
 
-SELECT
-    p.proname AS function_name
-FROM
-    pg_proc p
-JOIN
-    pg_namespace n ON p.pronamespace = n.oid
-where n.nspname = 'formula' ;
+-- SELECT
+--     p.proname AS function_name
+-- FROM
+--     pg_proc p
+-- JOIN
+--     pg_namespace n ON p.pronamespace = n.oid
+-- where n.nspname = 'formula' ;
 

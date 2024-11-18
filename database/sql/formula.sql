@@ -259,6 +259,7 @@ declare
     temp_op varchar ;
     temp_op2 varchar ;
     k2 integer ;
+    shift integer ;
 begin 
     -- fonction qui réécrit une formule sous forme lisibles sans ambiguités je sais plus comment ça s'appelle mais 
     -- on a a+b*c qui devient a b c * +
@@ -279,7 +280,7 @@ begin
     args := args[1:j] ;
     -- -- raise notice 'args finale %', args ;
     for i in 1..j loop 
-        -- raise notice'args %', args[i] ;
+        raise notice'args %', args[i] ;
         if args[i] = '(' then 
             len := array_length(calc, 1) ; 
             if len < (idx + 1)*calc_sb_len then 
@@ -348,25 +349,25 @@ begin
                 calc_length[idx] := calc_length[idx] + 1 ;
             end if ;
 
-            if last_op_length[idx] > 0 then 
-                prioritized := last_op[(idx-1)*last_op_sb_len+1] ;
-            else 
-                prioritized := '' ;
-                flag_op[idx] := false ;
-            end if ;
+            -- if last_op_length[idx] > 0 then 
+            --     prioritized := last_op[(idx-1)*last_op_sb_len+1] ;
+            -- else 
+            --     prioritized := '' ;
+            --     flag_op[idx] := false ;
+            -- end if ;
             if last_op_length[idx] + 1 > last_op_sb_len then 
                 last_op := formula.resize_array(last_op, last_op_sb_len, 2*(last_op_length[idx]+1)) ;
                 last_op_sb_len := 2*(last_op_length[idx]+1) ;
             end if ;
             -- -- raise notice 'last_op %, args %', last_op, args[i] ;
             -- -- raise notice 'idx %', idx ; 
-            last_op_length[idx] := last_op_length[idx] + 1 ;
-            k2 := 1 ;
+
+            k2 := 0 ;
             -- raise notice'last_op to modif %', last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] ;
             for k in 1..last_op_length[idx] loop 
-                -- raise notice'k %, last_op %, k2 %', k, last_op[(idx-1)*last_op_sb_len+k], k2 ;
-                -- raise notice'args %', args[i] ;
-                -- raise notice'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
+                raise notice'k %, last_op %, k2 %', k, last_op[(idx-1)*last_op_sb_len+k], k2 ;
+                raise notice'args %', args[i] ;
+                raise notice'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
                 if k2 > k then 
                     -- raise notice'temp_op %', temp_op ;
                     temp_op2 := last_op[(idx-1)*last_op_sb_len+k2] ;
@@ -374,37 +375,48 @@ begin
                     temp_op := temp_op2 ;
                     k2 := k2 + 1 ;
                 elseif formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) then 
+                    shift = k ; 
                     temp_op := last_op[(idx-1)*last_op_sb_len+k] ;
                     last_op[(idx-1)*last_op_sb_len+k] := args[i] ;
                     k2 := k + 2 ; 
                 end if ; 
             end loop ;
+            raise notice 'après la boucle k %, k2 %', last_op_length[idx], k2 ; 
+            if k2 > last_op_length[idx] then 
+                last_op[(idx-1)*last_op_sb_len+k2] := temp_op ;
+            else 
+                last_op[(idx-1)*last_op_sb_len+last_op_length[idx]+1] := args[i] ;
+                shift := last_op_length[idx] + 1 ;
+            end if ; 
+            flag_op[idx] := (shift is not null and shift != 1) ;
+            last_op_length[idx] := last_op_length[idx] + 1 ;
             -- raise notice'last_op modified %', last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] ;
             -- raise notice'length after insert %', last_op_length ;
             -- à tester
             -- last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] := formula.insert_op(last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len], args[i]) ;
-            
-            if prioritized = last_op[(idx-1)*last_op_sb_len+1] then 
-                flag_op[idx] := true ;
-            end if ;
+
             if flag_op[idx] then 
-                if calc_length[idx] + 1 > calc_sb_len then 
-                    calc := formula.resize_array(calc, calc_sb_len, 2*(calc_length[idx]+1)) ;
-                    calc_sb_len := 2*(calc_length[idx]+1) ;
+                if calc_length[idx] + shift > calc_sb_len then 
+                    calc := formula.resize_array(calc, calc_sb_len, 2*(calc_length[idx]+shift)) ;
+                    calc_sb_len := 2*(calc_length[idx]+shift) ;
                 end if ;
-                calc[(idx-1)*calc_sb_len+calc_length[idx]+1] := last_op[(idx-1)*last_op_sb_len+1] ;
-                for k in 1..last_op_length[idx]-1 loop 
-                    last_op[(idx-1)*last_op_sb_len+k] := last_op[(idx-1)*last_op_sb_len+k+1] ;
+                for k in 1..shift-1 loop 
+                    calc[(idx-1)*calc_sb_len+calc_length[idx]+k] := last_op[(idx-1)*last_op_sb_len+k] ;
+                end loop ;
+                -- calc[(idx-1)*calc_sb_len+calc_length[idx]+1] := last_op[(idx-1)*last_op_sb_len+1] ;
+                for k in 1..last_op_length[idx]-(shift-1) loop 
+                    last_op[(idx-1)*last_op_sb_len+k] := last_op[(idx-1)*last_op_sb_len+k+shift-1] ;
                 end loop ;
                 -- last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len-1] := last_op[(idx-1)*last_op_sb_len+2:idx*last_op_sb_len] ;
-                last_op_length[idx] := last_op_length[idx] - 1 ;
-                calc_length[idx] := calc_length[idx] + 1 ;
+                last_op_length[idx] := last_op_length[idx] - (shift-1) ;
+                calc_length[idx] := calc_length[idx] + shift-1 ;
                 flag_op[idx] := false ;
             end if ;
         end if ;
-        -- -- raise noticeE'\n idx %, calc %', idx, calc ;
-        -- raise notice'last_op %', last_op ;
-        -- raise notice'calc_length %, last_op_length %', calc_length, last_op_length ;
+        raise notice 'idx %', idx ;
+        raise notice 'calc %', calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ;
+        raise notice'last_op %', last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
+        raise notice'calc_length %, last_op_length %', calc_length, last_op_length ;
     end loop ;
     if calc_length[idx] + last_op_length[idx] > calc_sb_len then 
         calc := formula.resize_array(calc, calc_sb_len, (calc_length[idx] + last_op_length[idx])+1) ;
@@ -451,6 +463,7 @@ begin
     fin := 0 ;
     if n = 0 then return result ; end if ;
     i := 1 ;
+    raise notice 'calc %', calc ;
     while i < n+1 loop
         new := calc[i] ;
         i:=i+1 ;
@@ -468,6 +481,7 @@ begin
             case
             when new = '+' then 
                 -- somme des incertitudes
+                new_val := val1 + val2 ;
                 -- raise notice 'ici 7, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_incert := (incert1*val1 + incert2*val2)/(val1 + val2) ;
                 -- raise notice 'ici 8, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
@@ -505,7 +519,7 @@ begin
             -- raise notice 'ici 10, val1 = %, incert1 = %', new_val, new_incert; 
             calc_incert[fin] := new_incert ;
             -- raise notice 'vent'  ;
-        else
+        elseif new != '' then
             if regexp_matches(new, '^[0-9]+(\.[0-9]+)?$') is not null then 
                 val1 := new::real ;
                 incert1 := 0.0 ;
@@ -518,9 +532,9 @@ begin
             calc_incert[fin] := incert1 ;
             
         end if ;
-        -- -- raise notice 'new %', new ;
-        -- -- raise notice 'calc_val %', calc_val ;
-        -- -- raise notice 'calc_incert %', calc_incert ;
+        -- raise notice 'new %', new ;
+        -- raise notice 'calc_val %', calc_val[:fin] ;
+        -- raise notice 'calc_incert %', calc_incert[:fin] ;
     end loop ; 
     raise notice 'val %', calc_val[fin] ;
     raise notice 'incert %', calc_incert[fin] ;
