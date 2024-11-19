@@ -1,4 +1,30 @@
 {
+    "Blocs abstraits": {
+        "Lien": {
+            "bloc": [
+                "Lien",
+                "api",
+                "lien_bloc",
+                "name"
+            ]
+        },
+        "Source": {
+            "bloc": [
+                "Source",
+                "api",
+                "source_bloc",
+                "name"
+            ]
+        },
+        "Sur bloc": {
+            "bloc": [
+                "Sur bloc",
+                "api",
+                "sur_bloc_bloc",
+                "name"
+            ]
+        }
+    },
     "Construction autre": {
         "B\u00e2timent d'exploitation": {
             "bloc": [
@@ -13,6 +39,14 @@
                 "Cl\u00f4ture",
                 "api",
                 "cloture_bloc",
+                "name"
+            ]
+        },
+        "D\u00e9construction": {
+            "bloc": [
+                "D\u00e9construction",
+                "api",
+                "deconstruction_bloc",
                 "name"
             ]
         },
@@ -336,20 +370,6 @@
                 "charge_bio"
             ]
         ],
-        "fecc": [
-            "fecc",
-            "api",
-            "fecc_type_table",
-            "val"
-        ],
-        "fecc__ref": [
-            [
-                "ref_fecc_conditionnement_chimique",
-                "val",
-                "Conditionnement chimique",
-                "fecc"
-            ]
-        ],
         "fech4_mil": [
             "fech4_mil",
             "api",
@@ -414,12 +434,6 @@
         ],
         "prod_e__ref": [
             [
-                "ref_prod_e_decanteur_lamellaire",
-                "val",
-                "D\u00e9canteur lamellaire",
-                "prod_e"
-            ],
-            [
                 "ref_prod_e_degazage",
                 "val",
                 "D\u00e9gazage",
@@ -429,6 +443,24 @@
                 "ref_prod_e_bassin_dorage",
                 "val",
                 "Bassin d'orage",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_decanteur_lamellaire",
+                "val",
+                "D\u00e9canteur lamellaire",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_fpr",
+                "val",
+                "FPR",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_bassin_biologique",
+                "val",
+                "Bassin biologique",
                 "prod_e"
             ],
             [
@@ -465,18 +497,6 @@
                 "ref_prod_e_dessableurdegraisseur",
                 "val",
                 "Dessableur-D\u00e9graisseur",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_bassin_biologique",
-                "val",
-                "Bassin biologique",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_fpr",
-                "val",
-                "FPR",
                 "prod_e"
             ]
         ],

@@ -48,7 +48,8 @@ _svg_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), 'ressources'
 _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
 _columns_to_hide = set(['shape', 'formula', 'b_type', 'geom_ref'])
-Alias = {'ngl' : 'NGL (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'fech4_mil' : 'Milieu', 
+Alias = {'ngl' : 'NGL (kgNGL/an)', 'ngl_s' : 'NGL sortant (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'dco_s' : 'DCO sortant (kgDCO/an)', 
+         'fech4_mil' : 'Milieu', 
          'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont de la filière boue (tMS/an)', 'eh_fe' : ' ', 'welec' : 'Welec (kWh/an)',
          'dco_elim' : 'DCO éliminée (kgDCO/an)', 'tsejour' : 'Temps de séjour', 'tjour' : 'Stockage en jour', 'h' : 'Hauteur (m)', 'long' : 'Longueur (m)',
          'larg' : 'Largeur (m)', 'vit' : 'Vitesse (m/h)', 'tbsortant' : 'Tonne de boue entrant (tMS/an)', 
@@ -106,6 +107,8 @@ Alias_intrant = produits_chimiques = {
     "q_fecl3": "Chlorure ferrique"
 }
 ConstrOnly = set(['cad', 'e', 'tauenterre'])
+
+Input_and_output = set(['tbentrant'])
 
 class MessageBarLogger:
     def __init__(self, message_bar):
@@ -466,9 +469,12 @@ class QGisProjectManager(QObject):
     @staticmethod
     def update1qml(project, dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
         t1 = time.time()
+        
+        try : layer.loadNamedStyle(qml)
+        except : pass
         config = layer.editFormConfig()
         try : config.setLayout(Qgis.AttributeFormLayout(1))
-        except : pass
+        except : rapid = 1
         # En attendant pour pas que ce soit toujours trop long de tout recharger, plus tard y'aura un json propre qui permettra de gérer les blocs
         fieldnames = [f.name() for f in layer.fields()]
         field_fe = set()
@@ -659,13 +665,17 @@ class QGisProjectManager(QObject):
             else:
                 tab.addChildElement(attrfield(val, idx, tab))
                 
-        for val in inp_outs['out'] : 
+        for val in inp_outs['out'] :
             addval2tab(val, output_tab)
         for val in inp_outs['inp'] : 
             flag_in = False
             if val[-2:] == '_e' : 
                 flag_in = True
             elif val + '_s' in inp_outs['out'] :
+                flag_in = True
+            if val=='prod_e' :
+                flag_in = False
+            if val in Input_and_output :
                 flag_in = True
             if flag_in :
                 addval2tab(val, input_tab)

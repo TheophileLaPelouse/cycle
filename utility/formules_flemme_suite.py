@@ -357,6 +357,16 @@ for bloc in dico_formules :
                 if default : 
                     default_values[inp] = default
                 outs.add(inp)
+            
+            elif inp in inp_and_out : 
+                inps.add(inp)
+                outs.add(inp)
+                type_ = types.get(d['inp'][inp][2], 'real')
+                default = d['inp'][inp][0]
+                inputs[inp] = type_
+                outputs[inp] = type_
+                if default : 
+                    default_values[inp] = default
         
         for lvl in res : 
             for key in res[lvl] :
@@ -701,7 +711,8 @@ layertree = {
         'Excavation' : '',
         'Bâtiment d\'exploitation' : '',
         'Voirie' : '',
-        'Clôture' : ''
+        'Clôture' : '', 
+        'Déconstruction' : ''
     }
 }
 # layertree = {"Dessableur-Dégraisseur" : ''}
@@ -734,6 +745,11 @@ for bloc in args_bloc :
         #     qml = f.read()
         # whith open()
 layertree['Properties'] = properties
+abstract = {}
+abstract['Lien'] = {"bloc": ["Lien", "api", "lien_bloc", "name"]}
+abstract['Sur bloc'] = {"bloc": ["Sur bloc", "api", "sur_bloc_bloc", "name"]}
+abstract['Source'] = {"bloc": ["Source", "api", "source_bloc", "name"]}
+layertree['Blocs abstraits'] = abstract
 save_to_json(layertree, os.path.join(os.path.dirname(__file__), '..', 'layertree.json'))
 
 #%% PLus que les global values 
