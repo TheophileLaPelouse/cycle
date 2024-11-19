@@ -8,8 +8,8 @@ Created on Tue Nov  5 09:52:26 2024
 import pandas as pd
 
 # Load the Excel file
-file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
-# file_path = '/Users/theophilemounier/Documents/stage_hydra2/emission GES _ traitement.xlsx'
+# file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
+file_path = '/Users/theophilemounier/Documents/stage_hydra2/emission GES _ traitement.xlsx'
 xls = pd.ExcelFile(file_path)
 #%%
 # Load the specific sheet
@@ -121,12 +121,12 @@ dico_global = global_values(data_global)
 dico_formules = {}
 
 import formules_flemmes as ff
-# specifiques_bloc = ['Général', 'Général eau', 'Bassin cylindrique', "Déchets", "Dessableur-Dégraisseur"]
+specifiques_bloc = ['Général', 'Général eau', 'Bassin cylindrique', "Déchets", "Dessableur-Dégraisseur"]
 # specifiques_bloc = ["Général boue", "Général", "Déchets", "Dessableur-Dégraisseur"]
 # specifiques_bloc = ["Pompe", "Poste de refoulement"]
 # specifiques_bloc = ["Tamis", 'Déchets']
 inp_and_out = set(['TBentrant'])
-specifiques_bloc = None
+# specifiques_bloc = None
 if not specifiques_bloc : 
     specifiques_bloc = set(dico_bloc.keys())
 for bloc in specifiques_bloc : 

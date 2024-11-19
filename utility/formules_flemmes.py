@@ -97,14 +97,16 @@ def insert_op(operators, op) :
         '+': 1,
         '-': 1
     }
+    print('op', operators)
     if not operators :
-        return [op]
+        return [op], -1
     else : 
         k = 0
         while k < len(operators) and priority[op] <= priority[operators[k]] :
             k += 1
         operators = operators[:k] + [op] + operators[k:]
-    return operators
+        print('op2', operators)
+    return (operators, k)
 
 def write_formula(expr, dico, var = set(), c = 0):
     # print("Dans write formula", expr)
@@ -145,16 +147,15 @@ def write_formula(expr, dico, var = set(), c = 0):
                 calc[idx].append('('+written_formula + ')')
             # print("written formula", calc[idx][-1])
         elif args[i] in operators :
-            try : 
-                prioriorized = last_op[idx][0]
-            except : 
-                flag_op[idx] = False
-                prioriorized = None
-            last_op[idx] = insert_op(last_op[idx], args[i])
-            if prioriorized == last_op[idx][0] :
-                flag_op[idx] = True
+            # print(insert_op(last_op[idx], args[i]))
+            last_op[idx], shift = insert_op(last_op[idx], args[i])
+            print('length', len(last_op[idx]), shift)
+            flag_op[idx] = shift > 0
             if flag_op[idx] :
-                calc[idx].append(last_op[idx].pop(0))
+                k = 0
+                while k < shift :
+                    calc[idx].append(last_op[idx].pop(0))
+                    k += 1
                 flag_op[idx] = False
         elif args[i] :
             calc[idx].append(args[i])
