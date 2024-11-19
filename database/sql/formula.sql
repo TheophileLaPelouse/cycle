@@ -457,6 +457,7 @@ declare
     result ___.res ; 
 begin 
     n = array_length(calc, 1) ;
+    raise notice 'n %', n ;
     calc_val := array_fill(0.0, array[n]) ;
     calc_incert := array_fill(0.0, array[n]) ;
     deb := 1 ;
@@ -532,9 +533,10 @@ begin
             calc_incert[fin] := incert1 ;
             
         end if ;
-        -- raise notice 'new %', new ;
-        -- raise notice 'calc_val %', calc_val[:fin] ;
-        -- raise notice 'calc_incert %', calc_incert[:fin] ;
+        raise notice 'new %', new ;
+        raise notice 'calc_val %', calc_val[:fin] ;
+        raise notice 'calc_incert %', calc_incert[:fin] ;
+        raise notice 'suite %', calc[i:i+10] ; 
     end loop ; 
     raise notice 'val %', calc_val[fin] ;
     raise notice 'incert %', calc_incert[fin] ;
@@ -993,155 +995,25 @@ end ;
 $$ ;
 
 
--- create or replace function api.update_results_ss_bloc(id_bloc integer, old_sur_bloc integer, deleted boolean default false)
--- returns void
--- language plpgsql as
--- $$
--- declare 
---     container integer ;
---     sb integer ; 
---     keys varchar[] := array['co2_e', 'co2_c', 'ch4_e', 'ch4_c', 'n2o_e', 'n2o_c'] ;
---     k varchar ;
---     f varchar ;
---     n_sb boolean;
---     s_old ___.res ;
---     s_new ___.res ;
---     s_new_record record ; 
---     s_old_record record ;
---     new_res ___.res ;
---     tic timestamp ; 
---     tac timestamp ; 
---     continue boolean[] := array[true, true] ; 
---     concr boolean ;
---     b_typ ___.bloc_type ;
---     c integer ;
--- begin   
---     -- raise notice 'On update les résultats des sur_blocs %', (select name from ___.bloc where id = id_bloc) ;
---     b_typ := (select b_type from ___.bloc where id = id_bloc) ;
---     select into concr concrete from api.input_output where b_type = b_typ ;
---     if not concr and b_typ != 'sur_bloc' then 
---         return ;
---     end if ;
---     create temp table old_results(id integer, name varchar, result_ss_blocs ___.res, result_ss_blocs_intrant ___.res) on commit drop ;
---     insert into old_results(id, name, result_ss_blocs, result_ss_blocs_intrant) 
---     select id, name, result_ss_blocs, result_ss_blocs_intrant from ___.results where id = id_bloc ;
---     -- -- raise notice 'old_results = %', (select jsonb_object_agg(name, result_ss_blocs) from ___.results where id = id_bloc) ;
---     perform api.get_results_ss_bloc(id_bloc) ;
---     if deleted then
---         update ___.results set val = null, result_ss_blocs = null, result_ss_blocs_intrant = null where id = id_bloc ;
---         -- -- raise notice 'Results deleted' ;
---     end if ;
---     if old_sur_bloc is null then 
---         drop table old_results ;
---         return ;
---     end if ;
---     create temp table fifo(id serial primary key, value integer) on commit drop ;
-
---     -- raise notice 'old_sur_bloc = %', (select name from ___.bloc where id = old_sur_bloc) ;
---     insert into fifo(value) values (old_sur_bloc) ;
---     sb := id_bloc ;
---     c := 0 ;
---     while (select count(*) from fifo) > 0 and c < 100 loop
-        
---         -- raise notice 'fifo = %', (select array_agg((select name from ___.bloc where ___.bloc.id = fifo.value)) from fifo) ;
---         c := c + 1 ;
---         -- raise notice 'c = %', c ;
---         -- raise notice 'old_results = %', (select result_ss_blocs from old_results where name = 'co2_e' and id = sb and result_ss_blocs is not null limit 1) ;
---         -- raise notice 'new_results = %', (select result_ss_blocs from ___.results where name = 'co2_e' and id = sb and result_ss_blocs is not null limit 1) ;
---         container := formula.pop('fifo')::integer ;
-
---         insert into old_results(id, name, result_ss_blocs, result_ss_blocs_intrant) 
---         select id, name, result_ss_blocs, result_ss_blocs_intrant from ___.results 
---         where id = (select sur_bloc from ___.bloc where id = container) ;
-
---         -- -- raise notice E'\ncontainer = %, sb = %', container, sb ;
---         -- raise notice 'sb = %, container = %', (select name from ___.bloc where id = sb), (select name from ___.bloc where id = container) ;
---         foreach k in array keys loop
---             select into s_old_record result_ss_blocs from old_results where name = k and id = sb and result_ss_blocs is not null ;
---             select into s_new_record result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
---             s_old := s_old_record.result_ss_blocs ;
---             s_new := s_new_record.result_ss_blocs ;
---             -- -- raise notice 's_new = %, s_old = %', s_new, s_old ;
---             -- select into s_new result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
---             -- Je sais pas pouquoi la ligne d'au dessus ne marche pas
---             if s_new is null then
---                 with max_detail as (select max(detail_level) as max_detail from ___.results 
---                 where name = k and id = container and val is not null and detail_level < 6), 
---                 somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results, max_detail 
---                 where name = k and id = container and detail_level = max_detail.max_detail)
---                 update ___.results set result_ss_blocs = (select somme.val from somme) 
---                 where name = k and id = container ;
---             elseif s_new is not null and s_old is null then 
---                 perform api.get_results_ss_bloc(container) ;
---             elseif s_new is not null and s_new != s_old then
---                 select into new_res result_ss_blocs from ___.results where name = k and id = container and result_ss_blocs is not null ;
---                 new_res.incert := (s_new.incert*s_new.val + new_res.incert*new_res.val + s_old.incert*s_old.val)/(s_new.val + new_res.val - s_old.val) ;
---                 new_res.val := s_new.val + new_res.val - s_old.val ;
---                 update ___.results set result_ss_blocs = new_res where name = k and id = container ;
---             else 
---                 continue[1] := false ;
---             end if ;
---             select into s_old_record result_ss_blocs_intrant from old_results where name = k and id = sb and result_ss_blocs_intrant is not null ;
---             select into s_new_record result_ss_blocs_intrant from ___.results where name = k and id = sb and result_ss_blocs_intrant is not null ;
---             s_new := s_new_record.result_ss_blocs_intrant ;
---             s_old := s_old_record.result_ss_blocs_intrant ;
-
---             if s_new is null then
---                 with somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results where name = k and id = container and detail_level = 6)
---                 update ___.results set result_ss_blocs_intrant = (select somme.val from somme) where name = k and id = container ;
---             elseif s_new is not null and s_old is null then
---                 perform api.get_results_ss_bloc(container) ;
---             elseif s_new is not null and s_new != s_old then
---                 select into new_res result_ss_blocs_intrant from ___.results where name = k and id = container and result_ss_blocs is not null ;
---                 new_res.incert := (s_new.incert*s_new.val + new_res.incert*new_res.val + s_old.incert*s_old.val)/(s_new.val + new_res.val - s_old.val) ;
---                 new_res.val := s_new.val + new_res.val - s_old.val ;
---                 update ___.results set result_ss_blocs_intrant = new_res where name = k and id = container ;
---             else 
---                 continue[2] := false ;
---             end if ;
-
---             if continue[1] or continue[2] then 
---                 sb := container ;
---                 select into container sur_bloc from ___.bloc where id = container ;
---                 -- raise notice 'sb2 = %, container2 = %', sb, container ;
---                 if container is not null then 
---                     insert into fifo(value) values (container) ;
---                 end if ;
---                 continue := array[true, true] ;
---             end if ; 
---         end loop ;
---     end loop ;
---     if c = 100 then 
---         raise exception 'Too many iterations' ;
---     end if ;
---     drop table fifo ;
---     drop table old_results ;
---     return ;
--- end ;
--- $$ ;
 
 
-create view api.results as
-with normal as (
-    select id, formula, name, detail_level, result_ss_blocs, val, co2_eq
-    from ___.results 
-),
-norm_lvl_max as (
-    select id, name, max(detail_level) as max_lvl from normal where detail_level < 6 group by id, name 
-),
-intrant as (
-    select id, formula, name, detail_level, result_ss_blocs_intrant, val
-    from ___.results
-),
-in_use as (select distinct normal.id, normal.name, normal.detail_level, normal.formula, co2_eq 
-from normal 
-join intrant on normal.id = intrant.id and normal.name = intrant.name 
-join norm_lvl_max on normal.id = norm_lvl_max.id and normal.name = norm_lvl_max.name
+create view api.results as 
+with 
+useable as (select * from ___.results where val is not null and formula is not null), 
+unsuable as (select * from ___.results where val is null and formula is not null), 
+norm_lvl_max as (select id, name, max(detail_level) as max_lvl from useable where detail_level < 6 group by id, name), 
+in_use as (select distinct useable.id, useable.name, useable.detail_level, useable.formula, co2_eq 
+from useable
+join norm_lvl_max on useable.id = norm_lvl_max.id and useable.name = norm_lvl_max.name
 where ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null 
-and (normal.detail_level = norm_lvl_max.max_lvl or normal.detail_level = 6)
+and (useable.detail_level = norm_lvl_max.max_lvl or useable.detail_level = 6)
 ),
-exploit as (select distinct name, id, co2_eq from in_use where name like '%_e'),
-constr as (select distinct name, id, co2_eq from in_use where name like '%_c')
+results as (select id, name, co2_eq from ___.results), 
+exploit as (select distinct id, name, co2_eq from ___.results where name like '%_e'), 
+constr as (select distinct id, name, co2_eq from ___.results where name like '%_c'),
+res_exploit as (select id, name, formula.sum_incert((co2_eq).val, (co2_eq).incert) as co2_eq from exploit group by id, name),
+res_constr as (select id, name, formula.sum_incert((co2_eq).val, (co2_eq).incert) as co2_eq from constr group by id, name )
+
 select ___.results.id, ___.bloc.name, model, jsonb_build_object(
     'data', jsonb_agg(
         jsonb_build_object(
@@ -1156,15 +1028,15 @@ select ___.results.id, ___.bloc.name, model, jsonb_build_object(
         )
         )
     ) as res, 
-    formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert) as co2_eq_e, -- il fallait juste une fonction d'aggrégat
-    formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert) as co2_eq_c
+    row(max((res_exploit.co2_eq).val), max((res_exploit.co2_eq).incert))::___.res as co2_eq_e, -- il fallait juste une fonction d'aggrégat
+    row(max((res_constr.co2_eq).val), max((res_constr.co2_eq).incert))::___.res as co2_eq_c
 from ___.results
 join ___.bloc on ___.bloc.id = ___.results.id
 left join in_use on ___.results.id = in_use.id and 
 ___.results.name = in_use.name and ___.results.detail_level = in_use.detail_level
-left join exploit on ___.results.id = exploit.id and ___.results.name = exploit.name
-left join constr on ___.results.id = constr.id and ___.results.name = constr.name
-where ___.results.formula is not null 
+left join res_exploit on ___.results.id = res_exploit.id and ___.results.name = res_exploit.name
+left join res_constr on ___.results.id = res_constr.id and ___.results.name = res_constr.name
+-- where ___.results.formula is not null 
 group by ___.results.id, model, ___.bloc.name;
 
 create or replace function api.get_histo_data(p_model varchar, bloc_name varchar default null)
@@ -1230,9 +1102,11 @@ begin
             exploit as (select distinct name, co2_eq from results where name like '%_e'),
             constr as (select distinct name, co2_eq from results where name like '%_c')
             select into js2 jsonb_build_object(
-                'co2_eq_e', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
-                'co2_eq_c', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
-            ) from exploit, constr ;
+                'co2_eq_e', formula.sum_incert(coalesce((exploit.co2_eq).val, 0), coalesce((exploit.co2_eq).incert, 0)),
+                'co2_eq_c', formula.sum_incert(coalesce((constr.co2_eq).val, 0), coalesce((constr.co2_eq).incert, 0))
+            ) 
+            from exploit
+            full join constr on exploit.name = constr.name;
 
             if not js2 ? 'co2_eq_e' then
                 js2 := jsonb_set(js2, array['co2_eq_e'], to_jsonb(row(0, 0)::___.res), true);
@@ -1241,7 +1115,14 @@ begin
                 js2 := jsonb_set(js2, array['co2_eq_c'], to_jsonb(row(0, 0)::___.res), true);
             end if;
 
-            -- raise notice 'js2 = %', js2;
+            raise notice 'js2 = %', js2;
+            raise notice 'js1 = %', js1;
+            if js1 is null then 
+                js1 := '{}';
+            end if;
+            if js2 is null then 
+                js2 := '{}';
+            end if;
             res := jsonb_set(res, array[b_name], js1||js2, true);
         end if;
     end loop;
@@ -1259,7 +1140,7 @@ begin
         end if;
     end loop;
 
-    -- raise notice 'js1 = %', js1;
+    raise notice 'js1 = %', js1;
     
     with results as (
         select name, co2_eq 
@@ -1268,9 +1149,12 @@ begin
     exploit as (select distinct name, co2_eq from results where name like '%_e'),
     constr as (select distinct name, co2_eq from results where name like '%_c')
     select into js2 jsonb_build_object(
-        'co2_eq_e', formula.sum_incert((exploit.co2_eq).val, (exploit.co2_eq).incert),
-        'co2_eq_c', formula.sum_incert((constr.co2_eq).val, (constr.co2_eq).incert)
-    ) from exploit, constr ;
+        'co2_eq_e', formula.sum_incert(coalesce((exploit.co2_eq).val, 0), coalesce((exploit.co2_eq).incert, 0)),
+        'co2_eq_c', formula.sum_incert(coalesce((constr.co2_eq).val, 0), coalesce((constr.co2_eq).incert, 0))
+    ) 
+    from exploit
+    full join constr on exploit.name = constr.name;
+
     raise notice 'js2 = %', js2;
     raise notice '%', (js2 ? 'co2_eq_e');
     if not js2 ? 'co2_eq_e' then
@@ -1279,9 +1163,18 @@ begin
     if not js2 ? 'co2_eq_c' then
         js2 := jsonb_set(js2, array['co2_eq_c'], to_jsonb(row(0, 0)::___.res), true);
     end if;
-    raise notice 'js2 = %', js2;
 
+    if js1 is null then 
+        js1 := '{}';
+    end if;
+    if js2 is null then 
+        js2 := '{}';
+    end if;
+
+    raise notice 'js2 = %', js2;
+    raise notice 'js1 = %', js1;
     res := jsonb_set(res, array['total'], js1||js2, true);
+    raise notice 'res = %', res;
     return res;
 end;
 $$;

@@ -434,21 +434,21 @@
         ],
         "prod_e__ref": [
             [
-                "ref_prod_e_degazage",
+                "ref_prod_e_dessableurdegraisseur",
                 "val",
-                "D\u00e9gazage",
+                "Dessableur-D\u00e9graisseur",
                 "prod_e"
             ],
             [
-                "ref_prod_e_bassin_dorage",
+                "ref_prod_e_filiere_eau",
                 "val",
-                "Bassin d'orage",
+                "Fili\u00e8re eau",
                 "prod_e"
             ],
             [
-                "ref_prod_e_decanteur_lamellaire",
+                "ref_prod_e_lagunage",
                 "val",
-                "D\u00e9canteur lamellaire",
+                "Lagunage",
                 "prod_e"
             ],
             [
@@ -458,9 +458,15 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_bassin_biologique",
+                "ref_prod_e_degazage",
                 "val",
-                "Bassin biologique",
+                "D\u00e9gazage",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_decanteur_lamellaire",
+                "val",
+                "D\u00e9canteur lamellaire",
                 "prod_e"
             ],
             [
@@ -476,15 +482,9 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_lagunage",
+                "ref_prod_e_bassin_dorage",
                 "val",
-                "Lagunage",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_filiere_eau",
-                "val",
-                "Fili\u00e8re eau",
+                "Bassin d'orage",
                 "prod_e"
             ],
             [
@@ -494,9 +494,9 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_dessableurdegraisseur",
+                "ref_prod_e_bassin_biologique",
                 "val",
-                "Dessableur-D\u00e9graisseur",
+                "Bassin biologique",
                 "prod_e"
             ]
         ],

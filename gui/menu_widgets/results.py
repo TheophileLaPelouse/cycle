@@ -32,6 +32,7 @@ class AllResults(QDialog) :
         
         self.graph_bar_e = GraphWidget(self.bar_chart_e, dpi=90)
         self.graph_bar_c = GraphWidget(self.bar_chart_c, dpi=90)
+        self.graph_bar_ce = GraphWidget(self.bar_chart_ce, dpi=90)
     
         self.resume1.setVisible(False)
         self.resume2.setVisible(False)
@@ -118,8 +119,26 @@ class AllResults(QDialog) :
         else :
             self.resume2.setVisible(False)
         
-        self.show_bar_chart(data1, data2)
+        stud_time = self.__project.fetchone(f"select val from ___.global_values where name = 'study_time'")[0]    
         
+        self.show_bar_chart(self.rec_dvie(data1), self.rec_dvie(data2), stud_time)
+    
+    def rec_dvie(self, data) : 
+        # Première implémentation pour aller chercher les d_vies, naïve
+        if not data : 
+            return None
+        
+        # Pour améliorer, on pourrait avoir une requête qui va chercher les b_type, puis une autre avec du full join sur les b_type pour avoir name, d_vie
+        for key in data :
+            if key != 'total' : 
+                b_type = self.__project.fetchone(f"select b_type from api.bloc where name = '{key}'")[0]
+                try :
+                    d_vie = self.__project.fetchone(f"select d_vie from api.{b_type}_bloc where name = '{key}'")[0]
+                except :
+                    d_vie = None 
+                data[key]['d_vie'] = d_vie
+        return data
+    
     def show_resume(self, data, index, color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
         pie_chart_e = getattr(self, 'graph_pie_e'+str(index))
         pie_chart_c = getattr(self, 'graph_pie_c'+str(index))
@@ -147,30 +166,36 @@ class AllResults(QDialog) :
         pie_chart_c.pie_chart(data_pie_c, labels, color, tr("kgGaz"))
         print(index, data_pie_e, data_pie_c)
         
-    def show_bar_chart(self, data1, data2, color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
-        bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': []}
+    def show_bar_chart(self, data1, data2, stud_time, color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
+        bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': [], 'co2_eq_ce' : []}
         if data1 :
-            r, bars_c, bars_c_err, bars_e, bars_e_err, names = self.fill_bars(data1)
+            r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = self.fill_bars(data1, stud_time)
             self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, 'blue', tr("Emmission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
             self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, color, 'blue', tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"))   
+            self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names, color, 'blue', tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"))
             if data2 : 
-                r2, bars_c, bars_c_err, bars_e, bars_e_err, names2 = self.fill_bars(data2)
+                r2, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names2 = self.fill_bars(data2, stud_time)
                 rtot = range(r[0], r2[-1]+1+r[-1]+1)
                 r = range(r[-1]+1, r2[-1]+1+r[-1]+1)
                 names = names + names2
                 self.graph_bar_c.add_bar_chart(r, rtot, bars_c, bars_c_err, 'c', names, color, 'red')
                 self.graph_bar_e.add_bar_chart(r, rtot, bars_e, bars_e_err, 'e', names, color, 'red')  
+                self.graph_bar_ce.add_bar_chart(r, rtot, bars_ce, bars_ce_err, 'ce', names, color, 'red')
         elif data2 : 
-            r, bars_c, bars_c_err, bars_e, bars_e_err, names = self.fill_bars(data2)
+            r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = self.fill_bars(data2, stud_time)
             self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, 'red', tr("Emmission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
             self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, color, 'red', tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs")) 
+            self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names, color, 'red', tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"))
         
-    def fill_bars(self, data) : 
-        bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': []}
+    def fill_bars(self, data, stud_time) : 
+        bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': [], 'co2_eq_ce' : []}
         for key in data : 
             if key != 'total' :
                 for field in bars : 
-                    bars[field].append(data[key][field])
+                    if field == 'co2_eq_ce' :
+                        bars[field].append(data[key]['d_vie'] if data[key]['d_vie'] else 15)
+                    else : 
+                        bars[field].append(data[key][field])
         r = range(len(bars['co2_e'])) 
         names = list(data.keys())
         names.remove('total')
@@ -184,10 +209,41 @@ class AllResults(QDialog) :
                   'ch4' : [x['val']*self.prg['ch4'] for x in bars['ch4_e']], 
                   'n2o' : [x['val']*self.prg['n2o'] for x in bars['n2o_e']]}
         
+        bars_ce = bars['co2_eq_ce'][:]
+        bars_ce_err = []
+        print('d_vies', bars_ce)
+        for k in r :
+            bars_ce = (bars['co2_e'][k]['val'] + bars['ch4_e'][k]['val'] + bars['n2o_e'][k]['val'] + 
+                                    (bars['co2_c'][k]['val'] + bars['ch4_c'][k]['val'] + bars['n2o_c'][k]['val'])/bars['co2_eq_ce'][k]
+                                    )*stud_time
+            sum1 = (bars['co2_e'][k]['val'] + bars['ch4_e'][k]['val'] + bars['n2o_e'][k]['val'])
+            if sum1 == 0 :
+                err1 = 0
+            else : 
+                err1 = (bars['co2_e'][k]['incert']*bars['co2_e'][k]['val']
+                    + bars['ch4_e'][k]['incert']*bars['ch4_e'][k]['val']
+                    + bars['n2o_e'][k]['incert']*bars['n2o_e'][k]['val']
+                    )/sum1
+            print("err1", err1)
+            sum2 = (bars['co2_c'][k]['val'] + bars['ch4_c'][k]['val'] + bars['n2o_c'][k]['val'])            
+            if sum2 == 0 :
+                err2 = 0
+            else : 
+                err2 = (bars['co2_c'][k]['incert']*bars['co2_c'][k]['val']
+                    + bars['ch4_c'][k]['incert']*bars['ch4_c'][k]['val']
+                    + bars['n2o_c'][k]['incert']*bars['n2o_c'][k]['val']
+                    )/sum2
+            err2 = err2/bars['co2_eq_ce'][k]
+            print("err2", err2)
+            err = (err1*sum1 + err2*sum2)*stud_time
+            print("err", err)
+            bars_ce_err.append(err)
+            
+        
         bars_c_err = [bars['co2_c'][k]['incert']*bars_c['co2'][k] + bars['ch4_c'][k]['incert']*bars_c['ch4'][k] + bars['n2o_c'][k]['incert']*bars_c['n2o'][k] for k in r]
         
         bars_e_err = [bars['co2_e'][k]['incert']*bars_e['co2'][k] + bars['ch4_e'][k]['incert']*bars_e['ch4'][k] + bars['n2o_e'][k]['incert']*bars_e['n2o'][k] for k in r]
         print('bars_c', bars_c)
         print('bonjour', bars_e_err)
-        return r, bars_c, bars_c_err, bars_e, bars_e_err, names
+        return r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names
         

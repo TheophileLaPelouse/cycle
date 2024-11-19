@@ -248,7 +248,9 @@ class CycleToolbar(QToolBar):
         self.__log_manager.notice(tr("Les blocs personnalisés ont été sauvegardés définitivement"))
 
     def __set_study_time(self) :
-        self.__log_manager.notice(tr("Temps d'étude fixé à") + self.study_time.text()+", lol en fait non")
+        # self.__log_manager.notice(tr("Temps d'étude fixé à") + self.study_time.text()+", lol en fait non")
+        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        project.execute(f"update ___.global_values set val = {self.study_time.text()} where name = 'study_time';")
         
     def __add_resume_result_dock(self) : 
         rr = iface.mainWindow().findChildren(QDockWidget, "resume_result")

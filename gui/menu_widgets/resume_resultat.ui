@@ -41,17 +41,17 @@
         </column>
         <column>
          <property name="text">
-          <string>Inconnus</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
           <string>Exploitation (kgCO2eq/an)</string>
          </property>
         </column>
         <column>
          <property name="text">
           <string>Construction (kgCO2eq)</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Inconnus</string>
          </property>
         </column>
         <column>

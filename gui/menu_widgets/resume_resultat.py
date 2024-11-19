@@ -67,24 +67,48 @@ class RecapResults(QDockWidget) :
         self.__results = {}
         for result in results : 
             self.__results[result[0]] = {}
-            unknowns = []
-            detail = []
+            unknowns = set()
+            detail = set()
             for formula in result[1]['data'] : 
                 if formula['in use'] :
-                    detail.append(str(formula['detail']))                    
+                    detail.add(str(formula['detail']))                    
                 if formula['unknown'] : 
-                    unknowns += formula['unknown']
-            self.__results[result[0]]['unknown'] = ', '.join(list(set(unknowns))) # Pas très beau mais pour une liste de max 10 valeurs très efficace
+                    unknowns = unknowns.union(set(formula['unknown']))
+            unknowns2 = set()
+            for val in unknowns :
+                if val.startswith('q_') :
+                    unknowns2.add('intrants')
+                else : 
+                    unknowns2.add(val)
+            unknowns = unknowns2 
+            self.__results[result[0]]['unknown'] = ', '.join(list(set(unknowns))) 
             self.__results[result[0]]['detail'] = ', '.join(detail)
-            self.__results[result[0]]['co2_eq_e'] = result[2]
-            self.__results[result[0]]['co2_eq_c'] = result[3]
+            print('res', result[2])
+            value, incert = result[2].strip()[1:-1].split(',')
+            if not value : 
+                value = 0
+            value = float(value)
+            if not incert : 
+                incert = 0
+            incert = float(incert)
+            self.__results[result[0]]['co2_eq_e'] = pretty_number(value, value*incert, '')
+            
+            value, incert = result[3].strip()[1:-1].split(',')
+            if not value : 
+                value = 0
+            value = float(value)
+            if not incert : 
+                incert = 0
+            incert = float(incert)
+            self.__results[result[0]]['co2_eq_c'] = pretty_number(value, value*incert, '')
             # self.__results[result[0]]['data'] = result[1]['data']
         # Cette variable sera réutilisée pour les graphes plus précise dans l'affichage des résultats plus complet
         self.__current_model = model_name
         self.__recap_table = {}
         for key in self.__results : 
-            self.__recap_table[key] = [key, self.__results[key]['unknown'], 
-                                       self.__results[key]['co2_eq_e'], self.__results[key]['co2_eq_c'], 
+            self.__recap_table[key] = [key, 
+                                       self.__results[key]['co2_eq_e'], self.__results[key]['co2_eq_c'],
+                                       self.__results[key]['unknown'], 
                                        self.__results[key]['detail']]
         self.table_recap.setRowCount(len(self.__recap_table))
         idx = 0
@@ -138,7 +162,7 @@ class RecapResults(QDockWidget) :
         for key in data : 
             if key != 'total' :
                 for field in bars : 
-                    bars[field].append(data[key][field])
+                    bars[field].append(data[key].get(field, {'val' : 0, 'incert' : 0}))
         r = range(len(bars['co2_e'])) 
         names = list(data.keys())
         names.remove('total')

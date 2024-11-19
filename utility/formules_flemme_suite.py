@@ -367,6 +367,13 @@ for bloc in dico_formules :
                 outputs[inp] = type_
                 if default : 
                     default_values[inp] = default
+            elif inp == 'd_vie' : 
+                inps.add(inp)
+                type_ = types.get(d['inp'][inp][2], 'real')
+                default = d['inp'][inp][0]
+                inputs[inp] = type_
+                if default : 
+                    default_values[inp] = default
         
         for lvl in res : 
             for key in res[lvl] :

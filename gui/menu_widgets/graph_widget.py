@@ -62,17 +62,21 @@ class GraphWidget(QWidget):
         # print("bar_data", data)
         # print("test", data)
         width = 0.4 
-        
+        print(data_err)
         self.__ax.clear()
-        self.__ax.bar(r, data['co2'], 
-                color = color['co2'], edgecolor=edgecolor,  label = 'co2', width=width)
-        self.__ax.bar(r, data['ch4'], 
-                bottom = data['co2'], 
-                color = color['ch4'], edgecolor=edgecolor, label = 'ch4', width=width)
-        self.__ax.bar(r, data['n2o'], 
-                bottom = [x + y for x, y in zip(data['co2'], data['ch4'])], 
-                color = color['n2o'], edgecolor=edgecolor, label = 'n2o', 
-                yerr = data_err, capsize = 5, ecolor = 'black', width=width)
+        if c_or_e == 'c' or c_or_e == 'e' : 
+            self.__ax.bar(r, data['co2'], 
+                    color = color['co2'], edgecolor=edgecolor,  label = 'CO2', width=width)
+            self.__ax.bar(r, data['ch4'], 
+                    bottom = data['co2'], 
+                    color = color['ch4'], edgecolor=edgecolor, label = 'CH4', width=width)
+            self.__ax.bar(r, data['n2o'], 
+                    bottom = [x + y for x, y in zip(data['co2'], data['ch4'])], 
+                    color = color['n2o'], edgecolor=edgecolor, label = 'N2O', 
+                    yerr = data_err, capsize = 5, ecolor = 'black', width=width)
+        elif c_or_e == 'ce' : 
+            self.__ax.bar(r, data, color = color['co2'], edgecolor=edgecolor, label = 'CO2eq', 
+                          yerr = data_err, capsize = 5, ecolor = 'black', width=width)
         
         self.__ax.set_title(title)
         self.__ax.set_xticks(r, names)
@@ -86,20 +90,26 @@ class GraphWidget(QWidget):
 
     def add_bar_chart(self, r, rtot, data, data_err, c_or_e, names, color, edgecolor) : 
         width = 0.4
-        self.__ax.bar(r, data['co2'], 
-                color = color['co2'], edgecolor=edgecolor,  label = 'co2', width=width)
-        self.__ax.bar(r, data['ch4'], 
-                bottom = data['co2'], 
-                color = color['ch4'], edgecolor=edgecolor, label = 'ch4', width=width)
-        self.__ax.bar(r, data['n2o'], 
-                bottom = [x + y for x, y in zip(data['co2'], data['ch4'])], 
-                color = color['n2o'], edgecolor=edgecolor, label = 'n2o', 
-                yerr = data_err, capsize = 5, ecolor = 'black', width=width)
+        if c_or_e =='e' or c_or_e == 'c' :
+            self.__ax.bar(r, data['co2'], 
+                    color = color['co2'], edgecolor=edgecolor,  label = 'co2', width=width)
+            self.__ax.bar(r, data['ch4'], 
+                    bottom = data['co2'], 
+                    color = color['ch4'], edgecolor=edgecolor, label = 'ch4', width=width)
+            self.__ax.bar(r, data['n2o'], 
+                    bottom = [x + y for x, y in zip(data['co2'], data['ch4'])], 
+                    color = color['n2o'], edgecolor=edgecolor, label = 'n2o', 
+                    yerr = data_err, capsize = 5, ecolor = 'black', width=width)
+        elif c_or_e == 'ce' : 
+            self.__ax.bar(r, data, color['co2'], edgecolor=edgecolor, label = 'CO2eq', 
+                          yerr = data_err, capsize = 5, ecolor = 'black', width=width)
         print(rtot, names)
         self.__ax.set_xticks(rtot, names)
         self.__render()
         
 def pretty_number(num, incert, unit, nb_sig = 3, nb_decimals = 1) :
+    if num == 0 and incert == 0 :
+        return "No value"
     if num / 1000 > 1 : 
         return  f"{num:.{nb_sig}g}" + " ± " + f"{incert:.{nb_sig}g}" + ' ' + unit
     else : 
