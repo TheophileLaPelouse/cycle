@@ -97,7 +97,7 @@ def insert_op(operators, op) :
         '+': 1,
         '-': 1
     }
-    print('op', operators)
+    # print('op', operators)
     if not operators :
         return [op], -1
     else : 
@@ -105,7 +105,7 @@ def insert_op(operators, op) :
         while k < len(operators) and priority[op] <= priority[operators[k]] :
             k += 1
         operators = operators[:k] + [op] + operators[k:]
-        print('op2', operators)
+        # print('op2', operators)
     return (operators, k)
 
 def write_formula(expr, dico, var = set(), c = 0):
@@ -149,7 +149,7 @@ def write_formula(expr, dico, var = set(), c = 0):
         elif args[i] in operators :
             # print(insert_op(last_op[idx], args[i]))
             last_op[idx], shift = insert_op(last_op[idx], args[i])
-            print('length', len(last_op[idx]), shift)
+            # print('length', len(last_op[idx]), shift)
             flag_op[idx] = shift > 0
             if flag_op[idx] :
                 k = 0

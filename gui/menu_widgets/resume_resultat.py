@@ -23,7 +23,7 @@ class RecapResults(QDockWidget) :
             button = getattr(self, f'pushButton_{k+1}')
             button.clicked.connect(lambda _, index=k+1: self.navigate(index))
         
-        self.__project = project
+        self.project = project
         
         self.__current_model = model_name 
         self.__recap_table = None 
@@ -34,7 +34,7 @@ class RecapResults(QDockWidget) :
         self.graph_bar_e = GraphWidget(self.bar_chart_e, dpi=90)
         self.graph_bar_c = GraphWidget(self.bar_chart_c, dpi=90)
         
-        model_list = self.__project.models
+        model_list = self.project.models
         self.update_model_list()
         self.model_combo.currentIndexChanged.connect(self.show_results)
         
@@ -48,7 +48,7 @@ class RecapResults(QDockWidget) :
             self.model_combo.setCurrentText(model_name)
         
     def update_model_list(self) : 
-        model_list = self.__project.models
+        model_list = self.project.models
         print('list', model_list)
         self.model_combo.clear()
         self.model_combo.addItems([''] + model_list)    
@@ -63,7 +63,7 @@ class RecapResults(QDockWidget) :
             return    
         print("wut ?")
         print('model', model_name)
-        results = self.__project.fetchall(f"select name, res, co2_eq_e, co2_eq_c from api.results where model = '{model_name}'")
+        results = self.project.fetchall(f"select name, res, co2_eq_e, co2_eq_c from api.results where model = '{model_name}'")
         self.__results = {}
         for result in results : 
             self.__results[result[0]] = {}
@@ -132,7 +132,7 @@ class RecapResults(QDockWidget) :
     def show_plot(self, bloc_name = None, dpi = 75, edgecolor = 'grey', color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
         print("show", self.__current_model)
         print(f"select api.get_histo_data('{self.__current_model}')")
-        data = self.__project.fetchone(f"select api.get_histo_data('{self.__current_model}')")
+        data = self.project.fetchone(f"select api.get_histo_data('{self.__current_model}')")
         data = data[0]
         print(data)
         fields = ['co2_e', 'ch4_e', 'n2o_e', 'co2_c', 'ch4_c', 'n2o_c']
@@ -142,6 +142,9 @@ class RecapResults(QDockWidget) :
         self.label_c.setStyleSheet("font-weight: bold; font-size: 13px;")
         
         fields = ['co2_e', 'ch4_e', 'n2o_e', 'co2_c', 'ch4_c', 'n2o_c']
+        for field in fields : 
+            if not data['total'].get(field) : 
+                data['total'][field] = {'val' : 0, 'incert' : 0}
         data_pie_e = [data['total'][field]['val']*self.prg[field[:-2]] for field in fields[:3]]
         labels = ['CO2', 'CH4', 'N2O']
         self.graph_pie_e.pie_chart(data_pie_e, labels, color, tr("kgGaz/an"))

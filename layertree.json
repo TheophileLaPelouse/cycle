@@ -434,21 +434,15 @@
         ],
         "prod_e__ref": [
             [
-                "ref_prod_e_dessableurdegraisseur",
+                "ref_prod_e_mbbr",
                 "val",
-                "Dessableur-D\u00e9graisseur",
+                "MBBR",
                 "prod_e"
             ],
             [
-                "ref_prod_e_filiere_eau",
+                "ref_prod_e_bassin_biologique",
                 "val",
-                "Fili\u00e8re eau",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_lagunage",
-                "val",
-                "Lagunage",
+                "Bassin biologique",
                 "prod_e"
             ],
             [
@@ -458,21 +452,21 @@
                 "prod_e"
             ],
             [
+                "ref_prod_e_dessableurdegraisseur",
+                "val",
+                "Dessableur-D\u00e9graisseur",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_lagunage",
+                "val",
+                "Lagunage",
+                "prod_e"
+            ],
+            [
                 "ref_prod_e_degazage",
                 "val",
                 "D\u00e9gazage",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_decanteur_lamellaire",
-                "val",
-                "D\u00e9canteur lamellaire",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_mbbr",
-                "val",
-                "MBBR",
                 "prod_e"
             ],
             [
@@ -494,9 +488,15 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_bassin_biologique",
+                "ref_prod_e_decanteur_lamellaire",
                 "val",
-                "Bassin biologique",
+                "D\u00e9canteur lamellaire",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_filiere_eau",
+                "val",
+                "Fili\u00e8re eau",
                 "prod_e"
             ]
         ],

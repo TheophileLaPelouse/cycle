@@ -50,8 +50,8 @@ class ProjectManager(QDialog):
         self.btn_delete_project.clicked.connect(self.delete_project)
         self.btn_export_project.clicked.connect(self.export_project)
         self.btn_import_project.clicked.connect(self.import_project)
-        # self.btn_update_project.clicked.connect(self.update_project)
-        # self.btn_update_project.setToolTip(self.tr("If the project is up to date, database views and function will be reloaded"))
+        self.btn_update_project.clicked.connect(self.update_project)
+        self.btn_update_project.setToolTip(self.tr("If the project is up to date, database views and function will be reloaded"))
         self.btn_add_model.clicked.connect(self.add_model)
         self.btn_delete_model.clicked.connect(self.delete_model)
         self.btn_import_model.clicked.connect(self.import_model)
@@ -264,20 +264,21 @@ class ProjectManager(QDialog):
             export_db(project_name, file)
             self.__log_manager.notice(project_name+self.tr(' exported to ')+file)
 
-    # def update_project(self):
+    def update_project(self):
     #     '''Exports selected project to selected file'''
-    #     project_name, model_name = self.__get_selection()
-    #     assert(project_name is not None)
-    #     QGisProjectManager.exit_edition()
+        project_name, model_name = self.__get_selection()
+        assert(project_name is not None)
+        QGisProjectManager.exit_edition()
     #     export_db(project_name, os.path.join(backup_directory(project_name), f'{datetime.now().strftime("%Y%m%d")}_{project_name}_{version(project_name)}.sql'))
-    #     update_db(project_name)
-    #     project = Project(project_name, self.__log_manager)
-    #     if not os.path.exists(project.qgs):
-    #         QGisProjectManager.create_project(project.qgs, project.srid)
-    #     else:
-    #         QGisProjectManager.update_project(project.qgs)
-    #     self.__refresh_tree()
-    #     self.__log_manager.notice(project_name+self.tr(' updated'))
+        update_db(project_name)
+        print("BOnjour")
+        project = Project(project_name, self.__log_manager)
+        if not os.path.exists(project.qgs):
+            QGisProjectManager.create_project(project.qgs, project.srid)
+        else:
+            QGisProjectManager.update_project(project.qgs)
+        self.__refresh_tree()
+        self.__log_manager.notice(project_name+self.tr(' updated'))
 
     def import_project(self):
         '''Imports selected file in a new project'''

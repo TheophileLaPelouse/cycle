@@ -261,8 +261,8 @@ declare
     k2 integer ;
     shift integer ;
 begin 
-    -- fonction qui réécrit une formule sous forme lisibles sans ambiguités je sais plus comment ça s'appelle mais 
-    -- on a a+b*c qui devient a b c * +
+    -- fonction qui réécrit une formule sous forme lisibles sans ambiguités : Notation polonaise inversée 
+    -- on a (a+b)*c qui devient a b + * alors que a+b*c devient a b c * + -> plus besoin de parenthèses
     args := array_fill(''::text, array[length(expr)]) ; 
     for i in 1..length(expr) loop 
         car := substr(expr, i, 1) ;
@@ -278,7 +278,7 @@ begin
         end if ;
     end loop ;
     args := args[1:j] ;
-    -- -- raise notice 'args finale %', args ;
+    raise notice 'args finale %', args ;
     for i in 1..j loop 
         raise notice'args %', args[i] ;
         if args[i] = '(' then 
@@ -366,11 +366,12 @@ begin
             -- raise notice'last_op to modif %', last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] ;
             for k in 1..last_op_length[idx] loop 
                 raise notice'k %, last_op %, k2 %', k, last_op[(idx-1)*last_op_sb_len+k], k2 ;
-                raise notice'args %', args[i] ;
-                raise notice'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
+                -- raise notice'args %', args[i] ;
+                -- raise notice'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
                 if k2 > k then 
-                    -- raise notice'temp_op %', temp_op ;
-                    temp_op2 := last_op[(idx-1)*last_op_sb_len+k2] ;
+                    raise notice'temp_op %', temp_op ;
+                    temp_op2 := last_op[(idx-1)*last_op_sb_len+k] ;
+                    raise notice'temp_op2 %', temp_op2 ;
                     last_op[(idx-1)*last_op_sb_len+k] := temp_op ; 
                     temp_op := temp_op2 ;
                     k2 := k2 + 1 ;
@@ -378,10 +379,11 @@ begin
                     shift = k ; 
                     temp_op := last_op[(idx-1)*last_op_sb_len+k] ;
                     last_op[(idx-1)*last_op_sb_len+k] := args[i] ;
-                    k2 := k + 2 ; 
+                    k2 := k+2 ; -- k2 = k + 1 dans la boucle suivante
                 end if ; 
             end loop ;
-            raise notice 'après la boucle k %, k2 %', last_op_length[idx], k2 ; 
+            k2 := k2 - 1 ; -- k2 incrémenté une fois de plus car dans la boucle
+            raise notice 'après la boucle k %, k2 %, temp_op %', last_op_length[idx], k2, temp_op ; 
             if k2 > last_op_length[idx] then 
                 last_op[(idx-1)*last_op_sb_len+k2] := temp_op ;
             else 
@@ -390,7 +392,7 @@ begin
             end if ; 
             flag_op[idx] := (shift is not null and shift != 1) ;
             last_op_length[idx] := last_op_length[idx] + 1 ;
-            -- raise notice'last_op modified %', last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] ;
+            -- raise notice'last_op modified %', last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
             -- raise notice'length after insert %', last_op_length ;
             -- à tester
             -- last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] := formula.insert_op(last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len], args[i]) ;
@@ -414,7 +416,7 @@ begin
             end if ;
         end if ;
         raise notice 'idx %', idx ;
-        raise notice 'calc %', calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ;
+        raise notice 'calc %', calc[(idx-1)*calc_sb_len+1:(idx-1)*calc_sb_len+calc_length[idx]] ;
         raise notice'last_op %', last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
         raise notice'calc_length %, last_op_length %', calc_length, last_op_length ;
     end loop ;
@@ -449,7 +451,8 @@ declare
     val2 real ;
     incert2 real ;
     calc_val real[] ;
-    calc_incert real[] ; 
+    calc_incert real[] ;
+    to_debug varchar[] ; 
     new varchar ;
     pat varchar := '[\+\-\*\/\^\>\<]' ;
     new_val real; 
@@ -460,11 +463,13 @@ begin
     raise notice 'n %', n ;
     calc_val := array_fill(0.0, array[n]) ;
     calc_incert := array_fill(0.0, array[n]) ;
+    to_debug := array_fill(''::varchar, array[n]) ;
     deb := 1 ;
     fin := 0 ;
     if n = 0 then return result ; end if ;
     i := 1 ;
     raise notice 'calc %', calc ;
+    query := '' ;
     while i < n+1 loop
         new := calc[i] ;
         i:=i+1 ;
@@ -476,6 +481,8 @@ begin
 
             val2 := calc_val[fin] ;
             incert2 := calc_incert[fin] ;
+
+            to_debug[fin-1] := to_debug[fin-1] || ' ' || new || ' ' || to_debug[fin] ;
             -- raise notice 'val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
             fin := fin - 1 ;
             -- On calcule à chaque fois les incertitudes relatives et les valeurs réelles 
@@ -531,15 +538,18 @@ begin
             fin := fin + 1 ;
             calc_val[fin] := val1 ;
             calc_incert[fin] := incert1 ;
+            to_debug[fin] := new ;
             
         end if ;
-        raise notice 'new %', new ;
-        raise notice 'calc_val %', calc_val[:fin] ;
-        raise notice 'calc_incert %', calc_incert[:fin] ;
-        raise notice 'suite %', calc[i:i+10] ; 
+        -- raise notice 'new %', new ;
+        -- raise notice 'calc_val %', calc_val[:fin] ;
+        -- raise notice 'calc_incert %', calc_incert[:fin] ;
+        -- raise notice 'already calculated %', to_debug[:fin] ;
+        -- raise notice 'suite %', calc[i:i+10] ; 
     end loop ; 
     raise notice 'val %', calc_val[fin] ;
     raise notice 'incert %', calc_incert[fin] ;
+    raise  notice 'to_debug %', to_debug ;
     select into result calc_val[fin] as val, calc_incert[fin] as incert;
     return result ;
     

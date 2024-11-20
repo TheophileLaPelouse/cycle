@@ -307,8 +307,60 @@ def update_db(dbname):
         '-O', # no ownership of objects
         '-x', # no grant/revoke in dump
         '-a', # only data
+        '--table=___.model',
+        '--table=___*.*_bloc',
+        '--table=___.bloc',
+        '--column-inserts',
+        
         '-f', path_dump, f"service={get_service()} dbname={dbname}"])
     
+    with open(path_dump, 'r') as f:
+        dumps = f.readlines()
+    model_lines = []
+    which_model = {}
+    for k in range(len(dumps)) :
+        line = dumps[k] 
+        line = line.replace('___', 'api')
+        dumps[k] = line
+        if line.startswith('INSERT INTO api.model') : 
+            model_lines.append(line)
+            dumps[k] = ''
+        elif line.startswith('INSERT INTO api.bloc (id, name, model, shape, geom_ref, ss_blocs, sur_bloc, b_type) VALUES (') : 
+            print(line[:100])
+            # 92 c'est la longueur de la chaine avant les valeurs 
+            values = line[92:-2].split(',')
+            id = values[0]
+            print(id)
+            model = values[2]
+            which_model[id] = model
+            dumps[k] = ''
+        elif line.startswith('INSERT INTO api.') :
+            print(line[:100])
+            i = 10
+            while line[i] != '(' : i += 1
+            deb_name = i+1
+            while line[i] != ')' : i += 1
+            fin_name = i
+            while line[i] != '(' : i += 1
+            deb_values = i+1
+            while line[i] != ';' : i += 1
+            fin_values = i-1
+            names = line[deb_name:fin_name].split(',')
+            values = line[deb_values:fin_values].split(',')
+            id = values[0]
+            print(id)
+            # Faut qu'on vérifie que dans tous les cas api.bloc sera fait avant.
+            names.append('model')
+            values.append(which_model[id])
+            dumps[k] = line[:deb_name] + ','.join(names) + line[fin_name:deb_values] + ','.join(values) + line[fin_values:] 
+            
+    with open(path_dump, 'w', encoding='utf-8') as f:
+        f.writelines(model_lines)
+        f.writelines(dumps)
+        
+    raise Exception("Not implemented yet")
+    
+        
     reset_project(dbname, srid)
     
     subprocess.run({

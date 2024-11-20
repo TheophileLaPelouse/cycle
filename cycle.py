@@ -152,7 +152,16 @@ class Cycle(QObject):
         
     def visu_results_dock(self):
         from .gui.menu_widgets.resume_resultat import RecapResults
-        if self.__dock_results is None and QGisProjectManager.is_cycle_project(): 
+        if QGisProjectManager.is_cycle_project() : 
+            project = Project(QGisProjectManager.project_name(), self.__log_manager)
+            print(dir(self.__dock_results))
+            if self.__dock_results is None : 
+                flag = True 
+            elif self.__dock_results.project.name != project.name : 
+                flag = True
+            else : flag = False
+        else : flag = False 
+        if flag: 
             model = QgsProject.instance().customVariables().get('current_model')
             print("bonjour", model)
             self.__dock_results = RecapResults(model, Project(QGisProjectManager.project_name(), self.__log_manager))

@@ -158,6 +158,9 @@ class AllResults(QDialog) :
             groupbox.setTitle(tr('Modèle ')+ combomod.currentText() + tr(', bloc ')+ combobloc.currentText())
                 
         fields = ['co2_e', 'ch4_e', 'n2o_e', 'co2_c', 'ch4_c', 'n2o_c']
+        for field in fields : 
+            if data['total'].get(field) is None : 
+                data['total'][field] = {'val' : 0, 'incert' : 0}
         data_pie_e = [data['total'][field]['val']*self.prg[field[:-2]] for field in fields[:3]]
         labels = ['CO2', 'CH4', 'N2O']
         pie_chart_e.pie_chart(data_pie_e, labels, color, tr("kgGaz/an"))
@@ -195,7 +198,7 @@ class AllResults(QDialog) :
                     if field == 'co2_eq_ce' :
                         bars[field].append(data[key]['d_vie'] if data[key]['d_vie'] else 15)
                     else : 
-                        bars[field].append(data[key][field])
+                        bars[field].append(data[key].get(field, {'val' : 0, 'incert' : 0}))
         r = range(len(bars['co2_e'])) 
         names = list(data.keys())
         names.remove('total')

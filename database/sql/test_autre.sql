@@ -1,42 +1,44 @@
-do 
-$$
-declare 
-    s real ; 
-    i real ;
-    val1 real := 0.1;
-    incert1 real := 0;
-    val2 real := 40;
-    incert2 real := 0.5;
-    -- formula text := co2_c=(febet*cad*e*rhobet*(24*eh*qe_eh*(taur + 1) + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh*(taur + 1)/vit)**0.5)) + 24.0*fepelle*tauenterre*vit*(h + e)*(0.3618*e + (eh*qe_eh*(taur + 1)/vit)**0.5)**2 + 24.0*cad*vit*(0.3618*e + (eh*qe_eh*(taur + 1)/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda))/(cad*vit)
-    reduced_f text := '(0.3618*e + (eh*0.12*(1 + 1)/vit)^0.5)^2 + 24.0*125*60*(0.3618*e + (eh*0.12*(1 + 1)/vit)^0.5)^2*(5.4*1.5*0.75*(h + e) + 80)' ;
-    eh real := 10 ; 
-    qe_eh real := 0.12 ; 
-    vit real := 60 ; 
-    calc text[] ;
-begin 
-    -- s := (val1 ^ val2)::real;
-    -- raise notice 'jusqu''ici c''est bon' ; 
-    -- i := abs(val2) * incert1 ;
-    raise notice 's %, i %', s, i ;
-    create temp table inp_out (name text, val real, incert real) ;
-    insert into inp_out values('eh', 10, 0.1) ;
-    insert into inp_out values('qe', 20, 0.01) ;
-    insert into inp_out values('vit', 60, 0.5) ;
-    insert into inp_out values('vac', 3, 0.1) ;
-    insert into inp_out values('rho', 4, 0.1) ;
-    insert into inp_out values('tau', 5, 0.1) ;
-    insert into inp_out values('h', 4, 0.1) ;
-    insert into inp_out values('e', 0.25, 0.1) ;
-    insert into inp_out values('fefonda', 8, 0.1) ;
-    insert into inp_out values('fepelle', 9, 0.1) ;
-    insert into inp_out values('cad', 11, 0.1) ;
+-- do 
+-- $$
+-- declare 
+--     s real ; 
+--     i real ;
+--     val1 real := 0.1;
+--     incert1 real := 0;
+--     val2 real := 40;
+--     incert2 real := 0.5;
+--     -- formula text := co2_c=(febet*cad*e*rhobet*(24*eh*qe_eh*(taur + 1) + 3.14159*h*vit*(e + 5.52791*(eh*qe_eh*(taur + 1)/vit)**0.5)) + 24.0*fepelle*tauenterre*vit*(h + e)*(0.3618*e + (eh*qe_eh*(taur + 1)/vit)**0.5)**2 + 24.0*cad*vit*(0.3618*e + (eh*qe_eh*(taur + 1)/vit)**0.5)**2*(feevac*rhoterre*tauenterre*(h + e) + fefonda))/(cad*vit)
+--     reduced_f text := '(0.3618*e + (eh*0.12*(1 + 1)/vit)^0.5)^2 + 24.0*125*60*(0.3618*e + (eh*0.12*(1 + 1)/vit)^0.5)^2*(5.4*1.5*0.75*(h + e) + 80)' ;
+--     eh real := 10 ; 
+--     qe_eh real := 0.12 ; 
+--     vit real := 60 ; 
+--     calc text[] ;
+-- begin 
+--     -- s := (val1 ^ val2)::real;
+--     -- raise notice 'jusqu''ici c''est bon' ; 
+--     -- i := abs(val2) * incert1 ;
+--     raise notice 's %, i %', s, i ;
+--     create temp table inp_out (name text, val real, incert real) ;
+--     insert into inp_out values('eh', 10, 0.1) ;
+--     insert into inp_out values('qe', 20, 0.01) ;
+--     insert into inp_out values('vit', 60, 0.5) ;
+--     insert into inp_out values('vac', 3, 0.1) ;
+--     insert into inp_out values('rho', 4, 0.1) ;
+--     insert into inp_out values('tau', 5, 0.1) ;
+--     insert into inp_out values('h', 4, 0.1) ;
+--     insert into inp_out values('e', 0.25, 0.1) ;
+--     insert into inp_out values('fefonda', 8, 0.1) ;
+--     insert into inp_out values('fepelle', 9, 0.1) ;
+--     insert into inp_out values('cad', 11, 0.1) ;
 
-    calc := formula.write_formula(reduced_f) ;
-    raise notice 'calc in test_autre %', calc ;
-    raise notice 'result %', formula.calc_incertitudes(calc) ;
-    drop table inp_out ;
-end ;
-$$ ;
+--     calc := formula.write_formula(reduced_f) ;
+--     raise notice 'calc in test_autre %', calc ;
+--     raise notice 'result %', formula.calc_incertitudes(calc) ;
+--     drop table inp_out ;
+-- end ;
+-- $$ ;
+
+update api.dessableurdegraisseur set eh = 20 ; 
 
 
 -- create view api.results as 
