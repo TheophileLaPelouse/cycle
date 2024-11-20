@@ -297,57 +297,30 @@ def import_db(project_name, filename):
 
 def update_db(dbname):
 
-    with autoconnection("postgres") as con, con.cursor() as cur:
-        cur.execute(f"select pg_terminate_backend(pg_stat_activity.pid) \
-                    from pg_stat_activity \
-                    where pg_stat_activity.datname in ('{dbname}');")
-
-    targer_major, target_minor, target_patch = [int(x) for x in __version__.split('.')]
-
-    with connection(dbname) as con, con.cursor() as cur:
-        cur.execute("select cycle_version()")
-        version, = cur.fetchone()
-        db_major, db_minor, db_patch = [int(x) for x in version.split('.')]+([0] if len(version.split('.')) == 2 else [])
-
-        version_path = {}
-        version_dir = os.path.join(__current_dir, 'version')
-        for sql in os.listdir(version_dir):
-            m = re.match(r'(\d+)\.(\d+).(\d+)-(\d+)\.(\d+).(\d+)\.sql', sql)
-            if m:
-                assert (int(m.group(1)), int(m.group(2)), int(m.group(3))) not in version_path
-                version_path[(int(m.group(1)), int(m.group(2)), int(m.group(3)))] = (int(m.group(4)), int(m.group(5)), int(m.group(6)), os.path.join(version_dir, sql))
-
-        upgrade_path = [(db_major, db_minor, db_patch)]
-        while upgrade_path[-1] in version_path:
-            nxt = version_path[upgrade_path[-1]][:3]
-            upgrade_path.append(nxt)
-            if nxt == (targer_major, target_minor, target_patch):
-                break
-
-        if not (targer_major, target_minor, target_patch) == upgrade_path[-1]:
-            raise Exception("cannot upgrade database "+" -> ".join([f"{M}.{m}.{p}" for M, m, p in upgrade_path]))
-
-        cur.execute("drop schema if exists api cascade")
-        for sM, sm, sp in upgrade_path[:-1]:
-            tM, tm, tp, sql = version_path[(sM, sm, sp)]
-            #print(f"upgrade {dbname} from {sM}.{sm}.{sp} to {tM}.{tm}.{tp} with {sql}")
-            with open(sql) as s:
-                cur.execute(s.read()+
-                    f"""
-                    create or replace function cycle_version()
-                    returns varchar
-                    language sql immutable as
-                    $$
-                        select '{tM}.{tm}.{tp}'::varchar;
-                    $$
-                    ;
-                    """)
-
-        con.commit() # some changes, like enum updates, need to be commited before use (e.g. in api)
-
-        with open(os.path.join(__current_dir, 'sql', 'api.sql')) as sql:
-            cur.execute(sql.read())
-        con.commit()
+    with autoconnection(dbname) as con, con.cursor() as cur:
+        cur.execute("select srid from api.metadata")
+        srid, = cur.fetchone()
+    
+    path_dump = os.path.join(__current_dir, 'sql', 'dump.sql')
+    subprocess.run([
+        'pg_dump',
+        '-O', # no ownership of objects
+        '-x', # no grant/revoke in dump
+        '-a', # only data
+        '-f', path_dump, f"service={get_service()} dbname={dbname}"])
+    
+    reset_project(dbname, srid)
+    
+    subprocess.run({
+        'psql',
+        f"service={get_service()} dbname={dbname}",
+        '-f', path_dump 
+    })
+    # Faudra peut être ajouter du controle d'erreur mais en vrai, ça va probablement en faire à cause des duplicate
+    os.remove(path_dump)
+    
+    
+    
 
 def duplicate(src, dst):
     with autoconnection("postgres") as con, con.cursor() as cur:
