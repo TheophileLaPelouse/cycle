@@ -320,8 +320,11 @@ def update_db(dbname):
     which_model = {}
     for k in range(len(dumps)) :
         line = dumps[k] 
-        line = line.replace('___', 'api')
+        if not line.startswith('SELECT pg_catalog.setval') :
+            line = line.replace('___', 'api')
         dumps[k] = line
+        if line.startswith('SET') or line.startswith('SELECT pg_catalog'): 
+            dumps[k] = ''
         if line.startswith('INSERT INTO api.model') : 
             model_lines.append(line)
             dumps[k] = ''
@@ -358,17 +361,14 @@ def update_db(dbname):
         f.writelines(model_lines)
         f.writelines(dumps)
         
-    raise Exception("Not implemented yet")
+    # raise Exception("Not implemented yet")
     
         
     reset_project(dbname, srid)
-    
-    subprocess.run({
-        'psql',
-        f"service={get_service()} dbname={dbname}",
-        '-f', path_dump 
-    })
-    # Faudra peut être ajouter du controle d'erreur mais en vrai, ça va probablement en faire à cause des duplicate
+    with autoconnection(dbname) as con, con.cursor() as cur:
+        with open(path_dump, 'r') as f:
+            cur.execute(f.read())
+            
     os.remove(path_dump)
     
     
