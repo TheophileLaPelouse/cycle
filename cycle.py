@@ -105,6 +105,8 @@ class Cycle(QObject):
         self.__project_loaded()
         self.__edit_action = self.__iface.mainWindow().findChild(QAction, "mActionToggleEditing")
         self.__edit_action.triggered.connect(self.__toggle_edit_mode)
+        self.__iface.projectRead.connect(self.__update_docks)
+        print("bonjour", self.__dock_results)
         # self.__create_docks()
 
     def unload(self):
@@ -140,7 +142,8 @@ class Cycle(QObject):
             self.__update_docks()
     
     def __update_docks(self):
-        if self.__dock_results is None : 
+        print("is it none ?", self.__dock_results is None)
+        if self.__dock_results is None and QGisProjectManager.is_cycle_project() : 
             self.__create_docks()
         elif QGisProjectManager.is_cycle_project():
             self.__dock_results.update_model_list()

@@ -255,7 +255,7 @@ class CycleToolbar(QToolBar):
     def __add_resume_result_dock(self) : 
         rr = iface.mainWindow().findChildren(QDockWidget, "resume_result")
         if rr : 
-            rr = rr[0]
+            rr = rr[-1]
             rr.show()
     
     def __show_all_results(self) :
