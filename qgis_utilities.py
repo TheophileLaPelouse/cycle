@@ -474,7 +474,7 @@ class QGisProjectManager(QObject):
         except : pass
         config = layer.editFormConfig()
         try : config.setLayout(Qgis.AttributeFormLayout(1))
-        except : rapid = 1
+        except : rapid = 2
         # En attendant pour pas que ce soit toujours trop long de tout recharger, plus tard y'aura un json propre qui permettra de gérer les blocs
         fieldnames = [f.name() for f in layer.fields()]
         field_fe = set()
@@ -504,7 +504,7 @@ class QGisProjectManager(QObject):
                     layer.setFieldAlias(layer.fields().indexFromName(field), 'Distance d\'approxivisionnement')
             else : 
                 layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
-        
+        if rapid == 2 : return
         if rapid == 1 :
             for tab in config.tabs() :
                 if tab.name() in ['Exploitation', 'Construction'] : 
