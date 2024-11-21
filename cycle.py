@@ -63,6 +63,11 @@ class Cycle(QObject):
 
         self.__iface.projectRead.connect(self.__project_loaded)
         self.__iface.newProjectCreated.connect(self.__project_loaded)
+        
+        self.__iface.projectRead.connect(self.__update_docks)
+        self.__iface.newProjectCreated.connect(self.__update_docks)
+        
+        self.__iface.currentLayerChanged.connect(self.print_current_layer)
     
         # initialize locale
         locale = QgsSettings().value('locale/userLocale')[0:2]
@@ -105,7 +110,7 @@ class Cycle(QObject):
         self.__project_loaded()
         self.__edit_action = self.__iface.mainWindow().findChild(QAction, "mActionToggleEditing")
         self.__edit_action.triggered.connect(self.__toggle_edit_mode)
-        self.__iface.projectRead.connect(self.__update_docks)
+        
         print("bonjour", self.__dock_results)
         # self.__create_docks()
 
@@ -123,7 +128,9 @@ class Cycle(QObject):
         self.__iface.projectRead.disconnect(self.__project_loaded)
 
 
-
+    def print_current_layer(self, layer):
+        print("current layer", layer)
+    
     def __project_loaded(self):
         '''Loads plugin concepts and UI if an expresseau project is opened via a QGIS process'''
         if self.__toolbar is not None:

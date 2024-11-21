@@ -491,19 +491,33 @@ begin
                 -- somme des incertitudes
                 new_val := val1 + val2 ;
                 -- raise notice 'ici 7, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
-                new_incert := (incert1*val1 + incert2*val2)/(val1 + val2) ;
+                if val1 + val2 = 0 then 
+                    new_incert := 0.0 ;
+                else 
+                    new_incert := (incert1*val1 + incert2*val2)/(val1 + val2) ;
+                end if ;
+                
                 -- raise notice 'ici 8, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
             when new = '-' then 
                 -- raise notice 'ici 6, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_val := val1 - val2 ;
                 -- raise notice 'ici 5, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
-                new_incert := abs((incert1*val1 + incert2*val2)/(val1 - val2)) ;
+                if val1 - val2 = 0 then 
+                    new_incert := 0.0 ;
+                else 
+                    new_incert := (incert1*val1 + incert2*val2)/(val1 - val2) ;
+                end if ;
             when new = '*' then
                 new_val := val1 * val2 ;
                 new_incert := sqrt(incert1^2 + incert2^2) ;
             when new = '/' then
                 -- raise notice 'ici 1, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
-                new_val := val1 / val2 ;
+                if val2 = 0 then 
+                    new_val = null ;
+                else 
+                    new_val := val1 / val2 ;
+                end if ;
+                -- new_val := val1 / val2 ;
                 -- raise notice 'ici 2, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_incert := sqrt(incert1^2 + incert2^2) ;
             when new = '^' then
