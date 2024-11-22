@@ -253,55 +253,53 @@ def remove_project(project_name):
                       where pg_stat_activity.datname in ('{project_name}');")
         cur.execute(f"drop database if exists {project_name};")
 
-def export_db(project_name, filename):
-    with autoconnection(database=project_name, service=get_service()) as con, con.cursor() as cur:
+# def export_db(project_name, filename):
+#     with autoconnection(database=project_name, service=get_service()) as con, con.cursor() as cur:
+#         cur.execute('select cycle_version(), srid from ___.metadata;')
+#         version, srid = cur.fetchone()
+#     # dump the project database in a binary file
+#     subprocess.run([
+#         'pg_dump',
+#         '-O', # no ownership of objects
+#         '-x', # no grant/revoke in dump
+#         '-f', filename, f"service={get_service()} dbname={project_name}"])
+    
+#     with open(filename, 'rb') as d:
+#         dump = d.read()
+#     with open(filename, 'wb') as d:
+#         eol = ('\n' if os.name != 'nt' else '\r\n')
+#         d.write(f"-- cycle version {version}{eol}".encode('ascii'))
+#         d.write(f"-- project SRID {srid}{eol}".encode('ascii'))
+#         d.write(dump)
+
+# def get_srid_from_file(file):
+#     '''Utility function to look for a project's SRID from an exported file'''
+#     with open(file, 'r') as f:
+#         for line in f:
+#             match = re.search(r"-- project SRID (\d{4,5})", line)
+#             if match:
+#                 return match.group(1)
+#             match = re.search(r"COPY ___.metadata.* FROM stdin;", line)
+#             if match:
+#                 return next(f).split('\t')[2]
+#     return None
+
+# def import_db(project_name, filename):
+#     with autoconnection("postgres") as con, con.cursor() as cur:
+#         cur.execute(f"create database {project_name};")
+#     cmd = ["psql", '-v', 'ON_ERROR_STOP=1',
+#         "-f", filename, f"service={get_service()} dbname={project_name}"]
+#     out = subprocess.run(cmd, capture_output=True)
+#     if out.returncode:
+#         with autoconnection("postgres") as con, con.cursor() as cur:
+#             cur.execute(f"drop database {project_name};")
+#         raise RuntimeError(f"error in command: {' '.join(cmd)}\n"+out.stderr.decode('utf8'))
+
+def export_db(dbname, path_dump) : 
+    # Export db as insert api.bloc statements 
+    with autoconnection(database=dbname, service=get_service()) as con, con.cursor() as cur:
         cur.execute('select cycle_version(), srid from ___.metadata;')
         version, srid = cur.fetchone()
-    # dump the project database in a binary file
-    subprocess.run([
-        'pg_dump',
-        '-O', # no ownership of objects
-        '-x', # no grant/revoke in dump
-        '-f', filename, f"service={get_service()} dbname={project_name}"])
-    
-    with open(filename, 'rb') as d:
-        dump = d.read()
-    with open(filename, 'wb') as d:
-        eol = ('\n' if os.name != 'nt' else '\r\n')
-        d.write(f"-- cycle version {version}{eol}".encode('ascii'))
-        d.write(f"-- project SRID {srid}{eol}".encode('ascii'))
-        d.write(dump)
-
-def get_srid_from_file(file):
-    '''Utility function to look for a project's SRID from an exported file'''
-    with open(file, 'r') as f:
-        for line in f:
-            match = re.search(r"-- project SRID (\d{4,5})", line)
-            if match:
-                return match.group(1)
-            match = re.search(r"COPY ___.metadata.* FROM stdin;", line)
-            if match:
-                return next(f).split('\t')[2]
-    return None
-
-def import_db(project_name, filename):
-    with autoconnection("postgres") as con, con.cursor() as cur:
-        cur.execute(f"create database {project_name};")
-    cmd = ["psql", '-v', 'ON_ERROR_STOP=1',
-        "-f", filename, f"service={get_service()} dbname={project_name}"]
-    out = subprocess.run(cmd, capture_output=True)
-    if out.returncode:
-        with autoconnection("postgres") as con, con.cursor() as cur:
-            cur.execute(f"drop database {project_name};")
-        raise RuntimeError(f"error in command: {' '.join(cmd)}\n"+out.stderr.decode('utf8'))
-
-def update_db(dbname):
-
-    with autoconnection(dbname) as con, con.cursor() as cur:
-        cur.execute("select srid from api.metadata")
-        srid, = cur.fetchone()
-    
-    path_dump = os.path.join(__current_dir, 'sql', 'dump.sql')
     subprocess.run([
         'pg_dump',
         '-O', # no ownership of objects
@@ -358,17 +356,44 @@ def update_db(dbname):
             dumps[k] = line[:deb_name] + ','.join(names) + line[fin_name:deb_values] + ','.join(values) + line[fin_values:] 
             
     with open(path_dump, 'w', encoding='utf-8') as f:
+        f.writelines([f"-- cycle version {version}\n", f"-- project SRID {srid}\n"])
         f.writelines(model_lines)
         f.writelines(dumps)
-        
-    # raise Exception("Not implemented yet")
+
+def get_srid_from_file(file):
+    with open(file, 'r') as f:
+        lines = f.readlines()
+    for line in lines:
+        match = re.search(r"-- project SRID (\d{4,5})", line)
+        if match:
+            return match.group(1)
+    return None
+
+def import_db(dbname, path_dump) : 
+    # Import db but update it (not a copy of the original db) 
+    with autoconnection("postgres") as con, con.cursor() as cur:
+        cur.execute(f"create database {dbname};")
+    srid = get_srid_from_file(path_dump)
+    if srid is None :
+        raise ValueError("SRID not found in file")
+    reset_project(dbname, srid)
+    with autoconnection(dbname) as con, con.cursor() as cur:
+        with open(path_dump, 'r') as f:
+            cur.execute(f.read())
     
+
+
+def update_db(dbname):
+    path_dump = os.path.join(__current_dir, 'sql', 'dump.sql')
+    export_db(dbname, path_dump)
+    with autoconnection(dbname) as con, con.cursor() as cur:
+        cur.execute("select srid from api.metadata")
+        srid, = cur.fetchone()
         
     reset_project(dbname, srid)
     with autoconnection(dbname) as con, con.cursor() as cur:
         with open(path_dump, 'r') as f:
             cur.execute(f.read())
-            
     os.remove(path_dump)
     
     

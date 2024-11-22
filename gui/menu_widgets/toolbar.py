@@ -110,6 +110,7 @@ class CycleToolbar(QToolBar):
         self.combo_scale.setEditable(True)  # Make the combo box editable
         self.combo_scale.addItems(["1:500", "1:1000", "1:2500", "1:5000", "1:10000", "1:25000", "1:50000", "1:100000"])  # Add some default values
         self.combo_scale.setCurrentIndex(2)
+        self.__zoom_to_scale()
         self.combo_scale.currentTextChanged.connect(self.__zoom_to_scale)
         self.addWidget(self.combo_scale)
         
@@ -269,7 +270,7 @@ class CycleToolbar(QToolBar):
         print("Bonjour")
         for layer in layers : 
             
-            if isinstance(layer, qgis._core.QgsVectorLayer) and layer.geometryType().name == 'Point' : 
+            if isinstance(layer, qgis._core.QgsVectorLayer) and int(layer.geometryType()) == 0 : # Si la couche et vectorielle et c'est un point 
                 print(layer.name())
                 print(layer.renderer().referenceScale())
                 r = layer.renderer()

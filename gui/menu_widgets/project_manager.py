@@ -54,7 +54,7 @@ class ProjectManager(QDialog):
         self.btn_update_project.setToolTip(self.tr("If the project is up to date, database views and function will be reloaded"))
         self.btn_add_model.clicked.connect(self.add_model)
         self.btn_delete_model.clicked.connect(self.delete_model)
-        self.btn_import_model.clicked.connect(self.import_model)
+        # self.btn_import_model.clicked.connect(self.import_model) marche pas encore
         # self.btn_import_model.setToolTip('\n'.join([
         #    self.tr("Import epanet model (*.inp) or legacy expresseau models (*.dat)."),
         #    "",
@@ -64,7 +64,8 @@ class ProjectManager(QDialog):
         #    self.tr("- a caracteristiques_materiaux.xlsx file"),
         #    self.tr("- a _Nod.Csv file"),
         #    self.tr("- a _CANA.Csv file")])) Faudra refaire en fonction de notre truc d'import
-        self.btn_export_model.clicked.connect(self.export_model)
+        
+        # self.btn_export_model.clicked.connect(self.export_model) marche pas encore
 
         self.tree_widget.itemSelectionChanged.connect(self.__refresh_buttons)
         self.tree_widget.itemDoubleClicked.connect(self.open_project)
@@ -259,7 +260,7 @@ class ProjectManager(QDialog):
         '''Exports selected project to selected file'''
         project_name, model_name = self.__get_selection()
         assert(project_name is not None)
-        file, __ = QFileDialog.getSaveFileName(self, self.tr("Select a file"), filter="SQL (*.sql)")
+        file, __ = QFileDialog.getSaveFileName(self, self.tr("Select a file"), filter="LIEGES (*.lieges)")
         if file:
             export_db(project_name, file)
             self.__log_manager.notice(project_name+self.tr(' exported to ')+file)
@@ -280,32 +281,53 @@ class ProjectManager(QDialog):
         self.__refresh_tree()
         self.__log_manager.notice(project_name+self.tr(' updated'))
 
+    # def import_project(self):
+    #     '''Imports selected file in a new project'''
+    #     file, __ = QFileDialog.getOpenFileName(self, self.tr("Select a file"), filter="File (*.sql *.lieges);; LIEGES ();; SQL (*.sql)")
+    #     if file:
+    #         if file.lower().endswith('.sql'):
+    #             srid = get_srid_from_file(file)
+    #             if srid is None:
+    #                 self.__log_manager.error(self.tr("SRID not found in file ")+file)
+    #                 return
+
+    #             dialog = NewProjectDialog(self, project_name=os.path.basename(file.lower())[:-4])
+    #             dialog.srid.setEnabled(False)
+    #             dialog.srid.setText(get_srid_from_file(file))
+    #             ok = dialog.exec_()
+    #             if ok == dialog.Accepted:
+    #                 import_db(dialog.return_name(), file)
+    #                 self.__refresh_tree()
+    #                 self.__log_manager.notice(dialog.return_name()+self.tr(' imported from ')+file)
+
+    #         elif file.lower().endswith('.inp'):
+    #             params = {
+    #                 "file":file,
+    #                 "project": normalized_name(os.path.basename(file)[:-4], 24)
+    #                 }
+    #             processing.execAlgorithmDialog('cycle:import inp', params)
+    #             self.__refresh_tree()
+
+    
     def import_project(self):
         '''Imports selected file in a new project'''
-        file, __ = QFileDialog.getOpenFileName(self, self.tr("Select a file"), filter="File (*.sql *.inp);; SQL (*.sql);; EPANET (*.inp)")
+        file, __ = QFileDialog.getOpenFileName(self, self.tr("Select a file"), filter="File (*.sql *.lieges);; LIEGES ();; SQL (*.sql)")
         if file:
-            if file.lower().endswith('.sql'):
-                srid = get_srid_from_file(file)
-                if srid is None:
-                    self.__log_manager.error(self.tr("SRID not found in file ")+file)
-                    return
+            srid = get_srid_from_file(file)
+            if srid is None:
+                self.__log_manager.error(self.tr("SRID not found in file ")+file)
+                return
 
-                dialog = NewProjectDialog(self, project_name=os.path.basename(file.lower())[:-4])
-                dialog.srid.setEnabled(False)
-                dialog.srid.setText(get_srid_from_file(file))
-                ok = dialog.exec_()
-                if ok == dialog.Accepted:
-                    import_db(dialog.return_name(), file)
-                    self.__refresh_tree()
-                    self.__log_manager.notice(dialog.return_name()+self.tr(' imported from ')+file)
-
-            elif file.lower().endswith('.inp'):
-                params = {
-                    "file":file,
-                    "project": normalized_name(os.path.basename(file)[:-4], 24)
-                    }
-                processing.execAlgorithmDialog('cycle:import inp', params)
+            dialog = NewProjectDialog(self, project_name=os.path.basename(file.lower())[:-4])
+            dialog.srid.setEnabled(False)
+            dialog.srid.setText(get_srid_from_file(file))
+            ok = dialog.exec_()
+            if ok == dialog.Accepted:
+                self.project_list.append(dialog.return_name())
+                import_db(dialog.return_name(), file)
                 self.__refresh_tree()
+                self.__log_manager.notice(dialog.return_name()+self.tr(' imported from ')+file)
+
 
     def export_model(self):
         project_name, model_name = self.__get_selection()
