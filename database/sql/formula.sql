@@ -1063,6 +1063,8 @@ left join res_constr on ___.results.id = res_constr.id and ___.results.name = re
 -- where ___.results.formula is not null 
 group by ___.results.id, model, ___.bloc.name;
 
+
+
 create or replace function api.get_histo_data(p_model varchar, bloc_name varchar default null)
 returns jsonb
 language plpgsql
@@ -1202,3 +1204,76 @@ begin
     return res;
 end;
 $$;
+
+
+create or replace function api.get_results4csv(model_name varchar, path varchar) 
+returns text[]
+language plpgsql
+as $$
+declare
+    id_bloc integer;
+    res jsonb := '{}';
+    path_id varchar;
+    paths text[] ;
+    c int := 1 ; 
+    name_bloc varchar ;
+    query text ;
+    n int ; 
+begin
+    n = (select count(*) from ___.bloc where model = model_name) +1;
+    raise notice 'n = %', n ;
+    paths = array_fill(''::text, array[n]) ; 
+    for name_bloc in (select name from ___.bloc where model = model_name) loop
+        res := api.get_histo_data(model_name, name_bloc);
+        -- name_bloc := (select name from ___.bloc where id = id_bloc) ;
+        path_id := path || name_bloc || '.json';
+        paths[c] := path_id ;
+        c := c + 1 ;
+        raise notice 'Ici commence le testing' ;
+        raise notice 'name_blocs = %', name_bloc ;
+        raise notice 'res %', res ;
+        -- raise notice 'res1 % ', (select res->name_bloc from res) ;
+        raise notice 'res2 % ', res->name_bloc ;
+        raise notice 'res3 % ', res->quote_literal(name_bloc) ;
+        raise notice 'res4 % ', (select res->name_bloc) ;
+        query := 'copy (select 
+         res->''' || name_bloc || '''->''n2o_c''->>''val'' as n2o_c, res->''' || name_bloc || '''->''n2o_c''->>''incert'' as n2o_c_incert,
+         res->''' || name_bloc || '''->''n2o_e''->>''val'' as n2o_e, res->''' || name_bloc || '''->''n2o_e''->>''incert'' as n2o_e_incert,
+         res->''' || name_bloc || '''->''ch4_c''->>''val'' as ch4_c, res->''' || name_bloc || '''->''ch4_c''->>''incert'' as ch4_c_incert,
+         res->''' || name_bloc || '''->''ch4_e''->>''val'' as ch4_e, res->''' || name_bloc || '''->''ch4_e''->>''incert'' as ch4_e_incert,
+         res->''' || name_bloc || '''->''co2_c''->>''val'' as co2_c, res->''' || name_bloc || '''->''co2_c''->>''incert'' as co2_c_incert,
+         res->''' || name_bloc || '''->''co2_e''->>''val'' as co2_e, res->''' || name_bloc || '''->''co2_e''->>''incert'' as co2_e_incert,
+         res->''' || name_bloc || '''->''co2_eq_c''->>''val'' as co2_eq_c, res->''' || name_bloc || '''->''co2_eq_c''->>''incert'' as co2_eq_c_incert,
+         res->''' || name_bloc || '''->''co2_eq_e''->>''val'' as co2_eq_e, res->''' || name_bloc || '''->''co2_eq_e''->>''incert'' as co2_eq_e_incert
+         ) to ' || quote_literal(path_id) || ' with (format csv, header)';
+        -- query := 'copy (select 
+        --     $1->$2->''n2o_c''->>''val'' as n2o_c, $1->$2->''n2o_c''->>''incert'' as n2o_c_incert,
+        --     $1->$2->''n2o_e''->>''val'' as n2o_e, $1->$2->''n2o_e''->>''incert'' as n2o_e_incert,
+        --     $1->$2->''ch4_c''->>''val'' as ch4_c, $1->$2->''ch4_c''->>''incert'' as ch4_c_incert,
+        --     $1->$2->''ch4_e''->>''val'' as ch4_e, $1->$2->''ch4_e''->>''incert'' as ch4_e_incert,
+        --     $1->$2->''co2_c''->>''val'' as co2_c, $1->$2->''co2_c''->>''incert'' as co2_c_incert,
+        --     $1->$2->''co2_e''->>''val'' as co2_e, $1->$2->''co2_e''->>''incert'' as co2_e_incert,
+        --     $1->$2->''co2_eq_c''->>''val'' as co2_eq_c, $1->$2->''co2_eq_c''->>''incert'' as co2_eq_c_incert,
+        --     $1->$2->''co2_eq_e''->>''val'' as co2_eq_e, $1->$2->''co2_eq_e''->>''incert'' as co2_eq_e_incert
+        --     ) to '||quote_literal(path_id)||' with (format csv, header)' ;
+        execute query ;
+    end loop;
+    res := api.get_histo_data(model_name, null);
+    path_id := path || 'total.json';
+    paths[c] := path_id ;
+    query := 'copy (select 
+        $1->''total''->''n2o_c''->>''val'' as n2o_c, $1->''total''->''n2o_c''->>''incert'' as n2o_c_incert,
+        $1->''total''->''n2o_e''->>''val'' as n2o_e, $1->''total''->''n2o_e''->>''incert'' as n2o_e_incert,
+        $1->''total''->''ch4_c''->>''val'' as ch4_c, $1->''total''->''ch4_c''->>''incert'' as ch4_c_incert,
+        $1->''total''->''ch4_e''->>''val'' as ch4_e, $1->''total''->''ch4_e''->>''incert'' as ch4_e_incert,
+        $1->''total''->''co2_c''->>''val'' as co2_c, $1->''total''->''co2_c''->>''incert'' as co2_c_incert,
+        $1->''total''->''co2_e''->>''val'' as co2_e, $1->''total''->''co2_e''->>''incert'' as co2_e_incert,
+        $1->''total''->''co2_eq_c''->>''val'' as co2_eq_c, $1->''total''->''co2_eq_c''->>''incert'' as co2_eq_c_incert,
+        $1->''total''->''co2_eq_e''->>''val'' as co2_eq_e, $1->''total''->''co2_eq_e''->>''incert'' as co2_eq_e_incert
+        ) to '||quote_literal(path_id)||' with (format csv, header)' ;
+    execute query using res ;
+    return paths ;
+end;
+$$;
+
+-- select api.get_results4csv('model_1', 'C:\Users\theophile.mounier\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\cycle\database\sql\bonjour\') ;

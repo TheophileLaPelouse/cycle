@@ -173,7 +173,7 @@ class AllResults(QDialog) :
         bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': [], 'co2_eq_ce' : []}
         if data1 :
             r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = self.fill_bars(data1, stud_time)
-            self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, 'blue', tr("Emmission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
+            self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, 'blue', tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
             self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, color, 'blue', tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"))   
             self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names, color, 'blue', tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"))
             if data2 : 
@@ -186,7 +186,7 @@ class AllResults(QDialog) :
                 self.graph_bar_ce.add_bar_chart(r, rtot, bars_ce, bars_ce_err, 'ce', names, color, 'red')
         elif data2 : 
             r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = self.fill_bars(data2, stud_time)
-            self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, 'red', tr("Emmission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
+            self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, color, 'red', tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
             self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, color, 'red', tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs")) 
             self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names, color, 'red', tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"))
         

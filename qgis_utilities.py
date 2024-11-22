@@ -376,11 +376,7 @@ class QGisProjectManager(QObject):
 
         QGisProjectManager.load_qml(project, project_filename)
         project.write()
-        # urlWithParams = 'type=xyz&url=https://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857'
-        # rlayer = QgsRasterLayer(urlWithParams, 'OpenStreetMap', 'wms')
-        # if rlayer.isValid() : 
-        #     project.addMapLayer(rlayer)
-        # Je ne sais pas pourquoi ça marche quandje le fais depuis la console qgis mais pas là
+
     
     @staticmethod
     def hide_columns(layer, columns) :
@@ -462,12 +458,12 @@ class QGisProjectManager(QObject):
                             f_inputs[b_types] = {}
                         if inp_outs[b_types]['concrete'] :
                             print('Avant update', time.time()-tic)
-                            QGisProjectManager.update1qml(project, dico_layer, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
+                            QGisProjectManager.update1qml(dico_layer, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
         print('temps', time.time()-tic)
                         
                             
     @staticmethod
-    def update1qml(project, dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
+    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
         t1 = time.time()
         
         try : layer.loadNamedStyle(qml)
