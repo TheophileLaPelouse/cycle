@@ -270,7 +270,7 @@ class CycleToolbar(QToolBar):
         print("Bonjour")
         for layer in layers : 
             
-            if isinstance(layer, qgis._core.QgsVectorLayer) and int(layer.geometryType()) == 0 : # Si la couche et vectorielle et c'est un point 
+            if isinstance(layer, qgis._core.QgsVectorLayer) and int(layer.geometryType()) in (0,1,2) : # Si la couche et vectorielle et c'est un point 
                 print(layer.name())
                 print(layer.renderer().referenceScale())
                 r = layer.renderer()

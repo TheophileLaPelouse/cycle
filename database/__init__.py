@@ -396,7 +396,7 @@ def update_db(dbname):
     with autoconnection(dbname) as con, con.cursor() as cur:
         with open(path_dump, 'r') as f:
             cur.execute(f.read())
-    os.remove(path_dump)
+    # os.remove(path_dump)
     
     
     

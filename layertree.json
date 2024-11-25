@@ -426,6 +426,20 @@
                 "festock"
             ]
         ],
+        "methode": [
+            "methode",
+            "api",
+            "methode_type_table",
+            "val"
+        ],
+        "methode__ref": [
+            [
+                "ref_methode_filiere_eau",
+                "val",
+                "Fili\u00e8re eau",
+                "methode"
+            ]
+        ],
         "prod_e": [
             "prod_e",
             "api",
@@ -434,9 +448,21 @@
         ],
         "prod_e__ref": [
             [
-                "ref_prod_e_mbbr",
+                "ref_prod_e_filiere_eau",
                 "val",
-                "MBBR",
+                "Fili\u00e8re eau",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_brm",
+                "val",
+                "BRM",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_dessableurdegraisseur",
+                "val",
+                "Dessableur-D\u00e9graisseur",
                 "prod_e"
             ],
             [
@@ -452,39 +478,15 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_dessableurdegraisseur",
-                "val",
-                "Dessableur-D\u00e9graisseur",
-                "prod_e"
-            ],
-            [
                 "ref_prod_e_lagunage",
                 "val",
                 "Lagunage",
                 "prod_e"
             ],
             [
-                "ref_prod_e_degazage",
+                "ref_prod_e_mbbr",
                 "val",
-                "D\u00e9gazage",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_brm",
-                "val",
-                "BRM",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_bassin_dorage",
-                "val",
-                "Bassin d'orage",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_clarificateur",
-                "val",
-                "Clarificateur",
+                "MBBR",
                 "prod_e"
             ],
             [
@@ -494,9 +496,21 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_filiere_eau",
+                "ref_prod_e_clarificateur",
                 "val",
-                "Fili\u00e8re eau",
+                "Clarificateur",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_degazage",
+                "val",
+                "D\u00e9gazage",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_bassin_dorage",
+                "val",
+                "Bassin d'orage",
                 "prod_e"
             ]
         ],

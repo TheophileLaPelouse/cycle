@@ -206,13 +206,16 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencedLayer="Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61" id="Stockage_Boue_0b344207_7818_4e97_94f9_01840aabf779_festock_Taille_du_stockage_e08a8cdf_ae10_4314_a847_04d4c77048c4_val" name="ref_festock_stockage_boue" strength="Association" layerId="Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" layerName="Taille du stockage" referencingLayer="Stockage_Boue_7a520a7b_7732_4ecd_b624_4e8af064cd27">
+    <relation referencedLayer="Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19" id="Stockage_Boue_0b344207_7818_4e97_94f9_01840aabf779_festock_Taille_du_stockage_e08a8cdf_ae10_4314_a847_04d4c77048c4_val" name="ref_festock_stockage_boue" strength="Association" layerId="Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" layerName="Taille du stockage" referencingLayer="Stockage_Boue_451730b0_0376_47ea_a50c_0a1baf89bd83">
       <fieldRef referencedField="val" referencingField="festock"/>
     </relation>
-    <relation referencedLayer="Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61" id="Stockage_Boue_7a520a7b_7732_4ecd_b624_4e8af064cd27_festock_Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61_val" name="ref_festock_stockage_boue" strength="Association" layerId="Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" layerName="Taille du stockage" referencingLayer="Stockage_Boue_7a520a7b_7732_4ecd_b624_4e8af064cd27">
+    <relation referencedLayer="Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19" id="Stockage_Boue_451730b0_0376_47ea_a50c_0a1baf89bd83_festock_Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19_val" name="ref_festock_stockage_boue" strength="Association" layerId="Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" layerName="Taille du stockage" referencingLayer="Stockage_Boue_451730b0_0376_47ea_a50c_0a1baf89bd83">
       <fieldRef referencedField="val" referencingField="festock"/>
     </relation>
-    <relation referencedLayer="Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61" id="Stockage_Boue_d0de4f7c_d274_4f33_92bb_313e7a1a20ae_festock_Taille_du_stockage_f54ec064_7d71_4191_9188_dd55f2b07a29_val" name="ref_festock_stockage_boue" strength="Association" layerId="Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" layerName="Taille du stockage" referencingLayer="Stockage_Boue_7a520a7b_7732_4ecd_b624_4e8af064cd27">
+    <relation referencedLayer="Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19" id="Stockage_Boue_7a520a7b_7732_4ecd_b624_4e8af064cd27_festock_Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61_val" name="ref_festock_stockage_boue" strength="Association" layerId="Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" layerName="Taille du stockage" referencingLayer="Stockage_Boue_451730b0_0376_47ea_a50c_0a1baf89bd83">
+      <fieldRef referencedField="val" referencingField="festock"/>
+    </relation>
+    <relation referencedLayer="Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19" id="Stockage_Boue_d0de4f7c_d274_4f33_92bb_313e7a1a20ae_festock_Taille_du_stockage_f54ec064_7d71_4191_9188_dd55f2b07a29_val" name="ref_festock_stockage_boue" strength="Association" layerId="Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" layerName="Taille du stockage" referencingLayer="Stockage_Boue_451730b0_0376_47ea_a50c_0a1baf89bd83">
       <fieldRef referencedField="val" referencingField="festock"/>
     </relation>
   </referencedLayers>
@@ -451,7 +454,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="festock_fe" expression="attribute(get_feature(layer:='Taille_du_stockage_b93fecbb_64cf_4717_a370_5228ee1e8d61', attribute:='val', value:=&quot;festock&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="festock_fe" expression="attribute(get_feature(layer:='Taille_du_stockage_756b1744_488c_4a0a_8135_1a0d15f97c19', attribute:='val', value:=&quot;festock&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="festock_description" expression=""/>
   </defaults>
   <constraints>

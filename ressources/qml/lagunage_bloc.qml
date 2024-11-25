@@ -206,13 +206,16 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencedLayer="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" id="Lagunage_1c96824f_da5f_4d06_80f1_4c5f4957c798_prod_e_Intrant_2d3af720_efa2_4de2_bcf3_a08c739edaa9_val" name="ref_prod_e_lagunage" strength="Association" layerId="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Lagunage_6fa28532_5092_4657_bc5a_e57e135e8c78">
+    <relation referencedLayer="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" id="Lagunage_0f1ade38_9e51_4a22_892b_19c8e2658307_prod_e_Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3_val" name="ref_prod_e_lagunage" strength="Association" layerId="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Lagunage_0f1ade38_9e51_4a22_892b_19c8e2658307">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
-    <relation referencedLayer="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" id="Lagunage_6fa28532_5092_4657_bc5a_e57e135e8c78_prod_e_Intrant_54cda713_721b_4981_b69f_34cd70ed1c54_val" name="ref_prod_e_lagunage" strength="Association" layerId="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Lagunage_6fa28532_5092_4657_bc5a_e57e135e8c78">
+    <relation referencedLayer="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" id="Lagunage_1c96824f_da5f_4d06_80f1_4c5f4957c798_prod_e_Intrant_2d3af720_efa2_4de2_bcf3_a08c739edaa9_val" name="ref_prod_e_lagunage" strength="Association" layerId="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Lagunage_0f1ade38_9e51_4a22_892b_19c8e2658307">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
-    <relation referencedLayer="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" id="Lagunage_e299ceeb_d305_4718_9097_b7a1056a09a1_prod_e_Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d_val" name="ref_prod_e_lagunage" strength="Association" layerId="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Lagunage_6fa28532_5092_4657_bc5a_e57e135e8c78">
+    <relation referencedLayer="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" id="Lagunage_6fa28532_5092_4657_bc5a_e57e135e8c78_prod_e_Intrant_54cda713_721b_4981_b69f_34cd70ed1c54_val" name="ref_prod_e_lagunage" strength="Association" layerId="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Lagunage_0f1ade38_9e51_4a22_892b_19c8e2658307">
+      <fieldRef referencedField="val" referencingField="prod_e"/>
+    </relation>
+    <relation referencedLayer="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" id="Lagunage_e299ceeb_d305_4718_9097_b7a1056a09a1_prod_e_Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d_val" name="ref_prod_e_lagunage" strength="Association" layerId="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Lagunage_0f1ade38_9e51_4a22_892b_19c8e2658307">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
   </referencedLayers>
@@ -1091,7 +1094,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_54cda713_721b_4981_b69f_34cd70ed1c54', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="prod_e_description" expression=""/>
   </defaults>
   <constraints>

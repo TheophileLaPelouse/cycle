@@ -1,11 +1,14 @@
 import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog
 from ...qgis_utilities import QGisProjectManager, tr 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from .graph_widget import GraphWidget, pretty_number
+
+import pandas as pd
+
 
 class AllResults(QDialog) : 
     def __init__(self, project, resume_results_widget, parent=None) : 
@@ -38,6 +41,8 @@ class AllResults(QDialog) :
         self.resume2.setVisible(False)
         
         self.show_result_button.clicked.connect(self.show_results)
+        
+        self.export_btn.clicked.connect(self.export_results)
         
         self.close_button.clicked.connect(self.close)
         
@@ -250,3 +255,69 @@ class AllResults(QDialog) :
         print('bonjour', bars_e_err)
         return r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names
         
+    def export_results(self) :
+        models = self.__project.models
+        
+        file, __ = QFileDialog.getSaveFileName(self, self.tr("Select a file"), filter="CSV (*.csv) ;;Excel (*.xlsx)")
+        if not file : return 
+        col_alias = {'co2_e' : ('CO2 exploitation valeur', 'CO2 exploitation incertitude'), 'ch4_e' : ('CH4 exploitation valeur', 'CH4 exploitation incertitude'),
+                             'n2o_e' : ('N2O exploitation valeur', 'N2O exploitation incertitude'), 'co2_c' : ('CO2 construction valeur', 'CO2 construction incertitude'),
+                             'ch4_c' : ('CH4 construction valeur', 'CH4 construction incertitude'), 'n2o_c' : ('N2O construction valeur', 'N2O construction incertitude'),
+                             'co2_eq_c' : ('CO2eq construction valeur', 'CO2eq construction incertitude'), 'co2_eq_e' : ('CO2eq exploitation valeur', 'CO2eq exploitation incertitude'),
+                             'co2_eq_ce' : ('CO2eq construction et exploitation valeur', 'CO2eq construction et exploitation incertitude')}
+        columns = []
+        for key in col_alias : 
+            columns.append(col_alias[key][0])
+            columns.append(col_alias[key][1])
+        All_data = {}
+        for mod in models : 
+            blocs = self.__project.fetchall(f"""
+                with b_types as (select b_type from api.input_output where concrete or b_type='sur_bloc')
+                select name from api.bloc where model = '{mod}' and b_type in (select b_type from b_types)""")
+            blocs = [bloc[0] for bloc in blocs]
+            data_mod = {}
+            for bloc in blocs : 
+                data = self.__project.fetchone(f"select api.get_histo_data('{mod}', '{bloc}')")[0]
+                indexs = list(data.keys())
+                df = pd.DataFrame(index=indexs, columns=columns)
+                for index, col in data.items() : 
+                    for c in col : 
+                        df.loc[index, col_alias[c][0]] = col[c]['val']
+                        df.loc[index, col_alias[c][1]] = col[c]['incert']
+                data_mod[bloc] = df
+            data = self.__project.fetchone(f"select api.get_histo_data('{mod}')")[0]
+            indexs = list(data.keys())
+            df = pd.DataFrame(index=indexs, columns=columns)
+            for index, col in data.items() : 
+                for c in col : 
+                    df.loc[index, col_alias[c][0]] = col[c]['val']
+                    df.loc[index, col_alias[c][1]] = col[c]['incert']
+            data_mod[mod] = df
+            All_data[mod] = data_mod
+        
+        if file.endswith('.csv') :
+            with open(file, 'w') as f : 
+                f.write(f"-- Résultats du projet {self.__project.name}\n")
+            
+            for mod in All_data :
+                with open(file, 'a') as f : 
+                    f.write(f"\n\n-- Modèle {mod}--\n")
+                for bloc in All_data[mod] :
+                    with open(file, 'a') as f : 
+                        f.write(f"\n-- Bloc {bloc}\n")
+                    All_data[mod][bloc].to_csv(file, mode='a')
+        else :
+            with pd.ExcelWriter(file) as writer:
+                for mod in All_data:
+                    sheet_name = f"{mod}"
+                    pd.DataFrame(columns=[f"Résultats du projet {self.__project.name}", f"Modèle {mod}"]).to_excel(writer, sheet_name=sheet_name, index=False)
+                    start = 3
+                    for bloc in All_data[mod]:
+                        pd.DataFrame(index=["Bloc"], data=[f"{bloc}"]).to_excel(writer, sheet_name=sheet_name, index=True, header=False, startrow = start)
+                        start += 1
+                        All_data[mod][bloc].to_excel(writer, sheet_name=sheet_name, startrow=start)
+                        start += len(All_data[mod][bloc].index) + 2
+                        
+                
+                    
+                    

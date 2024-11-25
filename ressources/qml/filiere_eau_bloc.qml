@@ -303,13 +303,16 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencedLayer="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" id="Fili_re_eau_32b49328_61ac_4342_b884_25615acfd97f_prod_e_Intrant_54cda713_721b_4981_b69f_34cd70ed1c54_val" name="ref_prod_e_filiere_eau" strength="Association" layerId="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Fili_re_eau_32b49328_61ac_4342_b884_25615acfd97f">
+    <relation referencedLayer="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" id="Fili_re_eau_32b49328_61ac_4342_b884_25615acfd97f_prod_e_Intrant_54cda713_721b_4981_b69f_34cd70ed1c54_val" name="ref_prod_e_filiere_eau" strength="Association" layerId="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Fili_re_eau_a7424fae_1368_4b39_80bb_8d72b7e2ee80">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
-    <relation referencedLayer="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" id="Fili_re_eau_9883376e_95e1_4f24_9852_e40f10bc9968_prod_e_Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d_val" name="ref_prod_e_filiere_eau" strength="Association" layerId="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Fili_re_eau_32b49328_61ac_4342_b884_25615acfd97f">
+    <relation referencedLayer="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" id="Fili_re_eau_9883376e_95e1_4f24_9852_e40f10bc9968_prod_e_Intrant_db4a3719_a6c0_4c7f_abdb_cc7d1a9c376d_val" name="ref_prod_e_filiere_eau" strength="Association" layerId="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Fili_re_eau_a7424fae_1368_4b39_80bb_8d72b7e2ee80">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
-    <relation referencedLayer="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" id="Fili_re_eau_fef669a9_9c7d_49d9_9e90_a14457a68dd4_prod_e_Intrant_2d3af720_efa2_4de2_bcf3_a08c739edaa9_val" name="ref_prod_e_filiere_eau" strength="Association" layerId="Intrant_54cda713_721b_4981_b69f_34cd70ed1c54" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Fili_re_eau_32b49328_61ac_4342_b884_25615acfd97f">
+    <relation referencedLayer="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" id="Fili_re_eau_a7424fae_1368_4b39_80bb_8d72b7e2ee80_prod_e_Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3_val" name="ref_prod_e_filiere_eau" strength="Association" layerId="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Fili_re_eau_a7424fae_1368_4b39_80bb_8d72b7e2ee80">
+      <fieldRef referencedField="val" referencingField="prod_e"/>
+    </relation>
+    <relation referencedLayer="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" id="Fili_re_eau_fef669a9_9c7d_49d9_9e90_a14457a68dd4_prod_e_Intrant_2d3af720_efa2_4de2_bcf3_a08c739edaa9_val" name="ref_prod_e_filiere_eau" strength="Association" layerId="Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" layerName="Intrant" referencingLayer="Fili_re_eau_a7424fae_1368_4b39_80bb_8d72b7e2ee80">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
   </referencedLayers>
@@ -1188,7 +1191,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_54cda713_721b_4981_b69f_34cd70ed1c54', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="prod_e_fe" expression="attribute(get_feature(layer:='Intrant_db7e6bc4_f15b_4c42_bea4_f32dfcca39d3', attribute:='val', value:=&quot;prod_e&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="prod_e_description" expression=""/>
   </defaults>
   <constraints>

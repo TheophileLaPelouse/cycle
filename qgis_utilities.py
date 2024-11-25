@@ -68,12 +68,14 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'ngl_s' : 'NGL sortant (kgNGL/an)', 'fen2o_ox
          'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
          'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)", 
          'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)', 
-         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)', 'prod_e' : 'Intrant', 'pelletisation' : 'Présence de pelletisation',
+         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)', 'prod_e' : 'Réactifs', 'pelletisation' : 'Présence de pelletisation',
          'lavage' : 'Sables lavé ?', 'conc' : 'Graisses concentrées ?', 'aere' : 'Avec aération', 'grand' : 'Diamètre supérieur à 2m', 
          'dbo' : 'DBO (kgDBO/an)', 'Niveau de détail 1' : 'Conception générale', 'Niveau de détail 2' : 'Conception détaillée',
-         'Niveau de détail 3' : 'Etude de faisabilité', 'Niveau de détail 4' : 'Conception très détaillée'
+         'Niveau de détail 3' : 'Etude de faisabilité', 'Niveau de détail 4' : 'Conception très détaillée', 'Niveau de détail 5' : "Précision maximale",
+         'Niveau de détail 6' : "Intrants (Comptabilisé même pour les sur blocs)", 'feexpl' : 'Type de structure',
+         'methode' : 'Procédé principale de la filière', 'methode_fe' : 'Consommation électrique (kWh/DBO5 éliminé)'
          }
-Alias_intrant = produits_chimiques = {
+Alias_intrant = {
     "q_hcl": "Acide chlorhydrique",
     "q_citrique": "Acide citrique",
     "q_phosphorique": "Acide phosphorique",
@@ -104,7 +106,11 @@ Alias_intrant = produits_chimiques = {
     "q_sulf_alu": "Sulfate d’aluminium",
     "q_sulf_sod": "Sulfate de sodium",
     "q_uree": "Urée", 
-    "q_fecl3": "Chlorure ferrique"
+    "q_fecl3": "Chlorure ferrique", 
+    "q_co2l": "CO2 liquide",
+    "q_coagl": "Coagulant liquide",
+    "q_javel": "Eau de javel",
+    "q_lait": "Lait de chaux"
 }
 ConstrOnly = set(['cad', 'e', 'tauenterre'])
 
@@ -449,10 +455,12 @@ class QGisProjectManager(QObject):
                 print('founded qml', qml)
                 if tbl.endswith('_bloc') : 
                     b_types = tbl[:-5]
-                    # if layer_name == 'Dégazage' :
-                        # print('b_types', b_types)
-                        # print('f_details', f_details[b_types])
-                        # print('inp_outs', inp_outs[b_types])
+                    # if layer_name == 'Canalisation' :
+                    #     print('\nMais Non il est LA !!!\n')
+                    #     print('b_types', b_types)
+                    #     print('f_details', f_details[b_types])
+                    #     print('inp_outs', inp_outs[b_types])
+
                     if f_details.get(b_types) :
                         if not f_inputs.get(b_types) :
                             f_inputs[b_types] = {}
@@ -463,13 +471,13 @@ class QGisProjectManager(QObject):
                         
                             
     @staticmethod
-    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
+    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
         t1 = time.time()
         
         try : layer.loadNamedStyle(qml)
         except : pass
         config = layer.editFormConfig()
-        try : config.setLayout(Qgis.AttributeFormLayout(1))
+        try : config.setLayout(Qgis.AttributeFormLayout(1)) # y'a des versions de qgis où ça marche pas
         except : rapid = 2
         # En attendant pour pas que ce soit toujours trop long de tout recharger, plus tard y'aura un json propre qui permettra de gérer les blocs
         fieldnames = [f.name() for f in layer.fields()]

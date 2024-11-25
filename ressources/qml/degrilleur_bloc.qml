@@ -312,13 +312,16 @@
   </geometryOptions>
   <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers>
-    <relation referencedLayer="M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078" id="D_grilleur_84bbc745_0d24_4bee_8dc1_e54cbca5cbea_qdechet_M_thode_de_compactage_72a13efb_1a92_4cef_ae50_a7444a565b29_val" name="ref_qdechet_degrilleur" strength="Association" layerId="M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" layerName="Méthode de compactage" referencingLayer="D_grilleur_98a8adcd_e842_4e5c_b12e_71607e861870">
+    <relation referencedLayer="M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f" id="D_grilleur_0db38b43_eff3_486e_ab74_b2cc46adab12_qdechet_M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f_val" name="ref_qdechet_degrilleur" strength="Association" layerId="M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" layerName="Méthode de compactage" referencingLayer="D_grilleur_0db38b43_eff3_486e_ab74_b2cc46adab12">
       <fieldRef referencedField="val" referencingField="qdechet"/>
     </relation>
-    <relation referencedLayer="M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078" id="D_grilleur_98a8adcd_e842_4e5c_b12e_71607e861870_qdechet_M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078_val" name="ref_qdechet_degrilleur" strength="Association" layerId="M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" layerName="Méthode de compactage" referencingLayer="D_grilleur_98a8adcd_e842_4e5c_b12e_71607e861870">
+    <relation referencedLayer="M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f" id="D_grilleur_84bbc745_0d24_4bee_8dc1_e54cbca5cbea_qdechet_M_thode_de_compactage_72a13efb_1a92_4cef_ae50_a7444a565b29_val" name="ref_qdechet_degrilleur" strength="Association" layerId="M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" layerName="Méthode de compactage" referencingLayer="D_grilleur_0db38b43_eff3_486e_ab74_b2cc46adab12">
       <fieldRef referencedField="val" referencingField="qdechet"/>
     </relation>
-    <relation referencedLayer="M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078" id="D_grilleur_ce3baf5e_5b24_4fe3_abd1_180d86ee7c2f_qdechet_M_thode_de_compactage_c5a01564_c07a_405a_8140_82bcfb7ff704_val" name="ref_qdechet_degrilleur" strength="Association" layerId="M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078" providerKey="postgres" dataSource="dbname='presentation_copy2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" layerName="Méthode de compactage" referencingLayer="D_grilleur_98a8adcd_e842_4e5c_b12e_71607e861870">
+    <relation referencedLayer="M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f" id="D_grilleur_98a8adcd_e842_4e5c_b12e_71607e861870_qdechet_M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078_val" name="ref_qdechet_degrilleur" strength="Association" layerId="M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" layerName="Méthode de compactage" referencingLayer="D_grilleur_0db38b43_eff3_486e_ab74_b2cc46adab12">
+      <fieldRef referencedField="val" referencingField="qdechet"/>
+    </relation>
+    <relation referencedLayer="M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f" id="D_grilleur_ce3baf5e_5b24_4fe3_abd1_180d86ee7c2f_qdechet_M_thode_de_compactage_c5a01564_c07a_405a_8140_82bcfb7ff704_val" name="ref_qdechet_degrilleur" strength="Association" layerId="M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f" providerKey="postgres" dataSource="dbname='presentation' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;qdechet_type_table&quot;" layerName="Méthode de compactage" referencingLayer="D_grilleur_0db38b43_eff3_486e_ab74_b2cc46adab12">
       <fieldRef referencedField="val" referencingField="qdechet"/>
     </relation>
   </referencedLayers>
@@ -579,7 +582,7 @@
     <default applyOnUpdate="0" field="geom_ref" expression=""/>
     <default applyOnUpdate="0" field="sur_bloc" expression=""/>
     <default applyOnUpdate="0" field="model" expression="@current_model"/>
-    <default applyOnUpdate="1" field="qdechet_fe" expression="attribute(get_feature(layer:='M_thode_de_compactage_5b5d2257_10ff_42df_84b4_a81d5a37a078', attribute:='val', value:=&quot;qdechet&quot;), 'fe')"/>
+    <default applyOnUpdate="1" field="qdechet_fe" expression="attribute(get_feature(layer:='M_thode_de_compactage_93549b1d_6207_4268_a245_4483c21c0c0f', attribute:='val', value:=&quot;qdechet&quot;), 'fe')"/>
     <default applyOnUpdate="0" field="qdechet_description" expression=""/>
   </defaults>
   <constraints>
