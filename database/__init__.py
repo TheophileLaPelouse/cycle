@@ -13,13 +13,15 @@ import subprocess
 import psycopg2
 from ..utility.string import normalized_name
 from .version import __version__
-from ..service import get_service
+from ..service import get_service, edit_pg_service
 from qgis.core import QgsMessageLog
 
 __current_dir = os.path.dirname(__file__)
 
 CYCLE_DIR = os.path.join(os.path.expanduser('~'), ".cycle")
 _custom_sql_dir = os.path.join(CYCLE_DIR, 'sql')
+
+edit_pg_service()
 
 class ProjectCreationError(Exception):
     pass

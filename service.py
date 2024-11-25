@@ -20,3 +20,27 @@ def services():
             if l.startswith('['):
                 res.append(l.strip().replace('[','').replace(']',''))
     return res
+
+def edit_pg_service(user = 'hydra', password = 'hydra', port = 5454, host = '127.0.0.1'):
+    pg_service_file = os.environ['PGSERVICEFILE'] if 'PGSERVICEFILE' in os.environ else (os.path.expanduser('~')+os.sep+".pg_service.conf")
+    if not os.path.exists(pg_service_file):
+        with open(pg_service_file, 'w') as f:
+            f.write('[cycle]\n')
+            f.write('user=user\n')
+            f.write('password=password\n')
+            f.write('host=host\n')
+            f.write('port=port\n')
+    else : 
+        with open(pg_service_file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith('[cycle]'):
+                    return
+        with open(pg_service_file, 'a') as f:
+            f.write('[cycle]\n')
+            f.write('user=user\n')
+            f.write('password=password\n')
+            f.write('host=host\n')
+            f.write('port=port\n')
+            
+        return

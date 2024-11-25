@@ -11,6 +11,7 @@ from .gui.menu_widgets.toolbar import CycleToolbar
 from .service import set_service
 from .utility.log import LogManager
 from .project import Project
+ 
 import os
 
 def tr(msg):

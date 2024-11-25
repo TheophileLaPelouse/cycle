@@ -611,7 +611,8 @@ begin
     where (val is null and name = elem) 
     or (elem not in (select name from inp_out) and not elem ~ '[0-9].*');
     -- select into notnowns array_agg(name) from inp_out where val is null and name in (select unnest(args)) ;
-    -- -- raise notice 'unknowns = %', notnowns ;
+    raise notice 'args = %', args ;
+    raise notice 'unknowns = %', notnowns ;
     if array_length(notnowns, 1) > 0 then
         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then
             update ___.results set val=null, unknowns = notnowns where name = to_calc and ___.results.formula = formul and id = id_bloc ;
@@ -1207,6 +1208,7 @@ $$;
 
 
 create or replace function api.get_results4csv(model_name varchar, path varchar) 
+-- Ne fonctionne pas pour le moment mais le but serait de faire plein de csv et de renvoyer les chemins
 returns text[]
 language plpgsql
 as $$
