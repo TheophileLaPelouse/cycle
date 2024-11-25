@@ -89,8 +89,8 @@ begin
     select into links_up array_agg(api.link.up) from api.link where down = id_bloc and model = model_bloc ;
     select into links_up array_agg(id order by (st_area(geom_ref)) asc) from api.bloc 
     where id = any(links_up) ; 
-    -- -- raise notice 'id_bloc = %', (select name from ___.bloc where id = id_bloc) ;  
-    -- -- raise notice 'links_up = %', links_up ;
+    -- -- --raise  notice 'id_bloc = %', (select name from ___.bloc where id = id_bloc) ;  
+    -- -- --raise  notice 'links_up = %', links_up ;
     if array_length(links_up, 1) = 0 or links_up is null then 
         return false ;
     else 
@@ -98,9 +98,9 @@ begin
     i = 1; 
     while i < n+1 loop
         up_ = links_up[i] ;
-        -- -- raise notice 'up_ = %', up_ ;
+        -- -- --raise  notice 'up_ = %', up_ ;
         select into b_typ b_type from ___.bloc where id = up_ ;
-        -- -- raise notice 'b_typ = %', b_typ ;
+        -- -- --raise  notice 'b_typ = %', b_typ ;
 
         select into colnames outputs from api.input_output where b_type = b_typ ;
 
@@ -113,13 +113,13 @@ begin
             
             n := array_length(links_up, 1) ;
         end if ;
-        -- -- raise notice 'links_up2 = %', links_up ;
-        -- -- raise notice 'colnames = %', colnames ;
+        -- -- --raise  notice 'links_up2 = %', links_up ;
+        -- -- --raise  notice 'colnames = %', colnames ;
         if colnames is not null then 
         foreach col in array colnames loop
             query = 'select '||col||' from ___.'||b_typ||'_bloc where id = $1 ;' ;
             execute query into inp_col using up_ ;
-            -- -- raise notice 'inp_col = %', inp_col ;
+            -- -- --raise  notice 'inp_col = %', inp_col ;
             if inp_col is not null then 
                 if col like '%_s' then 
                     if left(col, -2) in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then
@@ -128,9 +128,9 @@ begin
                         col := left(col, -2)||'_e' ;
                     end if ;
                 end if ;
-                -- -- raise notice 'col = %', col ;
+                -- -- --raise  notice 'col = %', col ;
                 if col in (select unnest(inputs) from api.input_output where b_type = b_typ_fils) then 
-                    -- -- raise notice 'Bonjour ?' ;
+                    -- -- --raise  notice 'Bonjour ?' ;
                     if not exists(select 1 from inp_out where name = col) then 
                         insert into inp_out(name, val) values (col, inp_col) ;
                         flag := true ;
@@ -278,9 +278,9 @@ begin
         end if ;
     end loop ;
     args := args[1:j] ;
-    raise notice 'args finale %', args ;
+    --raise  notice 'args finale %', args ;
     for i in 1..j loop 
-        raise notice'args %', args[i] ;
+        --raise  notice'args %', args[i] ;
         if args[i] = '(' then 
             len := array_length(calc, 1) ; 
             if len < (idx + 1)*calc_sb_len then 
@@ -311,7 +311,7 @@ begin
                 calc := formula.resize_array(calc, calc_sb_len, 2*(calc_length[idx] + last_op_length[idx])) ;
                 calc_sb_len := 2*(calc_length[idx] + last_op_length[idx]) ;
             end if ; 
-            -- -- raise notice 'là1' ;
+            -- -- --raise  notice 'là1' ;
             if 1 <= last_op_length[idx] then
                 for k in 1..last_op_length[idx] loop 
                     calc[(idx-1)*calc_sb_len+calc_length[idx]+k] := last_op[(idx-1)*last_op_sb_len+k] ;
@@ -323,8 +323,8 @@ begin
                 calc := formula.resize_array(calc, calc_sb_len, 2*(calc_length[idx] + calc_length[idx-1])) ;
                 calc_sb_len := 2*(calc_length[idx] + calc_length[idx-1]) ;
             end if ; 
-            -- -- raise notice 'calc_length %', calc_length ;
-            -- -- raise notice 'là % < %', (idx-2)*calc_sb_len+calc_length[idx-1]+1, (idx-2)*calc_sb_len+calc_length[idx-1]+calc_length[idx] ;
+            -- -- --raise  notice 'calc_length %', calc_length ;
+            -- -- --raise  notice 'là % < %', (idx-2)*calc_sb_len+calc_length[idx-1]+1, (idx-2)*calc_sb_len+calc_length[idx-1]+calc_length[idx] ;
             for k in 1..calc_length[idx] loop 
                 calc[(idx-2)*calc_sb_len+calc_length[idx-1]+k] := calc[(idx-1)*calc_sb_len+k] ;
             end loop ;
@@ -359,19 +359,19 @@ begin
                 last_op := formula.resize_array(last_op, last_op_sb_len, 2*(last_op_length[idx]+1)) ;
                 last_op_sb_len := 2*(last_op_length[idx]+1) ;
             end if ;
-            -- -- raise notice 'last_op %, args %', last_op, args[i] ;
-            -- -- raise notice 'idx %', idx ; 
+            -- -- --raise  notice 'last_op %, args %', last_op, args[i] ;
+            -- -- --raise  notice 'idx %', idx ; 
 
             k2 := 0 ;
-            -- raise notice'last_op to modif %', last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] ;
+            -- --raise  notice'last_op to modif %', last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] ;
             for k in 1..last_op_length[idx] loop 
-                raise notice'k %, last_op %, k2 %', k, last_op[(idx-1)*last_op_sb_len+k], k2 ;
-                -- raise notice'args %', args[i] ;
-                -- raise notice'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
+                --raise  notice'k %, last_op %, k2 %', k, last_op[(idx-1)*last_op_sb_len+k], k2 ;
+                -- --raise  notice'args %', args[i] ;
+                -- --raise  notice'prio %', formula.prio(last_op[(idx-1)*last_op_sb_len+k]) < formula.prio(args[i]) ;
                 if k2 > k then 
-                    raise notice'temp_op %', temp_op ;
+                    --raise  notice'temp_op %', temp_op ;
                     temp_op2 := last_op[(idx-1)*last_op_sb_len+k] ;
-                    raise notice'temp_op2 %', temp_op2 ;
+                    --raise  notice'temp_op2 %', temp_op2 ;
                     last_op[(idx-1)*last_op_sb_len+k] := temp_op ; 
                     temp_op := temp_op2 ;
                     k2 := k2 + 1 ;
@@ -383,7 +383,7 @@ begin
                 end if ; 
             end loop ;
             k2 := k2 - 1 ; -- k2 incrémenté une fois de plus car dans la boucle
-            raise notice 'après la boucle k %, k2 %, temp_op %', last_op_length[idx], k2, temp_op ; 
+            --raise  notice 'après la boucle k %, k2 %, temp_op %', last_op_length[idx], k2, temp_op ; 
             if k2 > last_op_length[idx] then 
                 last_op[(idx-1)*last_op_sb_len+k2] := temp_op ;
             else 
@@ -392,8 +392,8 @@ begin
             end if ; 
             flag_op[idx] := (shift is not null and shift != 1) ;
             last_op_length[idx] := last_op_length[idx] + 1 ;
-            -- raise notice'last_op modified %', last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
-            -- raise notice'length after insert %', last_op_length ;
+            -- --raise  notice'last_op modified %', last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
+            -- --raise  notice'length after insert %', last_op_length ;
             -- à tester
             -- last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len] := formula.insert_op(last_op[(idx-1)*last_op_sb_len+1:idx*last_op_sb_len], args[i]) ;
 
@@ -415,10 +415,10 @@ begin
                 flag_op[idx] := false ;
             end if ;
         end if ;
-        raise notice 'idx %', idx ;
-        raise notice 'calc %', calc[(idx-1)*calc_sb_len+1:(idx-1)*calc_sb_len+calc_length[idx]] ;
-        raise notice'last_op %', last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
-        raise notice'calc_length %, last_op_length %', calc_length, last_op_length ;
+        --raise  notice 'idx %', idx ;
+        --raise  notice 'calc %', calc[(idx-1)*calc_sb_len+1:(idx-1)*calc_sb_len+calc_length[idx]] ;
+        --raise  notice'last_op %', last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
+        --raise  notice'calc_length %, last_op_length %', calc_length, last_op_length ;
     end loop ;
     if calc_length[idx] + last_op_length[idx] > calc_sb_len then 
         calc := formula.resize_array(calc, calc_sb_len, (calc_length[idx] + last_op_length[idx])+1) ;
@@ -430,8 +430,8 @@ begin
         -- calc[(idx-1)*calc_sb_len+calc_length[idx]+1:(idx-1)*calc_sb_len+calc_length[idx]+last_op_length[idx]] := last_op[(idx-1)*last_op_sb_len+1:(idx-1)*last_op_sb_len+last_op_length[idx]] ;
         calc_length[idx] := calc_length[idx] + last_op_length[idx] ;
     end if ; 
-    -- raise notice'expr début %', expr ; 
-    -- raise notice'calc final %', calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ;
+    -- --raise  notice'expr début %', expr ; 
+    -- --raise  notice'calc final %', calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ;
     return calc[(idx-1)*calc_sb_len+1:calc_length[idx]] ; 
 end ;
 $$ ;
@@ -460,7 +460,7 @@ declare
     result ___.res ; 
 begin 
     n = array_length(calc, 1) ;
-    raise notice 'n %', n ;
+    --raise  notice 'n %', n ;
     calc_val := array_fill(0.0, array[n]) ;
     calc_incert := array_fill(0.0, array[n]) ;
     to_debug := array_fill(''::varchar, array[n]) ;
@@ -468,13 +468,13 @@ begin
     fin := 0 ;
     if n = 0 then return result ; end if ;
     i := 1 ;
-    raise notice 'calc %', calc ;
+    --raise  notice 'calc %', calc ;
     query := '' ;
     while i < n+1 loop
         new := calc[i] ;
         i:=i+1 ;
         if new ~ pat then 
-            -- raise notice 'on a un pattern %' , new ; 
+            -- --raise  notice 'on a un pattern %' , new ; 
             -- On récupère les deux valeurs de calcul
             val1 := calc_val[fin-1] ;
             incert1 := calc_incert[fin-1] ;
@@ -483,25 +483,25 @@ begin
             incert2 := calc_incert[fin] ;
 
             to_debug[fin-1] := to_debug[fin-1] || ' ' || new || ' ' || to_debug[fin] ;
-            -- raise notice 'val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
+            -- --raise  notice 'val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
             fin := fin - 1 ;
             -- On calcule à chaque fois les incertitudes relatives et les valeurs réelles 
             case
             when new = '+' then 
                 -- somme des incertitudes
                 new_val := val1 + val2 ;
-                -- raise notice 'ici 7, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
+                -- --raise  notice 'ici 7, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 if val1 + val2 = 0 then 
                     new_incert := 0.0 ;
                 else 
                     new_incert := (incert1*val1 + incert2*val2)/(val1 + val2) ;
                 end if ;
                 
-                -- raise notice 'ici 8, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
+                -- --raise  notice 'ici 8, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
             when new = '-' then 
-                -- raise notice 'ici 6, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
+                -- --raise  notice 'ici 6, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_val := val1 - val2 ;
-                -- raise notice 'ici 5, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
+                -- --raise  notice 'ici 5, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 if val1 - val2 = 0 then 
                     new_incert := 0.0 ;
                 else 
@@ -511,36 +511,36 @@ begin
                 new_val := val1 * val2 ;
                 new_incert := sqrt(incert1^2 + incert2^2) ;
             when new = '/' then
-                -- raise notice 'ici 1, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
+                -- --raise  notice 'ici 1, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 if val2 = 0 then 
                     new_val = null ;
                 else 
                     new_val := val1 / val2 ;
                 end if ;
                 -- new_val := val1 / val2 ;
-                -- raise notice 'ici 2, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
+                -- --raise  notice 'ici 2, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_incert := sqrt(incert1^2 + incert2^2) ;
             when new = '^' then
                 new_val := val1 ^ val2 ;
-                -- raise notice 'ici 3, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
+                -- --raise  notice 'ici 3, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;
                 new_incert := abs(val2) * incert1 ;
-                -- raise notice 'ici 4, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
+                -- --raise  notice 'ici 4, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
             when new = '>' then
-                -- raise notice 'ici 11, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
+                -- --raise  notice 'ici 11, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
                 new_val := (val1 > val2)::int::real ;
-                -- raise notice 'là2 ?' ;
+                -- --raise  notice 'là2 ?' ;
                 new_incert := 0.0 ;
             when new = '<' then
-                -- raise notice 'ici 11, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
+                -- --raise  notice 'ici 11, val1 = %, incert1 = %, val2 = %, incert2 = %', val1, incert1, val2, incert2;   
                 new_val := (val1 < val2)::int::real ;
-                -- raise notice 'là ?' ; 
+                -- --raise  notice 'là ?' ; 
                 new_incert := 0.0 ;
             end case ;
-            -- raise notice 'ici 9, val1 = %, incert1 = %', new_val, new_incert; 
+            -- --raise  notice 'ici 9, val1 = %, incert1 = %', new_val, new_incert; 
             calc_val[fin] := new_val ;
-            -- raise notice 'ici 10, val1 = %, incert1 = %', new_val, new_incert; 
+            -- --raise  notice 'ici 10, val1 = %, incert1 = %', new_val, new_incert; 
             calc_incert[fin] := new_incert ;
-            -- raise notice 'vent'  ;
+            -- --raise  notice 'vent'  ;
         elseif new != '' then
             if regexp_matches(new, '^[0-9]+(\.[0-9]+)?$') is not null then 
                 val1 := new::real ;
@@ -555,15 +555,15 @@ begin
             to_debug[fin] := new ;
             
         end if ;
-        -- raise notice 'new %', new ;
-        -- raise notice 'calc_val %', calc_val[:fin] ;
-        -- raise notice 'calc_incert %', calc_incert[:fin] ;
-        -- raise notice 'already calculated %', to_debug[:fin] ;
-        -- raise notice 'suite %', calc[i:i+10] ; 
+        -- --raise  notice 'new %', new ;
+        -- --raise  notice 'calc_val %', calc_val[:fin] ;
+        -- --raise  notice 'calc_incert %', calc_incert[:fin] ;
+        -- --raise  notice 'already calculated %', to_debug[:fin] ;
+        -- --raise  notice 'suite %', calc[i:i+10] ; 
     end loop ; 
-    raise notice 'val %', calc_val[fin] ;
-    raise notice 'incert %', calc_incert[fin] ;
-    raise  notice 'to_debug %', to_debug ;
+    --raise  notice 'val %', calc_val[fin] ;
+    --raise  notice 'incert %', calc_incert[fin] ;
+    --raise   notice 'to_debug %', to_debug ;
     select into result calc_val[fin] as val, calc_incert[fin] as incert;
     return result ;
     
@@ -611,8 +611,9 @@ begin
     where (val is null and name = elem) 
     or (elem not in (select name from inp_out) and not elem ~ '[0-9].*');
     -- select into notnowns array_agg(name) from inp_out where val is null and name in (select unnest(args)) ;
-    raise notice 'args = %', args ;
-    raise notice 'unknowns = %', notnowns ;
+    --raise  notice 'args = %', args ;
+    --raise  notice 'unknowns = %', notnowns ;
+    --raise  notice 'unknwons is unknown %', (select jsonb_object_agg(name, val is null)) from inp_out where name = any(notnowns) ;
     if array_length(notnowns, 1) > 0 then
         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then
             update ___.results set val=null, unknowns = notnowns where name = to_calc and ___.results.formula = formul and id = id_bloc ;
@@ -620,7 +621,7 @@ begin
             insert into ___.results(id, name, detail_level, formula, unknowns) values (id_bloc, to_calc, detail_level, formul, notnowns) ;
         end if ; 
     else 
-        -- -- raise notice 'calc %', formula.write_formula(rightside) ;
+        -- -- --raise  notice 'calc %', formula.write_formula(rightside) ;
         result := formula.calc_incertitudes(formula.write_formula(rightside)) ;
         
         if exists (select 1 from ___.results where name = to_calc and ___.results.formula = formul and id = id_bloc) then 
@@ -669,33 +670,34 @@ declare
     is_in_bilan boolean ;
     incertitude real ;
 begin 
-    -- raise notice E'\nOn calcul pour %\n', (select name from ___.bloc where id = id_bloc) ;
+    -- --raise  notice E'\nOn calcul pour %\n', (select name from ___.bloc where id = id_bloc) ;
     if (select b_type from ___.bloc where id = id_bloc) = 'source' then 
-        -- raise notice 'qe_s source = %', (select qe_s from ___.source_bloc where id = id_bloc) ;
+        -- --raise  notice 'qe_s source = %', (select qe_s from ___.source_bloc where id = id_bloc) ;
     end if ;
-    -- -- raise notice 'id_bloc = %, model_bloc = %', id_bloc, model_bloc ;
+    -- -- --raise  notice 'id_bloc = %, model_bloc = %', id_bloc, model_bloc ;
     -- tic := clock_timestamp() ;
     select into b_typ b_type from ___.bloc where id = id_bloc and model = model_bloc ;
     select into concr concrete from api.input_output where b_type = b_typ ;
     if not concr then 
         return 'No calculation for link or sur_bloc' ;
     end if ;
-    -- -- raise notice 'b_typ = %', b_typ ;
+    -- -- --raise  notice 'b_typ = %', b_typ ;
     
     -- inp_out est une table qui contient toutes les valeurs qui pourraient servir pour appliquer une formule.
     create temp table inp_out(name varchar, val real, incert real default 0) on commit drop; 
-    -- -- raise notice 'b_typ = %', b_typ ;
-    -- -- raise notice 'input_output = %', (select inputs from api.input_output where b_type = b_typ) ;
+    -- -- --raise  notice 'b_typ = %', b_typ ;
+    -- -- --raise  notice 'input_output = %', (select inputs from api.input_output where b_type = b_typ) ;
     select array_agg(column_name) into colnames from information_schema.columns, api.input_output  
     where table_name = b_typ||'_bloc' and table_schema = '___' and 
     b_type = b_typ and (column_name = any(inputs) or column_name = any(outputs)) ;
-    -- -- raise notice 'colnames = %', colnames ;
+    -- -- --raise  notice 'colnames = %', colnames ;
     foreach col in array colnames loop
         select data_type from information_schema.columns where table_name = b_typ||'_bloc' and column_name = col limit 1 into type_ ; 
+        --raise  notice 'name %, type = %', col, type_ ;
         if type_ = 'USER-DEFINED' then 
             query := 'select '''||col||''' as name, '||col||'_fe::real as val from api.'||b_typ||'_bloc where id = $1 ; '  ; 
             execute query into items using id_bloc ;
-            -- raise notice 'ICI à vérifier' ;
+            -- --raise  notice 'ICI à vérifier' ;
             query := 'select incert from api.'||col||'_type_table where fe = $1 ;'; 
             execute query into incertitude using items.val ;
         else 
@@ -708,12 +710,12 @@ begin
             incertitude := 0.0 ;
         end if ;
         insert into inp_out(name, val, incert) values (items.name, items.val, incertitude) ;
-        -- -- raise notice 'items = %', items ;
+        --raise  notice 'items = %', items ;
     end loop ;
     insert into inp_out(name, val, incert) select name, val, incert from ___.global_values ;
     flag := api.recup_entree(id_bloc, model_bloc) ;
-    -- -- raise notice 'flag = %', flag ;
-    -- -- raise notice 'inp_out = %', (select jsonb_object_agg(name, val) from inp_out) ;
+    -- -- --raise  notice 'flag = %', flag ;
+    -- -- --raise  notice 'inp_out = %', (select jsonb_object_agg(name, val) from inp_out) ;
     if not flag and on_update then
         drop table inp_out ;
         return 'No new entry' ;
@@ -726,16 +728,20 @@ begin
     select trim(both ' ' from split_part(formula, '=', 1)), formula.read_formula(split_part(formula, '=', 2)), formula, detail_level from bloc_formula ;
 
     -- for items in (select * from bilan) loop
-    --     -- raise notice 'items bilan = %', items ;
+    --     -- --raise  notice 'items bilan = %', items ;
     -- end loop ;
 
     create temp table known_data(leftside varchar, detail_level integer default null, known boolean default false) on commit drop;
-
+    -- On ajoute les données connues dans known_data (typiquement tbentrant qui pourrait être calculé par une autre formules)
+    for to_calc in (select leftside from bilan) loop
+        insert into known_data(leftside, known, detail_level) select name, true, 7 from inp_out where val is not null and name = to_calc ;
+    end loop ; 
+    -- On pourrait tout ajouter d'un coup mais ça fait un gros knwown_data et optimiser des fois c'est bien.
     -- create temp table results(name varchar, detail_level integer, val real) on commit drop ; 
     tac := clock_timestamp() ;
     
     for data_, args, detail in (select leftside, calc_with, detail_level from bilan) loop
-        -- -- raise notice E'data_ = %, args = %, detail= %\n', data_, args, detail ;
+        -- -- --raise  notice E'data_ = %, args = %, detail= %\n', data_, args, detail ;
         create temp table treatment_lifo(id serial primary key, value varchar) ; 
         create temp table fifo(id serial primary key, value varchar) ; 
         insert into fifo(value) values (data_) ;
@@ -747,7 +753,7 @@ begin
             to_calc := formula.pop('fifo') ;
             is_known := (to_calc in (select leftside from known_data where known = true and detail_level=detail)) ;
             is_in_bilan := (to_calc in (select leftside from bilan where detail_level = detail)) ;
-            -- -- raise notice 'to_calc = %, is_known = %, is_in_bilan = %', to_calc, is_known, is_in_bilan ;
+            -- raise  notice 'to_calc = %, is_known = %, is_in_bilan = %', to_calc, is_known, is_in_bilan ;
             if (not is_known or is_known is null) and is_in_bilan then
                 insert into treatment_lifo(value) values (to_calc) ;
                 if not exists(select 1 from known_data where leftside = to_calc and detail_level = detail) then
@@ -755,32 +761,34 @@ begin
                 end if ;
                 insert into fifo(value) select elem from unnest(args) as elem where elem not in (select leftside from known_data where known = true) ;
             end if ;
-            -- -- raise notice 'fifo_calc = %', (select jsonb_object_agg(id, value) from fifo) ;
-            -- -- raise notice 'c = %, to_calc = %', c, to_calc ;
-            -- -- raise notice 'known_data = %', (select leftside from known_data where leftside = to_calc and detail_level=detail) ;
+            -- raise  notice 'fifo_calc = %', (select jsonb_object_agg(id, value) from fifo) ;
+            -- raise  notice 'c = %, to_calc = %', c, to_calc ;
+            -- raise  notice 'known_data = %', (select leftside from known_data where leftside = to_calc and detail_level=detail) ;
         end loop ;
+        raise notice 'knwn_datas %', (select jsonb_object_agg(leftside, detail_level) from known_data) ;
         if c = 10000 then 
-            raise exception 'Too many iterations' ;
+            --raise  exception 'Too many iterations' ;
         end if ;
     
         c := 0 ; 
-        -- -- raise notice 'treatment_lifo = %', (select jsonb_object_agg(id, value) from treatment_lifo) ;
+        raise  notice 'treatment_lifo = %', (select jsonb_object_agg(id, value) from treatment_lifo) ;
         while c < 10000 and (select count(*) from treatment_lifo) > 0 loop
             c := c + 1 ;
             to_calc := formula.pop('treatment_lifo', true) ;
             for f in (select formula from bilan where leftside = to_calc and detail_level=detail) loop
-                -- -- raise notice 'f = %', f ;
+                -- -- --raise  notice 'f = %', f ;
                 -- update tableau ___.result et inp_out
                 perform formula.calculate_formula(f, id_bloc, detail, to_calc) ;
                 -- insert into ___.results(id, name, detail_level, val, formula) values (id_bloc, to_calc, detail, result, f) ;
             end loop ;
             update inp_out set val = (___.results.val).val, incert = (___.results.val).incert from ___.results 
             where inp_out.name = to_calc 
-            and ___.results.name = to_calc and ___.results.id = id_bloc and ___.results.detail_level = detail ;
-            -- -- raise notice 'to_calc = %, result = %', to_calc, (select val from inp_out where name = to_calc) ;
+            and ___.results.name = to_calc and ___.results.id = id_bloc and ___.results.detail_level = detail 
+            and detail = (select max(detail_level) from known_data where leftside = to_calc) ;
+            -- -- --raise  notice 'to_calc = %, result = %', to_calc, (select val from inp_out where name = to_calc) ;
         end loop ;
         if c = 10000 then 
-            raise exception 'Too many iterations' ;
+            --raise  exception 'Too many iterations' ;
         end if ;
         drop table fifo ;
         drop table treatment_lifo ;
@@ -808,7 +816,7 @@ begin
         end if ;
     end loop ;
     tac := clock_timestamp() ;
-    -- -- raise notice 'Time to calculate = %', tac - tic ;
+    -- -- --raise  notice 'Time to calculate = %', tac - tic ;
     return 'Calculation done' ;
 end ;
 $$ ;
@@ -824,7 +832,7 @@ declare
     count integer ; 
 begin
 -- Recalcul les émissions en fonction des liens entre les blocs.
-    -- raise notice 'On update les blocs pour %', (select name from ___.bloc where id = id_bloc) ;
+    -- --raise  notice 'On update les blocs pour %', (select name from ___.bloc where id = id_bloc) ;
     create temp table fifo2(id serial primary key, value integer) on commit drop;
     for downs in (select down from api.link where up = id_bloc and model = model_name)
     loop
@@ -838,10 +846,10 @@ begin
     while c < count and c < 1000
     loop
         c := c + 1 ;
-        -- raise notice 'c = % count = %', c, count ;
-        -- raise notice 'fifo2 = %', (select array_agg(value) from fifo2) ;
+        -- --raise  notice 'c = % count = %', c, count ;
+        -- --raise  notice 'fifo2 = %', (select array_agg(value) from fifo2) ;
         select into new_up value from fifo2 where id = c ;
-        -- raise notice 'new_up = %', new_up ;
+        -- --raise  notice 'new_up = %', new_up ;
         if deleted then 
         -- On doit tout recalculer donc on_update = False pour être sûr de refaire tout le calcul
             perform api.calculate_bloc(new_up, model_name, false) ; 
@@ -850,7 +858,7 @@ begin
             perform api.calculate_bloc(new_up, model_name, true) ;
         end if ; 
         perform api.update_results_ss_bloc(new_up, (select sur_bloc from ___.bloc where id = new_up)) ; 
-        -- -- raise notice 'downs = %', (select array_agg(down) from api.link where up = new_up and model = model_name) ;
+        -- -- --raise  notice 'downs = %', (select array_agg(down) from api.link where up = new_up and model = model_name) ;
         for downs in (select down from api.link where up = new_up and model = model_name)
         loop
             if downs not in (select value from fifo2) then 
@@ -858,10 +866,10 @@ begin
                 count := count + 1 ;
             end if ;
         end loop ;
-        -- raise notice 'count final = %', count ;
+        -- --raise  notice 'count final = %', count ;
     end loop ;
     if c = 100 then 
-        raise exception 'Too many iterations' ;
+        --raise  exception 'Too many iterations' ;
     end if ;
     drop table fifo2 ; 
 end ;
@@ -890,10 +898,10 @@ declare
     concr boolean ;
 begin   
     if (select b_type from ___.bloc where id = id_bloc) = 'sur_bloc' then 
-        -- raise notice E'\n Là faut regarder attentivement \n' ;
+        -- --raise  notice E'\n Là faut regarder attentivement \n' ;
     end if ;
     foreach k in array keys loop
-        -- -- raise notice E'\nk = %', k ;
+        -- -- --raise  notice E'\nk = %', k ;
         select array_length(ss_blocs, 1) > 0 into n_sb from ___.bloc where id = id_bloc ;
         if n_sb is null or not n_sb then
             with somme as (select formula.sum_incert((val).val, (val).incert) as val from ___.results where name = k and id = id_bloc and detail_level = 6)
@@ -912,7 +920,7 @@ begin
             for sb in (select unnest(ss_blocs) from ___.bloc where id = id_bloc) loop 
                 select into b_typ b_type from api.bloc where id = sb ;
                 select into concr concrete from api.input_output where b_type = b_typ ;
-                -- raise notice 'sb = %, b_typ = %, concr = %', sb, b_typ, concr ;
+                -- --raise  notice 'sb = %, b_typ = %, concr = %', sb, b_typ, concr ;
                 if concr or b_typ = 'sur_bloc' then
                     -- On part du principe que les sous blocs sont cleans 
                     select into items result_ss_blocs_intrant from ___.results where name = k and id = sb and detail_level = 6 and result_ss_blocs is not null ;
@@ -921,7 +929,7 @@ begin
                     select into items result_ss_blocs from ___.results where name = k and id = sb and result_ss_blocs is not null ;
                     res.val := (items.result_ss_blocs).val ;
                     res.incert := (items.result_ss_blocs).incert ;
-                    -- raise notice 'res = %, res_intrant = %', res, res_intrant ;
+                    -- --raise  notice 'res = %, res_intrant = %', res, res_intrant ;
                     if res_intrant is not null then 
                         s_intrant := ___.add(s_intrant, res_intrant) ;
                     else 
@@ -935,7 +943,7 @@ begin
                 end if ;
             end loop ;
             if flag then 
-                -- raise notice 's = %', s ;
+                -- --raise  notice 's = %', s ;
                 if not exists(select 1 from ___.results where name = k and id = id_bloc) then
                     insert into ___.results(id, name, result_ss_blocs) values (id_bloc, k, s) ;
                 else
@@ -963,8 +971,8 @@ begin
             end if ;
         end if ;
     end loop ;
-    -- raise notice 'what the bloc %', (select name from ___.bloc where id = id_bloc) ;
-    -- raise notice 'Results for sur_bloc : %', (select json_object_agg(name, result_ss_blocs) from ___.results where id = id_bloc) ;
+    -- --raise  notice 'what the bloc %', (select name from ___.bloc where id = id_bloc) ;
+    -- --raise  notice 'Results for sur_bloc : %', (select json_object_agg(name, result_ss_blocs) from ___.results where id = id_bloc) ;
     return 'Results for ss_blocs updated' ;
 end ;
 $$ ;
@@ -981,8 +989,8 @@ declare
     c integer ;
 
 begin
-    -- raise notice 'On update les résultats des sur_blocs %', (select name from ___.bloc where id = id_bloc) ;
-    -- raise notice 'old_sur_bloc = %', (select name from ___.bloc where id = old_sur_bloc) ;
+    -- --raise  notice 'On update les résultats des sur_blocs %', (select name from ___.bloc where id = id_bloc) ;
+    -- --raise  notice 'old_sur_bloc = %', (select name from ___.bloc where id = old_sur_bloc) ;
     b_typ := (select b_type from ___.bloc where id = id_bloc) ;
     select into concr concrete from api.input_output where b_type = b_typ ;
     if not concr and b_typ != 'sur_bloc' then 
@@ -991,7 +999,7 @@ begin
     perform api.get_results_ss_bloc(id_bloc) ;
     if deleted then
         update ___.results set val = null, result_ss_blocs = null, result_ss_blocs_intrant = null where id = id_bloc ;
-        -- -- raise notice 'Results deleted' ;
+        -- -- --raise  notice 'Results deleted' ;
     end if ;
     if old_sur_bloc is null then 
         return ;
@@ -1003,17 +1011,17 @@ begin
     while (select count(*) from fifo) > 0 and c < 10000 loop 
         c := c + 1 ;
         container := formula.pop('fifo')::integer ;
-        -- raise notice 'sb = %, container = %', (select name from ___.bloc where id = sb), (select name from ___.bloc where id = container) ;
+        -- --raise  notice 'sb = %, container = %', (select name from ___.bloc where id = sb), (select name from ___.bloc where id = container) ;
         perform api.get_results_ss_bloc(container) ;
         sb := container ;
         select into container sur_bloc from ___.bloc where id = sb and sur_bloc != sb;
-        -- raise notice 'sb2 = %, container2 = %', (select name from ___.bloc where id = sb), (select name from ___.bloc where id = container) ;
+        -- --raise  notice 'sb2 = %, container2 = %', (select name from ___.bloc where id = sb), (select name from ___.bloc where id = container) ;
         if container is not null then 
             insert into fifo(value) values (container) ;
         end if ;
     end loop ;
     if c = 10000 then 
-        raise exception 'Too many iterations' ;
+        --raise  exception 'Too many iterations' ;
     end if ;
     drop table fifo ; 
 end ;
@@ -1086,13 +1094,13 @@ declare
 begin
 
     select into id_bloc id from api.bloc where name = bloc_name limit 1; -- limit 1 normally useless
-    -- -- raise notice 'id_bloc = %', id_bloc;
+    -- -- --raise  notice 'id_bloc = %', id_bloc;
     if id_bloc is null then
         select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc is null;
     else 
         select into ss_blocs_array array_agg(id) from ___.bloc where model = p_model and sur_bloc = id_bloc;
     end if;
-    -- -- raise notice 'ss_blocs_array = %', ss_blocs_array;
+    -- -- --raise  notice 'ss_blocs_array = %', ss_blocs_array;
     -- Loop through each bloc id
     if array_length(ss_blocs_array, 1) = 0 or ss_blocs_array is null then
         ss_blocs_array := array[id_bloc];
@@ -1121,7 +1129,7 @@ begin
                 end if;
             end loop;
 
-            -- raise notice 'js1 = %', js1;
+            -- --raise  notice 'js1 = %', js1;
             with results as (
                 select name, co2_eq 
                 from ___.results where id = id_loop and name = any(names) 
@@ -1142,8 +1150,8 @@ begin
                 js2 := jsonb_set(js2, array['co2_eq_c'], to_jsonb(row(0, 0)::___.res), true);
             end if;
 
-            raise notice 'js2 = %', js2;
-            raise notice 'js1 = %', js1;
+            --raise  notice 'js2 = %', js2;
+            --raise  notice 'js1 = %', js1;
             if js1 is null then 
                 js1 := '{}';
             end if;
@@ -1167,7 +1175,7 @@ begin
         end if;
     end loop;
 
-    raise notice 'js1 = %', js1;
+    --raise  notice 'js1 = %', js1;
     
     with results as (
         select name, co2_eq 
@@ -1182,8 +1190,8 @@ begin
     from exploit
     full join constr on exploit.name = constr.name;
 
-    raise notice 'js2 = %', js2;
-    raise notice '%', (js2 ? 'co2_eq_e');
+    --raise  notice 'js2 = %', js2;
+    --raise  notice '%', (js2 ? 'co2_eq_e');
     if not js2 ? 'co2_eq_e' then
         js2 := jsonb_set(js2, array['co2_eq_e'], to_jsonb(row(0, 0)::___.res), true);
     end if;
@@ -1198,10 +1206,10 @@ begin
         js2 := '{}';
     end if;
 
-    raise notice 'js2 = %', js2;
-    raise notice 'js1 = %', js1;
+    --raise  notice 'js2 = %', js2;
+    --raise  notice 'js1 = %', js1;
     res := jsonb_set(res, array['total'], js1||js2, true);
-    raise notice 'res = %', res;
+    --raise  notice 'res = %', res;
     return res;
 end;
 $$;
@@ -1223,7 +1231,7 @@ declare
     n int ; 
 begin
     n = (select count(*) from ___.bloc where model = model_name) +1;
-    raise notice 'n = %', n ;
+    --raise  notice 'n = %', n ;
     paths = array_fill(''::text, array[n]) ; 
     for name_bloc in (select name from ___.bloc where model = model_name) loop
         res := api.get_histo_data(model_name, name_bloc);
@@ -1231,13 +1239,13 @@ begin
         path_id := path || name_bloc || '.json';
         paths[c] := path_id ;
         c := c + 1 ;
-        raise notice 'Ici commence le testing' ;
-        raise notice 'name_blocs = %', name_bloc ;
-        raise notice 'res %', res ;
-        -- raise notice 'res1 % ', (select res->name_bloc from res) ;
-        raise notice 'res2 % ', res->name_bloc ;
-        raise notice 'res3 % ', res->quote_literal(name_bloc) ;
-        raise notice 'res4 % ', (select res->name_bloc) ;
+        --raise  notice 'Ici commence le testing' ;
+        --raise  notice 'name_blocs = %', name_bloc ;
+        --raise  notice 'res %', res ;
+        -- --raise  notice 'res1 % ', (select res->name_bloc from res) ;
+        --raise  notice 'res2 % ', res->name_bloc ;
+        --raise  notice 'res3 % ', res->quote_literal(name_bloc) ;
+        --raise  notice 'res4 % ', (select res->name_bloc) ;
         query := 'copy (select 
          res->''' || name_bloc || '''->''n2o_c''->>''val'' as n2o_c, res->''' || name_bloc || '''->''n2o_c''->>''incert'' as n2o_c_incert,
          res->''' || name_bloc || '''->''n2o_e''->>''val'' as n2o_e, res->''' || name_bloc || '''->''n2o_e''->>''incert'' as n2o_e_incert,

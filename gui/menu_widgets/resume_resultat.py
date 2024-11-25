@@ -1,5 +1,6 @@
 import os
 from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QBrush, QColor
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDockWidget, QTableWidgetItem
 from ...qgis_utilities import QGisProjectManager, tr 
@@ -105,22 +106,26 @@ class RecapResults(QDockWidget) :
         # Cette variable sera réutilisée pour les graphes plus précise dans l'affichage des résultats plus complet
         self.__current_model = model_name
         self.__recap_table = {}
+        to_make_flashy = set()
         for key in self.__results : 
             self.__recap_table[key] = [key, 
                                        self.__results[key]['co2_eq_e'], self.__results[key]['co2_eq_c'],
                                        self.__results[key]['unknown'], 
                                        self.__results[key]['detail']]
+            if self.__results[key]['co2_eq_e']=='No value' and self.__results[key]['co2_eq_c']=='No value' :
+                to_make_flashy.add(key)
         self.table_recap.setRowCount(len(self.__recap_table))
         idx = 0
+        print("BONJOUR")
         for key, values in self.__recap_table.items() : 
             for k in range(5) : 
                 self.table_recap.setItem(idx, k, QTableWidgetItem(str(values[k])))
                 if idx % 2 == 0 :
                     self.table_recap.item(idx, k).setBackground(Qt.lightGray)
-                # if values[4] : 
-                #     font = self.table_recap.item(idx, k).font()
-                #     font.setBold(True)
-                #     self.table_recap.item(idx, k).setFont(font)
+                if key in to_make_flashy :
+                    print('flashy', key)
+                    self.table_recap.item(idx, k).setBackground(QBrush(QColor(255, 165, 0)))
+                    
             idx += 1
             
         self.table_recap.resizeColumnsToContents()
