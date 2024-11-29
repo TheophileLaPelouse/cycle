@@ -23,7 +23,7 @@ _current_dir = os.path.dirname(__file__)
 
 class CycleMenu(QMenu):
     def __init__(self, log_manager, parent=None):
-        QMenu.__init__(self, "&Cycle", parent)
+        QMenu.__init__(self, "&Lieges", parent)
         self.__log_manager = log_manager
         self.setIcon(QIcon(os.path.join(_current_dir, '..', 'ressources', 'images', 'cycle_logo.png')))
         self.aboutToShow.connect(self.__refresh)

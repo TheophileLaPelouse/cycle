@@ -70,7 +70,7 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'ngl_s' : 'NGL sortant (kgNGL/an)', 'fen2o_ox
          'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)', 
          'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)', 'prod_e' : 'Réactifs', 'pelletisation' : 'Présence de pelletisation',
          'lavage' : 'Sables lavé ?', 'conc' : 'Graisses concentrées ?', 'aere' : 'Avec aération', 'grand' : 'Diamètre supérieur à 2m', 
-         'dbo' : 'DBO (kgDBO/an)', 'Niveau de détail 1' : 'Conception générale', 'Niveau de détail 2' : 'Conception détaillée',
+         'dbo' : 'DBO en amont de la filière boue (kgDBO/an)', 'Niveau de détail 1' : 'Conception générale', 'Niveau de détail 2' : 'Conception détaillée',
          'Niveau de détail 3' : 'Etude de faisabilité', 'Niveau de détail 4' : 'Conception très détaillée', 'Niveau de détail 5' : "Précision maximale",
          'Niveau de détail 6' : "Intrants (Comptabilisé même pour les sur blocs)", 'feexpl' : 'Type de structure',
          'methode' : 'Procédé principale de la filière', 'methode_fe' : 'Consommation électrique (kWh/DBO5 éliminé)'
@@ -471,7 +471,7 @@ class QGisProjectManager(QObject):
                         
                             
     @staticmethod
-    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
+    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
         t1 = time.time()
         
         try : layer.loadNamedStyle(qml)

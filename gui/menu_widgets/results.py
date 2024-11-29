@@ -217,12 +217,12 @@ class AllResults(QDialog) :
                   'ch4' : [x['val']*self.prg['ch4'] for x in bars['ch4_e']], 
                   'n2o' : [x['val']*self.prg['n2o'] for x in bars['n2o_e']]}
         
-        bars_ce = bars['co2_eq_ce'][:]
+        bars_ce = []
         bars_ce_err = []
         print('d_vies', bars_ce)
         for k in r :
-            bars_ce = (bars['co2_e'][k]['val'] + bars['ch4_e'][k]['val'] + bars['n2o_e'][k]['val'] + 
-                                    (bars['co2_c'][k]['val'] + bars['ch4_c'][k]['val'] + bars['n2o_c'][k]['val'])/bars['co2_eq_ce'][k]
+            bars_ce_val = (bars['co2_e'][k]['val']*self.prg['co2'] + bars['ch4_e'][k]['val']*self.prg['ch4'] + bars['n2o_e'][k]['val']*self.prg['n2o'] + 
+                                    (bars['co2_c'][k]['val']*self.prg['co2'] + bars['ch4_c'][k]['val']*self.prg['ch4'] + bars['n2o_c'][k]['val']*self.prg['n2o'])/bars['co2_eq_ce'][k]
                                     )*stud_time
             sum1 = (bars['co2_e'][k]['val'] + bars['ch4_e'][k]['val'] + bars['n2o_e'][k]['val'])
             if sum1 == 0 :
@@ -246,6 +246,7 @@ class AllResults(QDialog) :
             err = (err1*sum1 + err2*sum2)*stud_time
             print("err", err)
             bars_ce_err.append(err)
+            bars_ce.append(bars_ce_val)
             
         
         bars_c_err = [bars['co2_c'][k]['incert']*bars_c['co2'][k] + bars['ch4_c'][k]['incert']*bars_c['ch4'][k] + bars['n2o_c'][k]['incert']*bars_c['n2o'][k] for k in r]

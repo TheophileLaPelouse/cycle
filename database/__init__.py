@@ -356,12 +356,18 @@ def export_db(dbname, path_dump) :
             names.append('model')
             values.append(which_model[id])
             dumps[k] = line[:deb_name] + ','.join(names) + line[fin_name:deb_values] + ','.join(values) + line[fin_values:] 
-            
+    
+    query = f"""
+    
+    with max_id as (select max(id) as max from api.bloc)
+    select setval('___.bloc_id_seq', (select max from max_id));
+    """
     with open(path_dump, 'w', encoding='utf-8') as f:
         f.writelines([f"-- cycle version {version}\n", f"-- project SRID {srid}\n"])
         f.writelines(model_lines)
         f.writelines(dumps)
-
+        f.write(query)
+        
 def get_srid_from_file(file):
     with open(file, 'r') as f:
         lines = f.readlines()

@@ -85,6 +85,7 @@ class Cycle(QObject):
         icon_path = ':/plugins/cycle/ressources/icon.png'
 
         self.__menu = CycleMenu(self.__log_manager)
+        self.__menu.setTitle("LIEGES")
         self.__iface.mainWindow().menuBar().addMenu(self.__menu)
         # QgsGui.editorWidgetRegistry().registerWidget("Array", ArrayWidgetFactory())
         self.__project_loaded()
