@@ -256,8 +256,15 @@ class CycleToolbar(QToolBar):
     def __add_resume_result_dock(self) : 
         rr = iface.mainWindow().findChildren(QDockWidget, "resume_result")
         if rr : 
-            rr = rr[-1]
-            rr.show()
+            flag = False
+            for widget in rr : 
+                try : 
+                    self.__project.name == widget.project.name
+                    flag = True
+                except : pass 
+                if flag : 
+                    break
+            widget.show()
     
     def __show_all_results(self) :
         project = Project(QGisProjectManager.project_name(), self.__log_manager)

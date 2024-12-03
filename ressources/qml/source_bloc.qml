@@ -244,7 +244,7 @@
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>1</layerOpacity>
   <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
-    <DiagramCategory height="15" spacingUnit="MM" barWidth="5" penWidth="0" labelPlacementMethod="XHeight" opacity="1" lineSizeScale="3x:0,0,0,0,0,0" enabled="0" sizeType="MM" penAlpha="255" backgroundAlpha="255" spacing="5" minimumSize="0" width="15" spacingUnitScale="3x:0,0,0,0,0,0" minScaleDenominator="0" maxScaleDenominator="1e+08" diagramOrientation="Up" rotationOffset="270" backgroundColor="#ffffff" sizeScale="3x:0,0,0,0,0,0" scaleBasedVisibility="0" showAxis="1" direction="0" penColor="#000000" scaleDependency="Area" lineSizeType="MM">
+    <DiagramCategory height="15" spacingUnit="MM" barWidth="5" penWidth="0" labelPlacementMethod="XHeight" opacity="1" lineSizeScale="3x:0,0,0,0,0,0" enabled="0" sizeType="MM" penAlpha="255" backgroundAlpha="255" minimumSize="0" spacing="5" width="15" spacingUnitScale="3x:0,0,0,0,0,0" minScaleDenominator="0" maxScaleDenominator="1e+08" diagramOrientation="Up" rotationOffset="270" backgroundColor="#ffffff" sizeScale="3x:0,0,0,0,0,0" scaleBasedVisibility="0" showAxis="1" direction="0" penColor="#000000" scaleDependency="Area" lineSizeType="MM">
       <fontProperties strikethrough="0" underline="0" bold="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" style=""/>
       <attribute field="" label="" colorOpacity="1" color="#000000"/>
       <axisSymbol>
@@ -611,22 +611,22 @@
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
   <editforminitfilepath/>
-  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-QGIS forms can have a Python function that is called when the form is
-opened.
-
-Use this function to add extra logic to your forms.
-
-Enter the name of the function in the "Python Init function"
-field.
-An example follows:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-    geom = feature.geometry()
-    control = dialog.findChild(QWidget, "MyLineEdit")
+  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
