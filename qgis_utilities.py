@@ -265,12 +265,12 @@ class QGisProjectManager(QObject):
         
         layertree = QGisProjectManager.layertree()
         layertree_custom = QGisProjectManager.layertree_custom(project_filename)
-        print("layertree : ", layertree_custom)
+        # print("layertree : ", layertree_custom)
         properties, paths = get_all_properties("bloc", layertree)
-        print(get_all_properties("bloc", layertree_custom))
+        # print(get_all_properties("bloc", layertree_custom))
         prop2, paths2 = get_all_properties("bloc", layertree_custom) if layertree_custom else ([], [])
-        print("bonjour")
-        print(properties, paths, prop2, paths2) 
+        # print("bonjour")
+        # print(properties, paths, prop2, paths2) 
         properties += prop2
         paths += paths2
         for bloc, path in zip(properties, paths):
@@ -313,7 +313,13 @@ class QGisProjectManager(QObject):
                 properties[key] = val
             elif key.endswith('__ref') :
                 properties[key] += val
-        print(properties)
+        # print(properties)
+        
+        QGisProjectManager.load_qml(project, project_filename)
+        # On load avant pour que les relations définies dans les qml soient prises en compte je sais pas pourquoi marche pas sur ancien projet.
+        print('LES RELATIONS')
+        print(project.relationManager().relations())
+        
         for field in properties : 
             print('YOOOO', field)
             if not field.endswith('__ref') and properties.get(field+'__ref') :
@@ -336,19 +342,23 @@ class QGisProjectManager(QObject):
                 refs = properties[field+'__ref']
                 for ref in refs : 
                     name, referencedField, referencingLayer, referencingField = ref
-                    referencedLayer = prop_layer.id()
-                    print(referencingLayer)
-                    referencingLayer = project.mapLayersByName(referencingLayer)[0].id()
-                    relation = QgsRelation(QgsRelationContext(project))
-                    relation.setName(name)
-                    relation.setReferencedLayer(referencedLayer)
-                    relation.setReferencingLayer(referencingLayer)
-                    relation.addFieldPair(referencingField, referencedField)
-                    relation.setStrength(QgsRelation.Association)
-                    relation.updateRelationStatus()
-                    relation.generateId()
-                    assert(relation.isValid())
-                    project.relationManager().addRelation(relation)
+                    if not len(project.relationManager().relationsByName(name)):
+                        print("On est passé")
+                        referencedLayer = prop_layer.id()
+                        print(name, referencedField, referencingLayer, referencingField)
+                        referencingLayer = project.mapLayersByName(referencingLayer)[0].id()
+                        relation = QgsRelation(QgsRelationContext(project))
+                        relation.setName(name)
+                        relation.setReferencedLayer(referencedLayer)
+                        relation.setReferencingLayer(referencingLayer)
+                        relation.addFieldPair(referencingField, referencedField)
+                        relation.setStrength(QgsRelation.Association)
+                        relation.updateRelationStatus()
+                        relation.generateId()
+                        assert(relation.isValid())
+                        project.relationManager().addRelation(relation)
+                    else : 
+                        print('Relation déjà là !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         
         g = root.findGroup(tr('Formules')) or root.insertGroup(-1, tr('Formules'))
         layer_name, sch, tbl, key = tr('Bloc recapitulatif'), 'api', 'input_output', 'b_type'
@@ -380,7 +390,7 @@ class QGisProjectManager(QObject):
             layer.setEditFormConfig(config)
         
 
-        QGisProjectManager.load_qml(project, project_filename)
+        
         project.write()
 
     
@@ -409,7 +419,15 @@ class QGisProjectManager(QObject):
                 if not os.path.exists(qml):
                     print('qml not found', qml)
                     qml = os.path.join(_qml_dir, qml_basename)
-                
+                doc = QDomDocument()
+                doc.setContent(QFile(qml))
+                root = doc.documentElement()
+                referencedLayers = root.firstChildElement('referencedLayers')
+                while referencedLayers.childNodes().count():
+                    referencedLayers.removeChild(referencedLayers.firstChild())
+                with open(qml, 'w', encoding='utf-8') as f:
+                    f.write(doc.toString(2))
+                # J'ai pas trouvé mieux que de réécrire tout le fichier.
                 layer.loadNamedStyle(qml)
                 QGisProjectManager.hide_columns(layer, _columns_to_hide)  
     
@@ -471,7 +489,7 @@ class QGisProjectManager(QObject):
                         
                             
     @staticmethod
-    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
+    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 2) : 
         t1 = time.time()
         
         try : layer.loadNamedStyle(qml)
@@ -538,18 +556,27 @@ class QGisProjectManager(QObject):
         config.addTab(output_tab)
             
         lvlmax = 6
-        in2tab = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
-        in2tab_constr = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
-        in2tab_default = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}}
+        in2tab = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}, 'input' : {k : False for k in range(lvlmax+1)}}
+        in2tab_constr = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}, 
+                         'input' : {k : False for k in range(lvlmax+1)}}
+        in2tab_default = {'constr' : {k : False for k in range(lvlmax+1)}, 'expl' : {k : False for k in range(lvlmax+1)}, 
+                          'input' : {k : False for k in range(lvlmax+1)}}
         level_container = {'constr' : {k : QgsAttributeEditorContainer(Alias.get('Niveau de détail %d' % k, 'Niveau de détail %d' % k), constr_tab) for k in range(lvlmax+1)},
                         'expl' : {k : QgsAttributeEditorContainer(Alias.get('Niveau de détail %d' % k, 'Niveau de détail %d' % k), expl_tab) for k in range(lvlmax+1)}, 
+                        'input' : {k : QgsAttributeEditorContainer(Alias.get('Niveau de détail %d' % k, 'Niveau de détail %d' % k), input_tab) for k in range(lvlmax+1)}
                         }
         constr_container = {'constr' : {k:QgsAttributeEditorContainer('Valeurs par défaut construction', constr_tab) for k in range(lvlmax+1)}, 
-                            'expl' : {k:QgsAttributeEditorContainer('Valeurs par défaut construction', expl_tab) for k in range(lvlmax+1)}}
+                            'expl' : {k:QgsAttributeEditorContainer('Valeurs par défaut construction', expl_tab) for k in range(lvlmax+1)}, 
+                            'input' : {k:QgsAttributeEditorContainer('Valeurs par défaut construction', input_tab) for k in range(lvlmax+1)}}
         default_container = {'constr' : {k:QgsAttributeEditorContainer('Valeurs par défaut spécifiques', constr_tab) for k in range(lvlmax+1)},
-                             'expl' : {k:QgsAttributeEditorContainer('Valeurs par défaut spécifiques', expl_tab) for k in range(lvlmax+1)}}
-        level_container_children = {'constr' : {k : set() for k in range(lvlmax+1)}, 'expl' : {k : set() for k in range(lvlmax+1)}}
-        def treat_formula(formulas, f_inputs, lvl) :
+                             'expl' : {k:QgsAttributeEditorContainer('Valeurs par défaut spécifiques', expl_tab) for k in range(lvlmax+1)}, 
+                             'input' : {k:QgsAttributeEditorContainer('Valeurs par défaut spécifiques', input_tab) for k in range(lvlmax+1)}}
+        level_container_children = {'constr' : {k : set() for k in range(lvlmax+1)}, 'expl' : {k : set() for k in range(lvlmax+1)}, 
+                                    'input' : {k : set() for k in range(lvlmax+1)}}
+        def treat_formula(f_name, formulas, f_inputs, lvl) :
+            # cont_name = f_name.split()
+            # cont_name = ' '.join(cont_name[:-2] + cont_name[-1:])
+            cont_name = f_name
             sides = formulas.split('=')
             group_field = []
             c_or_e = 'constr'
@@ -562,7 +589,8 @@ class QGisProjectManager(QObject):
                 elif sides[0].strip().endswith('_e') :
                     c_or_e = 'expl'
                 else :
-                    return set()
+                    c_or_e = 'input'
+                f_container = QgsAttributeEditorContainer(cont_name, level_container[c_or_e][lvl])
             flag_intrant2 = False
             flag_intrant1 = 'prod_e' in fieldnames 
             for val in group_field : 
@@ -573,33 +601,17 @@ class QGisProjectManager(QObject):
                     container.addChildElement(attrfield(val, idx, container))
                     fe_idx = layer.fields().indexFromName(val+'_fe')
                     container.addChildElement(attrfield(val+"_fe", fe_idx, container))
-                    # alias 
-                    # layer.setFieldAlias(fe_idx, Alias.get(val+"_fe", ''))
-                    # layer.setFieldAlias(idx, Alias.get(val, ''))
                     
-                    # # default value
-                    # defval = QgsDefaultValue()
-                    # # prop_layer = project.mapLayersByName(Alias.get(val, val))[0]
-                    # prop_layer = dico_layer[Alias.get(val, val)][0]
-                    # default_fe = layer.defaultValueDefinition(fe_idx)
-                    # default_fe = default_fe.expression()
-                    # #  f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=coalesce(\"{fieldname}\", '{default}')), 'fe')"
-                    
-                    # # default_fe = re.sub("layer:='[^']+'", f"layer:='{prop_layer.id()}'", default_fe)
-                    # default_fe = f"attribute(get_feature(layer:='{prop_layer.id()}', attribute:='val', value:=\"{val}\"), 'fe')"
-                    # defval.setExpression(default_fe)
-                    # defval.setApplyOnUpdate(True)
-                    # layer.setDefaultValueDefinition(fe_idx, defval)
-                    # indexOf = indexFromName d'après la doc
-                    # On va faire un test pas opti : 
                     if val.upper() not in level_container_children[c_or_e][lvl] :
-                        level_container[c_or_e][lvl].addChildElement(container)
+                        f_container.addChildElement(container)
+                        # level_container[c_or_e][lvl].addChildElement(container)
                         level_container_children[c_or_e][lvl].add(val.upper()) 
                 elif val in field_intrant and flag_intrant1 :
                     if not flag_intrant2 :
                         flag_intrant2 = True
                         field_prod = layer.fields().indexFromName('prod_e')
-                        level_container[c_or_e][lvl].addChildElement(attrfield('prod_e', field_prod, level_container[c_or_e][lvl]))
+                        # level_container[c_or_e][lvl].addChildElement(attrfield('prod_e', field_prod, level_container[c_or_e][lvl]))
+                        f_container.addChildElement(attrfield('prod_e', field_prod, f_container))
                         level_container_children[c_or_e][lvl].add(field_prod)
                         for intr in field_intrant : 
                             if intr.startswith('q_') :
@@ -609,12 +621,14 @@ class QGisProjectManager(QObject):
                                 q_intr = 'q_'+intr[7:]
                                 transp_intr = intr
                             if intr == q_intr : 
-                                row = QgsAttributeEditorContainer(intr, level_container[c_or_e][lvl])
+                                # row = QgsAttributeEditorContainer(intr, level_container[c_or_e][lvl])
+                                row = QgsAttributeEditorContainer(intr, f_container)
                                 row.setType(Qgis.AttributeEditorContainerType(2))
                                 row.setVisibilityExpression(QgsOptionalExpression(QgsExpression(f"\"prod_e\" = '{Alias_intrant[q_intr]}'")))
                                 row.addChildElement(attrfield(q_intr, layer.fields().indexFromName(q_intr), row))
                                 row.addChildElement(attrfield(transp_intr, layer.fields().indexFromName(transp_intr), row))
-                                level_container[c_or_e][lvl].addChildElement(row)
+                                f_container.addChildElement(row)
+                                # level_container[c_or_e][lvl].addChildElement(row)
                             
                 elif val in f_inputs : 
                     if val not in level_container_children[c_or_e][lvl] :
@@ -628,23 +642,27 @@ class QGisProjectManager(QObject):
                     # print("avant c_or_e", c_or_e, lvl, val)   
                     if val not in level_container_children[c_or_e][lvl] :
                         # print("c_or_e", c_or_e, lvl, val)
-                        level_container[c_or_e][lvl].addChildElement(attrfield(val, idx, level_container[c_or_e][lvl]))
+                        # level_container[c_or_e][lvl].addChildElement(attrfield(val, idx, level_container[c_or_e][lvl]))
+                        f_container.addChildElement(attrfield(val, idx, f_container))
                         level_container_children[c_or_e][lvl].add(val)
                         # layer.setFieldAlias(idx, Alias.get(val, ''))
-                in2tab[c_or_e][lvl] = True
+                        
+            level_container[c_or_e][lvl].addChildElement(f_container)
+            in2tab[c_or_e][lvl] = True
             return set(group_field)
         treated = set()
         t2 = time.time()
-        print('temps avant', t2-t1)
-        for formulas, lvl in f_details.items() : 
-            treated = treated.union(treat_formula(formulas, f_inputs, lvl))
+        # print('temps avant', t2-t1)
+        for formula_name, f in f_details.items() :
+            formula, lvl = f 
+            treated = treated.union(treat_formula(formula_name, formula, f_inputs, lvl))
         t3 = time.time()
-        print('temps après boucle', t3-t2)
+        # print('temps après boucle', t3-t2)
 
         for c_or_e in in2tab : 
             for lvl in in2tab[c_or_e] : 
                 if in2tab[c_or_e][lvl] :
-                    if in2tab_constr[c_or_e][lvl] :
+                    if  in2tab_constr[c_or_e][lvl] :
                         constr_container[c_or_e][lvl].setCollapsed(True)
                         level_container[c_or_e][lvl].addChildElement(constr_container[c_or_e][lvl])
                     if in2tab_default[c_or_e][lvl] :
@@ -652,8 +670,10 @@ class QGisProjectManager(QObject):
                         level_container[c_or_e][lvl].addChildElement(default_container[c_or_e][lvl])
                     if c_or_e == 'constr' :
                         constr_tab.addChildElement(level_container[c_or_e][lvl])
-                    else :
+                    elif c_or_e == 'expl' :
                         expl_tab.addChildElement(level_container[c_or_e][lvl])
+                    elif c_or_e == 'input' :
+                        input_tab.addChildElement(level_container[c_or_e][lvl])
                     
         def addval2tab(val, tab) : 
             idx = layer.fields().indexFromName(val)
@@ -689,9 +709,9 @@ class QGisProjectManager(QObject):
             layer.setFieldAlias(idx, ' ')
                  
         t4 = time.time()
-        print('temps après boucle 2', t4-t3)
+        # print('temps après boucle 2', t4-t3)
         layer.setEditFormConfig(config)
-        print('temps edit form config', time.time()-t4)
+        # print('temps edit form config', time.time()-t4)
         layer.saveNamedStyle(qml)
         
         return

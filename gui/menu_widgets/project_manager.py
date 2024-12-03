@@ -161,24 +161,7 @@ class ProjectManager(QDialog):
 
         QGisProjectManager.open_project(project.qgs, project.srid)
         
-        raw_inp_out = project.fetchall('select * from api.input_output')
-        input_output = {elem[0] : {'inp' : elem[1], 'out' : elem[2], 'concrete' : elem[-1]} for elem in raw_inp_out}
-        query = """
-        select jsonb_build_object(b_type, jsonb_object_agg(f.formula, f.detail_level)) 
-        from api.input_output i_o 
-        join api.formulas f on f.name = any(i_o.default_formulas) 
-        group by b_type;
-        """
-        list_f_details = project.fetchall(query)
-        f_details = {}
-        for elem in list_f_details:
-            if elem[0] : 
-                for key, value in elem[0].items():
-                    f_details[key] = value
-        
-        print(f_details)
-        raw_f_inputs = project.fetchone("select api.select_default_input_output() ;")
-        f_inputs = raw_f_inputs[0]
+        input_output, f_details, f_inputs = project.get_values4qml()
         QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output, f_inputs) 
         
         Qproject = QgsProject.instance()

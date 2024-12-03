@@ -200,3 +200,29 @@ class Project(object):
     def executemany(self, query, param):
         with autoconnection(self.name, debug=self.__debug) as con, con.cursor() as cur:
             cur.executemany(query, param)
+
+    def get_values4qml(self):
+        raw_inp_out = self.fetchall('select * from api.input_output')
+        input_output = {elem[0] : {'inp' : elem[1], 'out' : elem[2], 'concrete' : elem[-1]} for elem in raw_inp_out}
+        query = """
+        select jsonb_build_object(b_type, jsonb_agg(jsonb_build_object(
+                    'name', f.name,
+                    'formula', f.formula,
+                    'detail_level', f.detail_level
+                )
+            )
+        ) 
+        from api.input_output i_o 
+        join api.formulas f on f.name = any(i_o.default_formulas) 
+        group by b_type;
+        """
+        list_f_details = self.fetchall(query)
+        f_details = {}
+        for elem in list_f_details:
+            if elem[0] : 
+                for key, value in elem[0].items():
+                    f_details[key] = {elem['name'] : [elem['formula'], elem['detail_level']] for elem in value}
+        raw_f_inputs = self.fetchone("select api.select_default_input_output() ;")
+        f_inputs = raw_f_inputs[0]
+        
+        return input_output, f_details, f_inputs

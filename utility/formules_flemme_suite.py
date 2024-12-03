@@ -406,7 +406,7 @@ for bloc in dico_formules :
                                         print("CETTE FORMULE EST FAUSSE", key, f)
                                     break
                         if flag :
-                            print(d['inp'])
+                            # print(d['inp'])
                             print(key, f)
                             print('ARGS', args)
                             print(bloc)
@@ -502,6 +502,8 @@ for f in formula_name :
                             selected_value = names
         if not selected_value :  
             selected_value = pick_value(formula_name[f], f)
+            # Ne pas hésiter à spammer click entrée pour ne pas choisir de nom pertinent pour les formules 
+            # Après c'est possible de choisr des noms pertinents aussi...
             if selected_value not in formula_name[f] :
                 formula_name[f].add(selected_value)
             if not selected_value :
