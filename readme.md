@@ -21,9 +21,5 @@ Enfin si vous souhaitez développer sur cette extension, vous pouvez cloner ce d
 Il suffit ensuite de cocher la case de l'extension pour l'activer. Un message d'erreur apparaîtra si vous n'avez pas installer la base de données PostgreSQL.
 
 # Documentation
-
-## Guide utilisateur 
 Voici le [Guide utilisateur](https://github.com/user-attachments/files/18006553/Guide_utilisateurV05.pdf).
-
-## Documentation technique du code
 La documentation de ce logiciel est entièrement présente dans le [Wiki](https://github.com/TheophileLaPelouse/LIEGES/wiki) de ce dépôt.
