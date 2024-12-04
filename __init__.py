@@ -15,6 +15,7 @@
  This script initializes the plugin, making it known to QGIS.
 """
 import os 
+import subprocess
 
 
 # ENVIRONMENTS
@@ -30,6 +31,14 @@ if not os.path.exists(_cycle_dir):
 if not os.path.exists(_log_file):
     open(_log_file, 'w').close()
     
+if 'PGSERVICEFILE' not in os.environ: # .pg_service.conf not set in environment
+    os.environ['PGSERVICEFILE'] = os.path.join(os.path.expanduser('~'), ".pg_service.conf")
+
+if os.name == 'nt' and subprocess.call("where pg_dump") == 1: # pgdump.exe not in path
+    os.environ['PATH'] = os.environ['PATH'] + f";{os.path.join(os.path.dirname(__file__), 'bin')};"
+elif os.name != 'nt' and subprocess.call("which pg_dump") == 1 : # pgdump not in path
+    os.environ['PATH'] = os.environ['PATH'] + f":{os.path.join(os.path.dirname(__file__), 'bin')}"
+
 
 def classFactory(iface):  # pylint: disable=invalid-name
     """Load Cycle class from file Cycle.

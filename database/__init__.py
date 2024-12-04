@@ -15,6 +15,7 @@ from ..utility.string import normalized_name
 from .version import __version__
 from ..service import get_service, edit_pg_service
 from qgis.core import QgsMessageLog
+from qgis.PyQt.QtWidgets import QMessageBox
 
 __current_dir = os.path.dirname(__file__)
 
@@ -101,7 +102,25 @@ class connection:
     def __exit__(self, type, value, traceback):
         self.__conn.close()
 
+# Petit test de connection pour vérifier que tout est bien installé
+def connection_test() : 
+    with autoconnection("postgres") as con, con.cursor() as cur:
+        cur.execute("select 1;")
+        return cur.fetchone()[0] == 1
 
+try : 
+    flag = connection_test()
+except : 
+    flag = False
+if not flag : 
+    message = """
+    LIEGES n'a pas pu se connecter à la base de données.
+    Cela peut être parce que vous n'avez pas installé Hydra et Expresseau disponible sur le site https://hydra-software.net.
+    Pour plus d'information veuillez vous rendre sur le GitHub de LIEGES : https://github.com/TheophileLaPelouse/LIEGES
+    """
+    QMessageBox.critical(None, "LIEGES", message)
+    raise Exception("LIEGES n'a pas pu se connecter à la base de données.")
+        
 class TestProject(object):
     '''create a project from template the project contains one model named model'''
 
