@@ -1138,24 +1138,24 @@ left join res_expl_and_constr on ___.results.id = res_expl_and_constr.id and ___
 group by ___.results.id, model, ___.bloc.name;
 
 
-create or replace function api.get_histo_data2(blocs varchar[])
+create or replace function api.get_histo_data2(blocs_name varchar[])
 returns jsonb
 language plpgsql
 as $$
 declare
     query text;
-    id_bloc integer;
-    ss_blocs_array integer[];
     names varchar[] := array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e'];
     b_name varchar;
     item record ; 
     concr boolean;
     js1 jsonb;
+    blocs integer[] ; 
     id_loop integer;
     js2 jsonb;
     res jsonb := '{}';
     k text ;
 begin
+    select into blocs array_agg(id) from ___.bloc where name = any(blocs_name) ;
     foreach id_loop in array blocs loop
         select into item name, b_type from ___.bloc where id = id_loop;
         b_name := item.name ;

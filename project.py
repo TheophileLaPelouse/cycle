@@ -226,3 +226,6 @@ class Project(object):
         f_inputs = raw_f_inputs[0]
         
         return input_output, f_details, f_inputs
+    
+    def bloc_tree(self) : 
+        return self.fetchone("select api.bloc_tree()")[0]

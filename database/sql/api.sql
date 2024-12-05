@@ -1214,29 +1214,58 @@ end;
 $$;
 
 -- -- Pour l'affichage des résultats : 
--- select api.bloc_tree()
--- returns jsonb
--- language plpgsql as
--- $$
--- declare 
---     res jsonb;
---     blocs jsonb;
---     mod varchar ;
---     blocs varchar[] ;
---     n integer ;
---     len_b integer := 0 ; -- size of interesting values in array blocs.
---     ind integer := 1 ; -- next index
---     b varchar ; 
--- begin
---     n := select count(*) from api.bloc ;
---     blocs := array_fill(''::varchar, array[n]);
---     for mod in (select name from api.models)
---     loop
---         for b in (select name from api.bloc where model = mod)
---         loop
---             blocs[ind] := b;
---             ind := ind + 1 ;
---         end loop;
---         len_b := ind -1 ; 
+create or replace function api.bloc_tree()
+returns jsonb
+language plpgsql as
+$$
+declare 
+    mod varchar ; 
+    res jsonb := '{}' ;
+begin
+    for mod in (select distinct model from api.bloc)
+    loop
+        -- raise notice 'mod %', mod ;
+        -- raise notice 'bloc_tree %', api.build_bloc_tree(mod) ;
+        res := jsonb_set(res, array[mod]::text[], api.build_bloc_tree(mod), true) ;
+    end loop;
+    return res;
+end;
+$$;
+
+create or replace function api.build_bloc_tree(model_name varchar, id_sur_bloc integer default null)
+returns jsonb
+language plpgsql as
+$$
+declare 
+    res jsonb := '{}' ;
+    blocs integer[] ;
+    bloc_json jsonb := '{}' ;
+    b integer ; 
+    bloc_name varchar ;
+begin 
+    -- Non récursive terminale, après je pense qu'il n'y a pas de problème de performance sur cette fonction.
+    if id_sur_bloc is null then 
+        with concr_table as (select b_type, concrete from api.input_output)
+        select into blocs array_agg(id) from api.bloc, concr_table where model = model_name and sur_bloc is null
+        and api.bloc.b_type = concr_table.b_type and (concrete or api.bloc.b_type='sur_bloc');
+    else
+        with concr_table as (select b_type, concrete from api.input_output)
+        select into blocs array_agg(id) from api.bloc, concr_table where model = model_name and sur_bloc = id_sur_bloc
+        and api.bloc.b_type = concr_table.b_type and (concrete or api.bloc.b_type='sur_bloc');
+    end if;
+    raise notice 'blocs %', blocs ;
+    if array_length(blocs, 1) = 0 or blocs is null then 
+        return res;
+    end if;
+    foreach b in array blocs
+    loop
+        select into bloc_name name from api.bloc where id = b ;
+        raise notice 'bloc_json1 %', bloc_json ;
+        bloc_json := jsonb_set(bloc_json, array[bloc_name::text], api.build_bloc_tree(model_name, b), true);
+        raise notice 'bloc_json2 %', bloc_json ;
+    end loop;
+    return bloc_json;
+end;
+$$;
 
 -- Peut être pour plus tard mais c'est un peu relou à faire en plpgsql
