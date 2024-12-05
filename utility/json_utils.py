@@ -16,6 +16,7 @@ def get_propertie(name, dico):
     while stack:
         print(stack)
         current_dico = stack.pop()
+        print(name, current_dico)
         if name in current_dico:
             return current_dico[name]
         for key in current_dico:
@@ -57,6 +58,14 @@ def json_map(dico, func) :
         else : 
             new[key] = func(key, dico[key])
     return new
+
+def json_map_all_nodes(dico, func, **kwargs) : 
+    for key in dico : 
+        if isinstance(dico[key], dict) : 
+            func(key, dico[key], True, **kwargs)
+            json_map_all_nodes(dico[key], func, **kwargs)
+        else : 
+            func(key, dico[key], False, **kwargs)
 
 def add_dico(dico, dico_to_add):
     if not isinstance(dico, dict):

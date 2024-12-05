@@ -1,17 +1,17 @@
 create extension if not exists postgis;
 
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/test_unitaire.sql
--- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/test_unitaire.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
--- -- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/data.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
--- -- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/api.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/formula.sql
--- -- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/formula.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/special_blocs.sql
--- -- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/special_blocs.sql
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
--- \i /Users/theophilemounier/Desktop/github/Cycle/cycle/database/sql/blocs.sql
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profile/default/python/plugins/cycle/database/sql/test_unitaire.sql
+-- \i test_unitaire.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
+-- -- \i data.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/api.sql
+-- -- \i api.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/formula.sql
+-- -- \i formula.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/special_blocs.sql
+-- -- \i special_blocs.sql
+\i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/blocs.sql
+-- \i blocs.sql
 
 create or replace function notice_equality(val1 anyelement, val2 anyelement, name1 text, name2 text) returns void as $$
 begin 
@@ -89,14 +89,14 @@ declare
     source_point text := 'POINT(662634.525855627 6837911.25471175)' ;
     usine_point text := 'POINT(662982.8089166373 6837888.883856066)' ; 
     sur_bloc_polygon text := 'POLYGON((661714.6954957217 6838400.792661007,661832.2889426793 6837419.024115478,663746.600869896 6837514.739711838,663407.4941856462 6838422.670511603,661714.6954957217 6838400.792661007))' ; 
-    file_eau_bloc text := 'POLYGON((662029.1895980502 6837974.1745743705,662094.8231498405 6837563.96487568,662887.8952339732 6837572.169069654,662904.3036219206 6838228.504587557,662029.1895980502 6837974.1745743705))' ;
-    file_boue_bloc text := 'POLYGON((662928.916203842 6838110.9111406,662926.1814725174 6837624.128964822,663240.6755748459 6837629.598427471,663202.3893363016 6838023.399738213,662928.916203842 6838110.9111406))' ;
+    filiere_eau_bloc text := 'POLYGON((662029.1895980502 6837974.1745743705,662094.8231498405 6837563.96487568,662887.8952339732 6837572.169069654,662904.3036219206 6838228.504587557,662029.1895980502 6837974.1745743705))' ;
+    filiere_boue_bloc text := 'POLYGON((662928.916203842 6838110.9111406,662926.1814725174 6837624.128964822,663240.6755748459 6837629.598427471,663202.3893363016 6838023.399738213,662928.916203842 6838110.9111406))' ;
     model text := 'bonjour';
     qe_s_clarif real := 1 ; 
     qe_s_bassin real := 2 ; 
     
     to_verify real[][] := ARRAY[
-        -- th_val_co2_e, clarif, bassin, usine, file_eau, file_boue, sur_bloc
+        -- th_val_co2_e, clarif, bassin, usine, filiere_eau, filiere_boue, sur_bloc
         ARRAY[1, 2, 3, 3, 3, 6],
         -- th_val_co2_c
         ARRAY[10, 20, 30, 30, 30, 60],
@@ -112,8 +112,8 @@ declare
         -- Insertion dans api.compostage_bloc
         ['INSERT INTO api.compostage_bloc(geom, model) VALUES (ST_GeomFromText(''' || usine_point || ''', 2154), ''' || model || ''');',
         '3'],
-        -- Insertion dans api.file_eau_bloc
-        ['INSERT INTO api.file_eau_bloc(geom, model, qe_s) VALUES (ST_GeomFromText(''' || file_eau_bloc || ''', 2154), ''' || model || ''', ' || qe_s_clarif || ');',
+        -- Insertion dans api.filiere_eau_bloc
+        ['INSERT INTO api.filiere_eau_bloc(geom, model, qe_s) VALUES (ST_GeomFromText(''' || filiere_eau_bloc || ''', 2154), ''' || model || ''', ' || qe_s_clarif || ');',
         '4'],
         -- Insertion dans api.clarificateur_bloc
         ['INSERT INTO api.clarificateur_bloc(geom, model, qe_s) VALUES (ST_GeomFromText(''' || clarif_point || ''', 2154), ''' || model || ''', ' || qe_s_clarif || ');',
@@ -133,8 +133,8 @@ declare
         -- Insertion dans api.sur_bloc_bloc
         ['INSERT INTO api.sur_bloc_bloc(geom, model) VALUES (ST_GeomFromText(''' || sur_bloc_polygon || ''', 2154), ''' || model || ''');',
         '6'],
-        -- Insertion dans api.file_boue_bloc
-        ['INSERT INTO api.file_boue_bloc(geom, model) VALUES (ST_GeomFromText(''' || file_boue_bloc || ''', 2154), ''' || model || ''');',
+        -- Insertion dans api.filiere_boue_bloc
+        ['INSERT INTO api.filiere_boue_bloc(geom, model) VALUES (ST_GeomFromText(''' || filiere_boue_bloc || ''', 2154), ''' || model || ''');',
         '5'], 
         ['INSERT INTO api.source_bloc(geom, model) VALUES (ST_GeomFromText(''' || source_point || ''', 2154), ''' || model || ''');', '']
     ];
@@ -146,18 +146,15 @@ begin
     drop view if exists api.compostage_bloc ;
     perform api.insert_inp_out('compostage', 'qe', 'real', 'null', 'added', 'input') ;
     perform api.add_new_bloc('compostage', 'bloc', 'Point') ;
-    
-    drop view if exists api.file_eau_bloc ; 
-    perform api.insert_inp_out('file_eau', 'qe_s', 'real', 'null', 'added', 'output') ;
-    perform api.add_new_bloc('file_eau', 'bloc', 'Polygon') ;
 
-    perform api.add_new_formula('co2_e formule', 'co2_e=(10^0 + (3* (1>2)))*qe_s + fecurage_prev + 0.01*fecurage_prev + 0.01^fecurage_prev', 4, 'Formule de test') ;
+    -- perform api.add_new_formula('co2_e formule', 'co2_e=(10^0 + (3* (1>2)))*qe_s + fecurage_prev + 0.01*fecurage_prev + 1^fecurage_prev', 4, 'Formule de test') ;
+    perform api.add_new_formula('co2_e formule', 'co2_e=(10^0 + (3* (1>2)))*qe_s', 4, 'Formule de test') ;
     perform api.add_new_formula('co2_c formule', 'co2_c=(10^1 + (3* (1>2)))*qe_s', 4, 'Formule de test') ;
     perform api.add_new_formula('n2o_e formule', 'n2o_e=(10^(-1) + (3* (1>2)))*qe_s', 4, 'Formule de test') ;
     perform api.add_new_formula('hydraulique complexe', 'qe_s = qe', 4) ;
 
     update api.input_output set default_formulas = array_append(default_formulas, 'co2_e formule') where b_type = 'compostage' 
-    or b_type = 'bassin_dorage' or b_type = 'clarificateur' or b_type = 'file_eau' ; 
+    or b_type = 'bassin_dorage' or b_type = 'clarificateur' or b_type = 'filiere_eau' ; 
     update api.input_output set default_formulas = array_append(default_formulas, 'co2_c formule') where b_type = 'compostage'
     or b_type = 'bassin_dorage' or b_type = 'clarificateur' ;
     update api.input_output set default_formulas = array_append(default_formulas, 'n2o_e formule') where b_type = 'compostage'
@@ -169,7 +166,7 @@ begin
 
     -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line1, 2154), model) ;
 
-    -- insert into api.file_eau_bloc(geom, model, qe_s) values (st_geomfromtext(file_eau_bloc, 2154), model, qe_s_clarif) ;
+    -- insert into api.filiere_eau_bloc(geom, model, qe_s) values (st_geomfromtext(filiere_eau_bloc, 2154), model, qe_s_clarif) ;
 
     -- insert into api.source_bloc(geom, model) values (st_geomfromtext(source_point, 2154), model) ;
 
@@ -180,12 +177,12 @@ begin
 
 
     -- insert into api.sur_bloc_bloc(geom, model) values (st_geomfromtext(sur_bloc_polygon, 2154), model) ;
-    -- insert into api.file_boue_bloc(geom, model) values (st_geomfromtext(file_boue_bloc, 2154), model) ;
+    -- insert into api.filiere_boue_bloc(geom, model) values (st_geomfromtext(filiere_boue_bloc, 2154), model) ;
     -- insert into api.compostage_bloc(geom, model) values (st_geomfromtext(usine_point, 2154), model) ;
     -- insert into api.lien_bloc(geom, model) values (st_geomfromtext(geom_line3, 2154), model) ;
 
 
-    select into g geom from api.file_boue_bloc limit 1 ; 
+    select into g geom from api.filiere_boue_bloc limit 1 ; 
     with dumps as (select id, st_dump(st_points(geom_ref)) as dp
         from ___.bloc where ___.bloc.shape = 'LineString'
         ),

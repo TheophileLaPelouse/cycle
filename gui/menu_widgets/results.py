@@ -3,15 +3,13 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog
 from ...qgis_utilities import QGisProjectManager, tr 
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 from .graph_widget import GraphWidget, pretty_number
 
 import pandas as pd
 
 
 class AllResults(QDialog) : 
-    def __init__(self, project, resume_results_widget, parent=None) : 
+    def __init__(self, project, parent=None) : 
         QDialog.__init__(self, parent)
         uic.loadUi(os.path.join(os.path.dirname(__file__), 'results2.ui'), self)
         

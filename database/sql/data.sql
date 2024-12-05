@@ -176,12 +176,17 @@ create table ___.results(
     id integer references ___.bloc(id) on update cascade on delete cascade,
     name varchar, 
     val ___.res, 
+    d_vie real,
     detail_level integer, 
     formula varchar, 
     unknowns varchar[], 
     result_ss_blocs ___.res,
     result_ss_blocs_intrant ___.res,
+    result_ss_blocs_an ___.res,
+    result_ss_blocs_intrant_an ___.res,
     co2_eq ___.res,
+    co2_eq_an ___.res,
+    -- les calcul pour co2_eq et co2_eq_an sont toujours quasiment les mêmes, à la durée de vie du bâtiment près
     unique(name, id, formula)
 ) ;
 
@@ -190,6 +195,11 @@ declare
     prg ___.res ;
     co2_eq ___.res ;
     co2_eq_intrant ___.res ;
+    co2_eq_an ___.res ;
+    co2_eq_an_intrant ___.res ;
+    dure_vie real ;
+    b_typ ___.bloc_type ;
+    query text ;
 begin
     case 
     when new.name like 'ch4%' then
@@ -205,6 +215,7 @@ begin
         co2_eq.val := 0 ; 
         co2_eq.incert := 0 ;
         new.co2_eq := co2_eq ;
+        new.co2_eq_an := co2_eq ;
         return new ; 
     end if ;
     co2_eq.val := (new.result_ss_blocs).val * prg.val;
@@ -212,6 +223,13 @@ begin
     co2_eq_intrant.val := (new.result_ss_blocs_intrant).val * prg.val;
     co2_eq_intrant.incert := sqrt((new.result_ss_blocs_intrant).incert^2 + prg.incert^2);
     new.co2_eq := ___.add(co2_eq, co2_eq_intrant);
+    
+    co2_eq_an.val := (new.result_ss_blocs_an).val * prg.val;
+    co2_eq_an.incert := sqrt((new.result_ss_blocs_an).incert^2 + prg.incert^2);
+    co2_eq_an_intrant.val := (new.result_ss_blocs_intrant_an).val * prg.val;
+    co2_eq_an_intrant.incert := sqrt((new.result_ss_blocs_intrant_an).incert^2 + prg.incert^2);
+    new.co2_eq_an := ___.add(co2_eq_an, co2_eq_an_intrant);
+
     return new;
 end;
 $$ language plpgsql;

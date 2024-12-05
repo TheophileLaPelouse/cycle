@@ -955,18 +955,23 @@ language plpgsql as
 $$
 declare 
     query text;
+    existing_cols varchar[] ;
 begin 
+    select array_cat(inputs, outputs) from ___.input_output into existing_cols ;
     case 
     when modif = 'added' then
-        query = 'update  ___.input_output set ' || inp_or_out || 's = array_append('|| inp_or_out ||'s, '''|| col_name || ''') where b_type = '''|| b_type || ''';';
+        query = 'update  ___.input_output set ' || inp_or_out || 's = array_append('|| inp_or_out ||'s, '''|| col_name || ''') where b_type = '''|| b_type || ''' 
+        and not '''||col_name||'''=any('||inp_or_out||'s);';
         raise notice '%', query;
         execute query;
-        query = 'alter table ___.'|| b_type ||'_bloc add column ' || col_name || ' ' || col_type || ' default ' || col_default || ';';
-        raise notice '%', query;
-        execute query;
-        query = 'alter table ___.'|| b_type ||'_bloc_config add column ' || col_name || ' ' || col_type || ' default ' || col_default || ';';
-        raise notice '%', query;
-        execute query;
+        if not col_name=any(existing_cols) then 
+            query = 'alter table ___.'|| b_type ||'_bloc add column ' || col_name || ' ' || col_type || ' default ' || col_default || ';';
+            raise notice '%', query;
+            execute query;
+            query = 'alter table ___.'|| b_type ||'_bloc_config add column ' || col_name || ' ' || col_type || ' default ' || col_default || ';';
+            raise notice '%', query;
+            execute query;
+        end if;
     when modif = 'remove' then
         query = 'update ___.input_output set ' || inp_or_out || 's = array_remove('|| inp_or_out ||'s, '''|| col_name || ''') where b_type = '''|| b_type || ''';'; 
         execute query;
@@ -1207,3 +1212,31 @@ begin
     return links;
 end;
 $$;
+
+-- -- Pour l'affichage des résultats : 
+-- select api.bloc_tree()
+-- returns jsonb
+-- language plpgsql as
+-- $$
+-- declare 
+--     res jsonb;
+--     blocs jsonb;
+--     mod varchar ;
+--     blocs varchar[] ;
+--     n integer ;
+--     len_b integer := 0 ; -- size of interesting values in array blocs.
+--     ind integer := 1 ; -- next index
+--     b varchar ; 
+-- begin
+--     n := select count(*) from api.bloc ;
+--     blocs := array_fill(''::varchar, array[n]);
+--     for mod in (select name from api.models)
+--     loop
+--         for b in (select name from api.bloc where model = mod)
+--         loop
+--             blocs[ind] := b;
+--             ind := ind + 1 ;
+--         end loop;
+--         len_b := ind -1 ; 
+
+-- Peut être pour plus tard mais c'est un peu relou à faire en plpgsql
