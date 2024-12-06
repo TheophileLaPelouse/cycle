@@ -1156,6 +1156,21 @@ declare
     k text ;
 begin
     select into blocs array_agg(id) from ___.bloc where name = any(blocs_name) ;
+    if array_length(blocs, 1) = 0 or blocs is null then 
+        return jsonb_build_object(
+        'total', jsonb_build_object(
+        'ch4_c', to_jsonb(row(0, 0)::___.res),
+        'ch4_e', to_jsonb(row(0, 0)::___.res),
+        'co2_c', to_jsonb(row(0, 0)::___.res),
+        'co2_e', to_jsonb(row(0, 0)::___.res),
+        'n2o_c', to_jsonb(row(0, 0)::___.res),
+        'n2o_e', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_c', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_e', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_ce', to_jsonb(row(0, 0)::___.res)
+    )
+);
+    end if ;
     foreach id_loop in array blocs loop
         select into item name, b_type from ___.bloc where id = id_loop;
         b_name := item.name ;

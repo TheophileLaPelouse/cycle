@@ -101,7 +101,7 @@ class GraphWidget(QWidget):
                     color = color['n2o'], edgecolor=edgecolor, label = 'n2o', 
                     yerr = data_err, capsize = 5, ecolor = 'black', width=width)
         elif c_or_e == 'ce' : 
-            self.__ax.bar(r, data, color['co2'], edgecolor=edgecolor, label = 'CO2eq', 
+            self.__ax.bar(r, data, color=color['co2'], edgecolor=edgecolor, label = 'CO2eq', 
                           yerr = data_err, capsize = 5, ecolor = 'black', width=width)
         print(rtot, names)
         self.__ax.set_xticks(rtot, names)

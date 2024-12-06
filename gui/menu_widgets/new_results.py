@@ -1,8 +1,8 @@
 import os 
-from qgis.PyQt.QtWidgets import QDialog, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QPushButton, QFileDialog, QLabel, QCheckBox, QComboBox, QHeaderView
+from qgis.PyQt.QtWidgets import QDialog, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QPushButton, QFileDialog, QLabel, QCheckBox, QComboBox, QHeaderView, QSplitter
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon, QColor, QBrush
 from ...qgis_utilities import QGisProjectManager, tr 
 from ...utility.json_utils import get_propertie
 from .graph_widget import GraphWidget, pretty_number
@@ -25,6 +25,12 @@ class Result(QDialog) :
         self.b_types = {b[0] : b[1] for b in b_types}
         
         self.colors = ['blue', 'red', 'green', 'magenta', 'cyan', 'white']
+        self.color_brushes = {'blue' : QBrush(QColor(173, 216, 230)), 
+                              'red' : QBrush(QColor(254, 89, 89)), 
+                              'green' : QBrush(QColor(20, 255, 57)),
+                              'magenta' : QBrush(QColor(238, 76, 166)),
+                              'white' : QBrush(QColor('white')), 
+                              'grey' : QBrush(QColor(180, 180, 180))}
         self.params = {}
         self.refresh_tree(bloc_tree)
         # Adjust column widths
@@ -34,6 +40,19 @@ class Result(QDialog) :
         self.treeWidget.header().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.treeWidget.header().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         
+        self.frame.setStyleSheet("""
+            QFrame {
+                border: 1px solid lightgray;
+                border-radius: 3px;
+            }
+            QPushButton {
+                margin: 3px;
+            }
+            QTableWidget {
+                margin: 3px;
+            }
+        """)
+                
         self.treeWidget.setStyleSheet("""
             QHeaderView::section {
                 border-right: 1px solid lightgray;
@@ -42,6 +61,39 @@ class Result(QDialog) :
                 border-bottom: 1px solid lightgray ;
             }
         """)
+        
+        self.table.header().setStretchLastSection(False)
+        for i in range(4) : 
+            self.table.header().setSectionResizeMode(i, QHeaderView.ResizeToContents)
+            
+        self.frame_table.setStyleSheet("""
+            QFrame {
+                border: 1px solid lightgray;
+                border-radius: 3px;
+                }
+        """)
+        
+        layout = self.frame_splitter.layout()
+        splitter = QSplitter(Qt.Horizontal)
+        splitter.addWidget(self.frame)
+        splitter.addWidget(self.frame_table)
+        layout.addWidget(splitter)
+        
+        layout = self.frame_splitter_V.layout()
+        splitter = QSplitter(Qt.Vertical)
+        splitter.addWidget(self.frame_splitter)
+        splitter.addWidget(self.tabWidget)
+        splitter.setSizes([300, 300])
+        layout.addWidget(splitter)
+        
+        # self.table.setStyleSheet("""
+        #     QHeaderView::section {
+        #         border-right: 1px solid lightgray;
+        #     }
+        #     QTreeWidget::item {
+        #         border-bottom: 1px solid lightgray;
+        #     }
+        # """) ça écrase les couleurs donc pas fou
         
         self.graph_bar_e = GraphWidget(self.bar_chart_e, dpi=90)
         self.graph_bar_c = GraphWidget(self.bar_chart_c, dpi=90)
@@ -68,7 +120,6 @@ class Result(QDialog) :
                 k += 1 
                 print(dico, key)
                 childnode = QTreeWidgetItem(node)
-                checkbox1 = QCheckBox(self.treeWidget)
                 color_choice = QComboBox(self.treeWidget)
                 color_choice.addItems(self.colors)
                 color_choice.setCurrentText(color)
@@ -77,17 +128,21 @@ class Result(QDialog) :
                     icon = QIcon(os.path.join(path_icons, Bloc_Icon[self.b_types[key]]))
                     childnode.setIcon(0, icon)
                 if etage != 0 : 
+                    checkbox1 = QCheckBox(self.treeWidget)
                     self.treeWidget.setItemWidget(childnode, 1, checkbox1)
+                else : 
+                    checkbox1 = None
                 self.treeWidget.setItemWidget(childnode, 3, color_choice)
                 self.params[key] = [checkbox1, color_choice]
                 print(self.params)
-                checkbox1.stateChanged.connect(lambda x, k=key : self.select_bloc(k, x))
+                if checkbox1 :
+                    checkbox1.stateChanged.connect(lambda x, k=key : self.select_bloc(k, x))
                 if len(dico[key]) > 0 : 
                     checkbox2 = QCheckBox(self.treeWidget)
                     self.treeWidget.setItemWidget(childnode, 2, checkbox2)
                     checkbox2.stateChanged.connect(lambda x, k=key : self.select_ss_blocs(k, x))
                     color_choice.currentTextChanged.connect(lambda x, k=key : self.change_ss_colors(k, x))
-                    add_node(dico[key], childnode, etage+1)
+                    add_node(dico[key], childnode, etage+1, color)
 
         add_node(bloc_tree)
     
@@ -131,26 +186,87 @@ class Result(QDialog) :
     
     
     def show_table(self, bloc_groups, stud_time) :
+        self.table.clear()
+        
+        for color in bloc_groups : 
+            for key in bloc_groups[color] :
+                # self.table est un treeWidget 
+                if key == 'total' :
+                    separator_node = QTreeWidgetItem(self.table)
+                    separator_node.setBackground(0, QBrush(QColor(255, 255, 255)))  # White background
+                    separator_node.setBackground(1, QBrush(QColor(255, 255, 255)))
+                    separator_node.setBackground(2, QBrush(QColor(255, 255, 255)))
+                    separator_node.setBackground(3, QBrush(QColor(255, 255, 255)))
+            
+                    brush = self.color_brushes['grey']
+                else :
+                    brush = self.color_brushes[color]
+                
+                parent_node = QTreeWidgetItem(self.table)
+                font = parent_node.font(0)
+                font.setBold(True)
+                parent_node.setFont(0, font)
+                parent_node.setText(0, key)
+                
+                    
+                # Create child nodes for the details
+                co2_eq_c_val = bloc_groups[color][key]['co2_eq_c']['val']
+                co2_eq_c_incert = bloc_groups[color][key]['co2_eq_c']['incert'] * co2_eq_c_val
+                co2_eq_e_val = bloc_groups[color][key]['co2_eq_e']['val']
+                co2_eq_e_incert = bloc_groups[color][key]['co2_eq_e']['incert'] * co2_eq_e_val
+                co2_eq_ce_val = bloc_groups[color][key]['co2_eq_ce']['val'] * stud_time
+                co2_eq_ce_incert = bloc_groups[color][key]['co2_eq_ce']['val'] * bloc_groups[color][key]['co2_eq_ce']['incert'] * stud_time
+                
+                # Set the summary values in the parent node
+                parent_node.setText(1, pretty_number(co2_eq_c_val, co2_eq_c_incert, ''))
+                parent_node.setText(2, pretty_number(co2_eq_e_val, co2_eq_e_incert, ''))
+                parent_node.setText(3, pretty_number(co2_eq_ce_val, co2_eq_ce_incert, ''))
+                
+                for i in range(4): 
+                    parent_node.setBackground(i, brush)
+                
+                def add_children(parent_node, data, brush) : 
+                    fields = ['co2', 'ch4', 'n2o']
+                    for field in fields : 
+                        val_c = data[field+'_c']['val']
+                        val_e = data[field+'_e']['val']
+                        if val_c or val_e :
+                            child_node = QTreeWidgetItem(parent_node)
+                            child_node.setText(0, field.upper())
+                            child_node.setText(1, pretty_number(data[field+'_c']['val'], data[field+'_c']['incert']*data[field+'_c']['val'], 'kgGaz'))
+                            child_node.setText(2, pretty_number(data[field+'_e']['val'], data[field+'_e']['incert']*data[field+'_e']['val'], 'kgGaz/an')) 
+                            for i in range(4): 
+                                child_node.setBackground(i, brush)
+                add_children(parent_node, bloc_groups[color][key], brush) 
+        
+        self.table.header().setStretchLastSection(False)
+        for i in range(4) : 
+            self.table.header().setSectionResizeMode(i, QHeaderView.ResizeToContents)
+        
         return 
      
     def show_graphs(self, bloc_groups, stud_time, ges_colors = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
         i = 0
         for color in bloc_groups :
-            if i == 0 : 
-                r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = self.fill_bars(bloc_groups[color], stud_time)
-                self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, ges_colors, color, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
-                self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, ges_colors, color, tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"))   
-                self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names, ges_colors, color, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"))
-                i += 1
-                rtot = r
-            else : 
-                r2, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names2 = self.fill_bars(bloc_groups[color], stud_time)
-                rtot = range(0, rtot[-1] + 1 + r2[-1])
-                r = range(r[-1]+1, r2[-1]+1+r[-1]+1)
-                names += names2
-                self.graph_bar_c.add_bar_chart(r, rtot, bars_c, bars_c_err, 'c', names, ges_colors, color)
-                self.graph_bar_e.add_bar_chart(r, rtot, bars_e, bars_e_err, 'e', names, ges_colors, color)  
-                self.graph_bar_ce.add_bar_chart(r, rtot, bars_ce, bars_ce_err, 'ce', names, ges_colors, color)
+            if len(bloc_groups[color]) > 0 :
+                if i == 0 : 
+                    r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = self.fill_bars(bloc_groups[color], stud_time)
+                    self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, ges_colors, color, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
+                    self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, ges_colors, color, tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"))   
+                    self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names, ges_colors, color, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"))
+                    i += 1
+                    rtot = r
+                else : 
+                    r2, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names2 = self.fill_bars(bloc_groups[color], stud_time)
+                    print('r2', r2)
+                    print('rtot', rtot)
+                    print('r', r)
+                    rtot = range(0, rtot[-1] + 1 + r2[-1]+1)
+                    r = range(r[-1]+1, r2[-1]+1+r[-1]+1)
+                    names += names2
+                    self.graph_bar_c.add_bar_chart(r, rtot, bars_c, bars_c_err, 'c', names, ges_colors, color)
+                    self.graph_bar_e.add_bar_chart(r, rtot, bars_e, bars_e_err, 'e', names, ges_colors, color)  
+                    self.graph_bar_ce.add_bar_chart(r, rtot, bars_ce, bars_ce_err, 'ce', names, ges_colors, color)
                 
     def fill_bars(self, data, stud_time) : 
         bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': [], 'co2_eq_ce' : []}

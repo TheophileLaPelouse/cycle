@@ -1,6 +1,6 @@
 create extension if not exists postgis;
 
--- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profile/default/python/plugins/cycle/database/sql/test_unitaire.sql
+-- \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/test_unitaire.sql
 -- \i test_unitaire.sql
 \i C:/Users/theophile.mounier/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/cycle/database/sql/data.sql
 -- -- \i data.sql
