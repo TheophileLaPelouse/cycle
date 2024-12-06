@@ -12,8 +12,8 @@ from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QPushButton, QMenu, QChec
 from qgis.utils import iface
 from qgis.core import QgsProject, QgsVectorLayer
 from ...project import Project
-from .results import AllResults
-from .new_results import Result
+from .all_results import AllResults
+# from .new_results import Result
 from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
 from ..forms.add_formula import AddFormula
@@ -270,8 +270,8 @@ class CycleToolbar(QToolBar):
     def __show_all_results(self) :
         project = Project(QGisProjectManager.project_name(), self.__log_manager)
         self.res_widget and self.res_widget.setParent(None)
-        # self.res_widget = AllResults(project, self.parent())
-        self.res_widget = Result(project, self.__parent)
+        self.res_widget = AllResults(project, self.parent())
+        # self.res_widget = Result(project, self.__parent)
         self.res_widget.show()
         
     def __zoom_to_scale(self) :

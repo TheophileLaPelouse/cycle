@@ -84,8 +84,10 @@ class GraphWidget(QWidget):
         self.__ax.set_xlabel(xlabel)
         self.__ax.legend(edgecolor='black')
         self.__ax.grid(axis='y')
-        # self.fig.tight_layout(rect=[0.1, 0.1, 0.9, 0.9 ])
-        self.fig.tight_layout()
+        self.fig.tight_layout(rect=[0.03, 0.03, 0.97, 0.97 ])
+        # Faudra changer les noms en id si ça dépasse et un jour peut être truc d'affichage vraiment clean avec décalage sur deux écrans si ça dépasse.
+        
+        # self.fig.tight_layout()
         self.__render()
 
     def add_bar_chart(self, r, rtot, data, data_err, c_or_e, names, color, edgecolor) : 
@@ -114,6 +116,91 @@ def pretty_number(num, incert, unit, nb_sig = 3, nb_decimals = 1) :
         return  f"{num:.{nb_sig}g}" + " ± " + f"{incert:.{nb_sig}g}" + ' ' + unit
     else : 
         return  f"{num:.{nb_decimals}f}" + " ± " + f"{incert:.{nb_decimals}f}" + ' ' + unit
+    
+def fill_bars(prg, data, stud_time) : 
+    bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': [], 'co2_eq_ce' : []}
+    for key in data : 
+        if key != 'total' :
+            for field in bars :
+                bars[field].append(data[key].get(field, {'val' : 0, 'incert' : 0}))
+    r = range(len(bars['co2_e'])) 
+    names = list(data.keys())
+    names.remove('total')
+    print('r', r)
+    print('prg', prg)
+    bars_c = {'co2' : [x['val']*prg['co2'] for x in bars['co2_c']], 
+                'ch4' : [x['val']*prg['ch4'] for x in bars['ch4_c']], 
+                'n2o' : [x['val']*prg['n2o'] for x in bars['n2o_c']]}
+    
+    bars_e = {'co2' : [x['val']*prg['co2'] for x in bars['co2_e']], 
+                'ch4' : [x['val']*prg['ch4'] for x in bars['ch4_e']], 
+                'n2o' : [x['val']*prg['n2o'] for x in bars['n2o_e']]}
+    
+    bars_ce = [x['val']*prg['co2']*stud_time for x in bars['co2_eq_ce']]
+    
+    bars_c_err = [bars['co2_c'][k]['incert']*bars_c['co2'][k] + bars['ch4_c'][k]['incert']*bars_c['ch4'][k] + bars['n2o_c'][k]['incert']*bars_c['n2o'][k] for k in r]
+    
+    bars_e_err = [bars['co2_e'][k]['incert']*bars_e['co2'][k] + bars['ch4_e'][k]['incert']*bars_e['ch4'][k] + bars['n2o_e'][k]['incert']*bars_e['n2o'][k] for k in r]
+    
+    bars_ce_err = [bars['co2_eq_ce'][k]['incert']*bars_ce[k]*stud_time for k in r]
+    
+    return r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names
+
+from numpy import argsort
+def sort_bars(bars1, names1, err1, bars2 = None, names2 = None, err2 = None) : 
+    # si bars2 est none c'est qu'on a pas encore fait de bar donc il faut trier bars1
+    # Sinon bars1 est déjà trié et on doit insérer correctement
+    fields = ['co2', 'ch4', 'n2o']
+    print("On entre dans la fonction")
+    if not bars2 : 
+        print('premier cas')
+        if isinstance(bars1, dict) :
+            sum_values = [sum([bars1[field][i] for field in fields]) for i in range(len(bars1['co2']))]
+            sorted_idx = argsort(sum_values)[::-1]
+            for field in fields : 
+                bars1[field] = [bars1[field][i] for i in sorted_idx]
+            names1 = [names1[i] for i in sorted_idx]
+            err1 = [err1[i] for i in sorted_idx]
+            print('premier cas', bars1, names1, err1)
+            return bars1, names1, err1
+        elif isinstance(bars1, list) : 
+            sorted_idx = argsort(bars1)[::-1]
+            bars1 = [bars1[i] for i in sorted_idx]
+            names1 = [names1[i] for i in sorted_idx]
+            err1 = [err1[i] for i in sorted_idx]
+            return bars1, names1, err1
+    else :
+        print('deuxième cas')
+        print(isinstance(bars1, dict))
+        if isinstance(bars1, dict) :
+            print('On passe par là ?')
+            # Un jour on pourra opti, pour le moment flemme
+            sum_values1 = [sum([bars1[field][i] for field in fields]) for i in range(len(bars1['co2']))] # trier donc idéalement faudrait insérer là dedans (genre par dicotomie)
+            sum_values2 = [sum([bars2[field][i] for field in fields]) for i in range(len(bars2['co2']))]
+            bar = {}
+            for field in fields : 
+                bar[field] = bars1[field] + bars2[field]
+            sum_values = sum_values1 + sum_values2
+            print("sum_values", sum_values)
+            sorted_idx = argsort(sum_values)[::-1]
+            for field in fields :
+                bar[field] = [bar[field][i] for i in sorted_idx]
+            names = names1 + names2
+            names = [names[i] for i in sorted_idx]
+            err = err1 + err2
+            err = [err[i] for i in sorted_idx]
+            print(bar, names, err)
+            return bar, names, err
+        elif isinstance(bars1, list) :
+            bar = bars1 + bars2
+            sorted_idx = argsort(bar)[::-1]
+            bar = [bar[i] for i in sorted_idx]
+            names = names1 + names2
+            names = [names[i] for i in sorted_idx]
+            err = err1 + err2
+            err = [err[i] for i in sorted_idx]
+            return bar, names, err
+        
         
 if __name__ == '__main__' : 
     app = QApplication([])
