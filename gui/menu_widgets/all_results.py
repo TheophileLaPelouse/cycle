@@ -13,6 +13,9 @@ class AllResults(QDialog) :
         QDialog.__init__(self, parent)
         uic.loadUi(os.path.join(os.path.dirname(__file__), 'all_results.ui'), self)
         
+        self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
+        self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
+        
         self.project = project
         
         self.export_btn.clicked.connect(self.export_results)
@@ -57,7 +60,11 @@ class AllResults(QDialog) :
         
     def save_plot(self) : 
         tab = self.tabWidget.currentWidget()
-        current_plot = tab.tabWidget.currentWidget().fig
+        
+        graphs = {'tab' : tab.graph_bar_c, 'tab_2' : tab.graph_bar_e, 'tab_3' : tab.graph_bar_ce}
+        graph_widget = graphs[tab.tabWidget.currentWidget().objectName()]
+        print('graph_widget', type(graph_widget), graph_widget.objectName())
+        current_plot = graph_widget.fig
         file, __ = QFileDialog.getSaveFileName(self, self.tr("Sélectionner un fichier"), filter="PNG (*.png)")
         if not file : return 
         current_plot.savefig(file)
@@ -92,7 +99,7 @@ class AllResults(QDialog) :
             
         
     def export_results(self) :
-        models = self.__project.models
+        models = self.project.models
         
         file, __ = QFileDialog.getSaveFileName(self, self.tr("Sélectionner un fichier"), filter="CSV (*.csv) ;;Excel (*.xlsx)")
         if not file : return 
@@ -107,13 +114,13 @@ class AllResults(QDialog) :
             columns.append(col_alias[key][1])
         All_data = {}
         for mod in models : 
-            blocs = self.__project.fetchall(f"""
+            blocs = self.project.fetchall(f"""
                 with b_types as (select b_type from api.input_output where concrete or b_type='sur_bloc')
                 select name from api.bloc where model = '{mod}' and b_type in (select b_type from b_types)""")
             blocs = [bloc[0] for bloc in blocs]
             data_mod = {}
             for bloc in blocs : 
-                data = self.__project.fetchone(f"select api.get_histo_data('{mod}', '{bloc}')")[0]
+                data = self.project.fetchone(f"select api.get_histo_data('{mod}', '{bloc}')")[0]
                 indexs = list(data.keys())
                 df = pd.DataFrame(index=indexs, columns=columns)
                 for index, col in data.items() : 
@@ -121,7 +128,7 @@ class AllResults(QDialog) :
                         df.loc[index, col_alias[c][0]] = col[c]['val']
                         df.loc[index, col_alias[c][1]] = col[c]['incert']
                 data_mod[bloc] = df
-            data = self.__project.fetchone(f"select api.get_histo_data('{mod}')")[0]
+            data = self.project.fetchone(f"select api.get_histo_data('{mod}')")[0]
             indexs = list(data.keys())
             df = pd.DataFrame(index=indexs, columns=columns)
             for index, col in data.items() : 
@@ -133,7 +140,7 @@ class AllResults(QDialog) :
         
         if file.endswith('.csv') :
             with open(file, 'w') as f : 
-                f.write(f"-- Résultats du projet {self.__project.name}\n")
+                f.write(f"-- Résultats du projet {self.project.name}\n")
             
             for mod in All_data :
                 with open(file, 'a') as f : 
@@ -146,7 +153,7 @@ class AllResults(QDialog) :
             with pd.ExcelWriter(file) as writer:
                 for mod in All_data:
                     sheet_name = f"{mod}"
-                    pd.DataFrame(columns=[f"Résultats du projet {self.__project.name}", f"Modèle {mod}"]).to_excel(writer, sheet_name=sheet_name, index=False)
+                    pd.DataFrame(columns=[f"Résultats du projet {self.project.name}", f"Modèle {mod}"]).to_excel(writer, sheet_name=sheet_name, index=False)
                     start = 3
                     for bloc in All_data[mod]:
                         pd.DataFrame(index=["Bloc"], data=[f"{bloc}"]).to_excel(writer, sheet_name=sheet_name, index=True, header=False, startrow = start)

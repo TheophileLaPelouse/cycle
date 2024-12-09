@@ -44,8 +44,8 @@ class Cycle(QObject):
         self.__iface.projectRead.connect(self.__project_loaded)
         self.__iface.newProjectCreated.connect(self.__project_loaded)
         
-        self.__iface.projectRead.connect(self.__update_docks)
-        self.__iface.newProjectCreated.connect(self.__update_docks)
+        self.__iface.projectRead.connect(lambda : self.__update_docks(True))
+        self.__iface.newProjectCreated.connect(lambda : self.__update_docks(True))
         
         # self.__iface.currentLayerChanged.connect(self.print_current_layer)
     
@@ -91,6 +91,7 @@ class Cycle(QObject):
         self.__project_loaded()
         self.__edit_action = self.__iface.mainWindow().findChild(QAction, "mActionToggleEditing")
         self.__edit_action.triggered.connect(self.__toggle_edit_mode)
+        self.__update_docks(True)
         
         print("bonjour", self.__dock_results)
         # self.__create_docks()
@@ -129,15 +130,18 @@ class Cycle(QObject):
         if not checked :
             self.__update_docks()
     
-    def __update_docks(self):
+    def __update_docks(self, force_reload = False):
         print("is it none ?", self.__dock_results is None)
-        if self.__dock_results is None and QGisProjectManager.is_cycle_project() : 
+        if (self.__dock_results is None and QGisProjectManager.is_cycle_project()) or force_reload: 
             self.__create_docks()
         elif QGisProjectManager.is_cycle_project():
             self.__dock_results.update_model_list()
             
     
     def __create_docks(self):
+        if self.__dock_results is not None:
+            self.__dock_results.setParent(None)
+            self.__dock_results = None
         self.__iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.visu_results_dock())
         self.__iface.mainWindow().tabifyDockWidget(self.__iface.mainWindow().findChildren(QDockWidget, "Browser")[0], self.visu_results_dock())
         

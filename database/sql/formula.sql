@@ -684,8 +684,12 @@ begin
     if not concr then 
         return 'No calculation for link or sur_bloc' ;
     end if ;
-    query := 'select d_vie from api.'||b_typ||'_bloc where id = $1 ;' ;
-    execute query into duree_vie using id_bloc ;
+    if exists(select 1 from api.input_output where b_type = b_typ and 'd_vie'=any(inputs)) then 
+        query := 'select d_vie from api.'||b_typ||'_bloc where id = $1 ;' ;
+        execute query into duree_vie using id_bloc ;
+    else
+        duree_vie := 0.0 ;
+    end if ;
     -- -- --raise  notice 'b_typ = %', b_typ ;
     
     -- inp_out est une table qui contient toutes les valeurs qui pourraient servir pour appliquer une formule.

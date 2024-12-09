@@ -253,18 +253,21 @@ class Result(QDialog) :
      
     def show_graphs(self, bloc_groups, stud_time, ges_colors = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
         i = 0   
-        
+        n = len(bloc_groups)
+        render = False
         for color in bloc_groups :
-            print('Bloc GROUPE', bloc_groups[color])
+            # print('Bloc GROUPE', bloc_groups[color])
             if not (bloc_groups[color]['total']['co2_eq_c']['val'] == 0 and bloc_groups[color]['total']['co2_eq_e']['val'] == 0) :
                 if i == 0 : 
+                    if i == n -1 : 
+                        render = True
                     r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = fill_bars(self.prg, bloc_groups[color], stud_time)
-                    bars_c, names, bars_c_err = sort_bars(bars_c, names, bars_c_err)
-                    self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, ges_colors, color, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
-                    bars_e, names, bars_e_err = sort_bars(bars_e, names, bars_e_err)
-                    self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, ges_colors, color, tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"))   
-                    bars_ce, names, bars_ce_err = sort_bars(bars_ce, names, bars_ce_err)
-                    self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names, ges_colors, color, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"))
+                    bars_c, names_c, bars_c_err = sort_bars(bars_c, names, bars_c_err)
+                    self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names_c, self.bloc_id, ges_colors, color, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'), render=render)
+                    bars_e, names_e, bars_e_err = sort_bars(bars_e, names, bars_e_err)
+                    self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names_e, self.bloc_id, ges_colors, color, tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"), render=render)   
+                    bars_ce, names_ce, bars_ce_err = sort_bars(bars_ce, names, bars_ce_err)
+                    self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names_ce, self.bloc_id, ges_colors, color, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"), render=render)
                     i += 1
                 else : 
                     r2, bars_c2, bars_c_err2, bars_e2, bars_e_err2, bars_ce2, bars_ce_err2, names2 = fill_bars(self.prg, bloc_groups[color], stud_time)
@@ -272,15 +275,16 @@ class Result(QDialog) :
                     r = range(0, r[-1] + 1 + r2[-1]+1)
                     # r = range(r[-1]+1, r2[-1]+1+r[-1]+1)
                     
-                    bars_c, names, bars_c_err = sort_bars(bars_c, names, bars_c_err, bars_c2, names2, bars_c_err2)
-                    
-                    print('Juste avant la chute', r, names)
-                    self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names, ges_colors, color, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'))
-                    bars_e, names, bars_e_err = sort_bars(bars_e, names, bars_e_err, bars_e2, names2, bars_e_err2)
-                    self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names, ges_colors, color, tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"))   
-                    bars_ce, names, bars_ce_err = sort_bars(bars_ce, names, bars_ce_err, bars_ce2, names2, bars_ce_err2)
-                    self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names, ges_colors, color, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"))
-                    
+                    bars_c, names_c, bars_c_err = sort_bars(bars_c, names, bars_c_err, bars_c2, names2, bars_c_err2)
+                    if i == n -1 : 
+                        render = True
+                    self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names_c, self.bloc_id, ges_colors, color, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'), render=render)
+                    bars_e, names_e, bars_e_err = sort_bars(bars_e, names, bars_e_err, bars_e2, names2, bars_e_err2)
+                    self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names_e, self.bloc_id, ges_colors, color, tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"), render=render)   
+                    bars_ce, names_ce, bars_ce_err = sort_bars(bars_ce, names, bars_ce_err, bars_ce2, names2, bars_ce_err2)
+                    self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names_ce, self.bloc_id, ges_colors, color, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"), render=render)   
+                    i += 1         
+        
                         
     def get_params(self) :
         params_values = {} 

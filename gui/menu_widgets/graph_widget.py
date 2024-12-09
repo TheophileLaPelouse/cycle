@@ -4,6 +4,8 @@ from qgis.PyQt.QtWidgets import QApplication, QWidget, QGridLayout, QMenu
 from qgis.PyQt.QtGui import QCursor, QImage, QPalette
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT, FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from matplotlib.pyplot import setp
+from matplotlib import cycler
 import math
 
 matplotlib.rc('xtick', labelsize=8)
@@ -37,28 +39,35 @@ class GraphWidget(QWidget):
         self.canvas.draw()
         self.canvas.setVisible(True)
         
-    def pie_chart(self, data, labels, color, title) : 
+    def pie_chart(self, data, labels, title) : 
         self.__ax.clear()
-        if data == [0,0,0] : 
-            data = [1,1,1]
-        def autopct_format(values):
-            def my_format(pct):
-                total = sum(values)
-                val = int(round(pct*total/100.0))
-                return '{v:d}'.format(v=val)
-            return my_format
+        # if data == [0,0,0] : 
+        #     data = [1,1,1]
+        # def autopct_format(values):
+        #     def my_format(pct):
+        #         total = sum(values)
+        #         val = int(round(pct*total/100.0))
+        #         return '{v:d}'.format(v=val)
+        #     return my_format
         # print("pie_data", data)
         # print("pie_labels", labels)
         # print("pie_color", list(color.values()))
         # self.__ax.pie(data, autopct=autopct_format(data), colors=list(color.values()))
-        self.__ax.pie(data, colors=list(color.values()))
+        # self.__ax.pie(data)
+        
+        # Petit cycle de couleur daltionien friendly (nécessaire selon un daltonien qui écrit ce message) 
+        CB_color_cycle = ['#377eb8', '#ff7f00', '#4daf4a',
+                  '#f781bf', '#a65628', '#984ea3',
+                  '#999999', '#e41a1c', '#dede00']
+        self.__ax.set_prop_cycle(cycler('color', CB_color_cycle))
+        self.__ax.pie(data, labels=labels, autopct='%1.1f%%')
         self.fig.tight_layout(rect= [-0.05, -0.05, 1.05, 1.05])
         # self.__ax.legend(labels, loc='upper right', bbox_to_anchor=(1, 1))
-        self.__ax.legend(labels, loc='upper right')
+        # self.__ax.legend(labels, loc='upper right')
         # self.__ax.set_title(title)
         self.__render()
         
-    def bar_chart(self, r, data, data_err, c_or_e, names, color, edgecolor, title, ylabel, xlabel) :
+    def bar_chart(self, r, data, data_err, c_or_e, names, ids, color, edgecolor, title, ylabel, xlabel, render = True) :
         # print("bar_data", data)
         # print("test", data)
         width = 0.4 
@@ -86,9 +95,22 @@ class GraphWidget(QWidget):
         self.__ax.grid(axis='y')
         self.fig.tight_layout(rect=[0.03, 0.03, 0.97, 0.97 ])
         # Faudra changer les noms en id si ça dépasse et un jour peut être truc d'affichage vraiment clean avec décalage sur deux écrans si ça dépasse.
-        
+        labels = self.__ax.get_xticklabels()
+        renderer = self.canvas.get_renderer()
+        flag_overlap = False
+        if len(labels) > 1 :
+            for i in range(len(labels)-1) :
+                box1 = labels[i].get_window_extent(renderer=renderer)
+                box2 = labels[i+1].get_window_extent(renderer=renderer)
+                if box1.overlaps(box2) :
+                    flag_overlap = True
+                    break
+            if flag_overlap :
+                labels = [ids[name] for name in names]
+                self.__ax.set_xticklabels(labels)
         # self.fig.tight_layout()
-        self.__render()
+        if render :
+            self.__render()
 
     def add_bar_chart(self, r, rtot, data, data_err, c_or_e, names, color, edgecolor) : 
         width = 0.4
@@ -119,19 +141,20 @@ def pretty_number(num, incert, unit, nb_sig = 3, nb_decimals = 1) :
     
 def fill_bars(prg, data, stud_time) : 
     bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': [], 'co2_eq_ce' : []}
+    names = []
     for key in data : 
         if key != 'total' :
+            names.append(key)
             for field in bars :
                 bars[field].append(data[key].get(field, {'val' : 0, 'incert' : 0}))
     r = range(len(bars['co2_e'])) 
-    names = list(data.keys())
-    names.remove('total')
     print('r', r)
     print('prg', prg)
+    print("NAMES ET BARS")
+    print(names)
     bars_c = {'co2' : [x['val']*prg['co2'] for x in bars['co2_c']], 
                 'ch4' : [x['val']*prg['ch4'] for x in bars['ch4_c']], 
                 'n2o' : [x['val']*prg['n2o'] for x in bars['n2o_c']]}
-    
     bars_e = {'co2' : [x['val']*prg['co2'] for x in bars['co2_e']], 
                 'ch4' : [x['val']*prg['ch4'] for x in bars['ch4_e']], 
                 'n2o' : [x['val']*prg['n2o'] for x in bars['n2o_e']]}
@@ -152,6 +175,7 @@ def sort_bars(bars1, names1, err1, bars2 = None, names2 = None, err2 = None) :
     # Sinon bars1 est déjà trié et on doit insérer correctement
     fields = ['co2', 'ch4', 'n2o']
     print("On entre dans la fonction")
+    print('avant actions', bars1, names1, err1)
     if not bars2 : 
         print('premier cas')
         if isinstance(bars1, dict) :
