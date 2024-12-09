@@ -40,6 +40,7 @@ elif os.name != 'nt' and subprocess.call("which pg_dump") == 1 : # pgdump not in
     os.environ['PATH'] = os.environ['PATH'] + f":{os.path.join(os.path.dirname(__file__), 'bin')}"
 
 
+
 def classFactory(iface):  # pylint: disable=invalid-name
     """Load Cycle class from file Cycle.
 
