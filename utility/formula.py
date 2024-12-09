@@ -1,5 +1,8 @@
 import re 
-from cycle.utility.string import isfloat
+if __name__ == '__main__' :
+    from cycle.utility.string import isfloat
+else :
+    from .string import isfloat
 
 operators = ['+', '-', '*', '/', '^', '(', ')', '>', '<']
 
