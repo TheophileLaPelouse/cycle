@@ -16,7 +16,10 @@
 """
 import os 
 import subprocess
-
+import sys 
+ 
+# Dans le doute on ajoute ce dossier au pythonpath
+sys.path.append(os.path.dirname(__file__))
 
 # ENVIRONMENTS
 if 'PGSERVICEFILE' not in os.environ: # .pg_service.conf not set in environment
