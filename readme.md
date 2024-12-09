@@ -6,13 +6,13 @@ Bienvenue sur le github de **LIEGES**, logiciel de quantification des gaz à eff
 
 ## Exigences
 
-En tant qu'extension de QGIS, pour utiliser LIEGES vous devez disposer de QGIS, logiciel de SIG open source que vous pouvez télécharger ici https://qgis.org/. De plus les projets LIEGES sont stocké sur une base de données PostgreSQL. Pour une installation facile, vous pouvez passer par l'installeur d'Hydra et Expresseau depuis https://hydra-software.net/telechargement-2/. Pour fonctionner, vous faire fonctionner LIEGES, il vous suffit de télécharger la version gratuite de ces logiciels.
+En tant qu'extension de QGIS, pour utiliser LIEGES vous devez disposer de QGIS, logiciel de SIG open source que vous pouvez télécharger ici https://qgis.org/. De plus les projets LIEGES sont stocké sur une base de données PostgreSQL. Pour une installation facile, vous pouvez passer par l'installeur d'Hydra et Expresseau depuis https://hydra-software.net/telechargement-2/. Pour faire fonctionner LIEGES, il vous suffit de télécharger la version gratuite de ces logiciels.
 
-Si vous ne voulez absolument pas télécharger Hydra et Expresseau, vous devrez installer [PostgreSQL](https://www.postgresql.org/). Vous devrez ensuite créer un utilisateur nommé "hydra" avec le mot de passe "hydra" qui dispose des permissions de créer ses propres base de données, il faudra aussi que la base de donnée nommé `postgres` existe. Enfin, il vous faudra faire tourner `postgres` sur le port 5454.
+Si vous ne voulez pas télécharger hydra et Expresseau, vous devrez installer [PostgreSQL](https://www.postgresql.org/). Vous devrez ensuite créer un utilisateur nommé "hydra" avec le mot de passe "hydra" qui dispose des permissions de créer ses propres base de données, il faudra aussi que la base de donnée nommé `postgres` existe. Enfin, il vous faudra faire tourner `postgres` sur le port 5454.
 
 ## Installation de l'extension LIEGES dans QGIS
 
-Pour télécharger cette extension, vous pouvez télécharger ce projet git au format zip, rdv alors dans QGIS, dans le menu extensions/Installer et gérer les extensions. Cliquez sur installer depuis un zip et sélectionner votre archive zip.
+Pour télécharger cette extension, vous pouvez télécharger ce projet git au format zip, rendez-vous ensuite dans QGIS, dans le menu extensions/Installer et gérer les extensions. Cliquez sur installer depuis un zip et sélectionner votre archive zip.
 
 Vous pourrez bientôt retrouver directement cette extension dans le catalogue de QGIS.
 
