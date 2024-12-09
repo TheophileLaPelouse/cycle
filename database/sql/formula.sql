@@ -1172,8 +1172,8 @@ begin
         'co2_eq_c', to_jsonb(row(0, 0)::___.res),
         'co2_eq_e', to_jsonb(row(0, 0)::___.res),
         'co2_eq_ce', to_jsonb(row(0, 0)::___.res)
-    )
-);
+        )
+        );
     end if ;
     foreach id_loop in array blocs loop
         select into item name, b_type from ___.bloc where id = id_loop;
@@ -1315,12 +1315,22 @@ begin
     end if;
     -- -- --raise  notice 'ss_blocs_array = %', ss_blocs_array;
     -- Loop through each bloc id
-    if array_length(ss_blocs_array, 1) = 0 or ss_blocs_array is null then
-        ss_blocs_array := array[id_bloc];
-    end if;
-    if array[1] is null then
-        return '{"total": {"ch4_c": 0, "ch4_e": 0, "co2_c": 0, "co2_e": 0, "n2o_c": 0, "n2o_e": 0, "co2_eq_c": 0, "co2_eq_e": 0}';
-    end if;
+
+    if array_length(ss_blocs_array, 1) = 0 or ss_blocs_array is null then 
+        return jsonb_build_object(
+        'total', jsonb_build_object(
+        'ch4_c', to_jsonb(row(0, 0)::___.res),
+        'ch4_e', to_jsonb(row(0, 0)::___.res),
+        'co2_c', to_jsonb(row(0, 0)::___.res),
+        'co2_e', to_jsonb(row(0, 0)::___.res),
+        'n2o_c', to_jsonb(row(0, 0)::___.res),
+        'n2o_e', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_c', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_e', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_ce', to_jsonb(row(0, 0)::___.res)
+        )
+        );
+    end if ;
 
     foreach id_loop in array ss_blocs_array loop
         -- Get the bloc name
@@ -1344,23 +1354,29 @@ begin
 
             -- --raise  notice 'js1 = %', js1;
             with results as (
-                select name, co2_eq 
+                select name, co2_eq, co2_eq_an 
                 from ___.results where id = id_loop and name = any(names) 
             ), 
             exploit as (select distinct name, co2_eq from results where name like '%_e'),
-            constr as (select distinct name, co2_eq from results where name like '%_c')
+            constr as (select distinct name, co2_eq from results where name like '%_c'), 
+            exploit_and_constr as (select distinct name, co2_eq_an from results)
             select into js2 jsonb_build_object(
                 'co2_eq_e', formula.sum_incert(coalesce((exploit.co2_eq).val, 0), coalesce((exploit.co2_eq).incert, 0)),
-                'co2_eq_c', formula.sum_incert(coalesce((constr.co2_eq).val, 0), coalesce((constr.co2_eq).incert, 0))
+                'co2_eq_c', formula.sum_incert(coalesce((constr.co2_eq).val, 0), coalesce((constr.co2_eq).incert, 0)), 
+                'co2_eq_ce', formula.sum_incert(coalesce((exploit_and_constr.co2_eq_an).val, 0), coalesce((exploit_and_constr.co2_eq_an).incert, 0))
             ) 
             from exploit
-            full join constr on exploit.name = constr.name;
+            full join constr on exploit.name = constr.name
+            full join exploit_and_constr on exploit.name = exploit_and_constr.name;
 
             if not js2 ? 'co2_eq_e' then
                 js2 := jsonb_set(js2, array['co2_eq_e'], to_jsonb(row(0, 0)::___.res), true);
             end if;
             if not js2 ? 'co2_eq_c' then
                 js2 := jsonb_set(js2, array['co2_eq_c'], to_jsonb(row(0, 0)::___.res), true);
+            end if;
+            if not js2 ? 'co2_eq_ce' then
+                js2 := jsonb_set(js2, array['co2_eq_ce'], to_jsonb(row(0, 0)::___.res), true);
             end if;
 
             --raise  notice 'js2 = %', js2;
@@ -1391,34 +1407,30 @@ begin
     --raise  notice 'js1 = %', js1;
     
     with results as (
-        select name, co2_eq 
+        select name, co2_eq, co2_eq_an 
         from ___.results where id = any(ss_blocs_array) and name = any(names) 
     ), 
     exploit as (select distinct name, co2_eq from results where name like '%_e'),
-    constr as (select distinct name, co2_eq from results where name like '%_c')
+    constr as (select distinct name, co2_eq from results where name like '%_c'), 
+    exploit_and_constr as (select distinct name, co2_eq_an from results)
     select into js2 jsonb_build_object(
         'co2_eq_e', formula.sum_incert(coalesce((exploit.co2_eq).val, 0), coalesce((exploit.co2_eq).incert, 0)),
-        'co2_eq_c', formula.sum_incert(coalesce((constr.co2_eq).val, 0), coalesce((constr.co2_eq).incert, 0))
+        'co2_eq_c', formula.sum_incert(coalesce((constr.co2_eq).val, 0), coalesce((constr.co2_eq).incert, 0)), 
+        'co2_eq_ce', formula.sum_incert(coalesce((exploit_and_constr.co2_eq_an).val, 0), coalesce((exploit_and_constr.co2_eq_an).incert, 0))
     ) 
     from exploit
-    full join constr on exploit.name = constr.name;
+    full join constr on exploit.name = constr.name
+    full join exploit_and_constr on exploit.name = exploit_and_constr.name;
 
-    --raise  notice 'js2 = %', js2;
-    --raise  notice '%', (js2 ? 'co2_eq_e');
     if not js2 ? 'co2_eq_e' then
         js2 := jsonb_set(js2, array['co2_eq_e'], to_jsonb(row(0, 0)::___.res), true);
     end if;
     if not js2 ? 'co2_eq_c' then
         js2 := jsonb_set(js2, array['co2_eq_c'], to_jsonb(row(0, 0)::___.res), true);
     end if;
-
-    if js1 is null then 
-        js1 := '{}';
+    if not js2 ? 'co2_eq_ce' then
+        js2 := jsonb_set(js2, array['co2_eq_ce'], to_jsonb(row(0, 0)::___.res), true);
     end if;
-    if js2 is null then 
-        js2 := '{}';
-    end if;
-
     --raise  notice 'js2 = %', js2;
     --raise  notice 'js1 = %', js1;
     res := jsonb_set(res, array['total'], js1||js2, true);

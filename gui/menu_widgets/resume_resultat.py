@@ -203,6 +203,7 @@ class RecapResults(QDockWidget) :
         bloc_id = {key : self.__results[key]['id'] for key in self.__results}
 
         r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = fill_bars(self.prg, data, stud_time)
+        print('bars_ce', bars_ce)
         bars_e, names_e, bars_e_err = sort_bars(bars_e, names, bars_e_err)
         self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names_e, bloc_id, color, edgecolor, tr(""), tr('kg de GES émis'), tr('Blocs du modèle %s' % self.__current_model))
         bars_c, names_c, bars_c_err = sort_bars(bars_c, names, bars_c_err)

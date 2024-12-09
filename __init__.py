@@ -18,7 +18,7 @@ import os
 import subprocess
 import sys 
  
-# Dans le doute on ajoute ce dossier au pythonpath
+# Dans le doute on ajoute ce dossier au pythonpath à terme on enlèvera cette ligne.
 sys.path.append(os.path.dirname(__file__))
 
 # ENVIRONMENTS

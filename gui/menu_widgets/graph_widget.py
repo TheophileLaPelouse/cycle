@@ -60,11 +60,18 @@ class GraphWidget(QWidget):
                   '#f781bf', '#a65628', '#984ea3',
                   '#999999', '#e41a1c', '#dede00']
         self.__ax.set_prop_cycle(cycler('color', CB_color_cycle))
-        self.__ax.pie(data, labels=labels, autopct='%1.1f%%')
+        self.__ax.pie(data, labels=labels, labeldistance=0.5)
         self.fig.tight_layout(rect= [-0.05, -0.05, 1.05, 1.05])
-        # self.__ax.legend(labels, loc='upper right', bbox_to_anchor=(1, 1))
-        # self.__ax.legend(labels, loc='upper right')
-        # self.__ax.set_title(title)
+        wedges, texts = self.__ax.pie(data, labels=labels)
+        self.fig.tight_layout(rect=[-0.05, -0.05, 1.05, 1.05])
+        renderer = self.canvas.get_renderer()
+        bboxes = [t.get_window_extent(renderer=renderer) for t in texts]
+        for i in range(len(bboxes)):
+            for j in range(i + 1, len(bboxes)):
+                if bboxes[i].overlaps(bboxes[j]):
+                    print('overlapping', texts[j].get_text())
+                    texts[j].set_visible(False)
+        
         self.__render()
         
     def bar_chart(self, r, data, data_err, c_or_e, names, ids, color, edgecolor, title, ylabel, xlabel, render = True) :
