@@ -1,8 +1,5 @@
 import re 
-if __name__ == '__main__' :
-    from cycle.utility.string import isfloat
-else :
-    from .string import isfloat
+
 
 operators = ['+', '-', '*', '/', '^', '(', ')', '>', '<']
 
@@ -10,6 +7,14 @@ operators = ['+', '-', '*', '/', '^', '(', ')', '>', '<']
 
 class ErrorNotEnoughData(Exception) : 
     pass
+
+def isfloat(value):
+    '''check if value can be converted to float'''
+    try:
+        float(value)
+        return True
+    except:
+        return False
 
 def read_formula(formula, dico) : 
     """

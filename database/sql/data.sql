@@ -327,6 +327,13 @@ create table ___.pointest_bloc(
 -- Config 
 ------------------------------------------------------------------------------------------------
 
+create table ___.default_values_config(
+    name varchar primary key,
+    real_val real, 
+    bool_val boolean,
+    int_val integer
+) ; 
+
 create table ___.configuration(
     name varchar primary key default ___.unique_name('configuration', abbreviation=>'CFG'),
     creation_date timestamp not null default current_date,

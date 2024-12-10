@@ -18,6 +18,7 @@ from ...qgis_utilities import QGisProjectManager
 from ..forms.create_bloc_form import CreateBlocWidget
 from ..forms.add_formula import AddFormula
 from ..forms.edit_input import EditInputOutput
+from ..forms.default_values import DefaultValues
 from ...database import reset_project
 from ...database.create_bloc import from_custom_to_main
 from ...compute.bloc import get_sur_blocs, get_links, Bloc
@@ -68,6 +69,7 @@ class CycleToolbar(QToolBar):
         # self.__run_button = self.__add_action_button(tr('Run computation'), 'run.svg', self.__run)
         self.__add_formula_button = self.__add_action_button(tr('Ajouter une formule'), 'add_formula.svg', self.__add_formula)
         self.__add_input_button = self.__add_action_button(tr('Edition bloc'), 'add_input.svg', self.__add_input)
+        self.__change_default_values_button = self.__add_action_button(tr('Changer les valeurs par défaut'), 'add_input.svg', self.__change_default_values)
         self.addSeparator()
         
         self.spacer = QLabel('')
@@ -286,3 +288,10 @@ class CycleToolbar(QToolBar):
                 r.setReferenceScale(float(self.combo_scale.currentText().split(':')[1]))
                 layer.setRenderer(r)
                 layer.triggerRepaint()
+                
+    def __change_default_values(self) : 
+        if is_comitting() : 
+            # warnings.warn("You must save your edits before modifying default values")
+            warnings.warn("Vous devez sauvegarder vos modifications avant de modifier les valeurs par défaut")
+            return
+        DefaultValues(Project(QGisProjectManager.project_name(), self.__log_manager))

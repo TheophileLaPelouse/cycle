@@ -44,8 +44,9 @@ class Cycle(QObject):
         self.__iface.projectRead.connect(self.__project_loaded)
         self.__iface.newProjectCreated.connect(self.__project_loaded)
         
-        self.__iface.projectRead.connect(lambda : self.__update_docks(True))
-        self.__iface.newProjectCreated.connect(lambda : self.__update_docks(True))
+        self.update_dock_forced = lambda : self.__update_docks(True)
+        self.__iface.projectRead.connect(self.update_dock_forced)
+        self.__iface.newProjectCreated.connect(self.update_dock_forced)
         
         # self.__iface.currentLayerChanged.connect(self.print_current_layer)
     
@@ -108,6 +109,11 @@ class Cycle(QObject):
 
         self.__iface.newProjectCreated.disconnect(self.__project_loaded)
         self.__iface.projectRead.disconnect(self.__project_loaded)
+        self.__iface.newProjectCreated.disconnect(self.update_dock_forced)
+        self.__iface.projectRead.disconnect(self.update_dock_forced)
+        
+        self.__dock_results.setParent(None)
+        self.__dock_results = None
 
 
     def print_current_layer(self, layer):
@@ -149,7 +155,6 @@ class Cycle(QObject):
     def visu_results_dock(self):
         from .gui.menu_widgets.resume_resultat import RecapResults
         project = Project(QGisProjectManager.project_name(), self.__log_manager)
-        print(dir(self.__dock_results))
         if self.__dock_results is None : 
             flag = True 
         elif self.__dock_results.project.name != project.name : 

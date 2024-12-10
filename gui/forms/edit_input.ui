@@ -26,11 +26,11 @@
     <item row="1" column="0" colspan="3">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="input_page">
        <attribute name="title">
-        <string>Input</string>
+        <string>Entrées</string>
        </attribute>
        <widget class="QLabel" name="label_6">
         <property name="geometry">
@@ -86,7 +86,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_19">
             <property name="text">
-             <string>Possibles values</string>
+             <string>Valeurs possibles</string>
             </property>
            </widget>
           </item>
@@ -106,7 +106,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_18">
             <property name="text">
-             <string>Default value</string>
+             <string>Valeur par défaut</string>
             </property>
            </widget>
           </item>
@@ -168,7 +168,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Name</string>
+             <string>Nom</string>
             </property>
            </widget>
           </item>
@@ -192,7 +192,7 @@
           <item row="4" column="2">
            <widget class="QPushButton" name="add_input">
             <property name="text">
-             <string>Add field</string>
+             <string>Ajouter élément</string>
             </property>
            </widget>
           </item>
@@ -232,7 +232,7 @@
          </property>
          <column>
           <property name="text">
-           <string>Name</string>
+           <string>Nom</string>
           </property>
          </column>
          <column>
@@ -242,12 +242,12 @@
          </column>
          <column>
           <property name="text">
-           <string>Default value</string>
+           <string>Valeur par défaut</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Possible values</string>
+           <string>Valeurs possibles</string>
           </property>
          </column>
         </widget>
@@ -270,7 +270,7 @@
          <rect>
           <x>20</x>
           <y>280</y>
-          <width>131</width>
+          <width>221</width>
           <height>16</height>
          </rect>
         </property>
@@ -281,7 +281,7 @@
          </font>
         </property>
         <property name="text">
-         <string>List of input fields</string>
+         <string>Liste des données d'entrées</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_15">
@@ -289,7 +289,7 @@
          <rect>
           <x>20</x>
           <y>20</y>
-          <width>121</width>
+          <width>161</width>
           <height>16</height>
          </rect>
         </property>
@@ -300,13 +300,13 @@
          </font>
         </property>
         <property name="text">
-         <string>New input fields</string>
+         <string>Nouvelle données d'entrée</string>
         </property>
        </widget>
       </widget>
       <widget class="QWidget" name="output_page">
        <attribute name="title">
-        <string>Output</string>
+        <string>Sorties</string>
        </attribute>
        <widget class="QGroupBox" name="groupBox_4">
         <property name="geometry">
@@ -331,7 +331,7 @@
          </property>
          <column>
           <property name="text">
-           <string>Name</string>
+           <string>Nom</string>
           </property>
          </column>
          <column>
@@ -341,12 +341,12 @@
          </column>
          <column>
           <property name="text">
-           <string>Default Value</string>
+           <string>Valeur par défaut</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Possible values</string>
+           <string>Valeurs possibles</string>
           </property>
          </column>
         </widget>
@@ -360,7 +360,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>Remove field</string>
+          <string>Supprimer la ligne</string>
          </property>
         </widget>
        </widget>
@@ -369,12 +369,12 @@
          <rect>
           <x>20</x>
           <y>20</y>
-          <width>121</width>
+          <width>171</width>
           <height>16</height>
          </rect>
         </property>
         <property name="text">
-         <string>New output field</string>
+         <string>Nouvelle données de sorties</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_10">
@@ -418,7 +418,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_21">
             <property name="text">
-             <string>Possibles values</string>
+             <string>Valeurs possibles</string>
             </property>
            </widget>
           </item>
@@ -438,7 +438,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_22">
             <property name="text">
-             <string>Default value</string>
+             <string>Valeur par défaut</string>
             </property>
            </widget>
           </item>
@@ -503,7 +503,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
-             <string>Name</string>
+             <string>Nom</string>
             </property>
            </widget>
           </item>
@@ -527,7 +527,7 @@
           <item row="4" column="2">
            <widget class="QPushButton" name="add_output">
             <property name="text">
-             <string>Add field</string>
+             <string>Ajouter élément</string>
             </property>
            </widget>
           </item>

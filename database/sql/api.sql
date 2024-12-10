@@ -908,6 +908,97 @@ $$
 $$
 ;
 
+select template.basic_view('default_values_config') ; 
+
+create or replace function api.change_default() returns jsonb
+language plpgsql as
+$$
+declare 
+    query text;
+    change jsonb = '{}'::jsonb;
+    col varchar ;
+    columns varchar[] ;
+    b_typ ___.bloc_type ;
+    item record ;
+    type_ varchar ; 
+    def record ; 
+    def_str varchar ;
+begin
+    for item in (select column_name, column_default, table_name, data_type from information_schema.columns 
+    where table_schema='api' and table_name like '%_bloc' and data_type != 'USER-DEFINED')
+    loop 
+        if exists(select 1 from api.default_values_config where name = item.column_name) then
+            if item.data_type = 'integer' then 
+                select into def int_val as val from api.default_values_config where name = item.column_name;
+                def_str := '('||def.val||')::integer';
+            elseif item.data_type = 'real' then 
+                select into def real_val as val from api.default_values_config where name = item.column_name;
+                def_str := '('||def.val||')::real';
+            elseif item.data_type = 'boolean' then 
+                select into def bool_val as val from api.default_values_config where name = item.column_name;
+                def_str := '('||def.val||')::boolean';
+            else 
+                def := null ;
+                def_str := null ;
+            end if;
+            if not def is null then
+                query := 'alter view api.'||item.table_name||' alter column '||item.column_name||' set default '||def_str;
+                execute query;
+                change = jsonb_set(change, array[item.table_name]::text[], jsonb_build_object(item.column_name, def), true);
+            end if;
+        end if;
+    end loop;
+    return change;
+end;
+$$;             
+
+create or replace function api.get_all_value_columns() returns jsonb
+language plpgsql as
+$$
+declare 
+    columns jsonb := '{}'::jsonb;  -- Initialize an empty jsonb object
+    b_typ ___.bloc_type;
+    input text;
+    output text;
+    column_array varchar[];
+    cols_with_def jsonb;
+    to_return jsonb;
+    type_ text ;
+begin 
+    for b_typ in select b_type from ___.input_output
+    loop
+        -- Add inputs to the jsonb object
+        for input in select unnest(inputs)::text from ___.input_output where b_type = b_typ
+        loop
+            if not (columns ? input) then
+                type_ := (select data_type from information_schema.columns where table_schema = 'api' and column_name = input and table_name = b_typ||'_bloc');
+                raise notice 'type_ = %, col %', type_, input;
+                columns := jsonb_set(columns, ('{' || input || '}')::text[], to_jsonb(type_));
+            end if;
+        end loop;
+        
+        -- Add outputs to the jsonb object
+        for output in select unnest(outputs)::text from ___.input_output where b_type = b_typ
+        loop
+            if not (columns ? output) then
+                type_ := (select data_type from information_schema.columns where table_schema = 'api' and column_name = input and table_name = b_typ||'_bloc');
+                raise notice 'type_ = %, col %', type_, output;
+                columns := jsonb_set(columns, ('{' || output || '}')::text[], to_jsonb(type_));
+            end if;
+        end loop;
+    end loop;
+    
+
+
+    -- Add columns with default values
+    select jsonb_object_agg(column_name, column_default) from information_schema.columns c
+    where table_schema = 'api' and column_default is not null and data_type != 'USER-DEFINED' and columns ? column_name
+    into cols_with_def;
+
+    return jsonb_build_object('columns', column_array, 'columns_with_default', cols_with_def);
+end;
+$$;
+
 ------------------------------------------------------------------------------------------------
 -- Add future bloc 
 ------------------------------------------------------------------------------------------------
