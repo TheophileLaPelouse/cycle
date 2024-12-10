@@ -142,20 +142,20 @@ class Cycle(QObject):
         if self.__dock_results is not None:
             self.__dock_results.setParent(None)
             self.__dock_results = None
-        self.__iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.visu_results_dock())
-        self.__iface.mainWindow().tabifyDockWidget(self.__iface.mainWindow().findChildren(QDockWidget, "Browser")[0], self.visu_results_dock())
+        if QGisProjectManager.is_cycle_project() : 
+            self.__iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.visu_results_dock())
+            self.__iface.mainWindow().tabifyDockWidget(self.__iface.mainWindow().findChildren(QDockWidget, "Browser")[0], self.visu_results_dock())
         
     def visu_results_dock(self):
         from .gui.menu_widgets.resume_resultat import RecapResults
-        if QGisProjectManager.is_cycle_project() : 
-            project = Project(QGisProjectManager.project_name(), self.__log_manager)
-            print(dir(self.__dock_results))
-            if self.__dock_results is None : 
-                flag = True 
-            elif self.__dock_results.project.name != project.name : 
-                flag = True
-            else : flag = False
-        else : flag = False 
+        project = Project(QGisProjectManager.project_name(), self.__log_manager)
+        print(dir(self.__dock_results))
+        if self.__dock_results is None : 
+            flag = True 
+        elif self.__dock_results.project.name != project.name : 
+            flag = True
+        else : flag = False
+        print("flag", flag)
         if flag: 
             model = QgsProject.instance().customVariables().get('current_model')
             print("bonjour", model)

@@ -1,6 +1,6 @@
 import os
 from qgis.PyQt import uic
-from qgis.PyQt.QtGui import QBrush, QColor
+from qgis.PyQt.QtGui import QBrush, QColor, QIcon
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDockWidget, QTableWidgetItem, QSplitter
 from ...qgis_utilities import QGisProjectManager, tr 
@@ -15,10 +15,11 @@ class RecapResults(QDockWidget) :
         QDockWidget.__init__(self, tr("Results"))
         uic.loadUi(os.path.join(os.path.dirname(__file__), 'resume_resultat.ui'), self)
         
-        # self.scroll = QScrollArea()
-        # self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        # self.scroll.setWidgetResizable(True)
-        # self.scroll.setWidget(self.dockWidgetContents)
+        icon = QIcon(os.path.join(os.path.dirname(__file__), '..', '..', 'ressources', 'svg', 'warning.svg'))
+        self.warning_btn.setIcon(icon)
+        self.warning_btn.setEnabled(False)
+        
+        self.to_make_flashy = {}
         
         for k in range(10) : 
             button = getattr(self, f'pushButton_{k+1}')
@@ -74,6 +75,8 @@ class RecapResults(QDockWidget) :
         print('model', model_name)
         results = self.project.fetchall(f"select name, res, co2_eq_e, co2_eq_c, id from api.results where model = '{model_name}'")
         self.__results = {}
+        f_bloc_c = {}
+        f_bloc_e = {}
         for result in results : 
             formula_c = set()
             formula_e = set()
@@ -86,10 +89,19 @@ class RecapResults(QDockWidget) :
                     detail.add(str(formula['detail']))                    
                 if formula['unknown'] : 
                     unknowns = unknowns.union(set(formula['unknown']))
-                if formula['name'].endswith('_e') : 
-                    formula_e.add(formula['name'])
+                if formula['name'].endswith('_e'): 
+                    formula_e.add(formula['formula'])
                 elif formula['name'].endswith('_c') : 
-                    formula_c.add(formula['name'])
+                    formula_c.add(formula['formula'])
+                    
+            if None in formula_e :
+                formula_e.remove(None)
+            if None in formula_c :
+                formula_c.remove(None)
+            no_formula_e = len(formula_e) == 0 
+            no_formula_c = len(formula_c) == 0
+            f_bloc_e[result[0]] = no_formula_e
+            f_bloc_c[result[0]] = no_formula_c
             unknowns2 = set()
             for val in unknowns :
                 if val.startswith('q_') :
@@ -117,19 +129,12 @@ class RecapResults(QDockWidget) :
                 incert = 0
             incert = float(incert)
             self.__results[result[0]]['co2_eq_c'] = pretty_number(value, value*incert, '')
+            
             # self.__results[result[0]]['data'] = result[1]['data']
         # Cette variable sera réutilisée pour les graphes plus précise dans l'affichage des résultats plus complet
         self.__current_model = model_name
         self.__recap_table = {}
-        to_make_flashy = set()
-        to_make_flashy_c = set()
-        to_make_flashy_e = set()
-        if None in formula_e :
-            formula_e.remove(None)
-        if None in formula_c :
-            formula_c.remove(None)
-        no_formula_e = len(formula_e) == 0 
-        no_formula_c = len(formula_c) == 0
+        
         for key in self.__results : 
             self.__recap_table[key] = [key, 
                                        self.__results[key]['id'],
@@ -137,27 +142,16 @@ class RecapResults(QDockWidget) :
                                        self.__results[key]['unknown'], 
                                        self.__results[key]['detail']]
             if self.__results[key]['co2_eq_e']=='No value' and self.__results[key]['co2_eq_c']=='No value' :
-                to_make_flashy.add(key)
-            elif self.__results[key]['co2_eq_e']=='No value' and not no_formula_e :
-                to_make_flashy_e.add(key)
-            elif self.__results[key]['co2_eq_c']=='No value' and not no_formula_c :
-                to_make_flashy_c.add(key)
-        self.table_recap.setRowCount(len(self.__recap_table))
-        idx = 0
-        print("BONJOUR")
-        for key, values in self.__recap_table.items() : 
-            for k in range(5) : 
-                self.table_recap.setItem(idx, k, QTableWidgetItem(str(values[k])))
-                if idx % 2 == 0 :
-                    self.table_recap.item(idx, k).setBackground(Qt.lightGray)
-                if key in to_make_flashy :
-                    print('flashy', key)
-                    self.table_recap.item(idx, k).setBackground(QBrush(QColor(255, 165, 0)))
-            if key in to_make_flashy_e :
-                self.table_recap.item(idx, 2).setBackground(QBrush(QColor(255, 165, 0)))
-            if key in to_make_flashy_c :
-                self.table_recap.item(idx, 3).setBackground(QBrush(QColor(255, 165, 0)))
-            idx += 1
+                self.to_make_flashy[key] = 'ce'
+            elif self.__results[key]['co2_eq_e']=='No value' and not f_bloc_e[key] :
+                self.to_make_flashy[key] = 'e'  
+            elif self.__results[key]['co2_eq_c']=='No value' and not f_bloc_c[key] :
+                self.to_make_flashy[key] = 'c'
+            else :
+                if self.to_make_flashy.get(key) : 
+                    del self.to_make_flashy[key]
+        
+        self.fill_table()
             
         self.table_recap.resizeColumnsToContents()
         self.table_recap.setShowGrid(True)
@@ -165,9 +159,51 @@ class RecapResults(QDockWidget) :
         
         self.show_plot()
         
+        if self.to_make_flashy : 
+            self.warning_btn.setEnabled(True)
+            self.warning_btn.clicked.connect(self.filter_table)
+            
+    def fill_table(self) :
+        self.table_recap.setRowCount(len(self.__recap_table))
+        idx = 0
+        print("BONJOUR")
+        for key, values in self.__recap_table.items() : 
+            for k in range(6) : 
+                self.table_recap.setItem(idx, k, QTableWidgetItem(str(values[k])))
+                if idx % 2 == 0 :
+                    self.table_recap.item(idx, k).setBackground(Qt.lightGray)
+                if self.to_make_flashy.get(key) == 'ce' :
+                    print('flashy', key)
+                    self.table_recap.item(idx, k).setBackground(QBrush(QColor(255, 165, 0)))
+            if self.to_make_flashy.get(key) == 'e' :
+                self.table_recap.item(idx, 2).setBackground(QBrush(QColor(255, 165, 0)))
+            if self.to_make_flashy.get(key) == 'c' :
+                self.table_recap.item(idx, 3).setBackground(QBrush(QColor(255, 165, 0)))
+            idx += 1
+            
+    def filter_table(self) :
+        if self.table_recap.rowCount() != len(self.to_make_flashy) :
+            self.table_recap.setRowCount(len(self.to_make_flashy))
+            idx = 0
+            for key, values in self.__recap_table.items() : 
+                if self.to_make_flashy.get(key) : 
+                    for k in range(6) : 
+                        self.table_recap.setItem(idx, k, QTableWidgetItem(str(values[k])))
+                        if idx % 2 == 0 :
+                            self.table_recap.item(idx, k).setBackground(Qt.lightGray)
+                        if self.to_make_flashy.get(key) == 'ce' :
+                            self.table_recap.item(idx, k).setBackground(QBrush(QColor(255, 165, 0)))
+                    if self.to_make_flashy.get(key) == 'e' :
+                        self.table_recap.item(idx, 2).setBackground(QBrush(QColor(255, 165, 0)))
+                    if self.to_make_flashy.get(key) == 'c' :
+                        self.table_recap.item(idx, 3).setBackground(QBrush(QColor(255, 165, 0)))
+                    idx += 1
+        else : 
+            self.fill_table()
+        
     def show_plot(self, bloc_name = None, dpi = 75, edgecolor = 'grey', color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
-        print("show", self.__current_model)
-        print(f"select api.get_histo_data('{self.__current_model}')")
+        # print("show", self.__current_model)
+        # print(f"select api.get_histo_data('{self.__current_model}')")
         data = self.project.fetchone(f"select api.get_histo_data('{self.__current_model}')")
         data = data[0]
         print(data)

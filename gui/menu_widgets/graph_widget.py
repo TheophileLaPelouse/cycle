@@ -60,10 +60,8 @@ class GraphWidget(QWidget):
                   '#f781bf', '#a65628', '#984ea3',
                   '#999999', '#e41a1c', '#dede00']
         self.__ax.set_prop_cycle(cycler('color', CB_color_cycle))
-        self.__ax.pie(data, labels=labels, labeldistance=0.5)
+        wedges, texts = self.__ax.pie(data, labels=labels, labeldistance=0.7)
         self.fig.tight_layout(rect= [-0.05, -0.05, 1.05, 1.05])
-        wedges, texts = self.__ax.pie(data, labels=labels)
-        self.fig.tight_layout(rect=[-0.05, -0.05, 1.05, 1.05])
         renderer = self.canvas.get_renderer()
         bboxes = [t.get_window_extent(renderer=renderer) for t in texts]
         for i in range(len(bboxes)):
