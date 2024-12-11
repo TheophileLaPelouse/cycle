@@ -1,186 +1,186 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis labelsEnabled="0" hasScaleBasedVisibilityFlag="0" maxScale="0" simplifyLocal="1" simplifyDrawingTol="1" minScale="100000000" symbologyReferenceScale="-1" readOnly="0" simplifyDrawingHints="1" version="3.34.9-Prizren" simplifyMaxScale="1" styleCategories="AllStyleCategories" simplifyAlgorithm="0">
+<qgis minScale="100000000" styleCategories="AllStyleCategories" symbologyReferenceScale="-1" simplifyAlgorithm="0" simplifyMaxScale="1" maxScale="0" simplifyLocal="1" simplifyDrawingTol="1" readOnly="0" version="3.34.9-Prizren" hasScaleBasedVisibilityFlag="0" simplifyDrawingHints="1" labelsEnabled="0">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
     <Searchable>1</Searchable>
     <Private>0</Private>
   </flags>
-  <temporal startExpression="" durationField="" mode="0" durationUnit="min" endExpression="" enabled="0" endField="" fixedDuration="0" accumulate="0" limitMode="0" startField="">
+  <temporal enabled="0" mode="0" endExpression="" startField="" durationField="" durationUnit="min" endField="" accumulate="0" limitMode="0" fixedDuration="0" startExpression="">
     <fixedRange>
-      <start></start>
-      <end></end>
+      <start/>
+      <end/>
     </fixedRange>
   </temporal>
-  <elevation zscale="1" binding="Centroid" symbology="Line" extrusionEnabled="0" showMarkerSymbolInSurfacePlots="0" type="IndividualFeatures" respectLayerSymbol="1" zoffset="0" clamping="Terrain" extrusion="0">
+  <elevation type="IndividualFeatures" extrusion="0" respectLayerSymbol="1" clamping="Terrain" zscale="1" showMarkerSymbolInSurfacePlots="0" zoffset="0" extrusionEnabled="0" binding="Centroid" symbology="Line">
     <data-defined-properties>
       <Option type="Map">
-        <Option value="" name="name" type="QString"/>
+        <Option type="QString" value="" name="name"/>
         <Option name="properties"/>
-        <Option value="collection" name="type" type="QString"/>
+        <Option type="QString" value="collection" name="type"/>
       </Option>
     </data-defined-properties>
     <profileLineSymbol>
-      <symbol alpha="1" clip_to_extent="1" is_animated="0" frame_rate="10" name="" type="line" force_rhr="0">
+      <symbol is_animated="0" force_rhr="0" clip_to_extent="1" type="line" alpha="1" frame_rate="10" name="">
         <data_defined_properties>
           <Option type="Map">
-            <Option value="" name="name" type="QString"/>
+            <Option type="QString" value="" name="name"/>
             <Option name="properties"/>
-            <Option value="collection" name="type" type="QString"/>
+            <Option type="QString" value="collection" name="type"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" class="SimpleLine" locked="0" enabled="1" id="{563e684d-fb3e-470c-8946-eb098e5b1d20}">
+        <layer enabled="1" pass="0" id="{563e684d-fb3e-470c-8946-eb098e5b1d20}" class="SimpleLine" locked="0">
           <Option type="Map">
-            <Option value="0" name="align_dash_pattern" type="QString"/>
-            <Option value="square" name="capstyle" type="QString"/>
-            <Option value="5;2" name="customdash" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="customdash_map_unit_scale" type="QString"/>
-            <Option value="MM" name="customdash_unit" type="QString"/>
-            <Option value="0" name="dash_pattern_offset" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="dash_pattern_offset_map_unit_scale" type="QString"/>
-            <Option value="MM" name="dash_pattern_offset_unit" type="QString"/>
-            <Option value="0" name="draw_inside_polygon" type="QString"/>
-            <Option value="bevel" name="joinstyle" type="QString"/>
-            <Option value="125,139,143,255" name="line_color" type="QString"/>
-            <Option value="solid" name="line_style" type="QString"/>
-            <Option value="0.6" name="line_width" type="QString"/>
-            <Option value="MM" name="line_width_unit" type="QString"/>
-            <Option value="0" name="offset" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
-            <Option value="MM" name="offset_unit" type="QString"/>
-            <Option value="0" name="ring_filter" type="QString"/>
-            <Option value="0" name="trim_distance_end" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="trim_distance_end_map_unit_scale" type="QString"/>
-            <Option value="MM" name="trim_distance_end_unit" type="QString"/>
-            <Option value="0" name="trim_distance_start" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="trim_distance_start_map_unit_scale" type="QString"/>
-            <Option value="MM" name="trim_distance_start_unit" type="QString"/>
-            <Option value="0" name="tweak_dash_pattern_on_corners" type="QString"/>
-            <Option value="0" name="use_custom_dash" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="width_map_unit_scale" type="QString"/>
+            <Option type="QString" value="0" name="align_dash_pattern"/>
+            <Option type="QString" value="square" name="capstyle"/>
+            <Option type="QString" value="5;2" name="customdash"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="customdash_map_unit_scale"/>
+            <Option type="QString" value="MM" name="customdash_unit"/>
+            <Option type="QString" value="0" name="dash_pattern_offset"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="dash_pattern_offset_map_unit_scale"/>
+            <Option type="QString" value="MM" name="dash_pattern_offset_unit"/>
+            <Option type="QString" value="0" name="draw_inside_polygon"/>
+            <Option type="QString" value="bevel" name="joinstyle"/>
+            <Option type="QString" value="125,139,143,255" name="line_color"/>
+            <Option type="QString" value="solid" name="line_style"/>
+            <Option type="QString" value="0.6" name="line_width"/>
+            <Option type="QString" value="MM" name="line_width_unit"/>
+            <Option type="QString" value="0" name="offset"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
+            <Option type="QString" value="MM" name="offset_unit"/>
+            <Option type="QString" value="0" name="ring_filter"/>
+            <Option type="QString" value="0" name="trim_distance_end"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="trim_distance_end_map_unit_scale"/>
+            <Option type="QString" value="MM" name="trim_distance_end_unit"/>
+            <Option type="QString" value="0" name="trim_distance_start"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="trim_distance_start_map_unit_scale"/>
+            <Option type="QString" value="MM" name="trim_distance_start_unit"/>
+            <Option type="QString" value="0" name="tweak_dash_pattern_on_corners"/>
+            <Option type="QString" value="0" name="use_custom_dash"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="width_map_unit_scale"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
-              <Option value="" name="name" type="QString"/>
+              <Option type="QString" value="" name="name"/>
               <Option name="properties"/>
-              <Option value="collection" name="type" type="QString"/>
+              <Option type="QString" value="collection" name="type"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
     </profileLineSymbol>
     <profileFillSymbol>
-      <symbol alpha="1" clip_to_extent="1" is_animated="0" frame_rate="10" name="" type="fill" force_rhr="0">
+      <symbol is_animated="0" force_rhr="0" clip_to_extent="1" type="fill" alpha="1" frame_rate="10" name="">
         <data_defined_properties>
           <Option type="Map">
-            <Option value="" name="name" type="QString"/>
+            <Option type="QString" value="" name="name"/>
             <Option name="properties"/>
-            <Option value="collection" name="type" type="QString"/>
+            <Option type="QString" value="collection" name="type"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" class="SimpleFill" locked="0" enabled="1" id="{16e2f2c3-745e-431b-873c-5f36af17b553}">
+        <layer enabled="1" pass="0" id="{16e2f2c3-745e-431b-873c-5f36af17b553}" class="SimpleFill" locked="0">
           <Option type="Map">
-            <Option value="3x:0,0,0,0,0,0" name="border_width_map_unit_scale" type="QString"/>
-            <Option value="125,139,143,255" name="color" type="QString"/>
-            <Option value="bevel" name="joinstyle" type="QString"/>
-            <Option value="0,0" name="offset" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
-            <Option value="MM" name="offset_unit" type="QString"/>
-            <Option value="89,99,102,255" name="outline_color" type="QString"/>
-            <Option value="solid" name="outline_style" type="QString"/>
-            <Option value="0.2" name="outline_width" type="QString"/>
-            <Option value="MM" name="outline_width_unit" type="QString"/>
-            <Option value="solid" name="style" type="QString"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="border_width_map_unit_scale"/>
+            <Option type="QString" value="125,139,143,255" name="color"/>
+            <Option type="QString" value="bevel" name="joinstyle"/>
+            <Option type="QString" value="0,0" name="offset"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
+            <Option type="QString" value="MM" name="offset_unit"/>
+            <Option type="QString" value="89,99,102,255" name="outline_color"/>
+            <Option type="QString" value="solid" name="outline_style"/>
+            <Option type="QString" value="0.2" name="outline_width"/>
+            <Option type="QString" value="MM" name="outline_width_unit"/>
+            <Option type="QString" value="solid" name="style"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
-              <Option value="" name="name" type="QString"/>
+              <Option type="QString" value="" name="name"/>
               <Option name="properties"/>
-              <Option value="collection" name="type" type="QString"/>
+              <Option type="QString" value="collection" name="type"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
     </profileFillSymbol>
     <profileMarkerSymbol>
-      <symbol alpha="1" clip_to_extent="1" is_animated="0" frame_rate="10" name="" type="marker" force_rhr="0">
+      <symbol is_animated="0" force_rhr="0" clip_to_extent="1" type="marker" alpha="1" frame_rate="10" name="">
         <data_defined_properties>
           <Option type="Map">
-            <Option value="" name="name" type="QString"/>
+            <Option type="QString" value="" name="name"/>
             <Option name="properties"/>
-            <Option value="collection" name="type" type="QString"/>
+            <Option type="QString" value="collection" name="type"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" class="SimpleMarker" locked="0" enabled="1" id="{5563a8b4-4eb3-4e10-8341-703b00323914}">
+        <layer enabled="1" pass="0" id="{5563a8b4-4eb3-4e10-8341-703b00323914}" class="SimpleMarker" locked="0">
           <Option type="Map">
-            <Option value="0" name="angle" type="QString"/>
-            <Option value="square" name="cap_style" type="QString"/>
-            <Option value="125,139,143,255" name="color" type="QString"/>
-            <Option value="1" name="horizontal_anchor_point" type="QString"/>
-            <Option value="bevel" name="joinstyle" type="QString"/>
-            <Option value="diamond" name="name" type="QString"/>
-            <Option value="0,0" name="offset" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
-            <Option value="MM" name="offset_unit" type="QString"/>
-            <Option value="89,99,102,255" name="outline_color" type="QString"/>
-            <Option value="solid" name="outline_style" type="QString"/>
-            <Option value="0.2" name="outline_width" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>
-            <Option value="MM" name="outline_width_unit" type="QString"/>
-            <Option value="diameter" name="scale_method" type="QString"/>
-            <Option value="3" name="size" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>
-            <Option value="MM" name="size_unit" type="QString"/>
-            <Option value="1" name="vertical_anchor_point" type="QString"/>
+            <Option type="QString" value="0" name="angle"/>
+            <Option type="QString" value="square" name="cap_style"/>
+            <Option type="QString" value="125,139,143,255" name="color"/>
+            <Option type="QString" value="1" name="horizontal_anchor_point"/>
+            <Option type="QString" value="bevel" name="joinstyle"/>
+            <Option type="QString" value="diamond" name="name"/>
+            <Option type="QString" value="0,0" name="offset"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
+            <Option type="QString" value="MM" name="offset_unit"/>
+            <Option type="QString" value="89,99,102,255" name="outline_color"/>
+            <Option type="QString" value="solid" name="outline_style"/>
+            <Option type="QString" value="0.2" name="outline_width"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale"/>
+            <Option type="QString" value="MM" name="outline_width_unit"/>
+            <Option type="QString" value="diameter" name="scale_method"/>
+            <Option type="QString" value="3" name="size"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="size_map_unit_scale"/>
+            <Option type="QString" value="MM" name="size_unit"/>
+            <Option type="QString" value="1" name="vertical_anchor_point"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
-              <Option value="" name="name" type="QString"/>
+              <Option type="QString" value="" name="name"/>
               <Option name="properties"/>
-              <Option value="collection" name="type" type="QString"/>
+              <Option type="QString" value="collection" name="type"/>
             </Option>
           </data_defined_properties>
         </layer>
       </symbol>
     </profileMarkerSymbol>
   </elevation>
-  <renderer-v2 referencescale="-1" forceraster="0" type="singleSymbol" enableorderby="0" symbollevels="0">
+  <renderer-v2 symbollevels="0" forceraster="0" type="singleSymbol" referencescale="-1" enableorderby="0">
     <symbols>
-      <symbol alpha="1" clip_to_extent="1" is_animated="0" frame_rate="10" name="0" type="marker" force_rhr="0">
+      <symbol is_animated="0" force_rhr="0" clip_to_extent="1" type="marker" alpha="1" frame_rate="10" name="0">
         <data_defined_properties>
           <Option type="Map">
-            <Option value="" name="name" type="QString"/>
+            <Option type="QString" value="" name="name"/>
             <Option name="properties"/>
-            <Option value="collection" name="type" type="QString"/>
+            <Option type="QString" value="collection" name="type"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" class="SimpleMarker" locked="0" enabled="1" id="{335d4265-a588-4389-bd1e-66d6274f0d9d}">
+        <layer enabled="1" pass="0" id="{335d4265-a588-4389-bd1e-66d6274f0d9d}" class="SimpleMarker" locked="0">
           <Option type="Map">
-            <Option value="0" name="angle" type="QString"/>
-            <Option value="square" name="cap_style" type="QString"/>
-            <Option value="145,82,45,255" name="color" type="QString"/>
-            <Option value="1" name="horizontal_anchor_point" type="QString"/>
-            <Option value="bevel" name="joinstyle" type="QString"/>
-            <Option value="circle" name="name" type="QString"/>
-            <Option value="0,0" name="offset" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
-            <Option value="MM" name="offset_unit" type="QString"/>
-            <Option value="35,35,35,255" name="outline_color" type="QString"/>
-            <Option value="solid" name="outline_style" type="QString"/>
-            <Option value="0" name="outline_width" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>
-            <Option value="MM" name="outline_width_unit" type="QString"/>
-            <Option value="diameter" name="scale_method" type="QString"/>
-            <Option value="2" name="size" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>
-            <Option value="MM" name="size_unit" type="QString"/>
-            <Option value="1" name="vertical_anchor_point" type="QString"/>
+            <Option type="QString" value="0" name="angle"/>
+            <Option type="QString" value="square" name="cap_style"/>
+            <Option type="QString" value="145,82,45,255" name="color"/>
+            <Option type="QString" value="1" name="horizontal_anchor_point"/>
+            <Option type="QString" value="bevel" name="joinstyle"/>
+            <Option type="QString" value="circle" name="name"/>
+            <Option type="QString" value="0,0" name="offset"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
+            <Option type="QString" value="MM" name="offset_unit"/>
+            <Option type="QString" value="35,35,35,255" name="outline_color"/>
+            <Option type="QString" value="solid" name="outline_style"/>
+            <Option type="QString" value="0" name="outline_width"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale"/>
+            <Option type="QString" value="MM" name="outline_width_unit"/>
+            <Option type="QString" value="diameter" name="scale_method"/>
+            <Option type="QString" value="2" name="size"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="size_map_unit_scale"/>
+            <Option type="QString" value="MM" name="size_unit"/>
+            <Option type="QString" value="1" name="vertical_anchor_point"/>
           </Option>
           <data_defined_properties>
             <Option type="Map">
-              <Option value="" name="name" type="QString"/>
+              <Option type="QString" value="" name="name"/>
               <Option name="properties"/>
-              <Option value="collection" name="type" type="QString"/>
+              <Option type="QString" value="collection" name="type"/>
             </Option>
           </data_defined_properties>
         </layer>
@@ -198,107 +198,107 @@
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>1</layerOpacity>
-  <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+  <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
     <activeChecks type="StringList">
-      <Option value="" type="QString"/>
+      <Option type="QString" value=""/>
     </activeChecks>
     <checkConfiguration/>
   </geometryOptions>
-  <legend showLabelLegend="0" type="default-vector"/>
+  <legend type="default-vector" showLabelLegend="0"/>
   <referencedLayers/>
   <fieldConfiguration>
-    <field name="id" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="id">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="shape" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="shape">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="name" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="name">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="formula" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="formula">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="formula_name" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="formula_name">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="e" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="e">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="h" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="h">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="tauenterre" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="tauenterre">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="vu" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="vu">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="ss_blocs" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="ss_blocs">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="b_type" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="b_type">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="geom_ref" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="geom_ref">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="sur_bloc" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="sur_bloc">
       <editWidget type="">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="model" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="model">
       <editWidget type="">
         <config>
           <Option/>
@@ -307,20 +307,20 @@
     </field>
   </fieldConfiguration>
   <aliases>
-    <alias index="0" name="id" field="id"/>
-    <alias index="1" name="shape" field="shape"/>
-    <alias index="2" name="Nom" field="name"/>
-    <alias index="3" name="formula" field="formula"/>
-    <alias index="4" name="formula_name" field="formula_name"/>
-    <alias index="5" name="Epaisseur de voile (m)" field="e"/>
-    <alias index="6" name="Hauteur (m)" field="h"/>
-    <alias index="7" name="Taux d'enterrement" field="tauenterre"/>
-    <alias index="8" name="Volume utile (m3)" field="vu"/>
-    <alias index="9" name="ss_blocs" field="ss_blocs"/>
-    <alias index="10" name="b_type" field="b_type"/>
-    <alias index="11" name="geom_ref" field="geom_ref"/>
-    <alias index="12" name="sur_bloc" field="sur_bloc"/>
-    <alias index="13" name="Modèle" field="model"/>
+    <alias index="0" field="id" name="id"/>
+    <alias index="1" field="shape" name="shape"/>
+    <alias index="2" field="name" name="Nom"/>
+    <alias index="3" field="formula" name="formula"/>
+    <alias index="4" field="formula_name" name="formula_name"/>
+    <alias index="5" field="e" name="Epaisseur de voile (m)"/>
+    <alias index="6" field="h" name="Hauteur (m)"/>
+    <alias index="7" field="tauenterre" name="Taux d'enterrement"/>
+    <alias index="8" field="vu" name="Volume utile (m3)"/>
+    <alias index="9" field="ss_blocs" name="ss_blocs"/>
+    <alias index="10" field="b_type" name="b_type"/>
+    <alias index="11" field="geom_ref" name="geom_ref"/>
+    <alias index="12" field="sur_bloc" name="sur_bloc"/>
+    <alias index="13" field="model" name="Modèle"/>
   </aliases>
   <splitPolicies>
     <policy policy="Duplicate" field="id"/>
@@ -339,36 +339,36 @@
     <policy policy="Duplicate" field="model"/>
   </splitPolicies>
   <defaults>
-    <default field="id" applyOnUpdate="0" expression=""/>
-    <default field="shape" applyOnUpdate="0" expression=""/>
-    <default field="name" applyOnUpdate="0" expression=""/>
-    <default field="formula" applyOnUpdate="0" expression=""/>
-    <default field="formula_name" applyOnUpdate="0" expression=""/>
-    <default field="e" applyOnUpdate="0" expression=""/>
-    <default field="h" applyOnUpdate="0" expression=""/>
-    <default field="tauenterre" applyOnUpdate="0" expression=""/>
-    <default field="vu" applyOnUpdate="0" expression=""/>
-    <default field="ss_blocs" applyOnUpdate="0" expression=""/>
-    <default field="b_type" applyOnUpdate="0" expression=""/>
-    <default field="geom_ref" applyOnUpdate="0" expression=""/>
-    <default field="sur_bloc" applyOnUpdate="0" expression=""/>
-    <default field="model" applyOnUpdate="0" expression="@current_model"/>
+    <default applyOnUpdate="0" expression="" field="id"/>
+    <default applyOnUpdate="0" expression="" field="shape"/>
+    <default applyOnUpdate="0" expression="" field="name"/>
+    <default applyOnUpdate="0" expression="" field="formula"/>
+    <default applyOnUpdate="0" expression="" field="formula_name"/>
+    <default applyOnUpdate="0" expression="" field="e"/>
+    <default applyOnUpdate="0" expression="" field="h"/>
+    <default applyOnUpdate="0" expression="" field="tauenterre"/>
+    <default applyOnUpdate="0" expression="" field="vu"/>
+    <default applyOnUpdate="0" expression="" field="ss_blocs"/>
+    <default applyOnUpdate="0" expression="" field="b_type"/>
+    <default applyOnUpdate="0" expression="" field="geom_ref"/>
+    <default applyOnUpdate="0" expression="" field="sur_bloc"/>
+    <default applyOnUpdate="0" expression="@current_model" field="model"/>
   </defaults>
   <constraints>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="id" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="shape" unique_strength="0"/>
-    <constraint constraints="3" notnull_strength="1" exp_strength="0" field="name" unique_strength="1"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="formula" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="formula_name" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="e" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="h" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="tauenterre" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="vu" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="ss_blocs" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="b_type" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="geom_ref" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="sur_bloc" unique_strength="0"/>
-    <constraint constraints="0" notnull_strength="0" exp_strength="0" field="model" unique_strength="0"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="id"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="shape"/>
+    <constraint exp_strength="0" notnull_strength="1" constraints="3" unique_strength="1" field="name"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="formula"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="formula_name"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="e"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="h"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="tauenterre"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="vu"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="ss_blocs"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="b_type"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="geom_ref"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="sur_bloc"/>
+    <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="model"/>
   </constraints>
   <constraintExpressions>
     <constraint desc="" field="id" exp=""/>
@@ -388,23 +388,23 @@
   </constraintExpressions>
   <expressionfields/>
   <attributeactions/>
-  <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
+  <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="">
     <columns>
-      <column width="-1" hidden="0" name="id" type="field"/>
-      <column width="-1" hidden="1" name="shape" type="field"/>
-      <column width="-1" hidden="0" name="name" type="field"/>
-      <column width="-1" hidden="1" name="formula" type="field"/>
-      <column width="-1" hidden="0" name="formula_name" type="field"/>
-      <column width="-1" hidden="0" name="e" type="field"/>
-      <column width="-1" hidden="0" name="h" type="field"/>
-      <column width="-1" hidden="0" name="tauenterre" type="field"/>
-      <column width="-1" hidden="0" name="vu" type="field"/>
-      <column width="-1" hidden="0" name="ss_blocs" type="field"/>
-      <column width="-1" hidden="1" name="b_type" type="field"/>
-      <column width="-1" hidden="1" name="geom_ref" type="field"/>
-      <column width="-1" hidden="0" name="sur_bloc" type="field"/>
-      <column width="-1" hidden="0" name="model" type="field"/>
-      <column width="-1" hidden="1" type="actions"/>
+      <column hidden="0" type="field" width="-1" name="id"/>
+      <column hidden="1" type="field" width="-1" name="shape"/>
+      <column hidden="0" type="field" width="-1" name="name"/>
+      <column hidden="1" type="field" width="-1" name="formula"/>
+      <column hidden="0" type="field" width="-1" name="formula_name"/>
+      <column hidden="0" type="field" width="-1" name="e"/>
+      <column hidden="0" type="field" width="-1" name="h"/>
+      <column hidden="0" type="field" width="-1" name="tauenterre"/>
+      <column hidden="0" type="field" width="-1" name="vu"/>
+      <column hidden="0" type="field" width="-1" name="ss_blocs"/>
+      <column hidden="1" type="field" width="-1" name="b_type"/>
+      <column hidden="1" type="field" width="-1" name="geom_ref"/>
+      <column hidden="0" type="field" width="-1" name="sur_bloc"/>
+      <column hidden="0" type="field" width="-1" name="model"/>
+      <column hidden="1" type="actions" width="-1"/>
     </columns>
   </attributetableconfig>
   <conditionalstyles>
@@ -412,85 +412,85 @@
     <fieldstyles/>
   </conditionalstyles>
   <storedexpressions/>
-  <editform tolerant="1"></editform>
+  <editform tolerant="1"/>
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
-  <editforminitfilepath></editforminitfilepath>
+  <editforminitfilepath/>
   <editforminitcode><![CDATA[]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
   <attributeEditorForm>
-    <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-      <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+    <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+      <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
     </labelStyle>
-    <attributeEditorField index="2" verticalStretch="0" showLabel="1" name="Nom" horizontalStretch="0">
-      <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-        <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+    <attributeEditorField index="2" verticalStretch="0" name="Nom" showLabel="1" horizontalStretch="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+        <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
       </labelStyle>
     </attributeEditorField>
-    <attributeEditorField index="13" verticalStretch="0" showLabel="1" name="Modèle" horizontalStretch="0">
-      <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-        <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+    <attributeEditorField index="13" verticalStretch="0" name="Modèle" showLabel="1" horizontalStretch="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+        <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
       </labelStyle>
     </attributeEditorField>
-    <attributeEditorField index="-1" verticalStretch="0" showLabel="1" name="Durée de vie" horizontalStretch="0">
-      <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-        <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+    <attributeEditorField index="-1" verticalStretch="0" name="Durée de vie" showLabel="1" horizontalStretch="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+        <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
       </labelStyle>
     </attributeEditorField>
-    <attributeEditorContainer visibilityExpressionEnabled="0" collapsedExpressionEnabled="0" columnCount="1" verticalStretch="0" groupBox="0" showLabel="1" collapsedExpression="" name="Exploitation" type="Tab" collapsed="0" visibilityExpression="" horizontalStretch="0">
-      <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-        <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+    <attributeEditorContainer columnCount="1" collapsedExpressionEnabled="0" type="Tab" visibilityExpression="" collapsed="0" collapsedExpression="" groupBox="0" visibilityExpressionEnabled="0" verticalStretch="0" name="Exploitation" showLabel="1" horizontalStretch="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+        <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
       </labelStyle>
     </attributeEditorContainer>
-    <attributeEditorContainer visibilityExpressionEnabled="0" collapsedExpressionEnabled="0" columnCount="1" verticalStretch="0" groupBox="0" showLabel="1" collapsedExpression="" name="Construction" type="Tab" collapsed="0" visibilityExpression="" horizontalStretch="0">
-      <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-        <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+    <attributeEditorContainer columnCount="1" collapsedExpressionEnabled="0" type="Tab" visibilityExpression="" collapsed="0" collapsedExpression="" groupBox="0" visibilityExpressionEnabled="0" verticalStretch="0" name="Construction" showLabel="1" horizontalStretch="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+        <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
       </labelStyle>
-      <attributeEditorContainer visibilityExpressionEnabled="0" collapsedExpressionEnabled="0" columnCount="1" verticalStretch="0" groupBox="1" showLabel="1" collapsedExpression="" name="Etude de faisabilité" type="GroupBox" collapsed="0" visibilityExpression="" horizontalStretch="0">
-        <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-          <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+      <attributeEditorContainer columnCount="1" collapsedExpressionEnabled="0" type="GroupBox" visibilityExpression="" collapsed="0" collapsedExpression="" groupBox="1" visibilityExpressionEnabled="0" verticalStretch="0" name="Etude de faisabilité" showLabel="1" horizontalStretch="0">
+        <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+          <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorContainer visibilityExpressionEnabled="0" collapsedExpressionEnabled="0" columnCount="1" verticalStretch="0" groupBox="1" showLabel="1" collapsedExpression="" name="CO2 construction bassin_cylindrique 3" type="GroupBox" collapsed="0" visibilityExpression="" horizontalStretch="0">
-          <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-            <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+        <attributeEditorContainer columnCount="1" collapsedExpressionEnabled="0" type="GroupBox" visibilityExpression="" collapsed="0" collapsedExpression="" groupBox="1" visibilityExpressionEnabled="0" verticalStretch="0" name="CO2 construction bassin_cylindrique 3" showLabel="1" horizontalStretch="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+            <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="6" verticalStretch="0" showLabel="1" name="h" horizontalStretch="0">
-            <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-              <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+          <attributeEditorField index="6" verticalStretch="0" name="h" showLabel="1" horizontalStretch="0">
+            <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+              <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
-          <attributeEditorField index="8" verticalStretch="0" showLabel="1" name="vu" horizontalStretch="0">
-            <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-              <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+          <attributeEditorField index="8" verticalStretch="0" name="vu" showLabel="1" horizontalStretch="0">
+            <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+              <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
-        <attributeEditorContainer visibilityExpressionEnabled="0" collapsedExpressionEnabled="0" columnCount="1" verticalStretch="0" groupBox="1" showLabel="1" collapsedExpression="" name="Valeurs par défaut construction" type="GroupBox" collapsed="1" visibilityExpression="" horizontalStretch="0">
-          <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-            <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+        <attributeEditorContainer columnCount="1" collapsedExpressionEnabled="0" type="GroupBox" visibilityExpression="" collapsed="1" collapsedExpression="" groupBox="1" visibilityExpressionEnabled="0" verticalStretch="0" name="Valeurs par défaut construction" showLabel="1" horizontalStretch="0">
+          <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+            <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
           </labelStyle>
-          <attributeEditorField index="7" verticalStretch="0" showLabel="1" name="tauenterre" horizontalStretch="0">
-            <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-              <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+          <attributeEditorField index="7" verticalStretch="0" name="tauenterre" showLabel="1" horizontalStretch="0">
+            <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+              <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
-          <attributeEditorField index="5" verticalStretch="0" showLabel="1" name="e" horizontalStretch="0">
-            <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-              <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+          <attributeEditorField index="5" verticalStretch="0" name="e" showLabel="1" horizontalStretch="0">
+            <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+              <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
       </attributeEditorContainer>
     </attributeEditorContainer>
-    <attributeEditorContainer visibilityExpressionEnabled="0" collapsedExpressionEnabled="0" columnCount="1" verticalStretch="0" groupBox="0" showLabel="1" collapsedExpression="" name="Entrée" type="Tab" collapsed="0" visibilityExpression="" horizontalStretch="0">
-      <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-        <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+    <attributeEditorContainer columnCount="1" collapsedExpressionEnabled="0" type="Tab" visibilityExpression="" collapsed="0" collapsedExpression="" groupBox="0" visibilityExpressionEnabled="0" verticalStretch="0" name="Entrée" showLabel="1" horizontalStretch="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+        <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
       </labelStyle>
     </attributeEditorContainer>
-    <attributeEditorContainer visibilityExpressionEnabled="0" collapsedExpressionEnabled="0" columnCount="1" verticalStretch="0" groupBox="0" showLabel="1" collapsedExpression="" name="Sortie" type="Tab" collapsed="0" visibilityExpression="" horizontalStretch="0">
-      <labelStyle overrideLabelColor="0" labelColor="0,0,0,255" overrideLabelFont="0">
-        <labelFont bold="0" underline="0" style="" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0" italic="0"/>
+    <attributeEditorContainer columnCount="1" collapsedExpressionEnabled="0" type="Tab" visibilityExpression="" collapsed="0" collapsedExpression="" groupBox="0" visibilityExpressionEnabled="0" verticalStretch="0" name="Sortie" showLabel="1" horizontalStretch="0">
+      <labelStyle labelColor="0,0,0,255" overrideLabelFont="0" overrideLabelColor="0">
+        <labelFont style="" bold="0" underline="0" italic="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" strikethrough="0"/>
       </labelStyle>
     </attributeEditorContainer>
   </attributeEditorForm>
@@ -499,7 +499,7 @@
   <reuseLastValue/>
   <dataDefinedFieldProperties/>
   <widgets/>
-  <previewExpression></previewExpression>
-  <mapTip enabled="1"></mapTip>
+  <previewExpression/>
+  <mapTip enabled="1"/>
   <layerGeometryType>0</layerGeometryType>
 </qgis>

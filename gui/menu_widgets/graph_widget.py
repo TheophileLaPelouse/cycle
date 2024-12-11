@@ -76,7 +76,7 @@ class GraphWidget(QWidget):
         # print("bar_data", data)
         # print("test", data)
         width = 0.4 
-        print(data_err)
+        # print(data_err)
         self.__ax.clear()
         if c_or_e == 'c' or c_or_e == 'e' : 
             self.__ax.bar(r, data['co2'], 
@@ -170,7 +170,7 @@ def fill_bars(prg, data, stud_time) :
     
     bars_e_err = [bars['co2_e'][k]['incert']*bars_e['co2'][k] + bars['ch4_e'][k]['incert']*bars_e['ch4'][k] + bars['n2o_e'][k]['incert']*bars_e['n2o'][k] for k in r]
     
-    bars_ce_err = [bars['co2_eq_ce'][k]['incert']*bars_ce[k]*stud_time for k in r]
+    bars_ce_err = [bars['co2_eq_ce'][k]['incert']*bars_ce[k] for k in r]
     
     return r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names
 
@@ -179,30 +179,30 @@ def sort_bars(bars1, names1, err1, bars2 = None, names2 = None, err2 = None) :
     # si bars2 est none c'est qu'on a pas encore fait de bar donc il faut trier bars1
     # Sinon bars1 est déjà trié et on doit insérer correctement
     fields = ['co2', 'ch4', 'n2o']
-    print("On entre dans la fonction")
-    print('avant actions', bars1, names1, err1)
+    # print("On entre dans la fonction")
+    # print('avant actions', bars1, names1, err1)
     if not bars2 : 
-        print('premier cas')
+        # print('premier cas')
         if isinstance(bars1, dict) :
             sum_values = [sum([bars1[field][i] for field in fields]) for i in range(len(bars1['co2']))]
             sorted_idx = argsort(sum_values)[::-1]
             for field in fields : 
                 bars1[field] = [bars1[field][i] for i in sorted_idx]
-            names1 = [names1[i] for i in sorted_idx]
+            names = [names1[i] for i in sorted_idx]
             err1 = [err1[i] for i in sorted_idx]
-            print('premier cas', bars1, names1, err1)
-            return bars1, names1, err1
+            # print('premier cas', bars1, names1, err1)
+            return bars1, names, err1
         elif isinstance(bars1, list) : 
             sorted_idx = argsort(bars1)[::-1]
             bars1 = [bars1[i] for i in sorted_idx]
-            names1 = [names1[i] for i in sorted_idx]
+            names = [names1[i] for i in sorted_idx]
             err1 = [err1[i] for i in sorted_idx]
-            return bars1, names1, err1
+            return bars1, names, err1
     else :
-        print('deuxième cas')
-        print(isinstance(bars1, dict))
+        # print('deuxième cas')
+        # print(isinstance(bars1, dict))
         if isinstance(bars1, dict) :
-            print('On passe par là ?')
+            # print('On passe par là ?')
             # Un jour on pourra opti, pour le moment flemme
             sum_values1 = [sum([bars1[field][i] for field in fields]) for i in range(len(bars1['co2']))] # trier donc idéalement faudrait insérer là dedans (genre par dicotomie)
             sum_values2 = [sum([bars2[field][i] for field in fields]) for i in range(len(bars2['co2']))]
@@ -210,7 +210,7 @@ def sort_bars(bars1, names1, err1, bars2 = None, names2 = None, err2 = None) :
             for field in fields : 
                 bar[field] = bars1[field] + bars2[field]
             sum_values = sum_values1 + sum_values2
-            print("sum_values", sum_values)
+            # print("sum_values", sum_values)
             sorted_idx = argsort(sum_values)[::-1]
             for field in fields :
                 bar[field] = [bar[field][i] for i in sorted_idx]
@@ -218,7 +218,7 @@ def sort_bars(bars1, names1, err1, bars2 = None, names2 = None, err2 = None) :
             names = [names[i] for i in sorted_idx]
             err = err1 + err2
             err = [err[i] for i in sorted_idx]
-            print(bar, names, err)
+            # print(bar, names, err)
             return bar, names, err
         elif isinstance(bars1, list) :
             bar = bars1 + bars2

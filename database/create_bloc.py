@@ -36,8 +36,10 @@ def write_sql_bloc(project_name, name, shape, entrees, sorties, default_values =
     view_join = "additional_join => 'left"
     view_col = "additional_columns => '{"
     columns = ''
-    with open(path, 'r') as f : 
-        precedent = f.read()
+    if os.path.exists(path) :
+        with open(path, 'r') as f : 
+            precedent = f.read()
+    else : precedent = ''
     for key, value in rows.items(): 
         # print("value", value)
         if value == "list" :

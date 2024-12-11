@@ -878,8 +878,26 @@ select template.basic_view('formulas');
 
 -- select template.basic_view('results') ;
 
+select template.basic_view('alias_table') ;
 
-
+create or replace function api.fill_alias_table(Alias jsonb)
+returns void 
+language plpgsql
+as $$
+declare 
+    k varchar ;
+    val varchar ;
+begin
+    for k, val in (select key, value from jsonb_each_text(Alias))
+    loop
+        if exists(select 1 from api.alias_table where name = k) then 
+            update api.alias_table set alias = val where name = k;
+        else 
+            insert into api.alias_table (name, alias) values (k, val);
+        end if;
+    end loop;
+    end;
+$$;
 ------------------------------------------------------------------------------------------------
 -- MODELS                                                                                     --
 ------------------------------------------------------------------------------------------------

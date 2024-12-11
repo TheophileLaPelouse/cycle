@@ -24,9 +24,10 @@ class EditInputOutput(QDialog) :
         self.type_list = self.__project.fetchall("select table_name from information_schema.tables where table_schema = 'api' and table_name like '%_type_table'")
         for k in range(len(self.type_list)) : 
             self.type_list[k] = self.type_list[k][0].replace('_type_table', '')
-        self.type_list = ['real', 'integer', 'list'] + self.type_list
+        self.type_list = ['real', 'integer'] + self.type_list
         self.entree_type.addItems(self.type_list)
         self.sortie_type.addItems(self.type_list)
+        # Le type list pourra être implémenté, il faudra alors créer le type_table dans la base de données et ajouter la valeur dans le json et créer couche et relation comme dans la création
         
         self.ok_button = self.buttons.button(QDialogButtonBox.Ok)
         self.ok_button.setEnabled(False)

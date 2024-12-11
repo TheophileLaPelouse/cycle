@@ -1435,6 +1435,21 @@ begin
     --raise  notice 'js1 = %', js1;
     res := jsonb_set(res, array['total'], js1||js2, true);
     --raise  notice 'res = %', res;
+    if res is null then 
+        return jsonb_build_object(
+        'total', jsonb_build_object(
+        'ch4_c', to_jsonb(row(0, 0)::___.res),
+        'ch4_e', to_jsonb(row(0, 0)::___.res),
+        'co2_c', to_jsonb(row(0, 0)::___.res),
+        'co2_e', to_jsonb(row(0, 0)::___.res),
+        'n2o_c', to_jsonb(row(0, 0)::___.res),
+        'n2o_e', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_c', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_e', to_jsonb(row(0, 0)::___.res),
+        'co2_eq_ce', to_jsonb(row(0, 0)::___.res)
+        )
+        );
+    end if ;
     return res;
 end;
 $$;

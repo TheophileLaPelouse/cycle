@@ -240,6 +240,9 @@
            <height>192</height>
           </rect>
          </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
          <column>
           <property name="text">
            <string>Name</string>
@@ -338,6 +341,9 @@
            <width>531</width>
            <height>192</height>
           </rect>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <column>
           <property name="text">
@@ -573,6 +579,9 @@
            <width>531</width>
            <height>111</height>
           </rect>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <column>
           <property name="text">

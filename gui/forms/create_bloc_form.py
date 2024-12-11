@@ -86,7 +86,7 @@ class CreateBlocWidget(QDialog):
         # Group line edit
         layertree_custom = manager.layertree_custom(self.__project.qgs)
         layertree = manager.layertree()
-        layertree = add_dico(layertree, layertree_custom)['']
+        layertree = add_dico(layertree, layertree_custom)
         self.group_completer = GrpCompleter(list(layertree.keys()), layertree)
         self.group.setCompleter(self.group_completer)
         self.group.textChanged.connect(lambda : self.group_completer.update_completions(self.group.text()))
@@ -324,8 +324,12 @@ class CreateBlocWidget(QDialog):
             self.table_input.setItem(i, 0, QTableWidgetItem(key))
             self.table_input.setItem(i, 1, QTableWidgetItem(value))
             if defaults.get(key) : 
-                self.default_values[key] = defaults[key]
-                self.table_input.setItem(i, 2, QTableWidgetItem(defaults[key]))
+                if '::' in defaults[key]:
+                    # (value)::type
+                    self.default_values[key] = defaults[key].split(':')[0][1:-1]
+                else : 
+                    self.default_values[key] = defaults[key]
+                self.table_input.setItem(i, 2, QTableWidgetItem(self.default_values[key]))
             i += 1
             
         self.table_output.setRowCount(len(self.output))

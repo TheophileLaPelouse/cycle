@@ -252,16 +252,18 @@ class Result(QDialog) :
         return 
      
     def show_graphs(self, bloc_groups, stud_time, ges_colors = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
-        i = 0   
+        first = True
+        j = 0
         n = len(bloc_groups)
         render = False
         names_color = {key : self.params[key][1].currentText() for key in self.params}
         for color in bloc_groups :
             # print('Bloc GROUPE', bloc_groups[color])
             if not (bloc_groups[color]['total']['co2_eq_c']['val'] == 0 and bloc_groups[color]['total']['co2_eq_e']['val'] == 0) :
-                if i == 0 : 
-                    if i == n -1 : 
-                        render = True
+                if j == n -1 : 
+                    render = True
+                    
+                if first : 
                     r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = fill_bars(self.prg, bloc_groups[color], stud_time)
                     bars_c, names_c, bars_c_err = sort_bars(bars_c, names, bars_c_err)
                     edgecolor = [names_color[name] for name in names_c]
@@ -272,14 +274,12 @@ class Result(QDialog) :
                     bars_ce, names_ce, bars_ce_err = sort_bars(bars_ce, names, bars_ce_err)
                     edgecolor = [names_color[name] for name in names_c]
                     self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names_ce, self.bloc_id, ges_colors, edgecolor, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"), render=render)
-                    i += 1
+                    first = False
                 else : 
                     r2, bars_c2, bars_c_err2, bars_e2, bars_e_err2, bars_ce2, bars_ce_err2, names2 = fill_bars(self.prg, bloc_groups[color], stud_time)
                     
                     r = range(0, r[-1] + 1 + r2[-1]+1)
                     # r = range(r[-1]+1, r2[-1]+1+r[-1]+1)
-                    if i == n -1 : 
-                        render = True
                     bars_c, names_c, bars_c_err = sort_bars(bars_c, names, bars_c_err, bars_c2, names2, bars_c_err2)
                     if render : edgecolor = [names_color[name] for name in names_c]
                     self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names_c, self.bloc_id, ges_colors, edgecolor, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'), render=render)
@@ -289,7 +289,7 @@ class Result(QDialog) :
                     bars_ce, names_ce, bars_ce_err = sort_bars(bars_ce, names, bars_ce_err, bars_ce2, names2, bars_ce_err2)
                     if render : edgecolor = [names_color[name] for name in names_c]
                     self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names_ce, self.bloc_id, ges_colors, edgecolor, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"), render=render)   
-                    i += 1         
+            j += 1    
         
                         
     def get_params(self) :

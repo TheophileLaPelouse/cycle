@@ -105,6 +105,11 @@ insert into ___.global_values values ('study_time', 1, 0, 'Durée de l étude en
 -- insert into ___.global_values(name, val, incert) values ('rholam', 1040, 0);
 -- insert into ___.global_values(name, val, incert) values ('fepelle', 61, 0);
 
+create table ___.alias_table(
+    name varchar primary key,
+    alias varchar
+) ;
+
 ------------------------------------------------------------------------------------------------
 -- Abstract tables
 -- Les tables abstaites sont les tables qui représentent les conceptes généraux : liens, noeuds, blocs.

@@ -9,7 +9,7 @@ from psycopg2.extras import LoggingConnection
 import logging
 from .database import create_project, autoconnection
 from .utility.log import LogManager, ConsoleLogger
-from .qgis_utilities import QGisProjectManager
+from .qgis_utilities import QGisProjectManager, Alias, Alias_intrant
 from .utility.string import normalized_name
 from .service import get_service
 
@@ -229,3 +229,17 @@ class Project(object):
     
     def bloc_tree(self) : 
         return self.fetchone("select api.bloc_tree()")[0]
+    
+    def create_index(self) : 
+        try : 
+            Alias_jsonb = ''
+            for key, val in Alias.items() : 
+                key = key.replace("'", "''")
+                val = val.replace("'", "''")
+                Alias_jsonb += f'"{key}" : "{val}",'
+            Alias_jsonb = "{"+Alias_jsonb[:-1]+"}"
+            self.execute(f"select api.fill_alias_table('{Alias_jsonb}'::jsonb)")
+            Alias_jsonb_intrant = str(Alias_intrant).replace("'", '"')
+            self.execute(f"select api.fill_alias_table('{Alias_jsonb_intrant}'::jsonb)")
+        except : 
+            print('Alias table none existant')

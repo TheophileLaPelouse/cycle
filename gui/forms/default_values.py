@@ -4,7 +4,7 @@ from qgis.utils import iface
 from qgis.core import QgsProject, QgsDefaultValue
 from qgis.PyQt import uic 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem, QDialogButtonBox, QCompleter
+from qgis.PyQt.QtWidgets import QGridLayout, QDialog, QWidget, QTableWidgetItem, QDialogButtonBox, QCompleter, QHeaderView
 from ...qgis_utilities import tr, QGisProjectManager, Alias
 from ...project import Project
 
@@ -54,6 +54,9 @@ class DefaultValues(QDialog):
         
         self.ok_button = self.buttons.button(QDialogButtonBox.Ok)
         self.ok_button.clicked.connect(self.commit_changes)
+        
+        for k in range(4) : 
+            self.table_input.horizontalHeader().setSectionResizeMode(k, QHeaderView.ResizeToContents)
         
         self.exec_()
     

@@ -160,7 +160,7 @@ class ProjectManager(QDialog):
         #         return
 
         QGisProjectManager.open_project(project.qgs, project.srid)
-        
+        project.create_index()
         input_output, f_details, f_inputs = project.get_values4qml()
         QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output, f_inputs) 
         

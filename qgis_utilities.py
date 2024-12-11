@@ -390,7 +390,19 @@ class QGisProjectManager(QObject):
                 c+=1
             layer.setEditFormConfig(config)
         
-
+        layer_name, sch, tbl, key = tr('Index'), 'api', 'alias_table', 'name'
+        if not len(project.mapLayersByName(layer_name)):
+            uri = f'''dbname='{project_name}' service='{get_service()}' sslmode=disable key='{key}' checkPrimaryKeyUnicity='0' table="{sch}"."{tbl}"'''
+            layer = QgsVectorLayer(uri, layer_name, "postgres")
+            project.addMapLayer(layer, False)
+            g.addLayer(layer)
+            config = layer.editFormConfig()
+            c = 0
+            for f in layer.fields() : 
+                config.setReadOnly(c, True)
+                c+=1
+            layer.setEditFormConfig(config)
+                    
         
         project.write()
 
@@ -524,7 +536,7 @@ class QGisProjectManager(QObject):
                 if field.startswith('q_') :
                     layer.setFieldAlias(layer.fields().indexFromName(field), 'Quantité de '+Alias_intrant[field])
                 else : 
-                    layer.setFieldAlias(layer.fields().indexFromName(field), 'Distance d\'approxivisionnement')
+                    layer.setFieldAlias(layer.fields().indexFromName(field), 'Distance d\'approvisionnement')
             else : 
                 layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
         if rapid == 2 : return

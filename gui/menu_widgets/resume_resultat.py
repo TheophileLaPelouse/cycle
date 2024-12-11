@@ -19,6 +19,13 @@ class RecapResults(QDockWidget) :
         self.warning_btn.setIcon(icon)
         self.warning_btn.setEnabled(False)
         
+        icon = QIcon(os.path.join(os.path.dirname(__file__), '..', '..', 'ressources', 'svg', 'refresh.svg'))
+        self.refresh_btn.setIcon(icon)
+        self.refresh_btn.clicked.connect(self.update_model_list)
+        self.refresh_btn.clicked.connect(self.show_results)
+        self.refresh_btn.setFixedHeight(self.model_combo.sizeHint().height())
+        self.refresh_btn.clicked.connect(self.show_results)
+        
         self.to_make_flashy = {}
         
         for k in range(10) : 
