@@ -270,58 +270,58 @@ insert into ___.sorties (liste_sorties) values (array['Q', 'DBO5']::varchar[]);
 -- Les Blocs que nous allons manipuler dans le logiciel
 ------------------------------------------------------------------------------------------------
 
-create table ___.test_bloc(
-    id integer primary key,
-    shape ___.geo_type not null default 'Polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
-    name varchar not null default ___.unique_name('test_bloc', abbreviation=>'test_bloc'),
-    geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
-    DBO5 real default null, 
-    Q real default null, 
-    EH integer default null,
-    formula varchar[] default array['Q = 2*EH']::varchar[],
-    formula_name varchar[] default array['Q = 2*EH']::varchar[],
-    foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
-    unique (name, id)
-);
+-- create table ___.test_bloc(
+--     id integer primary key,
+--     shape ___.geo_type not null default 'Polygon', -- Pour l'instant on dit qu'on fait le type de géométry dans l'api en fonction de ce geo_type.
+--     name varchar not null default ___.unique_name('test_bloc', abbreviation=>'test_bloc'),
+--     geom geometry('POLYGON', 2154) not null check(ST_IsValid(geom)),
+--     DBO5 real default null, 
+--     Q real default null, 
+--     EH integer default null,
+--     formula varchar[] default array['Q = 2*EH']::varchar[],
+--     formula_name varchar[] default array['Q = 2*EH']::varchar[],
+--     foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade, 
+--     unique (name, id)
+-- );
 
-insert into ___.input_output values ('test'::___.bloc_type, array['q', 'dbo5', 'eh'], array['q', 'dbo5', 'eh']);
+-- insert into ___.input_output values ('test'::___.bloc_type, array['q', 'dbo5', 'eh'], array['q', 'dbo5', 'eh']);
 
-create table ___.piptest_bloc(
-    id integer primary key, 
-    shape ___.geo_type not null default 'LineString',
-    geom geometry('LINESTRING', 2154) not null check(ST_IsValid(geom)),
-    name varchar not null default ___.unique_name('piptest_bloc', abbreviation=>'piptest_bloc'),
-    Q real default null, 
-    formula varchar[] default array['CO2 = Q']::varchar[],
-    formula_name varchar[] default array['yo']::varchar[],
-    foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
-    unique (name, id)
+-- create table ___.piptest_bloc(
+--     id integer primary key, 
+--     shape ___.geo_type not null default 'LineString',
+--     geom geometry('LINESTRING', 2154) not null check(ST_IsValid(geom)),
+--     name varchar not null default ___.unique_name('piptest_bloc', abbreviation=>'piptest_bloc'),
+--     Q real default null, 
+--     formula varchar[] default array['CO2 = Q']::varchar[],
+--     formula_name varchar[] default array['yo']::varchar[],
+--     foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
+--     unique (name, id)
 
-) ;
+-- ) ;
 
-insert into ___.input_output values ('piptest', array['q'], array['q']);
+-- insert into ___.input_output values ('piptest', array['q'], array['q']);
 
-create table ___.zone_type_table(
-    name varchar primary key,
-    FE real,
-    description text
-) ;
+-- create table ___.zone_type_table(
+--     name varchar primary key,
+--     FE real,
+--     description text
+-- ) ;
 
-insert into ___.zone_type_table values ('urban', 0.5, 'Zone urbaine');
-insert into ___.zone_type_table values ('rural', 0.1, 'Zone rurale');
+-- insert into ___.zone_type_table values ('urban', 0.5, 'Zone urbaine');
+-- insert into ___.zone_type_table values ('rural', 0.1, 'Zone rurale');
 
-create table ___.pointest_bloc(
-    id integer primary key,
-    shape ___.geo_type not null default 'Point',
-    geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
-    name varchar not null default ___.unique_name('pointest_bloc', abbreviation=>'pointest_bloc'),
-    zon varchar not null default 'urban' references ___.zone_type_table(name),
-    Q real default null, 
-    formula varchar[] default array['CO2 = Q']::varchar[],
-    formula_name varchar[] default array['ça fait réfléchir']::varchar[],
-    foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
-    unique (name, id)
-) ;
+-- create table ___.pointest_bloc(
+--     id integer primary key,
+--     shape ___.geo_type not null default 'Point',
+--     geom geometry('POINT', 2154) not null check(ST_IsValid(geom)),
+--     name varchar not null default ___.unique_name('pointest_bloc', abbreviation=>'pointest_bloc'),
+--     zon varchar not null default 'urban' references ___.zone_type_table(name),
+--     Q real default null, 
+--     formula varchar[] default array['CO2 = Q']::varchar[],
+--     formula_name varchar[] default array['ça fait réfléchir']::varchar[],
+--     foreign key (id, name, shape) references ___.bloc(id, name, shape) on update cascade on delete cascade,
+--     unique (name, id)
+-- ) ;
 
 ------------------------------------------------------------------------------------------------
 -- Config 
@@ -345,26 +345,26 @@ create table ___.user_configuration(
     config varchar references ___.configuration(name)
 );
 
-create table ___.test_bloc_config(
-    like ___.test_bloc,
-    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
-    foreign key (id, name) references ___.test_bloc(id, name) on delete cascade on update cascade,
-    primary key (id, config)
-) ; 
+-- create table ___.test_bloc_config(
+--     like ___.test_bloc,
+--     config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+--     foreign key (id, name) references ___.test_bloc(id, name) on delete cascade on update cascade,
+--     primary key (id, config)
+-- ) ; 
 
-create table ___.piptest_bloc_config(
-    like ___.piptest_bloc,
-    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
-    foreign key (id, name) references ___.piptest_bloc(id, name) on delete cascade on update cascade,
-    primary key (id, config)
-) ; 
+-- create table ___.piptest_bloc_config(
+--     like ___.piptest_bloc,
+--     config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+--     foreign key (id, name) references ___.piptest_bloc(id, name) on delete cascade on update cascade,
+--     primary key (id, config)
+-- ) ; 
 
-create table ___.pointest_bloc_config(
-    like ___.pointest_bloc,
-    config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
-    foreign key (id, name) references ___.pointest_bloc(id, name) on delete cascade on update cascade,
-    primary key (id, config)
-) ;
+-- create table ___.pointest_bloc_config(
+--     like ___.pointest_bloc,
+--     config varchar default 'default' references ___.configuration(name) on update cascade on delete cascade,
+--     foreign key (id, name) references ___.pointest_bloc(id, name) on delete cascade on update cascade,
+--     primary key (id, config)
+-- ) ;
 
 create or replace function ___.current_config()
 returns varchar

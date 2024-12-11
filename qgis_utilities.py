@@ -73,7 +73,8 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'ngl_s' : 'NGL sortant (kgNGL/an)', 'fen2o_ox
          'dbo' : 'DBO en amont de la filière boue (kgDBO/an)', 'Niveau de détail 1' : 'Conception générale', 'Niveau de détail 2' : 'Conception détaillée',
          'Niveau de détail 3' : 'Etude de faisabilité', 'Niveau de détail 4' : 'Conception très détaillée', 'Niveau de détail 5' : "Précision maximale",
          'Niveau de détail 6' : "Intrants (Comptabilisé même pour les sur blocs)", 'feexpl' : 'Type de structure',
-         'methode' : 'Procédé principale de la filière', 'methode_fe' : 'Consommation électrique (kWh/DBO5 éliminé)'
+         'methode' : 'Procédé principale de la filière', 'methode_fe' : 'Consommation électrique (kWh/DBO5 éliminé)', 
+         'model' : 'Modèle', 'name' : 'Nom', 'd_vie' : 'Durée de vie'
          }
 Alias_intrant = {
     "q_hcl": "Acide chlorhydrique",
@@ -535,10 +536,12 @@ class QGisProjectManager(QObject):
         # print('on va configurer')
         config.clearTabs()
         
-        name = attrfield('name', layer.fields().indexFromName('name'), None)
-        model = attrfield('model', layer.fields().indexFromName('model'), None)
+        name = attrfield(Alias.get('name', 'name'), layer.fields().indexFromName('name'), None)
+        model = attrfield(Alias.get('model', 'model'), layer.fields().indexFromName('model'), None)
+        d_vie = attrfield(Alias.get('d_vie', 'd_vie'), layer.fields().indexFromName('d_vie'), None)
         config.addTab(name)
         config.addTab(model)
+        config.addTab(d_vie)
         
         expl_tab = QgsAttributeEditorContainer('Exploitation', None)
         expl_tab.setType(Qgis.AttributeEditorContainerType(1))

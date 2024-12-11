@@ -69,7 +69,10 @@ class CycleToolbar(QToolBar):
         # self.__run_button = self.__add_action_button(tr('Run computation'), 'run.svg', self.__run)
         self.__add_formula_button = self.__add_action_button(tr('Ajouter une formule'), 'add_formula.svg', self.__add_formula)
         self.__add_input_button = self.__add_action_button(tr('Edition bloc'), 'add_input.svg', self.__add_input)
-        self.__change_default_values_button = self.__add_action_button(tr('Changer les valeurs par défaut'), 'add_input.svg', self.__change_default_values)
+        self.addSeparator()
+        
+        self.__change_default_values_button = self.__add_action_button(tr('Changer les valeurs par défaut'), 'change_default.svg', self.__change_default_values)
+
         self.addSeparator()
         
         self.spacer = QLabel('')

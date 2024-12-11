@@ -845,11 +845,11 @@ $$;
 -- Views on blocs
 ------------------------------------------------------------------------------------------------
 
-select template.bloc_view('test', 'bloc', 'Polygon') ; 
+-- select template.bloc_view('test', 'bloc', 'Polygon') ; 
 
--- select template.basic_view('test_bloc') ;
+-- -- select template.basic_view('test_bloc') ;
 
-select template.bloc_view('piptest', 'bloc', 'LineString') ;
+-- select template.bloc_view('piptest', 'bloc', 'LineString') ;
 
 
 
@@ -941,10 +941,12 @@ begin
                 def := null ;
                 def_str := null ;
             end if;
-            if not def is null then
+            if (item.column_default is null or item.column_default != def_str) and not def_str is null then
                 query := 'alter view api.'||item.table_name||' alter column '||item.column_name||' set default '||def_str;
                 execute query;
-                change = jsonb_set(change, array[item.table_name]::text[], jsonb_build_object(item.column_name, def), true);
+                change = jsonb_set(change, array[item.table_name]::text[], 
+                    coalesce(change->item.table_name, '{}'::jsonb) || jsonb_build_object(item.column_name, def), 
+                    true);
             end if;
         end if;
     end loop;
@@ -960,7 +962,6 @@ declare
     b_typ ___.bloc_type;
     input text;
     output text;
-    column_array varchar[];
     cols_with_def jsonb;
     to_return jsonb;
     type_ text ;
@@ -972,7 +973,7 @@ begin
         loop
             if not (columns ? input) then
                 type_ := (select data_type from information_schema.columns where table_schema = 'api' and column_name = input and table_name = b_typ||'_bloc');
-                raise notice 'type_ = %, col %', type_, input;
+                -- raise notice 'type_ = %, col %, b_type %', type_, input, b_typ;
                 columns := jsonb_set(columns, ('{' || input || '}')::text[], to_jsonb(type_));
             end if;
         end loop;
@@ -982,7 +983,7 @@ begin
         loop
             if not (columns ? output) then
                 type_ := (select data_type from information_schema.columns where table_schema = 'api' and column_name = input and table_name = b_typ||'_bloc');
-                raise notice 'type_ = %, col %', type_, output;
+                -- raise notice 'type_ = %, col %, b_type %', type_, output, b_typ;
                 columns := jsonb_set(columns, ('{' || output || '}')::text[], to_jsonb(type_));
             end if;
         end loop;
@@ -995,7 +996,7 @@ begin
     where table_schema = 'api' and column_default is not null and data_type != 'USER-DEFINED' and columns ? column_name
     into cols_with_def;
 
-    return jsonb_build_object('columns', column_array, 'columns_with_default', cols_with_def);
+    return jsonb_build_object('columns', columns, 'columns_with_default', cols_with_def);
 end;
 $$;
 

@@ -129,14 +129,15 @@ class DefaultValues(QDialog):
         # self.changes = {bloc_name : new_default_value}    
         layernames = QGisProjectManager.layers('self.__project.qgs')
         for name in layernames : 
-            print(layernames[name] in self.changes)
+            # print(layernames[name] in self.changes)
+            print(name, layernames[name], layernames[name] in self.changes)
             if layernames[name] in self.changes : 
                 layer = QgsProject.instance().mapLayersByName(name)[0]
                 for col in self.changes[layernames[name]] :
                     index = layer.fields().indexFromName(col)
                     defval = QgsDefaultValue()
                     defval.setExpression(str(self.changes[layernames[name]][col]['val']))
-                    print(index, defval)
+                    print(index, defval, name)
                     layer.setDefaultValueDefinition(index, defval)
                     
         self.close()
