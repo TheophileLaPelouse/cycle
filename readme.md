@@ -12,7 +12,9 @@ Si vous ne voulez pas télécharger hydra et Expresseau, vous devrez installer [
 
 ## Installation de l'extension LIEGES dans QGIS
 
-Pour télécharger cette extension, vous pouvez télécharger ce projet git au format zip (cliquer sur Code/Download zip en haut de la page du github). Pour une meilleure stabilité veuillez sélectionner la branche Alpha pour le moment, sélectionnez les branches en cliquant sur le menu déroulant en haut à gauche du code de la page du github. Rendez-vous ensuite dans QGIS, dans le menu extensions/Installer et gérer les extensions. Cliquez sur installer depuis un zip et sélectionner votre archive zip.
+Pour télécharger cette extension, vous pouvez télécharger ce projet git au format zip (cliquer sur Code/Download zip en haut de la page du github). Pour une meilleure stabilité veuillez sélectionner la branche Alpha pour le moment, sélectionnez les branches en cliquant sur le menu déroulant en haut à gauche du code de la page du github. 
+
+Rendez-vous ensuite dans QGIS, dans le menu extensions/Installer et gérer les extensions. Cliquez sur installer depuis un zip et sélectionner votre archive zip.
 
 Vous pourrez bientôt retrouver directement cette extension dans le catalogue de QGIS.
 
