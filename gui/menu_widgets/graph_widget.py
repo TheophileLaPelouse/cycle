@@ -153,10 +153,10 @@ def fill_bars(prg, data, stud_time) :
             for field in bars :
                 bars[field].append(data[key].get(field, {'val' : 0, 'incert' : 0}))
     r = range(len(bars['co2_e'])) 
-    print('r', r)
-    print('prg', prg)
-    print("NAMES ET BARS")
-    print(names)
+    # print('r', r)
+    # print('prg', prg)
+    # print("NAMES ET BARS")
+    # print(names)
     bars_c = {'co2' : [x['val']*prg['co2'] for x in bars['co2_c']], 
                 'ch4' : [x['val']*prg['ch4'] for x in bars['ch4_c']], 
                 'n2o' : [x['val']*prg['n2o'] for x in bars['n2o_c']]}

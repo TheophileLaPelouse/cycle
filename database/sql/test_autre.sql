@@ -37,66 +37,56 @@
 --     drop table inp_out ;
 -- end ;
 -- $$ ;
-create or replace function api.bloc_tree()
-returns jsonb
-language plpgsql as
-$$
-declare 
-    mod varchar ; 
-    res jsonb := '{}' ;
-begin
-    for mod in (select distinct model from api.bloc)
-    loop
-        -- raise notice 'mod %', mod ;
-        -- raise notice 'bloc_tree %', api.build_bloc_tree(mod) ;
-        res := jsonb_set(res, array[mod]::text[], api.build_bloc_tree(mod), true) ;
-    end loop;
-    return res;
-end;
-$$;
 
-create or replace function api.build_bloc_tree(model_name varchar, id_sur_bloc integer default null)
-returns jsonb
-language plpgsql as
-$$
-declare 
-    res jsonb := '{}' ;
-    blocs integer[] ;
-    bloc_json jsonb := '{}' ;
-    b integer ; 
-    bloc_name varchar ;
-begin 
-    -- Non récursive terminale, après je pense qu'il n'y a pas de problème de performance sur cette fonction.
-    if id_sur_bloc is null then 
-        with concr_table as (select b_type, concrete from api.input_output)
-        select into blocs array_agg(id) from api.bloc, concr_table where model = model_name and sur_bloc is null
-        and api.bloc.b_type = concr_table.b_type and (concrete or api.bloc.b_type='sur_bloc');
-    else
-        with concr_table as (select b_type, concrete from api.input_output)
-        select into blocs array_agg(id) from api.bloc, concr_table where model = model_name and sur_bloc = id_sur_bloc
-        and api.bloc.b_type = concr_table.b_type and (concrete or api.bloc.b_type='sur_bloc');
-    end if;
-    raise notice 'blocs %', blocs ;
-    if array_length(blocs, 1) = 0 or blocs is null then 
-        return res;
-    end if;
-    foreach b in array blocs
-    loop
-        select into bloc_name name from api.bloc where id = b ;
-        raise notice 'bloc_json1 %', bloc_json ;
-        bloc_json := jsonb_set(bloc_json, array[bloc_name::text], api.build_bloc_tree(model_name, b), true);
-        raise notice 'bloc_json2 %', bloc_json ;
-    end loop;
-    return bloc_json;
-end;
-$$;
-select api.bloc_tree();
--- update api.dessableurdegraisseur set eh = 20 ; 
+-- with results as (
+--     select name, co2_eq, co2_eq_an 
+--     from ___.results where id = 6 or id = 7 and name = any(array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e']) 
+-- ), 
+-- exploit as (select distinct name, co2_eq from results where name like '%_e'),
+-- constr as (select distinct name, co2_eq from results where name like '%_c'), 
+-- exploit_and_constr as (select distinct name, co2_eq_an from results)
+-- select  jsonb_build_object(
+--     'co2_eq_e', formula.sum_incert(coalesce((exploit.co2_eq).val, 0), coalesce((exploit.co2_eq).incert, 0)),
+--     'co2_eq_c', formula.sum_incert(coalesce((constr.co2_eq).val, 0), coalesce((constr.co2_eq).incert, 0)), 
+--     'co2_eq_ce', formula.sum_incert(coalesce((exploit_and_constr.co2_eq_an).val, 0), coalesce((exploit_and_constr.co2_eq_an).incert, 0))
+-- ) 
+-- from exploit
+-- full join constr on exploit.name = constr.name
+-- full join exploit_and_constr on exploit.name = exploit_and_constr.name;
 
-with concr_table as (select b_type, concrete from api.input_output)
-select array_agg(id) from api.bloc, concr_table where model = 'bonjour' and sur_bloc is null
-and api.bloc.b_type = concr_table.b_type and (concrete or api.bloc.b_type='sur_bloc');
+with results as (
+    select name, co2_eq, co2_eq_an 
+    from ___.results where id = 6 or id = 7 and name = any(array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e']) 
+), 
+exploit as (select distinct name, co2_eq from results where name like '%_e'),
+constr as (select distinct name, co2_eq from results where name like '%_c'), 
+exploit_and_constr as (select distinct name, co2_eq_an from results),
+json_eq as (select jsonb_build_object(
+    'co2_eq_e', formula.sum_incert(coalesce((exploit.co2_eq).val, 0), coalesce((exploit.co2_eq).incert, 0)),
+    'co2_eq_c', formula.sum_incert(coalesce((constr.co2_eq).val, 0), coalesce((constr.co2_eq).incert, 0))
+    ) as json_eq
+    from exploit
+    full join constr on exploit.name = constr.name 
+), 
+json_eq_ce as (select jsonb_build_object(
+    'co2_eq_ce', formula.sum_incert(coalesce((exploit_and_constr.co2_eq_an).val, 0), coalesce((exploit_and_constr.co2_eq_an).incert, 0))
+    ) as json_eq_ce
+    from exploit_and_constr
+)
+select jsonb_build_object(
+    'co2_eq_e', (json_eq.json_eq)->'co2_eq_e',
+    'co2_eq_c', (json_eq.json_eq)->'co2_eq_c',
+    'co2_eq_ce', (json_eq_ce.json_eq_ce)->'co2_eq_ce'
+)
+from json_eq, json_eq_ce;
 
+with results as (
+        select distinct name, ___.add(result_ss_blocs, result_ss_blocs_intrant) as result, co2_eq 
+        from ___.results where id = 6 or id =7 and name = any(array['n2o_c', 'n2o_e', 'ch4_c', 'ch4_e', 'co2_c', 'co2_e']) 
+        and ___.add(result_ss_blocs, result_ss_blocs_intrant) is not null
+    ),
+    results_sum as (select name, formula.sum_incert((result).val, (result).incert) as result from results group by name)
+    select name, result from results_sum; 
 --  {"bonjour": {"sur_bloc_bloc_1": {"2": {"filiere_eau_1": {"6": {"bassin_dorage_1": {}, "clarificateur_1": {}}}, "filiere_boue_1": {"8": {"compostage_1": {}}}}}}}
 -- create view api.results as 
 -- with 

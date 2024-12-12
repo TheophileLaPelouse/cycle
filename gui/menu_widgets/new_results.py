@@ -173,16 +173,23 @@ class Result(QDialog) :
     def show_results(self) :
         # Séparation par couleur 
         bloc_groups = {}
+        print('selected blocs', self.selected_blocs)
         for bloc in self.params :
             color = self.params[bloc][1].currentText()
             if color not in bloc_groups :
                 bloc_groups[color] = set()
             if bloc in self.selected_blocs :
                 bloc_groups[color].add(bloc)
-        
+        print('bloc groups', bloc_groups)
+        colors_to_remove = []
         for color in bloc_groups : 
-            query = f"select api.get_histo_data2(array{[bloc for bloc in bloc_groups[color]]}::text[])"
-            bloc_groups[color] = self.project.fetchone(query)[0]
+            if bloc_groups[color] :
+                query = f"select api.get_histo_data2(array{[bloc for bloc in bloc_groups[color]]}::text[])"
+                bloc_groups[color] = self.project.fetchone(query)[0]
+            else : 
+                colors_to_remove.append(color)
+        for color in colors_to_remove :
+            bloc_groups.pop(color)
         
         stud_time = self.project.fetchone(f"select val from ___.global_values where name = 'study_time'")[0] 
         
@@ -262,32 +269,37 @@ class Result(QDialog) :
             if not (bloc_groups[color]['total']['co2_eq_c']['val'] == 0 and bloc_groups[color]['total']['co2_eq_e']['val'] == 0) :
                 if j == n -1 : 
                     render = True
-                    
+                print('Render', render)
                 if first : 
                     r, bars_c, bars_c_err, bars_e, bars_e_err, bars_ce, bars_ce_err, names = fill_bars(self.prg, bloc_groups[color], stud_time)
+                    print('Nom et bars', names, bars_e)
                     bars_c, names_c, bars_c_err = sort_bars(bars_c, names, bars_c_err)
-                    edgecolor = [names_color[name] for name in names_c]
+                    edgecolor = [names_color[names_c[k]] for k in range(len(names_c))]
                     self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names_c, self.bloc_id, ges_colors, edgecolor, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'), render=render)
                     bars_e, names_e, bars_e_err = sort_bars(bars_e, names, bars_e_err)
-                    edgecolor = [names_color[name] for name in names_c]
+                    print('Nom et bars après tri', names_e, bars_e)
+                    edgecolor = [names_color[names_e[k]] for k in range(len(names_e))]
                     self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names_e, self.bloc_id, ges_colors, edgecolor, tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"), render=render)   
                     bars_ce, names_ce, bars_ce_err = sort_bars(bars_ce, names, bars_ce_err)
-                    edgecolor = [names_color[name] for name in names_c]
+                    edgecolor = [names_color[names_ce[k]] for k in range(len(names_ce))]
                     self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names_ce, self.bloc_id, ges_colors, edgecolor, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"), render=render)
                     first = False
                 else : 
                     r2, bars_c2, bars_c_err2, bars_e2, bars_e_err2, bars_ce2, bars_ce_err2, names2 = fill_bars(self.prg, bloc_groups[color], stud_time)
-                    
+                    print('Nom et bars', names + names2, bars_e['co2'] + bars_e2['co2'])
+                    print('Nom et bars 1', names, bars_e['co2'])
+                    print('Nom et bars 2', names2, bars_e2['co2'])
                     r = range(0, r[-1] + 1 + r2[-1]+1)
                     # r = range(r[-1]+1, r2[-1]+1+r[-1]+1)
-                    bars_c, names_c, bars_c_err = sort_bars(bars_c, names, bars_c_err, bars_c2, names2, bars_c_err2)
-                    if render : edgecolor = [names_color[name] for name in names_c]
+                    bars_c, names_c, bars_c_err = sort_bars(bars_c, names_c, bars_c_err, bars_c2, names2, bars_c_err2)
+                    if render : edgecolor = [names_color[names_c[k]] for k in range(len(names_c))]
                     self.graph_bar_c.bar_chart(r, bars_c, bars_c_err, 'c', names_c, self.bloc_id, ges_colors, edgecolor, tr("Emission construction (kgGaz)"), tr('kg de GES émis'), tr('Sous blocs'), render=render)
-                    bars_e, names_e, bars_e_err = sort_bars(bars_e, names, bars_e_err, bars_e2, names2, bars_e_err2)
-                    if render : edgecolor = [names_color[name] for name in names_c]
+                    bars_e, names_e, bars_e_err = sort_bars(bars_e, names_e, bars_e_err, bars_e2, names2, bars_e_err2)
+                    print('Nom et bars après tri', names_e, bars_e)
+                    if render : edgecolor = [names_color[names_e[k]] for k in range(len(names_e))]
                     self.graph_bar_e.bar_chart(r, bars_e, bars_e_err, 'e', names_e, self.bloc_id, ges_colors, edgecolor, tr("Emission exploitation (kgGaz/an)"), tr('kg de GES émis par an'), tr("Sous blocs"), render=render)   
-                    bars_ce, names_ce, bars_ce_err = sort_bars(bars_ce, names, bars_ce_err, bars_ce2, names2, bars_ce_err2)
-                    if render : edgecolor = [names_color[name] for name in names_c]
+                    bars_ce, names_ce, bars_ce_err = sort_bars(bars_ce, names_ce, bars_ce_err, bars_ce2, names2, bars_ce_err2)
+                    if render : edgecolor = [names_color[names_ce[k]] for k in range(len(names_ce))]
                     self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names_ce, self.bloc_id, ges_colors, edgecolor, tr("Emission exploitation et construction (kgCO2eq/%d ans)" % (stud_time)), tr('kg de CO2eq émis par %d ans' % stud_time), tr("Sous blocs"), render=render)   
             j += 1    
         

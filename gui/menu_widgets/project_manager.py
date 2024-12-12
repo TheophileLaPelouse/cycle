@@ -300,8 +300,11 @@ class ProjectManager(QDialog):
             if srid is None:
                 self.__log_manager.error(self.tr("SRID not found in file ")+file)
                 return
-
-            dialog = NewProjectDialog(self, project_name=os.path.basename(file.lower())[:-4])
+            if file.lower().endswith('.lieges'):
+                nb_char = 6
+            elif file.lower().endswith('.sql'):
+                nb_char = 3
+            dialog = NewProjectDialog(self, project_name=os.path.basename(file.lower())[:-nb_char])
             dialog.srid.setEnabled(False)
             dialog.srid.setText(get_srid_from_file(file))
             ok = dialog.exec_()

@@ -448,9 +448,9 @@
         ],
         "prod_e__ref": [
             [
-                "ref_prod_e_mbbr",
+                "ref_prod_e_bassin_dorage",
                 "val",
-                "MBBR",
+                "Bassin d'orage",
                 "prod_e"
             ],
             [
@@ -460,21 +460,9 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_decanteur_lamellaire",
+                "ref_prod_e_brm",
                 "val",
-                "D\u00e9canteur lamellaire",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_dessableurdegraisseur",
-                "val",
-                "Dessableur-D\u00e9graisseur",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_fpr",
-                "val",
-                "FPR",
+                "BRM",
                 "prod_e"
             ],
             [
@@ -484,15 +472,21 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_lagunage",
+                "ref_prod_e_mbbr",
                 "val",
-                "Lagunage",
+                "MBBR",
                 "prod_e"
             ],
             [
-                "ref_prod_e_clarificateur",
+                "ref_prod_e_fpr",
                 "val",
-                "Clarificateur",
+                "FPR",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_dessableurdegraisseur",
+                "val",
+                "Dessableur-D\u00e9graisseur",
                 "prod_e"
             ],
             [
@@ -502,15 +496,21 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_brm",
+                "ref_prod_e_clarificateur",
                 "val",
-                "BRM",
+                "Clarificateur",
                 "prod_e"
             ],
             [
-                "ref_prod_e_bassin_dorage",
+                "ref_prod_e_decanteur_lamellaire",
                 "val",
-                "Bassin d'orage",
+                "D\u00e9canteur lamellaire",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_lagunage",
+                "val",
+                "Lagunage",
                 "prod_e"
             ]
         ],
