@@ -121,7 +121,7 @@ dico_global = global_values(data_global)
 dico_formules = {}
 
 import formules_flemmes as ff
-# specifiques_bloc = ['Général', 'Général eau', 'Bassin cylindrique', "Déchets", "Dessableur-Dégraisseur"]
+# specifiques_bloc = ['Général', 'Général eau', 'Bassin cylindrique', "BRM"]
 # specifiques_bloc = ["Général boue", "Général", "Déchets", "Dessableur-Dégraisseur"]
 # specifiques_bloc = ["Pompe", "Poste de refoulement"]
 # specifiques_bloc = ["Tamis", 'Déchets']

@@ -432,6 +432,20 @@
             "methode_type_table",
             "val"
         ],
+        "methode_2": [
+            "methode_2",
+            "api",
+            "methode_2_type_table",
+            "val"
+        ],
+        "methode_2__ref": [
+            [
+                "ref_methode_2_filiere_eau",
+                "val",
+                "Fili\u00e8re eau",
+                "methode_2"
+            ]
+        ],
         "methode__ref": [
             [
                 "ref_methode_filiere_eau",
@@ -448,27 +462,15 @@
         ],
         "prod_e__ref": [
             [
-                "ref_prod_e_bassin_dorage",
+                "ref_prod_e_fpr",
                 "val",
-                "Bassin d'orage",
+                "FPR",
                 "prod_e"
             ],
             [
-                "ref_prod_e_bassin_biologique",
+                "ref_prod_e_lagunage",
                 "val",
-                "Bassin biologique",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_brm",
-                "val",
-                "BRM",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_degazage",
-                "val",
-                "D\u00e9gazage",
+                "Lagunage",
                 "prod_e"
             ],
             [
@@ -478,21 +480,15 @@
                 "prod_e"
             ],
             [
-                "ref_prod_e_fpr",
+                "ref_prod_e_degazage",
                 "val",
-                "FPR",
+                "D\u00e9gazage",
                 "prod_e"
             ],
             [
-                "ref_prod_e_dessableurdegraisseur",
+                "ref_prod_e_brm",
                 "val",
-                "Dessableur-D\u00e9graisseur",
-                "prod_e"
-            ],
-            [
-                "ref_prod_e_filiere_eau",
-                "val",
-                "Fili\u00e8re eau",
+                "BRM",
                 "prod_e"
             ],
             [
@@ -502,15 +498,33 @@
                 "prod_e"
             ],
             [
+                "ref_prod_e_bassin_biologique",
+                "val",
+                "Bassin biologique",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_dessableurdegraisseur",
+                "val",
+                "Dessableur-D\u00e9graisseur",
+                "prod_e"
+            ],
+            [
+                "ref_prod_e_bassin_dorage",
+                "val",
+                "Bassin d'orage",
+                "prod_e"
+            ],
+            [
                 "ref_prod_e_decanteur_lamellaire",
                 "val",
                 "D\u00e9canteur lamellaire",
                 "prod_e"
             ],
             [
-                "ref_prod_e_lagunage",
+                "ref_prod_e_filiere_eau",
                 "val",
-                "Lagunage",
+                "Fili\u00e8re eau",
                 "prod_e"
             ]
         ],

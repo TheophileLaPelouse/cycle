@@ -74,7 +74,8 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'ngl_s' : 'NGL sortant (kgNGL/an)', 'fen2o_ox
          'Niveau de détail 3' : 'Etude de faisabilité', 'Niveau de détail 4' : 'Conception très détaillée', 'Niveau de détail 5' : "Précision maximale",
          'Niveau de détail 6' : "Intrants (Comptabilisé même pour les sur blocs)", 'feexpl' : 'Type de structure',
          'methode' : 'Procédé principale de la filière', 'methode_fe' : 'Consommation électrique (kWh/DBO5 éliminé)', 
-         'model' : 'Modèle', 'name' : 'Nom', 'd_vie' : 'Durée de vie'
+         'model' : 'Modèle', 'name' : 'Nom', 'd_vie' : 'Durée de vie', 'dcoelim' : 'DCO éliminée (kgDCO/an)', 'ntkelim' : 'NTK éliminée (kgNTK/an)',
+         'methode_2' : 'Procédé principale de la filière', 'methode_2_fe' : 'N2O émis par NTK éliminé (kgN2O/kgNTK)'
          }
 Alias_intrant = {
     "q_hcl": "Acide chlorhydrique",
@@ -502,7 +503,7 @@ class QGisProjectManager(QObject):
                         
                             
     @staticmethod
-    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 2) : 
+    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
         t1 = time.time()
         
         try : layer.loadNamedStyle(qml)

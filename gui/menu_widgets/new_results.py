@@ -132,11 +132,14 @@ class Result(QDialog) :
                 if self.b_types.get(key) in Bloc_Icon :
                     icon = QIcon(os.path.join(path_icons, Bloc_Icon[self.b_types[key]]))
                     childnode.setIcon(0, icon)
+                # checkbox1 = QCheckBox(self.treeWidget)
+                # self.treeWidget.setItemWidget(childnode, 1, checkbox1)
                 if etage != 0 : 
                     checkbox1 = QCheckBox(self.treeWidget)
                     self.treeWidget.setItemWidget(childnode, 1, checkbox1)
                 else : 
                     checkbox1 = None
+                # A terme ce serait intéressant de pouvoir aussi afficher un modèle comme un bloc
                 self.treeWidget.setItemWidget(childnode, 3, color_choice)
                 self.params[key] = [checkbox1, color_choice]
                 print(self.params)

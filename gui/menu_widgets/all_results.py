@@ -78,7 +78,7 @@ class AllResults(QDialog) :
             
     def save_all(self) :
         default_directory = self.project.directory
-        file, __ = QFileDialog.getOpenFileName(self, self.tr("Sélectionner un fichier"), default_directory, filter="graph_lieges (*.plot_lieges)")
+        file, __ = QFileDialog.getSaveFileName(self, self.tr("Sélectionner un fichier"), default_directory, filter="graph_lieges (*.plot_lieges)")
         if not file : return
         save = {}
         for k in range(self.tabWidget.count()-1) :
@@ -89,7 +89,7 @@ class AllResults(QDialog) :
             
     def load_all(self) :
         default_directory = self.project.directory
-        file, __ = QFileDialog.getSaveFileName(self, self.tr("Sélectionner un fichier"), default_directory, filter="graph_lieges (*.plot_lieges)")
+        file, __ = QFileDialog.getOpenFileName(self, self.tr("Sélectionner un fichier"), default_directory, filter="graph_lieges (*.plot_lieges)")
         if not file : return 
         with open(file, 'r') as f :
             save = json.load(f)
