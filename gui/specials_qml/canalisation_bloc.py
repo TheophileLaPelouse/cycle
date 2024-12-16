@@ -8,8 +8,6 @@ import re
 
 def update(cycle_project, project, layer, qml, f_details, inp_outs, f_inputs) : 
         
-        Field_list
-        
         config = layer.editFormConfig()
         config.clearTabs()
         

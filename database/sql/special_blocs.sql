@@ -186,7 +186,7 @@ select api.add_new_bloc('lien', 'bloc', 'LineString'
 
 alter type ___.bloc_type add value 'canalisation' ; 
 commit ; 
-insert into ___.input_output values ('canalisation', array['qe_e', 'dbo5_e', 'mes_e', 'ngl_e', 'ml', 'diam']::varchar[], array['qe_s', 'dbo5_s', 'mes_s', 'ngl_s']::varchar[], array[]::varchar[]) ;
+insert into ___.input_output values ('canalisation', array['qe_e', 'dbo5_e', 'mes_e', 'ngl_e', 'ml', 'diam']::varchar[], array['qe_s', 'dbo5_s', 'mes_s', 'ngl_s']::varchar[], array['CO2 construction canalisation 2']::varchar[]) ;
 
 create sequence ___.canalisation_bloc_name_seq ;
 
@@ -309,52 +309,57 @@ select api.add_new_bloc('canalisation', 'bloc', 'LineString'
     ,additional_columns => '{diam_type_table.FE as diam_FE, diam_type_table.description as diam_description}'
     ,additional_join => 'left join ___.diam_type_table on diam_type_table.val = c.diam::varchar::___.diam_type and diam_type_table.materiau = c.materiau and diam_type_table.urbain = c.urbain::varchar::___.urban_type and diam_type_table.d_vie = c.d_vie::varchar::___.dvie_type and diam_type_table.sans_tranche = c.sans_tranche::varchar::___.method_type' 
     ) ;
+select api.add_new_formula('CO2 construction canalisation 2'::varchar, 'co2_c=ml*diam'::varchar, 2, ''::text) ;
+
 -- select api.add_new_bloc('canalisation', 'bloc', 'LineString' 
 --     ,additional_columns => '{diam_type_table.FE as cana_FE, diam_type_table.description as cana_description}'
 --     ,additional_join => 'left join ___.diam_type_table on diam_type_table.val = c.cana' 
 --     ) ;
 
-create or replace function ___.trigger_update_canalisation_bloc()
-returns trigger
-language plpgsql
-as $$
-declare 
-    items record ; 
-    possible_meth ___.method_type[] ;
-    query text ;
-    elem varchar ;
-begin 
-    -- On doit pouvoir changer dans le formulaire : matériau, urbain ou rural et après on ajuste les autres en fonction de ce qui est possible
-    select into items array_agg(urbain) as urbain from ___.diam_type_table where materiau = new.materiau;
-    if not new.urbain::varchar::___.urban_type = any(items.urbain) then
-        new.urbain := items.val[1] ;
-    end if ;
+-- Tentative abandonnée de faire un truc bien pour QGIS avec des types enum, mais ça marche pas top parce que ça demande d'altérer des tables dans un trigger
+-- Ce qui n'est pas légal
 
-    select into items array_agg(val) as val, array_agg(d_vie) as d_vie from ___.diam_type_table where materiau = new.materiau and urbain = new.urbain;
-    raise notice 'items = %', items ;
-    if not new.diam::varchar::___.diam_type = any(items.val) then
-        new.diam := items.val[1] ;
-    end if ;
-    if not new.d_vie::varchar::___.dvie_type = any(items.d_vie) then
-        new.d_vie := items.d_vie[1] ;
-    end if ;
-    
-    select into possible_meth array_agg(sans_tranche) from ___.diam_type_table where materiau = new.materiau and urbain = new.urbain 
-    and val = new.diam::varchar::___.diam_type and d_vie = new.d_vie::varchar::___.dvie_type ;
-    if not new.sans_tranche::varchar::___.method_type = any(possible_meth) then
-        new.sans_tranche := items.meth[1] ;
-    end if ;
+-- create or replace function ___.trigger_update_canalisation_bloc()
+-- returns trigger
+-- language plpgsql
+-- as $$
+-- declare 
+--     items record ; 
+--     possible_meth ___.method_type[] ;
+--     query text ;
+--     elem varchar ;
+-- begin 
+--     -- On doit pouvoir changer dans le formulaire : matériau, urbain ou rural et après on ajuste les autres en fonction de ce qui est possible
+--     select into items array_agg(urbain) as urbain from ___.diam_type_table where materiau = new.materiau;
+--     if not new.urbain::varchar::___.urban_type = any(items.urbain) then
+--         new.urbain := items.val[1] ;
+--     end if ;
 
-    delete from ___.diam_values ;
-    insert into ___.diam_values(val) select distinct unnest(items.val) ;
-    delete from ___.method_values ;
-    insert into ___.method_values(val) select distinct unnest(possible_meth) ;
-    delete from ___.dvie_values ;
-    insert into ___.dvie_values(val) select distinct unnest(items.d_vie) ;
+--     select into items array_agg(val) as val, array_agg(d_vie) as d_vie from ___.diam_type_table where materiau = new.materiau and urbain = new.urbain;
+--     raise notice 'items = %', items ;
+--     if not new.diam::varchar::___.diam_type = any(items.val) then
+--         new.diam := items.val[1] ;
+--     end if ;
+--     if not new.d_vie::varchar::___.dvie_type = any(items.d_vie) then
+--         new.d_vie := items.d_vie[1] ;
+--     end if ;
     
-    return new ;
-end ;
-$$ ;
+--     select into possible_meth array_agg(sans_tranche) from ___.diam_type_table where materiau = new.materiau and urbain = new.urbain 
+--     and val = new.diam::varchar::___.diam_type and d_vie = new.d_vie::varchar::___.dvie_type ;
+--     if not new.sans_tranche::varchar::___.method_type = any(possible_meth) then
+--         new.sans_tranche := items.meth[1] ;
+--     end if ;
+
+--     delete from ___.diam_values ;
+--     insert into ___.diam_values(val) select distinct unnest(items.val) ;
+--     delete from ___.method_values ;
+--     insert into ___.method_values(val) select distinct unnest(possible_meth) ;
+--     delete from ___.dvie_values ;
+--     insert into ___.dvie_values(val) select distinct unnest(items.d_vie) ;
+    
+--     return new ;
+-- end ;
+-- $$ ;
 
 -- create trigger canalisation_bloc_trigger after insert or update on ___.canalisation_bloc for each row execute function ___.trigger_update_canalisation_bloc() ;
 

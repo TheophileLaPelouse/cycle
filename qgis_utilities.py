@@ -118,6 +118,8 @@ ConstrOnly = set(['cad', 'e', 'tauenterre'])
 
 Input_and_output = set(['tbentrant'])
 
+SpecialBlocs = set(['canalisation', 'lien', 'sur_bloc', 'source'])
+
 class MessageBarLogger:
     def __init__(self, message_bar):
         self.message_bar = message_bar
@@ -485,18 +487,14 @@ class QGisProjectManager(QObject):
                     print('qml not found', qml)
                     qml = os.path.join(_qml_dir, qml_basename)
                 print('founded qml', qml)
+                print('layer_name', layer_name, 'tbl', tbl)
                 if tbl.endswith('_bloc') : 
                     b_types = tbl[:-5]
-                    # if layer_name == 'Canalisation' :
-                    #     print('\nMais Non il est LA !!!\n')
-                    #     print('b_types', b_types)
-                    #     print('f_details', f_details[b_types])
-                    #     print('inp_outs', inp_outs[b_types])
-
+            
                     if f_details.get(b_types) :
                         if not f_inputs.get(b_types) :
                             f_inputs[b_types] = {}
-                        if inp_outs[b_types]['concrete'] :
+                        if inp_outs[b_types]['concrete'] and b_types not in SpecialBlocs :
                             print('Avant update', time.time()-tic)
                             QGisProjectManager.update1qml(dico_layer, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
         print('temps', time.time()-tic)

@@ -741,6 +741,11 @@ for bloc in args_bloc :
             if not properties.get(f"{val}__ref") : 
                 properties[f"{val}__ref"] = []
             properties[f"{val}__ref"].append([f'ref_{val}_{norm_name}', 'val', bloc, f'{val}'])
+            # if val == 'diam' : 
+            #     properties['diam__ref'] += [["ref_diam_mat", "materiau", "Canalisation", "materiau"],
+            #         ["ref_diam_urbain", "urbain", "Canalisation", "urbain"],
+            #         ["ref_diam_sans_tranche", "sans_tranche", "Canalisation", "sans_tranche"]
+            #         ]
     
         # qml_dir = os.path.join(os.path.dirname(__file__), '..', 'ressources', 'qml')
         # if args_bloc[bloc]['default_values'].get('shape') == 'Point':

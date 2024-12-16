@@ -541,6 +541,23 @@
                 "D\u00e9grilleur",
                 "qdechet"
             ]
+        ], 
+        "diam" : [
+            "diam",
+            "api",
+            "diam_type_table",
+            "val"
+        ],
+        "diam__ref": [
+            [
+                "ref_diam_canalisation",
+                "val",
+                "Canalisation",
+                "diam"
+            ], 
+            ["ref_diam_mat", "materiau", "Canalisation", "materiau"],
+            ["ref_diam_urbain", "urbain", "Canalisation", "urbain"],
+            ["ref_diam_sans_tranche", "sans_tranche", "Canalisation", "sans_tranche"]
         ]
     },
     "R\u00e9seau": {
