@@ -48,6 +48,9 @@ _svg_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), 'ressources'
 _qml_dir = os.path.join(os.path.dirname(__file__), 'ressources', 'qml')
 _custom_qml_dir = os.path.join(os.path.expanduser('~'), '.cycle', 'qml')
 _columns_to_hide = set(['shape', 'formula', 'b_type', 'geom_ref'])
+
+# Il serait bon de passer les Alias dans la base de données directement, 
+# il faudra alors faire appelle à la base de données avant d'utiliser qgis_utilities 
 Alias = {'ngl' : 'NGL (kgNGL/an)', 'ngl_s' : 'NGL sortant (kgNGL/an)', 'fen2o_oxi' : 'Oxygène du milieu', 'dco' : 'DCO (kgDCO/an)', 'dco_s' : 'DCO sortant (kgDCO/an)', 
          'fech4_mil' : 'Milieu', 
          'qe' : 'Débit entrant (m3/j)', 'eh' : 'Equivalent Habitants', 'tbentrant' : 'Tonne de boue en amont de la filière boue (tMS/an)', 'eh_fe' : ' ', 'welec' : 'Welec (kWh/an)',
@@ -153,10 +156,9 @@ class QGisProjectManager(QObject):
 
     @staticmethod
     def layertree():
-        # this is a function, not calss static variable because othierwise translation is initialize after creation
         return(open_json(os.path.join(os.path.dirname(__file__), 'layertree.json')))
     # Faudra remettre le fait que ça trad dans l'ouverture du json mais on va sûrement le faire différemment de dans Expresseau.
-    # Et du coup pour l'efficacité ce sera une variable statique initialisée dans la classe
+    # Si traduction un jour
     
     @staticmethod
     def layertree_custom(project_filename):
@@ -183,6 +185,7 @@ class QGisProjectManager(QObject):
 
     @staticmethod
     def open_project(project_filename, srid):
+        # Ouvre un projet QGIS existant ou en crée un nouveau si le fichier n'existe pas
         QGisProjectManager.new_project()
         is_new_project = not os.path.exists(project_filename)
         if is_new_project:
@@ -218,6 +221,7 @@ class QGisProjectManager(QObject):
 
     @staticmethod
     def refresh_layers(model_name):
+        # Rafraîchit les couches en fonction du modèle actuel.
         if iface is not None:
             for layer in iface.mapCanvas().layers():
                 layer.setSubsetString(f"model = '{model_name}'")
@@ -245,7 +249,17 @@ class QGisProjectManager(QObject):
 
     @staticmethod
     def update_project(project_filename, project = None):
-        
+        """
+        Cette fonction est appelée à l'ouverture d'un projet. 
+        Elle va chercher chaque couche définie dans le fichier layertree.json et layertree_custom.json qui répertorie les blocs présents dans la base de donnée ainsi que le moyen pour y accéder. 
+        Puis elle ajoute ces couches dans le projet QGIS à ouvrir.
+        Args:
+            project_filename (str): The filename of the QGIS project to update.
+            project (QgsProject, optional): An existing QGIS project instance. If not provided, a new instance will be created.
+        Raises:
+            RuntimeError: If any layer is invalid after being added to the project.
+        """
+
         if not project : 
             project = QgsProject()
             project.clear()
@@ -412,6 +426,7 @@ class QGisProjectManager(QObject):
     
     @staticmethod
     def hide_columns(layer, columns) :
+        # Cache les colonnes que l'utilisateur ne doit pas voir
         config = layer.attributeTableConfig()
         cols = config.columns()
         for col in cols : 
@@ -423,6 +438,7 @@ class QGisProjectManager(QObject):
     
     @staticmethod
     def load_qml(project, project_filename):
+        # Charge les styles QML des couches. Cela crée aussi les références.
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         lang = '' if locale == 'en' else '_fr'
         lang = ''
@@ -449,6 +465,7 @@ class QGisProjectManager(QObject):
     
     @staticmethod
     def save_qml2ressource(project, layertree) : 
+        # Sauvegarde les styles QML personnalisés dans le répertoire des ressources.
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
         lang = '' if locale == 'en' else '_fr'
         lang = ''
@@ -468,7 +485,7 @@ class QGisProjectManager(QObject):
         
     @staticmethod
     def update_qml(project, project_filename, f_details, inp_outs, f_inputs) : 
-    
+        # Met à jour les styles QML des couches du projet.
         tic = time.time()
         # Pour l'instant on appelle à chaque ouverture de projet mais on pourrait vouloir ne pas toujours l'appeler
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
@@ -501,11 +518,44 @@ class QGisProjectManager(QObject):
                         
                             
     @staticmethod
-    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
+    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
+        """
+    Cette fonction est appelée à l'ouverture d'un projet.
+    Elle prend en entrée les formules de chacun des blocs et définit le style des formulaires.
+    Pour cela, elle utilise le dictionnaire Alias défini dans `qgis_utilities.py`,
+    et les informations relatives aux formules présentes dans la base de données.
+
+    Args:
+        dico_layer (dict): Dictionnaire contenant les informations des couches.
+        layer (QgsVectorLayer): La couche QGIS à mettre à jour.
+        qml (str): Le chemin vers le fichier QML pour le style de la couche.
+        f_details (dict): Dictionnaire contenant les informations des formules.
+        inp_outs (dict): Dictionnaire contenant les informations d'entrée et de sortie.
+        f_inputs (set): Ensemble des champs d'entrée des formules.
+        rapid (int, optional default 1): Indicateur de rapidité. Si 1, une modification n'a lieu que si le formulaire ne respecte pas le format demandé. Si 2, la configuration est ignorée. Sinon, la configuration est forcée.
+
+    Returns:
+        None
+
+    Raises:
+        RuntimeError: Si une erreur se produit lors du chargement du style ou de la configuration du formulaire.
+
+    Cette fonction effectue les tâches suivantes :
+        1. Charge le style QML pour la couche.
+        2. Configure le formulaire d'édition de la couche.
+        3. Définit les valeurs par défaut pour certains champs.
+        4. Définit les alias des champs pour une meilleure lisibilité.
+        5. Ajoute des onglets et des conteneurs au formulaire d'édition pour organiser les champs.
+        6. Traite les formules pour configurer les champs en fonction des niveaux de détail.
+        7. Ajoute les champs d'entrée et de sortie aux onglets appropriés.
+        8. Enregistre le style QML mis à jour pour la couche.
+    """
         t1 = time.time()
         
         try : layer.loadNamedStyle(qml)
-        except : pass
+        except : 
+            rapid = 0 
+            # Si le style n'existe pas, il faut forcément le définir entièrement
         config = layer.editFormConfig()
         try : config.setLayout(Qgis.AttributeFormLayout(1)) # y'a des versions de qgis où ça marche pas
         except : rapid = 2
@@ -736,6 +786,7 @@ class QGisProjectManager(QObject):
                     
     @staticmethod
     def create_project(project_filename, srid):
+        #  	Crée un nouveau projet QGIS et appelle update_project.
         project = QgsProject()
         project.clear()
         project.setFileName(project_filename)
@@ -776,7 +827,7 @@ class QGisProjectManager(QObject):
             os.mkdir(_custom_qml_dir)
 
         locale = QgsSettings().value('locale/userLocale', 'fr_FR')[0:2]
-        lang = '' if locale == 'en' else '_fr'
+        # lang = '' if locale == 'en' else '_fr' Pour plus tard peut être
         lang = ''
 
         for layer_name, tbl in QGisProjectManager.layers(project_filename).items():

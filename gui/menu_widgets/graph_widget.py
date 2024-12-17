@@ -29,8 +29,9 @@ class GraphWidget(QWidget):
         # print("test color backgound", self.palette().color(self.backgroundRole()))
         # print("test color backgound 2", self.palette().color(QPalette.Base).name())
         
-    def __render(self):
-        # self.fig.set_tight_layout({"rect": [0,0,1,0.95]})
+    def __render(self, rect = [0,0,1,1]) :
+        # Render the graph in a widget with a lighter background than the parent widget
+        self.fig.set_tight_layout(rect=rect)
         parent_bg_color = self.palette().color(self.backgroundRole())
         darker_color = parent_bg_color.lighter(102)
         darker_color_rgb = (darker_color.redF(), darker_color.greenF(), darker_color.blueF())
@@ -41,19 +42,6 @@ class GraphWidget(QWidget):
         
     def pie_chart(self, data, labels, title) : 
         self.__ax.clear()
-        # if data == [0,0,0] : 
-        #     data = [1,1,1]
-        # def autopct_format(values):
-        #     def my_format(pct):
-        #         total = sum(values)
-        #         val = int(round(pct*total/100.0))
-        #         return '{v:d}'.format(v=val)
-        #     return my_format
-        # print("pie_data", data)
-        # print("pie_labels", labels)
-        # print("pie_color", list(color.values()))
-        # self.__ax.pie(data, autopct=autopct_format(data), colors=list(color.values()))
-        # self.__ax.pie(data)
         
         # Petit cycle de couleur daltionien friendly (nécessaire selon un daltonien qui écrit ce message) 
         CB_color_cycle = ['#377eb8', '#ff7f00', '#4daf4a',
@@ -61,7 +49,6 @@ class GraphWidget(QWidget):
                   '#999999', '#e41a1c', '#dede00']
         self.__ax.set_prop_cycle(cycler('color', CB_color_cycle))
         wedges, texts = self.__ax.pie(data, labels=labels, labeldistance=0.7)
-        self.fig.tight_layout(rect= [-0.05, -0.05, 1.05, 1.05])
         renderer = self.canvas.get_renderer()
         bboxes = [t.get_window_extent(renderer=renderer) for t in texts]
         for i in range(len(bboxes)):
@@ -70,11 +57,10 @@ class GraphWidget(QWidget):
                     print('overlapping', texts[j].get_text())
                     texts[j].set_visible(False)
         
-        self.__render()
+        self.__render(rect= [-0.05, -0.05, 1.05, 1.05])
         
     def bar_chart(self, r, data, data_err, c_or_e, names, ids, color, edgecolor, title, ylabel, xlabel, render = True) :
-        # print("bar_data", data)
-        # print("test", data)
+        # Histogramme avec barre d'incertitude et séparation des gaz
         width = 0.4 
         # print(data_err)
         self.__ax.clear()
@@ -98,8 +84,8 @@ class GraphWidget(QWidget):
         self.__ax.set_xlabel(xlabel)
         self.__ax.legend(edgecolor='black')
         self.__ax.grid(axis='y')
-        self.fig.tight_layout(rect=[0.03, 0.03, 0.97, 0.97 ])
-        # Faudra changer les noms en id si ça dépasse et un jour peut être truc d'affichage vraiment clean avec décalage sur deux écrans si ça dépasse.
+        # Faudra changer les noms en id si ça dépasse et un jour 
+        # Un jour, peut être truc d'affichage vraiment clean avec décalage sur deux écrans (et une flèche pour passer de l'un à l'autre) si ça dépasse.
         labels = self.__ax.get_xticklabels()
         renderer = self.canvas.get_renderer()
         flag_overlap = False
@@ -115,9 +101,11 @@ class GraphWidget(QWidget):
                 self.__ax.set_xticklabels(labels)
         # self.fig.tight_layout()
         if render :
-            self.__render()
+            self.__render(rect=[0.03, 0.03, 0.97, 0.97 ])
 
     def add_bar_chart(self, r, rtot, data, data_err, c_or_e, names, color, edgecolor) : 
+        # Ajout d'un histogramme à un histogramme déjà existant
+        # Non utilisé actuellement.
         width = 0.4
         if c_or_e =='e' or c_or_e == 'c' :
             self.__ax.bar(r, data['co2'], 
@@ -134,9 +122,10 @@ class GraphWidget(QWidget):
                           yerr = data_err, capsize = 5, ecolor = 'black', width=width)
         print(rtot, names)
         self.__ax.set_xticks(rtot, names)
-        self.__render()
+        self.__render(rect=[0.03, 0.03, 0.97, 0.97 ])
         
 def pretty_number(num, incert, unit, nb_sig = 3, nb_decimals = 1) :
+    # Formatage des nombres pour affichage
     if num == 0 and incert == 0 :
         return "No value"
     if num / 1000 > 1 : 
@@ -176,8 +165,7 @@ def fill_bars(prg, data, stud_time) :
 
 from numpy import argsort
 def sort_bars(bars1, names1, err1, bars2 = None, names2 = None, err2 = None) : 
-    # si bars2 est none c'est qu'on a pas encore fait de bar donc il faut trier bars1
-    # Sinon bars1 est déjà trié et on doit insérer correctement
+    # si bars2 est none trie bars1, sinon combine les deux et les trie (names et err sont triés dans le même ordre que bars).
     fields = ['co2', 'ch4', 'n2o']
     # print("On entre dans la fonction")
     # print('avant actions', bars1, names1, err1)

@@ -135,7 +135,7 @@ class CreateBlocWidget(QDialog):
             
     
     def verify_formula(self, formula):
-        # Faudra vérifier les formules sur le point de vue synthax et le point de vue sécurité.
+        # Faudra vérifier les formules sur le point de vue synthax.
         return True
     
     def __delete_formula(self):
@@ -361,7 +361,12 @@ class CreateBlocWidget(QDialog):
         
         
     def __create_bloc(self):
-        # Pour que ce soit plus jolie faudra différencier layer_name et layer_name_bloc.
+        """
+        Utilise toutes les informations rentrées pour créer définir un blocs dans la base de données 
+        à l'aide de la fonction `write_sql_bloc`, 
+        puis initialise la couche comme dans `qgis_utilities`.
+        """
+        
         self.default_values['shape'] = self.geom.currentText()
         
         layer_name = self.bloc_name.text()

@@ -107,7 +107,8 @@ def connection_test() :
     with autoconnection("postgres") as con, con.cursor() as cur:
         cur.execute("select 1;")
         return cur.fetchone()[0] == 1
-
+    
+# Test de la connection lorsque le fichier est importé
 try : 
     flag = connection_test()
 except : 
@@ -199,12 +200,6 @@ def reset_project(project_name, srid, debug=False):
             ;
             """)
         print("où3")
-        # load_file(project_name, os.path.join(__current_dir, 'sql', 'data.sql'))
-        # load_file(project_name, os.path.join(__current_dir, 'sql', 'api.sql'))
-        # load_file(project_name, os.path.join(__current_dir, 'sql', 'formula.sql'))
-        # load_file(project_name, os.path.join(__current_dir, 'sql', 'special_blocs.sql'))
-        # load_file(project_name, os.path.join(__current_dir, 'sql', 'blocs.sql'))
-        
         with open(os.path.join(__current_dir, 'sql', 'data.sql')) as f:
             cur.execute(f.read())
         print("où4")
@@ -348,6 +343,7 @@ def export_db(dbname, path_dump) :
             model_lines.append(line)
             dumps[k] = ''
         elif line.startswith('INSERT INTO api.bloc (id, name, model, shape, geom_ref, ss_blocs, sur_bloc, b_type) VALUES (') : 
+            # Il faut ajouter le modèle à la ligne car celui-ci se trouve dans la table ___.bloc mais pas dans les tables ___.name_bloc
             print(line[:100])
             # 92 c'est la longueur de la chaine avant les valeurs 
             values = line[92:-2].split(',')
@@ -411,6 +407,7 @@ def import_db(dbname, path_dump) :
 
 
 def update_db(dbname):
+    # Export then import db to update it
     path_dump = os.path.join(__current_dir, 'sql', 'dump.sql')
     export_db(dbname, path_dump)
     with autoconnection(dbname) as con, con.cursor() as cur:
@@ -482,13 +479,13 @@ def import_model(file, model, dbname):
         if dst_srid != src_srid:
             cur.execute("update api.metadata set srid=%s", (dst_srid,))
 
-    if src_version != dst_version:
-        update_db(tmp_db)
+    # if src_version != dst_version:
+    #     update_db(tmp_db)
 
     with autoconnection(tmp_db) as con, con.cursor() as cur:
         cur.execute("select srid, cycle_version() from api.metadata")
         src_srid, src_version = cur.fetchone()
-        assert(dst_version==src_version)
+        # assert(dst_version==src_version)
         assert(dst_srid==src_srid)
         cur.execute("update api.model set name=%s",(model,))
         cur.execute("drop schema if exists api cascade")
@@ -497,15 +494,15 @@ def import_model(file, model, dbname):
         cur.execute("drop function cycle_version")
         cur.execute("alter schema ___ rename to cpy")
 
-    subprocess.run(['pg_dump', '-O', '-f', tmp_db, f'service={get_service()} dbname={tmp_db}'])
-    with open(tmp_db, 'rb') as d:
-        dump = d.read()
-    with open(tmp_file, 'wb') as d:
-        eol = ('\n' if os.name != 'nt' else '\r\n')
-        d.write(f"-- cycle version {dst_version}{eol}".encode('ascii'))
-        d.write(f"-- project SRID {dst_srid}{eol}".encode('ascii'))
-        d.write(dump)
-
+    # subprocess.run(['pg_dump', '-O', '-f', tmp_db, f'service={get_service()} dbname={tmp_db}'])
+    # with open(tmp_file, 'r') as d:
+    #     dump = d.read()
+    # with open(tmp_file, 'wb') as d:
+    #     eol = ('\n' if os.name != 'nt' else '\r\n')
+    #     d.write(f"-- cycle version {dst_version}{eol}".encode('ascii'))
+    #     d.write(f"-- project SRID {dst_srid}{eol}".encode('ascii'))
+    #     d.write(dump)
+    export_db(tmp_db, tmp_file)
     remove_project(tmp_db)
 
     cmd = ['psql', '-v', 'ON_ERROR_STOP=1',

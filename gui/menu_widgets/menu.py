@@ -33,16 +33,16 @@ class CycleMenu(QMenu):
 
     def __refresh(self):
         self.clear()
-        self.addAction(self.tr("&Manage projects")).triggered.connect(self.__manage_projects)
-        self.addAction(self.tr("&New project")).triggered.connect(self.__project_new)
+        self.addAction(self.tr("&Gérer les projets")).triggered.connect(self.__manage_projects)
+        self.addAction(self.tr("&Nouveau Projet")).triggered.connect(self.__project_new)
 
         if QGisProjectManager.project_name() != '':
             project = Project(QGisProjectManager.project_name(), self.__log_manager)
             current_model = QGisProjectManager.get_qgis_variable('current_model')
 
             '''returns the model menu, creates it if needed'''
-            model_menu = self.addMenu(self.tr("&Models"))
-            set_current_menu = model_menu.addMenu(self.tr("&Set current"))
+            model_menu = self.addMenu(self.tr("&Scenario"))
+            set_current_menu = model_menu.addMenu(self.tr("&Sélectionner scénario courant"))
             for model in project.models:
                 action = set_current_menu.addAction(model)
                 action.triggered.connect(self.__set_current_model)
@@ -51,19 +51,19 @@ class CycleMenu(QMenu):
                     f.setBold(True)
                     action.setFont(f);
 
-            model_menu.addAction(self.tr("&Add model")).triggered.connect(self.__add_model)
-            model_menu.addAction(self.tr("&Delete current model")).triggered.connect(self.__delete_current_model)
+            model_menu.addAction(self.tr("&Ajouter scénario")).triggered.connect(self.__add_model)
+            model_menu.addAction(self.tr("&Supprimer scénario courant")).triggered.connect(self.__delete_current_model)
 
+        # Pour l'instant tout ce qui s'appelle modèle dans le code va s'appeler scénario dans l'interface, peut être que c'est un choix que l'on ne voudra pas garder
+        # Notamment si couplage avec hydra et Express'eau.
 
-            # '''Creates the scenario menu'''
-            # self.addAction(self.tr("&Scenarios")).triggered.connect(self.__scenario_manager) pour plus tard
-        self.addAction(self.tr("Show results")).triggered.connect(self.__show_results)
-        self.addAction(self.tr("Save custom layer styles")).triggered.connect(self.__save_layer_styles)
-        self.addAction(self.tr("&Help")).triggered.connect(self.__help)
-        self.addAction(self.tr("About")).triggered.connect(self.__about)
+        self.addAction(self.tr("Montrer les résultats")).triggered.connect(self.__show_results)
+        self.addAction(self.tr("Sauvegarder les couches customisées")).triggered.connect(self.__save_layer_styles)
+        self.addAction(self.tr("&Aide")).triggered.connect(self.__help)
+        # self.addAction(self.tr("A propos")).triggered.connect(self.__about)
 
     def __help(self):
-        webbrowser.open('https://xpresseau.hydra-software.net', new=0)
+        webbrowser.open('https://github.com/TheophileLaPelouse/LIEGES', new=0)
 
     def __save_layer_styles(self):
         confirm = QMessageBox(QMessageBox.Question, self.tr("Save custom layers styles"), self.tr("This will overwrite all your custom layer styles"), QMessageBox.Ok | QMessageBox.Cancel).exec_()

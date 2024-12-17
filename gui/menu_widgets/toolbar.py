@@ -80,7 +80,7 @@ class CycleToolbar(QToolBar):
         self.addWidget(self.spacer)
             
         # self.addWidget(QLabel(self.tr('Propriétés du modèle')))
-        self.addWidget(QLabel(self.tr('Modèle courant')))
+        self.addWidget(QLabel(self.tr('Scénario courant')))
         self.addWidget(self.__model_menu)
         self.spacer4 = QLabel('')
         self.spacer4.setFixedWidth(5)

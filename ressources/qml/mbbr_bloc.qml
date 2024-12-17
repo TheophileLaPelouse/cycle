@@ -206,7 +206,7 @@
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation strength="Association" id="MBBR_cda7358a_8945_4f6e_bcab_4c9ef59be4ee_prod_e_R_actifs_a42b44d2_3ad1_46b3_b333_1c1b47b926da_val" referencingLayer="MBBR_cda7358a_8945_4f6e_bcab_4c9ef59be4ee" name="ref_prod_e_mbbr" layerId="R_actifs_a42b44d2_3ad1_46b3_b333_1c1b47b926da" providerKey="postgres" layerName="Réactifs" dataSource="dbname='test24' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" referencedLayer="R_actifs_a42b44d2_3ad1_46b3_b333_1c1b47b926da">
+    <relation strength="Association" id="MBBR_a0694b40_2c84_4087_83b9_63b0ed760917_prod_e_R_actifs_b36e4f8e_e4c1_4397_94f5_e34ed730f8fe_val" referencingLayer="MBBR_a0694b40_2c84_4087_83b9_63b0ed760917" name="ref_prod_e_mbbr" layerId="R_actifs_b36e4f8e_e4c1_4397_94f5_e34ed730f8fe" providerKey="postgres" layerName="Réactifs" dataSource="dbname='faisa_evry_tigery_2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" referencedLayer="R_actifs_b36e4f8e_e4c1_4397_94f5_e34ed730f8fe">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
   </referencedLayers>
@@ -1265,7 +1265,7 @@
     <default field="geom_ref" expression="" applyOnUpdate="0"/>
     <default field="sur_bloc" expression="" applyOnUpdate="0"/>
     <default field="model" expression="@current_model" applyOnUpdate="0"/>
-    <default field="prod_e_fe" expression="attribute(get_feature(layer:='R_actifs_a42b44d2_3ad1_46b3_b333_1c1b47b926da', attribute:='val', value:=&quot;prod_e&quot;), 'fe')" applyOnUpdate="1"/>
+    <default field="prod_e_fe" expression="attribute(get_feature(layer:='R_actifs_b36e4f8e_e4c1_4397_94f5_e34ed730f8fe', attribute:='val', value:=&quot;prod_e&quot;), 'fe')" applyOnUpdate="1"/>
     <default field="prod_e_description" expression="" applyOnUpdate="0"/>
   </defaults>
   <constraints>

@@ -77,6 +77,7 @@ class AllResults(QDialog) :
             self.tabWidget.widget(k).set_params(param_values)
             
     def save_all(self) :
+        # Sauvegarde de tous les paramètres d'affichage des différents onglet (pour les recharger plus tard)
         default_directory = self.project.directory
         file, __ = QFileDialog.getSaveFileName(self, self.tr("Sélectionner un fichier"), default_directory, filter="graph_lieges (*.plot_lieges)")
         if not file : return
@@ -99,6 +100,7 @@ class AllResults(QDialog) :
             
         
     def export_results(self) :
+        # Exporte les résultats au format csv ou excel.
         models = self.project.models
         
         file, __ = QFileDialog.getSaveFileName(self, self.tr("Sélectionner un fichier"), filter="CSV (*.csv) ;;Excel (*.xlsx)")

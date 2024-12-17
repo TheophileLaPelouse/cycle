@@ -87,7 +87,7 @@ class ProjectManager(QDialog):
         self.__refresh_buttons()
 
     def __refresh_tree(self):
-        '''Clears the QTreeWidget then re-populates it with all cycle projects'''
+        '''Clears the QTreeWidget then re-populates it with all LIEGES projects'''
         self.tree_widget.clear()
         for project_name in self.project_list:
             if project_name != normalized_name(project_name):
@@ -164,6 +164,7 @@ class ProjectManager(QDialog):
         input_output, f_details, f_inputs = project.get_values4qml()
         QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output, f_inputs) 
         
+        # Ajoute la couche openstreet map sur la carte.
         Qproject = QgsProject.instance()
         urlWithParams = 'type=xyz&url=https://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857'
         layers = Qproject.mapLayersByName('OpenStreetMap')
@@ -301,9 +302,9 @@ class ProjectManager(QDialog):
                 self.__log_manager.error(self.tr("SRID not found in file ")+file)
                 return
             if file.lower().endswith('.lieges'):
-                nb_char = 6
+                nb_char = 7
             elif file.lower().endswith('.sql'):
-                nb_char = 3
+                nb_char = 4
             dialog = NewProjectDialog(self, project_name=os.path.basename(file.lower())[:-nb_char])
             dialog.srid.setEnabled(False)
             dialog.srid.setText(get_srid_from_file(file))
@@ -353,10 +354,10 @@ class ProjectManager(QDialog):
             self.__refresh_tree()
 
     def import_model(self):
-        '''Imports model from files package from old expresseau.exe ou EPANET'''
+        '''Imports model from file'''
         project_name, model_name = self.__get_selection()
         assert(project_name is not None)
-        file, __ = QFileDialog.getOpenFileName(self, self.tr("Select a file"), filter="EPANET (*.inp);; EXPRESSEAU (*.sql)")
+        file, __ = QFileDialog.getOpenFileName(self, self.tr("Select a file"), filter="LIEGES (*.sql)")
         # if file and file.lower().endswith('.dat'):
         #     path = os.path.dirname(file)
         #     dialog = NewModelDialog(self)
@@ -370,25 +371,23 @@ class ProjectManager(QDialog):
         #             con.commit()
         #         project.current_model = dialog.return_name()
         #         self.__refresh_tree()
+
+        # if file and file.lower().endswith('.inp'):
+        #     project = Project(project_name, self.__log_manager)
+        #     params = {
+        #         "project": project.name,
+        #         "project directory": project.directory[:-len(project.name)],
+        #         "model": normalized_name(os.path.basename(file)[:-4], 16),
+        #         "file": file
+        #         }
+        #     processing.execAlgorithmDialog('cycle:import inp', params)
+        #     self.__refresh_tree()
         # Je crois que y'en aura jamais besoin mais je me laisse encore douter une peu
-
-        if file and file.lower().endswith('.inp'):
-            project = Project(project_name, self.__log_manager)
-            params = {
-                "project": project.name,
-                "project directory": project.directory[:-len(project.name)],
-                "model": normalized_name(os.path.basename(file)[:-4], 16),
-                "file": file
-                }
-            processing.execAlgorithmDialog('cycle:import inp', params)
+        dialog = NewModelDialog(self)
+        ok = dialog.exec_()
+        if ok == dialog.Accepted:
+            import_model(file, dialog.return_name(), project_name)
             self.__refresh_tree()
-
-        elif file and file.lower().endswith('.sql'):
-            dialog = NewModelDialog(self)
-            ok = dialog.exec_()
-            if ok == dialog.Accepted:
-                import_model(file, dialog.return_name(), project_name)
-                self.__refresh_tree()
 
 
     def __get_selection(self):

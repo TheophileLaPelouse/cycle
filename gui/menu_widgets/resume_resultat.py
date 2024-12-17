@@ -71,6 +71,7 @@ class RecapResults(QDockWidget) :
         self.model_combo.addItems([''] + model_list)    
     
     def show_results(self, index_change, model_name = None) : 
+        # Rempli le tableau récaptilatif des résultats et affiche les graphes
         print(index_change)
         if index_change == 0 : 
             return
@@ -171,6 +172,7 @@ class RecapResults(QDockWidget) :
             self.warning_btn.clicked.connect(self.filter_table)
             
     def fill_table(self) :
+        # Rempli le tableau récapitulatif des résultats
         self.table_recap.setRowCount(len(self.__recap_table))
         idx = 0
         print("BONJOUR")
@@ -189,6 +191,7 @@ class RecapResults(QDockWidget) :
             idx += 1
             
     def filter_table(self) :
+        # Filtre le tableau en fonction de to_make_flashy, soit affiche tout soit que les valeur manquantes
         if self.table_recap.rowCount() != len(self.to_make_flashy) :
             self.table_recap.setRowCount(len(self.to_make_flashy))
             idx = 0
@@ -209,8 +212,7 @@ class RecapResults(QDockWidget) :
             self.fill_table()
         
     def show_plot(self, bloc_name = None, dpi = 75, edgecolor = 'grey', color = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
-        # print("show", self.__current_model)
-        # print(f"select api.get_histo_data('{self.__current_model}')")
+        # Trace les diagrammes circulaires puis les histogrammes.
         data = self.project.fetchone(f"select api.get_histo_data('{self.__current_model}')")
         data = data[0]
         print(data)
@@ -219,13 +221,7 @@ class RecapResults(QDockWidget) :
         self.label_c.setText(pretty_number(data['total']['co2_eq_c']['val'], data['total']['co2_eq_c']['incert']*data['total']['co2_eq_c']['val'], 'kgCO2'))
         self.label_e.setStyleSheet("font-weight: bold; font-size: 13px;")
         self.label_c.setStyleSheet("font-weight: bold; font-size: 13px;")
-        
-        # fields = ['co2_e', 'ch4_e', 'n2o_e', 'co2_c', 'ch4_c', 'n2o_c']
-        # for field in fields : 
-        #     if not data['total'].get(field) : 
-        #         data['total'][field] = {'val' : 0, 'incert' : 0}
-        # data_pie_e = [data['total'][field]['val']*self.prg[field[:-2]] for field in fields[:3]]
-        # labels = ['CO2', 'CH4', 'N2O']
+
         # self.graph_pie_e.pie_chart(data_pie_e, labels, color, tr("kgGaz/an"))
         data_pie_e = []
         data_pie_c = []
@@ -258,36 +254,6 @@ class RecapResults(QDockWidget) :
         self.graph_bar_ce.bar_chart(r, bars_ce, bars_ce_err, 'ce', names_ce, bloc_id, color, edgecolor, tr(""), tr('kg de CO2eq émis par %d ans' % stud_time), tr('Blocs du modèle %s' % self.__current_model))   
 
         
-        
-        # self.title_bar_e.setText(tr("Emission exploitation (kgGaz/an)"))
-        # self.title_bar_c.setText(tr("Emission construction (kgGaz)"))
-    
-    # def fill_bars(self, data) : 
-    #     bars = {'co2_e' : [], 'ch4_e': [], 'n2o_e': [], 'co2_c' : [], 'ch4_c': [], 'n2o_c': []}
-    #     for key in data : 
-    #         if key != 'total' :
-    #             for field in bars : 
-    #                 bars[field].append(data[key].get(field, {'val' : 0, 'incert' : 0}))
-    #     r = range(len(bars['co2_e'])) 
-    #     names = list(data.keys())
-    #     names.remove('total')
-    #     print('r', r)
-    #     print('prg', self.prg)
-    #     bars_c = {'co2' : [x['val']*self.prg['co2'] for x in bars['co2_c']], 
-    #               'ch4' : [x['val']*self.prg['ch4'] for x in bars['ch4_c']], 
-    #               'n2o' : [x['val']*self.prg['n2o'] for x in bars['n2o_c']]}
-        
-    #     bars_e = {'co2' : [x['val']*self.prg['co2'] for x in bars['co2_e']], 
-    #               'ch4' : [x['val']*self.prg['ch4'] for x in bars['ch4_e']], 
-    #               'n2o' : [x['val']*self.prg['n2o'] for x in bars['n2o_e']]}
-        
-    #     bars_c_err = [bars['co2_c'][k]['incert']*bars_c['co2'][k] + bars['ch4_c'][k]['incert']*bars_c['ch4'][k] + bars['n2o_c'][k]['incert']*bars_c['n2o'][k] for k in r]
-        
-    #     bars_e_err = [bars['co2_e'][k]['incert']*bars_e['co2'][k] + bars['ch4_e'][k]['incert']*bars_e['ch4'][k] + bars['n2o_e'][k]['incert']*bars_e['n2o'][k] for k in r]
-    #     print('bars_c', bars_c)
-    #     print('bonjour', bars_e_err)
-    #     return r, bars_c, bars_c_err, bars_e, bars_e_err, names
-    
     def navigate(self, index) :
         if index == 1 : 
             self.stackedWidget.setCurrentIndex(2)

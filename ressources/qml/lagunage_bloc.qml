@@ -206,7 +206,7 @@
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation strength="Association" id="Lagunage_2f9ff8c2_b33e_4684_9ab1_32270cc9806d_prod_e_R_actifs_a42b44d2_3ad1_46b3_b333_1c1b47b926da_val" referencingLayer="Lagunage_2f9ff8c2_b33e_4684_9ab1_32270cc9806d" name="ref_prod_e_lagunage" layerId="R_actifs_a42b44d2_3ad1_46b3_b333_1c1b47b926da" providerKey="postgres" layerName="Réactifs" dataSource="dbname='test24' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" referencedLayer="R_actifs_a42b44d2_3ad1_46b3_b333_1c1b47b926da">
+    <relation strength="Association" id="Lagunage_b2dbb802_7351_4c39_9c74_941d9d1a0712_prod_e_R_actifs_b36e4f8e_e4c1_4397_94f5_e34ed730f8fe_val" referencingLayer="Lagunage_b2dbb802_7351_4c39_9c74_941d9d1a0712" name="ref_prod_e_lagunage" layerId="R_actifs_b36e4f8e_e4c1_4397_94f5_e34ed730f8fe" providerKey="postgres" layerName="Réactifs" dataSource="dbname='faisa_evry_tigery_2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;prod_e_type_table&quot;" referencedLayer="R_actifs_b36e4f8e_e4c1_4397_94f5_e34ed730f8fe">
       <fieldRef referencedField="val" referencingField="prod_e"/>
     </relation>
   </referencedLayers>
@@ -1185,7 +1185,7 @@
     <default field="geom_ref" expression="" applyOnUpdate="0"/>
     <default field="sur_bloc" expression="" applyOnUpdate="0"/>
     <default field="model" expression="@current_model" applyOnUpdate="0"/>
-    <default field="prod_e_fe" expression="attribute(get_feature(layer:='R_actifs_a42b44d2_3ad1_46b3_b333_1c1b47b926da', attribute:='val', value:=&quot;prod_e&quot;), 'fe')" applyOnUpdate="1"/>
+    <default field="prod_e_fe" expression="attribute(get_feature(layer:='R_actifs_b36e4f8e_e4c1_4397_94f5_e34ed730f8fe', attribute:='val', value:=&quot;prod_e&quot;), 'fe')" applyOnUpdate="1"/>
     <default field="prod_e_description" expression="" applyOnUpdate="0"/>
   </defaults>
   <constraints>

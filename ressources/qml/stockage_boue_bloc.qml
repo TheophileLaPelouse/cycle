@@ -206,7 +206,7 @@
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers>
-    <relation strength="Association" id="Stockage_Boue_cbe3f8ae_700c_42e1_9dfd_0e147c822907_festock_Taille_du_stockage_5fb3e027_6070_4b48_b41b_2f1168f0fbd6_val" referencingLayer="Stockage_Boue_cbe3f8ae_700c_42e1_9dfd_0e147c822907" name="ref_festock_stockage_boue" layerId="Taille_du_stockage_5fb3e027_6070_4b48_b41b_2f1168f0fbd6" providerKey="postgres" layerName="Taille du stockage" dataSource="dbname='test24' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" referencedLayer="Taille_du_stockage_5fb3e027_6070_4b48_b41b_2f1168f0fbd6">
+    <relation strength="Association" id="Stockage_Boue_379d0386_38f2_4c08_9cec_c5b880b37abf_festock_Taille_du_stockage_8ee82466_a287_4e15_88a5_b2f4dad6dfc4_val" referencingLayer="Stockage_Boue_379d0386_38f2_4c08_9cec_c5b880b37abf" name="ref_festock_stockage_boue" layerId="Taille_du_stockage_8ee82466_a287_4e15_88a5_b2f4dad6dfc4" providerKey="postgres" layerName="Taille du stockage" dataSource="dbname='faisa_evry_tigery_2' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;festock_type_table&quot;" referencedLayer="Taille_du_stockage_8ee82466_a287_4e15_88a5_b2f4dad6dfc4">
       <fieldRef referencedField="val" referencingField="festock"/>
     </relation>
   </referencedLayers>
@@ -445,7 +445,7 @@
     <default field="geom_ref" expression="" applyOnUpdate="0"/>
     <default field="sur_bloc" expression="" applyOnUpdate="0"/>
     <default field="model" expression="@current_model" applyOnUpdate="0"/>
-    <default field="festock_fe" expression="attribute(get_feature(layer:='Taille_du_stockage_5fb3e027_6070_4b48_b41b_2f1168f0fbd6', attribute:='val', value:=&quot;festock&quot;), 'fe')" applyOnUpdate="1"/>
+    <default field="festock_fe" expression="attribute(get_feature(layer:='Taille_du_stockage_8ee82466_a287_4e15_88a5_b2f4dad6dfc4', attribute:='val', value:=&quot;festock&quot;), 'fe')" applyOnUpdate="1"/>
     <default field="festock_description" expression="" applyOnUpdate="0"/>
   </defaults>
   <constraints>

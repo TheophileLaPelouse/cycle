@@ -35,6 +35,11 @@ class Project(object):
 
     @staticmethod
     def create_new_project(project_name, srid, directory = CYCLE_DIR, log_manager = LogManager(ConsoleLogger(), "Cycle")):
+        def create_new_project(project_name, srid, directory=CYCLE_DIR, log_manager=LogManager(ConsoleLogger(), "Cycle")):
+            """
+            Crée un nouveau projet avec un nom et un SRID spécifiés, initialise le répertoire du projet et crée un fichier .path si nécessaire.
+            """
+        
         assert project_name == normalized_name(project_name)
         create_project(project_name, srid)
         project = Project(project_name, log_manager)
@@ -202,6 +207,9 @@ class Project(object):
             cur.executemany(query, param)
 
     def get_values4qml(self):
+        """
+        regroupe les informations du tableaux input_output et formulas pour pouvoir ensuite les afficher correctement dans les QMLs
+        """
         raw_inp_out = self.fetchall('select * from api.input_output')
         input_output = {elem[0] : {'inp' : elem[1], 'out' : elem[2], 'concrete' : elem[-1]} for elem in raw_inp_out}
         query = """
@@ -231,6 +239,7 @@ class Project(object):
         return self.fetchone("select api.bloc_tree()")[0]
     
     def create_index(self) : 
+        # Crée la table des Alias dans la base de données pour pouvoir la visualisée. Il faudra à terme tout passer dans la base de données.
         try : 
             Alias_jsonb = ''
             for key, val in Alias.items() : 

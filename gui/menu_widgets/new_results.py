@@ -33,6 +33,7 @@ class Result(QDialog) :
         self.bloc_id = {}
         self.bloc_tree = {}
         self.refresh_tree()
+        
         # Adjust column widths
         self.treeWidget.header().setStretchLastSection(False)
         self.treeWidget.header().setSectionResizeMode(0, QHeaderView.Stretch)
@@ -40,6 +41,7 @@ class Result(QDialog) :
         self.treeWidget.header().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.treeWidget.header().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         
+        # Set style
         self.frame.setStyleSheet("""
             QFrame {
                 border: 1px solid lightgray;
@@ -73,6 +75,7 @@ class Result(QDialog) :
                 }
         """)
         
+        # Add splitters
         layout = self.frame_splitter.layout()
         splitter = QSplitter(Qt.Horizontal)
         splitter.addWidget(self.frame)
@@ -111,6 +114,7 @@ class Result(QDialog) :
             self.prg[prg[0][4:].lower()] = prg[1]
         
     def refresh_tree(self) : 
+        # Affiche l'arborescence modèles, bloc, sur-blocs qui décrit un projet et ajoute les checkboxes, et widget de choix de couleur
         bloc_tree = self.project.bloc_tree()
         blocs_id = self.project.fetchall("select name, id from api.bloc")
         self.bloc_id = {b[0] : b[1] for b in blocs_id}
@@ -201,6 +205,7 @@ class Result(QDialog) :
     
     
     def show_table(self, bloc_groups, stud_time) :
+        # Remplie la table d'affichage des résultats.
         self.table.clear()
         
         def add_children(parent_node, data, brush) : 
@@ -262,6 +267,7 @@ class Result(QDialog) :
         return 
      
     def show_graphs(self, bloc_groups, stud_time, ges_colors = {'co2' : 'grey', 'ch4' : 'brown', 'n2o' : 'yellow'}) :
+        # Affiche les histogrammes en utilisant `api.get_histo_data2`.
         first = True
         j = 0
         n = len(bloc_groups)
@@ -322,39 +328,3 @@ class Result(QDialog) :
                     self.params[bloc][0].setChecked(param_values[bloc][0])
                 self.params[bloc][1].setCurrentText(param_values[bloc][1])
                  
-
-# import os 
-# from PyQt5.QtWidgets import QDialog, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QPushButton, QFileDialog, QLabel, QProgressBar, QCheckBox
-# from PyQt5 import uic
-
-# class Resume_result(QDialog):
-#     def __init__(self, parent=None):
-#         super(Resume_result, self).__init__(parent)
-#         uic.loadUi(os.path.join(os.path.dirname(__file__), 'results_graphs.ui'), self)
-#         layertree = {'bloc1': ['bloc1', 'bloc2', 'bloc3']}
-#         rootnode = QTreeWidgetItem(self.treeWidget)
-#         for elem in layertree:
-#             node = QTreeWidgetItem(rootnode)
-#             node.setText(0, elem)
-#             for child in layertree[elem]:
-#                 childnode = QTreeWidgetItem(node)
-#                 childnode.setText(0, child)
-#                 # Add QCheckBox to the "Sélection" column
-#                 checkbox = QCheckBox(self.treeWidget)
-#                 self.treeWidget.setItemWidget(childnode, 1, checkbox)
-#                 # Connect the QCheckBox to a function
-#                 checkbox.stateChanged.connect(lambda x : self.on_checkbox_state_changed(child))
-                
-#     def on_checkbox_state_changed(self, name):
-#         print(name)
-
-                
-#         # self.exec_()
-        
-# if __name__ == '__main__':
-#     import sys
-#     from PyQt5.QtWidgets import QApplication
-#     app = QApplication(sys.argv)
-#     dialog = Resume_result()
-#     dialog.show()
-#     sys.exit(app.exec_())

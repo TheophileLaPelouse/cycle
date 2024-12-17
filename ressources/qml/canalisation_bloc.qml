@@ -8,8 +8,8 @@
   </flags>
   <temporal limitMode="0" endField="" enabled="0" mode="0" fixedDuration="0" startExpression="" durationUnit="min" endExpression="" durationField="id" startField="" accumulate="0">
     <fixedRange>
-      <start></start>
-      <end></end>
+      <start/>
+      <end/>
     </fixedRange>
   </temporal>
   <elevation zscale="1" showMarkerSymbolInSurfacePlots="0" extrusion="0" symbology="Line" clamping="Terrain" binding="Centroid" extrusionEnabled="0" zoffset="0" respectLayerSymbol="1" type="IndividualFeatures">
@@ -328,20 +328,7 @@
     <checkConfiguration/>
   </geometryOptions>
   <legend showLabelLegend="0" type="default-vector"/>
-  <referencedLayers>
-    <relation strength="Association" id="Canalisation_41ff6ea3_43c9_47aa_ad25_042e27f27dff_diam_diam_9e03b63c_2cb2_49c5_89e8_981f0569e950_val" referencingLayer="Canalisation_41ff6ea3_43c9_47aa_ad25_042e27f27dff" name="ref_diam_canalisation" layerId="diam_9e03b63c_2cb2_49c5_89e8_981f0569e950" providerKey="postgres" layerName="diam" dataSource="dbname='test24' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;diam_type_table&quot;" referencedLayer="diam_9e03b63c_2cb2_49c5_89e8_981f0569e950">
-      <fieldRef referencedField="val" referencingField="diam"/>
-    </relation>
-    <relation strength="Association" id="Canalisation_41ff6ea3_43c9_47aa_ad25_042e27f27dff_materiau_diam_9e03b63c_2cb2_49c5_89e8_981f0569e950_materiau" referencingLayer="Canalisation_41ff6ea3_43c9_47aa_ad25_042e27f27dff" name="ref_diam_mat" layerId="diam_9e03b63c_2cb2_49c5_89e8_981f0569e950" providerKey="postgres" layerName="diam" dataSource="dbname='test24' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;diam_type_table&quot;" referencedLayer="diam_9e03b63c_2cb2_49c5_89e8_981f0569e950">
-      <fieldRef referencedField="materiau" referencingField="materiau"/>
-    </relation>
-    <relation strength="Association" id="Canalisation_41ff6ea3_43c9_47aa_ad25_042e27f27dff_sans_tranche_diam_9e03b63c_2cb2_49c5_89e8_981f0569e950_sans_tranche" referencingLayer="Canalisation_41ff6ea3_43c9_47aa_ad25_042e27f27dff" name="ref_diam_sans_tranche" layerId="diam_9e03b63c_2cb2_49c5_89e8_981f0569e950" providerKey="postgres" layerName="diam" dataSource="dbname='test24' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;diam_type_table&quot;" referencedLayer="diam_9e03b63c_2cb2_49c5_89e8_981f0569e950">
-      <fieldRef referencedField="sans_tranche" referencingField="sans_tranche"/>
-    </relation>
-    <relation strength="Association" id="Canalisation_41ff6ea3_43c9_47aa_ad25_042e27f27dff_urbain_diam_9e03b63c_2cb2_49c5_89e8_981f0569e950_urbain" referencingLayer="Canalisation_41ff6ea3_43c9_47aa_ad25_042e27f27dff" name="ref_diam_urbain" layerId="diam_9e03b63c_2cb2_49c5_89e8_981f0569e950" providerKey="postgres" layerName="diam" dataSource="dbname='test24' service='cycle' sslmode=disable key='val' checkPrimaryKeyUnicity='0' table=&quot;api&quot;.&quot;diam_type_table&quot;" referencedLayer="diam_9e03b63c_2cb2_49c5_89e8_981f0569e950">
-      <fieldRef referencedField="urbain" referencingField="urbain"/>
-    </relation>
-  </referencedLayers>
+  <referencedLayers/>
   <fieldConfiguration>
     <field name="id" configurationFlags="NoFlag">
       <editWidget type="Range">
@@ -762,26 +749,26 @@
     <fieldstyles/>
   </conditionalstyles>
   <storedexpressions/>
-  <editform tolerant="1"></editform>
+  <editform tolerant="1"/>
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
-  <editforminitfilepath></editforminitfilepath>
-  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-Les formulaires QGIS peuvent avoir une fonction Python qui est appelée lorsque le formulaire est
-ouvert.
-
-Utilisez cette fonction pour ajouter une logique supplémentaire à vos formulaires.
-
-Entrez le nom de la fonction dans le champ 
-"Fonction d'initialisation Python".
-Voici un exemple:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-    geom = feature.geometry()
-    control = dialog.findChild(QWidget, "MyLineEdit")
+  <editforminitfilepath/>
+  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+Les formulaires QGIS peuvent avoir une fonction Python qui est appelée lorsque le formulaire est
+ouvert.
+
+Utilisez cette fonction pour ajouter une logique supplémentaire à vos formulaires.
+
+Entrez le nom de la fonction dans le champ 
+"Fonction d'initialisation Python".
+Voici un exemple:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
@@ -997,6 +984,6 @@ def my_form_open(dialog, layer, feature):
   <dataDefinedFieldProperties/>
   <widgets/>
   <previewExpression>"name"</previewExpression>
-  <mapTip enabled="1"></mapTip>
+  <mapTip enabled="1"/>
   <layerGeometryType>1</layerGeometryType>
 </qgis>

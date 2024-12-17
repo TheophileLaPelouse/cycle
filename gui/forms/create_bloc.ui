@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>636</width>
-    <height>778</height>
+    <width>634</width>
+    <height>788</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,7 +40,7 @@
       </property>
       <widget class="QWidget" name="input_page">
        <attribute name="title">
-        <string>Input</string>
+        <string>Entrées</string>
        </attribute>
        <widget class="QLabel" name="label_6">
         <property name="geometry">
@@ -96,7 +96,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_19">
             <property name="text">
-             <string>Possibles values</string>
+             <string>Valeurs possibles</string>
             </property>
            </widget>
           </item>
@@ -116,7 +116,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_18">
             <property name="text">
-             <string>Default value</string>
+             <string>Valeur par défaut</string>
             </property>
            </widget>
           </item>
@@ -181,7 +181,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Name</string>
+             <string>Nom</string>
             </property>
            </widget>
           </item>
@@ -205,7 +205,7 @@
           <item row="4" column="2">
            <widget class="QPushButton" name="add_input">
             <property name="text">
-             <string>Add field</string>
+             <string>Ajouter champ</string>
             </property>
            </widget>
           </item>
@@ -245,7 +245,7 @@
          </property>
          <column>
           <property name="text">
-           <string>Name</string>
+           <string>Nom</string>
           </property>
          </column>
          <column>
@@ -255,12 +255,12 @@
          </column>
          <column>
           <property name="text">
-           <string>Default value</string>
+           <string>Valeur par défaut</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Possible values</string>
+           <string>Valeurs possibles</string>
           </property>
          </column>
         </widget>
@@ -274,7 +274,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>Remove field</string>
+          <string>Supprmier ligne</string>
          </property>
         </widget>
        </widget>
@@ -283,7 +283,7 @@
          <rect>
           <x>20</x>
           <y>280</y>
-          <width>111</width>
+          <width>191</width>
           <height>16</height>
          </rect>
         </property>
@@ -294,7 +294,7 @@
          </font>
         </property>
         <property name="text">
-         <string>List of input fields</string>
+         <string>List des valeurs d'entrées</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_15">
@@ -313,13 +313,13 @@
          </font>
         </property>
         <property name="text">
-         <string>New input fields</string>
+         <string>Nouveau champ</string>
         </property>
        </widget>
       </widget>
       <widget class="QWidget" name="output_page">
        <attribute name="title">
-        <string>Output</string>
+        <string>Sorties</string>
        </attribute>
        <widget class="QGroupBox" name="groupBox_4">
         <property name="geometry">
@@ -347,12 +347,7 @@
          </property>
          <column>
           <property name="text">
-           <string>Nouvelle colonne</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Name</string>
+           <string>Nom</string>
           </property>
          </column>
          <column>
@@ -362,7 +357,12 @@
          </column>
          <column>
           <property name="text">
-           <string>Possible values</string>
+           <string>Valeur par défaut</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Valeurs possibles</string>
           </property>
          </column>
         </widget>
@@ -376,7 +376,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>Remove field</string>
+          <string>supprimer ligne</string>
          </property>
         </widget>
        </widget>
@@ -390,7 +390,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>New output field</string>
+         <string>Nouveau champ</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_10">
@@ -403,7 +403,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>List of output fields</string>
+         <string>Liste des valeurs de sorties</string>
         </property>
        </widget>
        <widget class="QGroupBox" name="groupBox_2">
@@ -434,7 +434,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_21">
             <property name="text">
-             <string>Possibles values</string>
+             <string>valeurs possibles</string>
             </property>
            </widget>
           </item>
@@ -454,7 +454,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_22">
             <property name="text">
-             <string>Default value</string>
+             <string>Valeur par défaut</string>
             </property>
            </widget>
           </item>
@@ -519,7 +519,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
-             <string>Name</string>
+             <string>Nom</string>
             </property>
            </widget>
           </item>
@@ -543,7 +543,7 @@
           <item row="4" column="2">
            <widget class="QPushButton" name="add_output">
             <property name="text">
-             <string>Add field</string>
+             <string>Ajouter champ</string>
             </property>
            </widget>
           </item>
@@ -560,7 +560,7 @@
       </widget>
       <widget class="QWidget" name="formula_page">
        <attribute name="title">
-        <string>Formula</string>
+        <string>Formules</string>
        </attribute>
        <widget class="QGroupBox" name="groupBox_5">
         <property name="geometry">
@@ -585,12 +585,12 @@
          </property>
          <column>
           <property name="text">
-           <string>Formula</string>
+           <string>Formule</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Detail Level</string>
+           <string>Niveau de détail</string>
           </property>
          </column>
          <column>
@@ -609,7 +609,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>Remove formula</string>
+          <string>Supprimer ligne</string>
          </property>
         </widget>
        </widget>
@@ -631,12 +631,12 @@
          <rect>
           <x>20</x>
           <y>340</y>
-          <width>101</width>
+          <width>121</width>
           <height>16</height>
          </rect>
         </property>
         <property name="text">
-         <string>List of Formula</string>
+         <string>Liste des formules</string>
         </property>
        </widget>
        <widget class="QGroupBox" name="groupBox_6">
@@ -699,7 +699,7 @@
            <item row="0" column="0">
             <widget class="QLabel" name="label_14">
              <property name="text">
-              <string>Formula</string>
+              <string>Formule</string>
              </property>
             </widget>
            </item>
@@ -768,7 +768,7 @@
            <item row="3" column="0">
             <widget class="QLabel" name="label_20">
              <property name="text">
-              <string>Name</string>
+              <string>Nom</string>
              </property>
             </widget>
            </item>
@@ -782,7 +782,7 @@
            <item row="5" column="3">
             <widget class="QPushButton" name="add_formula">
              <property name="text">
-              <string>Add formula</string>
+              <string>Ajouter formule</string>
              </property>
             </widget>
            </item>
@@ -827,7 +827,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Geometry type</string>
+         <string>Type de géométrie</string>
         </property>
        </widget>
       </item>
@@ -847,7 +847,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Bloc name</string>
+         <string>Nom du bloc</string>
         </property>
        </widget>
       </item>
@@ -861,7 +861,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_16">
         <property name="text">
-         <string>Layer group</string>
+         <string>Groupe de la couche</string>
         </property>
        </widget>
       </item>
@@ -884,7 +884,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_24">
         <property name="text">
-         <string>Create from ...</string>
+         <string>Créer depuis ...</string>
         </property>
        </widget>
       </item>
