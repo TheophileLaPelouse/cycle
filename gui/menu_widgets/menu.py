@@ -87,16 +87,7 @@ class CycleMenu(QMenu):
             project.create_index()
             input_output, f_details, f_inputs = project.get_values4qml()
             QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output, f_inputs) 
-            
-            Qproject = QgsProject.instance()
-            urlWithParams = 'type=xyz&url=https://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857'
-            rlayer = QgsRasterLayer(urlWithParams, 'OpenStreetMap', 'wms')
-            if rlayer.isValid() : 
-                Qproject.addMapLayer(rlayer)
-                root = Qproject.layerTreeRoot()
-                root.addLayer(rlayer)
-                root.removeLayer(root.findLayers()[0].layer())
-                Qproject.write()
+            project.post_traitement()
 
     def __set_current_model(self):
         QGisProjectManager.set_qgis_variable('current_model', self.sender().text())

@@ -9,9 +9,10 @@ from psycopg2.extras import LoggingConnection
 import logging
 from .database import create_project, autoconnection
 from .utility.log import LogManager, ConsoleLogger
-from .qgis_utilities import QGisProjectManager, Alias, Alias_intrant
+from .qgis_utilities import QGisProjectManager, Alias, Alias_intrant, tr
 from .utility.string import normalized_name
 from .service import get_service
+from qgis.core import QgsProject, QgsRasterLayer, QgsDefaultValue
 
 CURRENT_DIR = os.path.dirname(__file__)
 CYCLE_DIR = os.path.join(os.path.expanduser('~'), ".cycle")
@@ -252,3 +253,46 @@ class Project(object):
             self.execute(f"select api.fill_alias_table('{Alias_jsonb_intrant}'::jsonb)")
         except : 
             print('Alias table none existant')
+            
+    def post_traitement(self) : 
+        # On fait ce qui ne peut pas être fait dans qgis_utilities (ps : je ne sais pas pourquoi ça ne peut pas être fait dans qgis_utilities)
+        
+        Qproject = QgsProject.instance()
+        root = Qproject.layerTreeRoot()
+        
+        # Ajoute la couche openstreet map sur la carte.
+        
+        urlWithParams = 'type=xyz&url=https://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857'
+        layers = Qproject.mapLayersByName('OpenStreetMap')
+        if not layers : 
+            rlayer = QgsRasterLayer(urlWithParams, 'OpenStreetMap', 'wms')
+            if rlayer.isValid() : 
+                Qproject.addMapLayer(rlayer)
+                root.addLayer(rlayer)
+                root.removeLayer(root.findLayers()[0].layer())
+                Qproject.write()
+        
+        # Rectification couche diamètre (ajouter bizarrement comment qml chargé)
+        diam_layers = Qproject.mapLayersByName('diam')
+        print('\ndiam_layers', diam_layers, '\n')
+        if diam_layers : 
+            new_diam = diam_layers[0].clone()
+            new_diam.setName(Alias.get('diam', 'diam'))
+            Qproject.addMapLayer(new_diam, False)
+            g = root.findGroup(tr('Propriétés'))
+            g.addLayer(new_diam)
+            for layer in diam_layers : 
+                to_remove = root.findLayer(layer.id())
+                root.removeChildNode(to_remove)
+        cana_layer = Qproject.mapLayersByName('Canalisation')[0]
+        if cana_layer : 
+            idx = cana_layer.fields().indexFromName('diam_fe') 
+            defval = QgsDefaultValue() 
+            prop_id = new_diam.id()
+            default_fe = f"attribute(get_feature(layer:='{prop_id}', attribute:='val', value:=\"diam\"), 'fe')"
+            defval.setExpression(default_fe)
+            defval.setApplyOnUpdate(True)
+            cana_layer.setDefaultValueDefinition(idx, defval)
+            cana_layer.setFieldAlias(idx, Alias.get('diam_fe', 'FE'))
+            
+        

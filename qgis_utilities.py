@@ -61,7 +61,7 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'ngl_s' : 'NGL sortant (kgNGL/an)', 'fen2o_ox
          'vbiogaz' : 'Volume de biogaz produit (m3/an)', 'cad' : 'Cadence pelleteuse (m3/h)', 'gros' : 'Dégrillage supérieur à 20mm', 
          'compd' : 'Avec ou sans compactage', 'compt' : 'Avec ou sans compactage', 'qe_s' : 'Débit sortant (m3/j)', 
          'munite_tamis' : 'Masse du tamis (kg)', 'munite_degrilleur' : 'Masse du dégrilleur (kg)', 'qmax' : 'Débit maximal (m3/j)', 
-         'qdechet' : 'Méthode de compactage', 'qdechet_fe':'Volume de déchet (L/EH/an)','dbo5' : 'DBO5 (kgDBO5/an)', 'dbo5elim' : 'DBO5 éliminée (kgDBO5/an)', 
+         'qdechet' : 'Méthode de compactage', 'qdechet_fe':'Volume de déchet (L/EH/an)','dbo5' : 'DBO5 en amont de la file boue (kgDBO5/j)', 'dbo5elim' : 'DBO5 éliminée (kgDBO5/an)', 
          'w_dbo5_eau' : 'Consommation électrique en fonction de la DBO5 (kWh/an/DBO5)', 's_geom_eh' : 'Surface en fonction des EH (m2/EH)',
          'tsables' : 'Tonne de sable (t/an)', 'tgraisses' : 'Tonne de graisses (t/an)', 'charge_bio' : 'Taux de charge', 'charge_bio_fe' : 'Valeur (kgDBO5/m3/j)',
          'siccite_e' : 'Siccité de la boue entrante', 'siccite_s' : 'Siccité de la boue sortante', 'tee' : "Tonne d'eau évaporée (t/an)",
@@ -71,14 +71,16 @@ Alias = {'ngl' : 'NGL (kgNGL/an)', 'ngl_s' : 'NGL sortant (kgNGL/an)', 'fen2o_ox
          'vboue' : 'Volume de boue entrante (m3/an)', 'q_anio' : "Quantité de réactif anionique (kg/an)", 'transp_anio' : "Distance d'approxivisionnement du réactif anionique (km)",
          'q_catio' : "Quantité de réactif cationique (kg/an)", 'transp_catio' : "Distance d'approxivisionnement du réactif cationique (km)", 
          'ml' : 'Mètre linéaire', 's' : 'Surface (m2)', 'ebit' : 'Epaisseur de bitume (m)', 'vterre' : 'Volume de terre excavée (m3)', 
-         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension (kgMES/an)', 'prod_e' : 'Réactifs', 'pelletisation' : 'Présence de pelletisation',
+         'fecc' : 'Taille de la cuve', 'mes' : 'Matière en suspension en amont de la file boue (kgMES/j)', 'prod_e' : 'Réactifs', 'pelletisation' : 'Présence de pelletisation',
          'lavage' : 'Sables lavé ?', 'conc' : 'Graisses concentrées ?', 'aere' : 'Avec aération', 'grand' : 'Diamètre supérieur à 2m', 
          'dbo' : 'DBO en amont de la filière boue (kgDBO/an)', 'Niveau de détail 1' : 'Conception générale', 'Niveau de détail 2' : 'Conception détaillée',
          'Niveau de détail 3' : 'Etude de faisabilité', 'Niveau de détail 4' : 'Conception très détaillée', 'Niveau de détail 5' : "Précision maximale",
          'Niveau de détail 6' : "Intrants (Comptabilisé même pour les sur blocs)", 'feexpl' : 'Type de structure',
-         'methode' : 'Procédé principale de la filière', 'methode_fe' : 'Consommation électrique (kWh/DBO5 éliminé)', 
+         'methode' : 'Procédé principal de la filière', 'methode_fe' : 'Consommation électrique (kWh/DBO5 éliminé)', 
          'model' : 'Modèle', 'name' : 'Nom', 'd_vie' : 'Durée de vie', 'dcoelim' : 'DCO éliminée (kgDCO/an)', 'ntkelim' : 'NTK éliminée (kgNTK/an)',
-         'methode_2' : 'Procédé principale de la filière', 'methode_2_fe' : 'N2O émis par NTK éliminé (kgN2O/kgNTK)'
+         'methode_2' : 'Procédé traitement N2O de la filière', 'methode_2_fe' : 'N2O émis par NTK éliminé (kgN2O/kgNTK)', 
+         'mpompe' : 'Masse de la pompe (kg)', 'nbcur_prev' : 'Nombre de curage préventif par an', 'nbcur_cur' : 'Nombre de curage curatif par an',
+         'nbdesob' : 'Nombre de désobstruction par an', 'tau_rep' : 'Taux de réparation de fuite par an'
          }
 Alias_intrant = {
     "q_hcl": "Acide chlorhydrique",
@@ -296,6 +298,8 @@ class QGisProjectManager(QObject):
             if len(grps) > 1 : 
                 grps = grps[:-2]
             print(grps)
+            if '/' in bloc[0] :
+                grps = grps[:-1]
             g = root
             for grp in grps:
                 if grp != '':
@@ -376,7 +380,7 @@ class QGisProjectManager(QObject):
                         assert(relation.isValid())
                         project.relationManager().addRelation(relation)
                     else : 
-                        print('Relation déjà là !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                        print('Relation déjà là')
         
         g = root.findGroup(tr('Formules')) or root.insertGroup(-1, tr('Formules'))
         layer_name, sch, tbl, key = tr('Bloc recapitulatif'), 'api', 'input_output', 'b_type'
@@ -419,9 +423,10 @@ class QGisProjectManager(QObject):
                 config.setReadOnly(c, True)
                 c+=1
             layer.setEditFormConfig(config)
-                    
         
         project.write()
+        
+        
 
     
     @staticmethod
@@ -484,7 +489,7 @@ class QGisProjectManager(QObject):
         
         
     @staticmethod
-    def update_qml(project, project_filename, f_details, inp_outs, f_inputs) : 
+    def update_qml(project, project_filename, f_details, inp_outs, f_inputs, rapid = 0) : 
         # Met à jour les styles QML des couches du projet.
         tic = time.time()
         # Pour l'instant on appelle à chaque ouverture de projet mais on pourrait vouloir ne pas toujours l'appeler
@@ -513,12 +518,12 @@ class QGisProjectManager(QObject):
                             f_inputs[b_types] = {}
                         if inp_outs[b_types]['concrete'] and b_types not in SpecialBlocs :
                             print('Avant update', time.time()-tic)
-                            QGisProjectManager.update1qml(dico_layer, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types])
+                            QGisProjectManager.update1qml(dico_layer, layer, qml, f_details[b_types], inp_outs[b_types], f_inputs[b_types], rapid = rapid)
         print('temps', time.time()-tic)
                         
                             
     @staticmethod
-    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 1) : 
+    def update1qml(dico_layer, layer, qml, f_details, inp_outs, f_inputs, rapid = 0) : 
         """
     Cette fonction est appelée à l'ouverture d'un projet.
     Elle prend en entrée les formules de chacun des blocs et définit le style des formulaires.
@@ -557,9 +562,8 @@ class QGisProjectManager(QObject):
             rapid = 0 
             # Si le style n'existe pas, il faut forcément le définir entièrement
         config = layer.editFormConfig()
-        try : config.setLayout(Qgis.AttributeFormLayout(1)) # y'a des versions de qgis où ça marche pas
+        try : config.setLayout(Qgis.AttributeFormLayout(1)) # y'a des versions de qgis où ça marche pas (> 3.33 ça marche forcément)
         except : rapid = 2
-        # En attendant pour pas que ce soit toujours trop long de tout recharger, plus tard y'aura un json propre qui permettra de gérer les blocs
         fieldnames = [f.name() for f in layer.fields()]
         field_fe = set()
         field_intrant = set()
@@ -574,7 +578,7 @@ class QGisProjectManager(QObject):
                 defval = QgsDefaultValue()
                 fe_idx = layer.fields().indexFromName(field)
                 prop_id = dico_layer[Alias.get(field[:-3], field[:-3])][1]
-                default_fe = layer.defaultValueDefinition(fe_idx)
+                # default_fe = layer.defaultValueDefinition(fe_idx)
                 default_fe = f"attribute(get_feature(layer:='{prop_id}', attribute:='val', value:=\"{field[:-3]}\"), 'fe')"
                 defval.setExpression(default_fe)
                 defval.setApplyOnUpdate(True)
@@ -585,7 +589,7 @@ class QGisProjectManager(QObject):
                 if field.startswith('q_') :
                     layer.setFieldAlias(layer.fields().indexFromName(field), 'Quantité de '+Alias_intrant[field])
                 else : 
-                    layer.setFieldAlias(layer.fields().indexFromName(field), 'Distance d\'approvisionnement')
+                    layer.setFieldAlias(layer.fields().indexFromName(field), 'Distance d\'approvisionnement de '+Alias_intrant['q'+field[6:]])
             else : 
                 layer.setFieldAlias(layer.fields().indexFromName(field), Alias.get(field, field))
         if rapid == 2 : return
@@ -635,8 +639,9 @@ class QGisProjectManager(QObject):
         default_container = {'constr' : {k:QgsAttributeEditorContainer('Valeurs par défaut spécifiques', constr_tab) for k in range(lvlmax+1)},
                              'expl' : {k:QgsAttributeEditorContainer('Valeurs par défaut spécifiques', expl_tab) for k in range(lvlmax+1)}, 
                              'input' : {k:QgsAttributeEditorContainer('Valeurs par défaut spécifiques', input_tab) for k in range(lvlmax+1)}}
-        level_container_children = {'constr' : {k : set() for k in range(lvlmax+1)}, 'expl' : {k : set() for k in range(lvlmax+1)}, 
-                                    'input' : {k : set() for k in range(lvlmax+1)}}
+        # level_container_children = {'constr' : {k : set() for k in range(lvlmax+1)}, 'expl' : {k : set() for k in range(lvlmax+1)}, 
+        #                             'input' : {k : set() for k in range(lvlmax+1)}}
+        level_container_children = {}
         def treat_formula(f_name, formulas, f_inputs, lvl) :
             # cont_name = f_name.split()
             # cont_name = ' '.join(cont_name[:-2] + cont_name[-1:])
@@ -646,7 +651,7 @@ class QGisProjectManager(QObject):
             c_or_e = 'constr'
             # print(sides)
             if len(sides) == 2 : 
-                group_field = read_formula(sides[1],  inp_outs['inp'])
+                group_field = read_formula(sides[1],  set(inp_outs['inp']).union(set(inp_outs['out'])))
                 # print('group_field', group_field)
                 if sides[0].strip().endswith('_c') : 
                     c_or_e = 'constr'
@@ -666,17 +671,17 @@ class QGisProjectManager(QObject):
                     fe_idx = layer.fields().indexFromName(val+'_fe')
                     container.addChildElement(attrfield(val+"_fe", fe_idx, container))
                     
-                    if val.upper() not in level_container_children[c_or_e][lvl] :
+                    if val.upper() not in level_container_children[f_name] :
                         f_container.addChildElement(container)
                         # level_container[c_or_e][lvl].addChildElement(container)
-                        level_container_children[c_or_e][lvl].add(val.upper()) 
+                        level_container_children[f_name].add(val.upper()) 
                 elif val in field_intrant and flag_intrant1 :
                     if not flag_intrant2 :
                         flag_intrant2 = True
                         field_prod = layer.fields().indexFromName('prod_e')
                         # level_container[c_or_e][lvl].addChildElement(attrfield('prod_e', field_prod, level_container[c_or_e][lvl]))
                         f_container.addChildElement(attrfield('prod_e', field_prod, f_container))
-                        level_container_children[c_or_e][lvl].add(field_prod)
+                        level_container_children[f_name].add(field_prod)
                         for intr in field_intrant : 
                             if intr.startswith('q_') :
                                 q_intr = intr 
@@ -695,7 +700,7 @@ class QGisProjectManager(QObject):
                                 # level_container[c_or_e][lvl].addChildElement(row)
                             
                 elif val in f_inputs : 
-                    if val not in level_container_children[c_or_e][lvl] :
+                    if val not in level_container_children[f_name] :
                         if val in ConstrOnly : 
                             constr_container[c_or_e][lvl].addChildElement(attrfield(val, idx, constr_container[c_or_e][lvl]))
                             in2tab_constr[c_or_e][lvl] = True
@@ -704,11 +709,11 @@ class QGisProjectManager(QObject):
                             in2tab_default[c_or_e][lvl] = True
                 else : 
                     # print("avant c_or_e", c_or_e, lvl, val)   
-                    if val not in level_container_children[c_or_e][lvl] :
+                    if val not in level_container_children[f_name] :
                         # print("c_or_e", c_or_e, lvl, val)
                         # level_container[c_or_e][lvl].addChildElement(attrfield(val, idx, level_container[c_or_e][lvl]))
                         f_container.addChildElement(attrfield(val, idx, f_container))
-                        level_container_children[c_or_e][lvl].add(val)
+                        level_container_children[f_name].add(val)
                         # layer.setFieldAlias(idx, Alias.get(val, ''))
                         
             level_container[c_or_e][lvl].addChildElement(f_container)
@@ -719,6 +724,7 @@ class QGisProjectManager(QObject):
         # print('temps avant', t2-t1)
         for formula_name, f in f_details.items() :
             formula, lvl = f 
+            level_container_children[formula_name] = set()
             treated = treated.union(treat_formula(formula_name, formula, f_inputs, lvl))
         t3 = time.time()
         # print('temps après boucle', t3-t2)

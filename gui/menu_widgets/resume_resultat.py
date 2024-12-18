@@ -27,6 +27,7 @@ class RecapResults(QDockWidget) :
         self.refresh_btn.clicked.connect(self.show_results)
         
         self.to_make_flashy = {}
+        self.warning_btn.clicked.connect(self.filter_table)
         
         for k in range(10) : 
             button = getattr(self, f'pushButton_{k+1}')
@@ -83,6 +84,7 @@ class RecapResults(QDockWidget) :
         print('model', model_name)
         results = self.project.fetchall(f"select name, res, co2_eq_e, co2_eq_c, id from api.results where model = '{model_name}'")
         self.__results = {}
+        self.to_make_flashy = {}
         f_bloc_c = {}
         f_bloc_e = {}
         for result in results : 
@@ -158,7 +160,7 @@ class RecapResults(QDockWidget) :
             else :
                 if self.to_make_flashy.get(key) : 
                     del self.to_make_flashy[key]
-        
+        print('to_make_flashy', self.to_make_flashy)
         self.fill_table()
             
         self.table_recap.resizeColumnsToContents()
@@ -169,7 +171,8 @@ class RecapResults(QDockWidget) :
         
         if self.to_make_flashy : 
             self.warning_btn.setEnabled(True)
-            self.warning_btn.clicked.connect(self.filter_table)
+        else :
+            self.warning_btn.setEnabled(False)
             
     def fill_table(self) :
         # Rempli le tableau récapitulatif des résultats
@@ -182,7 +185,6 @@ class RecapResults(QDockWidget) :
                 if idx % 2 == 0 :
                     self.table_recap.item(idx, k).setBackground(Qt.lightGray)
                 if self.to_make_flashy.get(key) == 'ce' :
-                    print('flashy', key)
                     self.table_recap.item(idx, k).setBackground(QBrush(QColor(255, 165, 0)))
             if self.to_make_flashy.get(key) == 'e' :
                 self.table_recap.item(idx, 2).setBackground(QBrush(QColor(255, 165, 0)))
@@ -192,6 +194,8 @@ class RecapResults(QDockWidget) :
             
     def filter_table(self) :
         # Filtre le tableau en fonction de to_make_flashy, soit affiche tout soit que les valeur manquantes
+        print('to_make_flashy', self.to_make_flashy)
+        print('row count', self.table_recap.rowCount(), len(self.to_make_flashy))
         if self.table_recap.rowCount() != len(self.to_make_flashy) :
             self.table_recap.setRowCount(len(self.to_make_flashy))
             idx = 0

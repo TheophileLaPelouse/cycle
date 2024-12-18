@@ -7,7 +7,7 @@ from datetime import datetime
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QFont
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTreeWidgetItem, QComboBox, QHBoxLayout, QLabel, QPushButton
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTreeWidgetItem, QComboBox, QHBoxLayout, QLabel, QPushButton, QCheckBox
 from qgis.gui import QgsMessageBar
 from ...database import get_projects_list, export_db, import_db, get_srid_from_file, remove_project
 from ...project import Project, backup_directory
@@ -54,23 +54,14 @@ class ProjectManager(QDialog):
         self.btn_update_project.setToolTip(self.tr("If the project is up to date, database views and function will be reloaded"))
         self.btn_add_model.clicked.connect(self.add_model)
         self.btn_delete_model.clicked.connect(self.delete_model)
-        # self.btn_import_model.clicked.connect(self.import_model) marche pas encore
-        # self.btn_import_model.setToolTip('\n'.join([
-        #    self.tr("Import epanet model (*.inp) or legacy expresseau models (*.dat)."),
-        #    "",
-        #    self.tr("Note: in case of legacy import, the directory the .dat file is located in must contain:"),
-        #    self.tr("- a .dat file where most information is stored"),
-        #    self.tr("- a _CrbModulConso.Csv file for modulation curves (curves that are already in the project are ignored)"),
-        #    self.tr("- a caracteristiques_materiaux.xlsx file"),
-        #    self.tr("- a _Nod.Csv file"),
-        #    self.tr("- a _CANA.Csv file")])) Faudra refaire en fonction de notre truc d'import
-        
-        # self.btn_export_model.clicked.connect(self.export_model) marche pas encore
+        self.btn_import_model.clicked.connect(self.import_model) 
+        self.btn_export_model.clicked.connect(self.export_model)
 
         self.tree_widget.itemSelectionChanged.connect(self.__refresh_buttons)
         self.tree_widget.itemDoubleClicked.connect(self.open_project)
 
         self.project_list = project_list
+        self.checkboxes = {}
         self.__refresh_tree()
         self.__refresh_buttons()
 
@@ -89,6 +80,8 @@ class ProjectManager(QDialog):
     def __refresh_tree(self):
         '''Clears the QTreeWidget then re-populates it with all LIEGES projects'''
         self.tree_widget.clear()
+        self.checkboxes = {}
+        
         for project_name in self.project_list:
             if project_name != normalized_name(project_name):
                 project_node = QTreeWidgetItem(self.tree_widget)
@@ -117,7 +110,12 @@ class ProjectManager(QDialog):
                     project_node.setForeground(1, Qt.red)
 
                 project_node.setText(3, project.directory)
-
+                
+                checkbox = QCheckBox(self.tree_widget)
+                self.checkboxes[project_name] = False
+                checkbox.stateChanged.connect(lambda state, project_name=project_name : self.__change_checkbox(state, project_name))
+                self.tree_widget.setItemWidget(project_node, 4, checkbox)
+                
                 if has_api:
                     project_node.setText(2, str(project.srid))
 
@@ -130,6 +128,9 @@ class ProjectManager(QDialog):
 
         for i in range(4):
             self.tree_widget.resizeColumnToContents(i)
+    
+    def __change_checkbox(self, state, project_name):
+        self.checkboxes[project_name] = state == Qt.Checked
 
     def __refresh_buttons(self):
         '''Sets some buttons as disabled if no project or model is selected but are needed to run the associated functions'''
@@ -162,20 +163,10 @@ class ProjectManager(QDialog):
         QGisProjectManager.open_project(project.qgs, project.srid)
         project.create_index()
         input_output, f_details, f_inputs = project.get_values4qml()
-        QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output, f_inputs) 
+        rapid = 2 if not self.checkboxes[project_name] else 0
+        QGisProjectManager.update_qml(QgsProject.instance(), project.qgs, f_details, input_output, f_inputs, rapid = rapid) 
+        project.post_traitement()
         
-        # Ajoute la couche openstreet map sur la carte.
-        Qproject = QgsProject.instance()
-        urlWithParams = 'type=xyz&url=https://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857'
-        layers = Qproject.mapLayersByName('OpenStreetMap')
-        if not layers : 
-            rlayer = QgsRasterLayer(urlWithParams, 'OpenStreetMap', 'wms')
-            if rlayer.isValid() : 
-                Qproject.addMapLayer(rlayer)
-                root = Qproject.layerTreeRoot()
-                root.addLayer(rlayer)
-                root.removeLayer(root.findLayers()[0].layer())
-                Qproject.write()
 
         if model_name is not None:
             project.current_model = model_name

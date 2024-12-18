@@ -6,18 +6,19 @@ Created on Tue Nov  5 09:52:26 2024
 """
 #%%
 import pandas as pd
+import os 
 
 # Load the Excel file
-file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
-# file_path = '/Users/theophilemounier/Documents/stage_hydra2/emission GES _ traitement.xlsx'
+# file_path = r'Z:\Commun\_Toutes-Agences\6_INGENIEURS&CITOYENS\P1_impact_projets\GES - Etudes\emission GES _ traitement.xlsx'
+file_path = os.path.join(os.path.dirname(__file__), 'Formules.xlsx')
 xls = pd.ExcelFile(file_path)
 #%%
 # Load the specific sheet
-df = pd.read_excel(xls, 'Recap_formule', header=None, dtype=str)
+df = pd.read_excel(xls, "Formules et facteurs d'émission", header=None, dtype=str)
 df.fillna('', inplace=True)
 # Extract the relevant data (from line 28 to the end, columns H to P)
-data_f_inp = df.iloc[30:, 7:17]
-data_global = df.iloc[29:, 1:5]
+data_f_inp = df.iloc[3:, 7:17]
+data_global = df.iloc[3:, 1:5]
 #%%
 # Initialize a dictionary to store the separated tables
 def dico_f_inp(data) : 
@@ -121,7 +122,7 @@ dico_global = global_values(data_global)
 dico_formules = {}
 
 import formules_flemmes as ff
-# specifiques_bloc = ['Général', 'Général eau', 'Bassin cylindrique', "BRM"]
+# specifiques_bloc = ['Général', 'Général eau', 'Bassin cylindrique', "Décanteur lamellaire"]
 # specifiques_bloc = ["Général boue", "Général", "Déchets", "Dessableur-Dégraisseur"]
 # specifiques_bloc = ["Pompe", "Poste de refoulement"]
 # specifiques_bloc = ["Tamis", 'Déchets']
@@ -710,7 +711,8 @@ layertree = {
     'Réseau' : {
         'Canalisation' : '', 
         'Pompe' : '',
-        'Station de pompage' : ''
+        'Station de pompage' : '', 
+        'Branchement' : '',
     },
     'Eau Potable' : {
         'Chateau d\'eau' : '',
@@ -790,3 +792,4 @@ with open(os.path.join(os.path.dirname(__file__), '..', 'database', 'sql', 'bloc
     for q in queries_global : 
         f.write(q)
                 
+#%%

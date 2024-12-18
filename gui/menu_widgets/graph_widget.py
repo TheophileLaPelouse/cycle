@@ -31,7 +31,7 @@ class GraphWidget(QWidget):
         
     def __render(self, rect = [0,0,1,1]) :
         # Render the graph in a widget with a lighter background than the parent widget
-        self.fig.set_tight_layout(rect=rect)
+        self.fig.set_tight_layout("rect")
         parent_bg_color = self.palette().color(self.backgroundRole())
         darker_color = parent_bg_color.lighter(102)
         darker_color_rgb = (darker_color.redF(), darker_color.greenF(), darker_color.blueF())
@@ -57,7 +57,8 @@ class GraphWidget(QWidget):
                     print('overlapping', texts[j].get_text())
                     texts[j].set_visible(False)
         
-        self.__render(rect= [-0.05, -0.05, 1.05, 1.05])
+        self.fig.tight_layout(rect= [-0.05, -0.05, 1.05, 1.05])
+        self.__render()
         
     def bar_chart(self, r, data, data_err, c_or_e, names, ids, color, edgecolor, title, ylabel, xlabel, render = True) :
         # Histogramme avec barre d'incertitude et séparation des gaz
@@ -99,9 +100,9 @@ class GraphWidget(QWidget):
             if flag_overlap :
                 labels = [ids[name] for name in names]
                 self.__ax.set_xticklabels(labels)
-        # self.fig.tight_layout()
+        self.fig.tight_layout(rect=[0.03, 0.03, 0.97, 0.97 ])
         if render :
-            self.__render(rect=[0.03, 0.03, 0.97, 0.97 ])
+            self.__render()
 
     def add_bar_chart(self, r, rtot, data, data_err, c_or_e, names, color, edgecolor) : 
         # Ajout d'un histogramme à un histogramme déjà existant

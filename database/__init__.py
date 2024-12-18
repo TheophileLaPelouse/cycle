@@ -469,6 +469,8 @@ def import_model(file, model, dbname):
     with autoconnection(dbname) as con, con.cursor() as cur:
         cur.execute("select srid, cycle_version() from api.metadata")
         dst_srid, dst_version = cur.fetchone()
+        cur.execute("select max(id) as max from api.bloc")
+        max_id, = cur.fetchone()
         #cur.execute("drop schema if exists cpy cascade")
 
     with autoconnection(tmp_db) as con, con.cursor() as cur:
@@ -478,38 +480,37 @@ def import_model(file, model, dbname):
         assert(cur.fetchone()[0] == 1) # only one model allowed
         if dst_srid != src_srid:
             cur.execute("update api.metadata set srid=%s", (dst_srid,))
-
-    # if src_version != dst_version:
-    #     update_db(tmp_db)
-
-    with autoconnection(tmp_db) as con, con.cursor() as cur:
-        cur.execute("select srid, cycle_version() from api.metadata")
-        src_srid, src_version = cur.fetchone()
-        # assert(dst_version==src_version)
-        assert(dst_srid==src_srid)
         cur.execute("update api.model set name=%s",(model,))
-        cur.execute("drop schema if exists api cascade")
-        cur.execute("drop function create_api")
-        cur.execute("drop function create_template")
-        cur.execute("drop function cycle_version")
-        cur.execute("alter schema ___ rename to cpy")
-
-    # subprocess.run(['pg_dump', '-O', '-f', tmp_db, f'service={get_service()} dbname={tmp_db}'])
-    # with open(tmp_file, 'r') as d:
-    #     dump = d.read()
-    # with open(tmp_file, 'wb') as d:
-    #     eol = ('\n' if os.name != 'nt' else '\r\n')
-    #     d.write(f"-- cycle version {dst_version}{eol}".encode('ascii'))
-    #     d.write(f"-- project SRID {dst_srid}{eol}".encode('ascii'))
-    #     d.write(dump)
+        # On modifie les ids pour pas avoir de problèmes
+        query = f"""
+        do $$
+        declare
+            max_id_old integer := {max_id} + 1;
+            id_bloc integer;
+            max_id_model integer;
+            i integer;
+        begin
+            max_id_model := (select max(id) from api.bloc);
+            if max_id_old < max_id_model then
+                max_id_old := max_id_model + 1;
+            end if;
+            i := max_id_old ; 
+            for id_bloc in select id from api.bloc loop
+                update api.bloc set id = i where id = id_bloc;
+                i := i + 1;
+            end loop;
+        end;
+        $$;
+        """
+        cur.execute(query)
+        
     export_db(tmp_db, tmp_file)
     remove_project(tmp_db)
 
     cmd = ['psql', '-v', 'ON_ERROR_STOP=1',
-        '-c', "drop schema if exists cpy cascade",
         '-f', tmp_file,
-        '-f', os.path.join(__current_dir, 'sql', 'cpy_model.sql'),
         '-d', f'service={get_service()} dbname={dbname}']
     out = subprocess.run(cmd, capture_output=True)
     if out.returncode:
         raise RuntimeError(f"error in command: {' '.join(cmd)}\n"+out.stderr.decode('utf8'))
+    os.remove(tmp_file)
