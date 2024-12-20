@@ -24,4 +24,4 @@ Il suffit ensuite de cocher la case de l'extension pour l'activer. Un message d'
 
 # Documentation
 Voici le [Guide utilisateur](https://gitlab.com/hydrasoftware/lieges/-/wikis/uploads/e92d2ddc17517832b71f02f5faf6ffc8/Guide_utilisateurV1.pdf).
-La documentation de ce logiciel est entièrement présente dans le [Wiki](https://github.com/TheophileLaPelouse/LIEGES/wiki) de ce dépôt.
+La documentation de ce logiciel est entièrement présente dans le [Wiki](https://gitlab.com/hydrasoftware/lieges/-/wikis/home) de ce dépôt.
