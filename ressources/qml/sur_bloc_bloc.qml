@@ -1,18 +1,18 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis simplifyAlgorithm="0" styleCategories="AllStyleCategories" labelsEnabled="0" symbologyReferenceScale="-1" minScale="100000000" simplifyDrawingHints="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" simplifyDrawingTol="1" version="3.34.9-Prizren" simplifyLocal="1" maxScale="0" readOnly="0">
+<qgis version="3.34.9-Prizren" simplifyAlgorithm="0" styleCategories="AllStyleCategories" symbologyReferenceScale="-1" simplifyMaxScale="1" maxScale="0" simplifyDrawingHints="1" hasScaleBasedVisibilityFlag="0" minScale="100000000" simplifyLocal="1" simplifyDrawingTol="1" labelsEnabled="0" readOnly="0">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
     <Searchable>1</Searchable>
     <Private>0</Private>
   </flags>
-  <temporal limitMode="0" enabled="0" durationField="id" startField="" accumulate="0" endField="" endExpression="" mode="0" durationUnit="min" fixedDuration="0" startExpression="">
+  <temporal endExpression="" enabled="0" limitMode="0" startField="" fixedDuration="0" mode="0" durationUnit="min" startExpression="" durationField="id" accumulate="0" endField="">
     <fixedRange>
       <start/>
       <end/>
     </fixedRange>
   </temporal>
-  <elevation zscale="1" zoffset="0" respectLayerSymbol="1" symbology="Line" binding="Centroid" extrusionEnabled="0" extrusion="0" showMarkerSymbolInSurfacePlots="0" clamping="Terrain" type="IndividualFeatures">
+  <elevation binding="Centroid" clamping="Terrain" zoffset="0" zscale="1" symbology="Line" extrusionEnabled="0" extrusion="0" respectLayerSymbol="1" type="IndividualFeatures" showMarkerSymbolInSurfacePlots="0">
     <data-defined-properties>
       <Option type="Map">
         <Option name="name" value="" type="QString"/>
@@ -21,7 +21,7 @@
       </Option>
     </data-defined-properties>
     <profileLineSymbol>
-      <symbol name="" frame_rate="10" is_animated="0" type="line" clip_to_extent="1" force_rhr="0" alpha="1">
+      <symbol alpha="1" clip_to_extent="1" is_animated="0" name="" force_rhr="0" frame_rate="10" type="line">
         <data_defined_properties>
           <Option type="Map">
             <Option name="name" value="" type="QString"/>
@@ -29,7 +29,7 @@
             <Option name="type" value="collection" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{7a10115f-3768-43b3-a337-55e034e3c05d}" enabled="1" locked="0" pass="0" class="SimpleLine">
+        <layer pass="0" class="SimpleLine" enabled="1" locked="0" id="{7a10115f-3768-43b3-a337-55e034e3c05d}">
           <Option type="Map">
             <Option name="align_dash_pattern" value="0" type="QString"/>
             <Option name="capstyle" value="square" type="QString"/>
@@ -70,7 +70,7 @@
       </symbol>
     </profileLineSymbol>
     <profileFillSymbol>
-      <symbol name="" frame_rate="10" is_animated="0" type="fill" clip_to_extent="1" force_rhr="0" alpha="1">
+      <symbol alpha="1" clip_to_extent="1" is_animated="0" name="" force_rhr="0" frame_rate="10" type="fill">
         <data_defined_properties>
           <Option type="Map">
             <Option name="name" value="" type="QString"/>
@@ -78,7 +78,7 @@
             <Option name="type" value="collection" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{22f2e028-4aa5-4f10-a20a-b8135890f6dc}" enabled="1" locked="0" pass="0" class="SimpleFill">
+        <layer pass="0" class="SimpleFill" enabled="1" locked="0" id="{22f2e028-4aa5-4f10-a20a-b8135890f6dc}">
           <Option type="Map">
             <Option name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             <Option name="color" value="231,113,72,255" type="QString"/>
@@ -103,7 +103,7 @@
       </symbol>
     </profileFillSymbol>
     <profileMarkerSymbol>
-      <symbol name="" frame_rate="10" is_animated="0" type="marker" clip_to_extent="1" force_rhr="0" alpha="1">
+      <symbol alpha="1" clip_to_extent="1" is_animated="0" name="" force_rhr="0" frame_rate="10" type="marker">
         <data_defined_properties>
           <Option type="Map">
             <Option name="name" value="" type="QString"/>
@@ -111,7 +111,7 @@
             <Option name="type" value="collection" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{9cf84ed7-ca6f-43d9-a24a-aa72153db26e}" enabled="1" locked="0" pass="0" class="SimpleMarker">
+        <layer pass="0" class="SimpleMarker" enabled="1" locked="0" id="{9cf84ed7-ca6f-43d9-a24a-aa72153db26e}">
           <Option type="Map">
             <Option name="angle" value="0" type="QString"/>
             <Option name="cap_style" value="square" type="QString"/>
@@ -144,9 +144,9 @@
       </symbol>
     </profileMarkerSymbol>
   </elevation>
-  <renderer-v2 symbollevels="0" referencescale="-1" enableorderby="0" forceraster="0" type="singleSymbol">
+  <renderer-v2 referencescale="-1" forceraster="0" symbollevels="0" enableorderby="0" type="singleSymbol">
     <symbols>
-      <symbol name="0" frame_rate="10" is_animated="0" type="fill" clip_to_extent="1" force_rhr="0" alpha="0.504">
+      <symbol alpha="0.504" clip_to_extent="1" is_animated="0" name="0" force_rhr="0" frame_rate="10" type="fill">
         <data_defined_properties>
           <Option type="Map">
             <Option name="name" value="" type="QString"/>
@@ -154,7 +154,7 @@
             <Option name="type" value="collection" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{3a75ce0e-b768-4930-8839-fc1a41c5c88d}" enabled="1" locked="0" pass="0" class="SimpleLine">
+        <layer pass="0" class="SimpleLine" enabled="1" locked="0" id="{3a75ce0e-b768-4930-8839-fc1a41c5c88d}">
           <Option type="Map">
             <Option name="align_dash_pattern" value="0" type="QString"/>
             <Option name="capstyle" value="square" type="QString"/>
@@ -192,7 +192,7 @@
             </Option>
           </data_defined_properties>
         </layer>
-        <layer id="{c5eebe0e-f66f-4be1-b6ee-9813b0c29124}" enabled="1" locked="0" pass="0" class="SimpleFill">
+        <layer pass="0" class="SimpleFill" enabled="1" locked="0" id="{c5eebe0e-f66f-4be1-b6ee-9813b0c29124}">
           <Option type="Map">
             <Option name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             <Option name="color" value="148,148,148,255" type="QString"/>
@@ -222,7 +222,7 @@
   <selection mode="Default">
     <selectionColor invalid="1"/>
     <selectionSymbol>
-      <symbol name="" frame_rate="10" is_animated="0" type="fill" clip_to_extent="1" force_rhr="0" alpha="1">
+      <symbol alpha="1" clip_to_extent="1" is_animated="0" name="" force_rhr="0" frame_rate="10" type="fill">
         <data_defined_properties>
           <Option type="Map">
             <Option name="name" value="" type="QString"/>
@@ -230,7 +230,7 @@
             <Option name="type" value="collection" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer id="{a5ae1fd9-1b53-4d08-854f-f337764cc99e}" enabled="1" locked="0" pass="0" class="SimpleFill">
+        <layer pass="0" class="SimpleFill" enabled="1" locked="0" id="{a5ae1fd9-1b53-4d08-854f-f337764cc99e}">
           <Option type="Map">
             <Option name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             <Option name="color" value="0,0,255,255" type="QString"/>
@@ -266,11 +266,11 @@
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>0.575</layerOpacity>
   <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
-    <DiagramCategory showAxis="1" diagramOrientation="Up" direction="0" enabled="0" scaleBasedVisibility="0" lineSizeType="MM" lineSizeScale="3x:0,0,0,0,0,0" penWidth="0" minimumSize="0" maxScaleDenominator="1e+08" barWidth="5" sizeScale="3x:0,0,0,0,0,0" spacingUnit="MM" backgroundAlpha="255" scaleDependency="Area" backgroundColor="#ffffff" penAlpha="255" rotationOffset="270" penColor="#000000" labelPlacementMethod="XHeight" sizeType="MM" width="15" spacing="5" minScaleDenominator="0" opacity="1" height="15" spacingUnitScale="3x:0,0,0,0,0,0">
-      <fontProperties bold="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" italic="0" strikethrough="0" underline="0" style=""/>
-      <attribute color="#000000" label="" colorOpacity="1" field=""/>
+    <DiagramCategory opacity="1" lineSizeType="MM" barWidth="5" penWidth="0" spacingUnit="MM" enabled="0" penColor="#000000" sizeType="MM" sizeScale="3x:0,0,0,0,0,0" labelPlacementMethod="XHeight" scaleBasedVisibility="0" rotationOffset="270" width="15" scaleDependency="Area" minScaleDenominator="0" height="15" penAlpha="255" lineSizeScale="3x:0,0,0,0,0,0" spacing="5" maxScaleDenominator="1e+08" backgroundColor="#ffffff" diagramOrientation="Up" direction="0" backgroundAlpha="255" showAxis="1" spacingUnitScale="3x:0,0,0,0,0,0" minimumSize="0">
+      <fontProperties italic="0" strikethrough="0" style="" bold="0" underline="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
+      <attribute colorOpacity="1" field="" color="#000000" label=""/>
       <axisSymbol>
-        <symbol name="" frame_rate="10" is_animated="0" type="line" clip_to_extent="1" force_rhr="0" alpha="1">
+        <symbol alpha="1" clip_to_extent="1" is_animated="0" name="" force_rhr="0" frame_rate="10" type="line">
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" value="" type="QString"/>
@@ -278,7 +278,7 @@
               <Option name="type" value="collection" type="QString"/>
             </Option>
           </data_defined_properties>
-          <layer id="{330792d7-115e-496a-a7e6-68e68d7b2bbf}" enabled="1" locked="0" pass="0" class="SimpleLine">
+          <layer pass="0" class="SimpleLine" enabled="1" locked="0" id="{330792d7-115e-496a-a7e6-68e68d7b2bbf}">
             <Option type="Map">
               <Option name="align_dash_pattern" value="0" type="QString"/>
               <Option name="capstyle" value="square" type="QString"/>
@@ -320,7 +320,7 @@
       </axisSymbol>
     </DiagramCategory>
   </SingleCategoryDiagramRenderer>
-  <DiagramLayerSettings dist="0" zIndex="0" priority="0" showAll="1" obstacle="0" placement="1" linePlacementFlags="18">
+  <DiagramLayerSettings zIndex="0" priority="0" showAll="1" placement="1" obstacle="0" linePlacementFlags="18" dist="0">
     <properties>
       <Option type="Map">
         <Option name="name" value="" type="QString"/>
@@ -342,7 +342,7 @@
   <legend showLabelLegend="0" type="default-vector"/>
   <referencedLayers/>
   <fieldConfiguration>
-    <field name="id" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="id">
       <editWidget type="Range">
         <config>
           <Option type="Map">
@@ -356,7 +356,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="shape" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="shape">
       <editWidget type="TextEdit">
         <config>
           <Option type="Map">
@@ -366,7 +366,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="name" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="name">
       <editWidget type="TextEdit">
         <config>
           <Option type="Map">
@@ -376,7 +376,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="formula" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="formula">
       <editWidget type="List">
         <config>
           <Option type="Map">
@@ -386,7 +386,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="formula_name" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="formula_name">
       <editWidget type="List">
         <config>
           <Option type="Map">
@@ -396,7 +396,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="ss_blocs" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="ss_blocs">
       <editWidget type="List">
         <config>
           <Option type="Map">
@@ -406,21 +406,21 @@
         </config>
       </editWidget>
     </field>
-    <field name="b_type" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="b_type">
       <editWidget type="Enumeration">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="geom_ref" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="geom_ref">
       <editWidget type="Geometry">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field name="sur_bloc" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="sur_bloc">
       <editWidget type="Range">
         <config>
           <Option type="Map">
@@ -434,7 +434,7 @@
         </config>
       </editWidget>
     </field>
-    <field name="model" configurationFlags="NoFlag">
+    <field configurationFlags="NoFlag" name="model">
       <editWidget type="TextEdit">
         <config>
           <Option type="Map">
@@ -446,83 +446,83 @@
     </field>
   </fieldConfiguration>
   <aliases>
-    <alias name="" field="id" index="0"/>
-    <alias name="" field="shape" index="1"/>
-    <alias name="" field="name" index="2"/>
-    <alias name="" field="formula" index="3"/>
-    <alias name="" field="formula_name" index="4"/>
-    <alias name="" field="ss_blocs" index="5"/>
-    <alias name="" field="b_type" index="6"/>
-    <alias name="" field="geom_ref" index="7"/>
-    <alias name="" field="sur_bloc" index="8"/>
-    <alias name="" field="model" index="9"/>
+    <alias field="id" index="0" name=""/>
+    <alias field="shape" index="1" name=""/>
+    <alias field="name" index="2" name=""/>
+    <alias field="formula" index="3" name=""/>
+    <alias field="formula_name" index="4" name=""/>
+    <alias field="ss_blocs" index="5" name=""/>
+    <alias field="b_type" index="6" name=""/>
+    <alias field="geom_ref" index="7" name=""/>
+    <alias field="sur_bloc" index="8" name=""/>
+    <alias field="model" index="9" name=""/>
   </aliases>
   <splitPolicies>
-    <policy policy="Duplicate" field="id"/>
-    <policy policy="Duplicate" field="shape"/>
-    <policy policy="Duplicate" field="name"/>
-    <policy policy="Duplicate" field="formula"/>
-    <policy policy="Duplicate" field="formula_name"/>
-    <policy policy="Duplicate" field="ss_blocs"/>
-    <policy policy="Duplicate" field="b_type"/>
-    <policy policy="Duplicate" field="geom_ref"/>
-    <policy policy="Duplicate" field="sur_bloc"/>
-    <policy policy="Duplicate" field="model"/>
+    <policy field="id" policy="Duplicate"/>
+    <policy field="shape" policy="Duplicate"/>
+    <policy field="name" policy="Duplicate"/>
+    <policy field="formula" policy="Duplicate"/>
+    <policy field="formula_name" policy="Duplicate"/>
+    <policy field="ss_blocs" policy="Duplicate"/>
+    <policy field="b_type" policy="Duplicate"/>
+    <policy field="geom_ref" policy="Duplicate"/>
+    <policy field="sur_bloc" policy="Duplicate"/>
+    <policy field="model" policy="Duplicate"/>
   </splitPolicies>
   <defaults>
-    <default field="id" expression="" applyOnUpdate="0"/>
-    <default field="shape" expression="Polygon" applyOnUpdate="0"/>
-    <default field="name" expression="" applyOnUpdate="0"/>
-    <default field="formula" expression="" applyOnUpdate="0"/>
-    <default field="formula_name" expression="" applyOnUpdate="0"/>
-    <default field="ss_blocs" expression="" applyOnUpdate="0"/>
-    <default field="b_type" expression="" applyOnUpdate="0"/>
-    <default field="geom_ref" expression="" applyOnUpdate="0"/>
-    <default field="sur_bloc" expression="None" applyOnUpdate="0"/>
-    <default field="model" expression="@current_model" applyOnUpdate="0"/>
+    <default field="id" applyOnUpdate="0" expression=""/>
+    <default field="shape" applyOnUpdate="0" expression="Polygon"/>
+    <default field="name" applyOnUpdate="0" expression=""/>
+    <default field="formula" applyOnUpdate="0" expression=""/>
+    <default field="formula_name" applyOnUpdate="0" expression=""/>
+    <default field="ss_blocs" applyOnUpdate="0" expression=""/>
+    <default field="b_type" applyOnUpdate="0" expression=""/>
+    <default field="geom_ref" applyOnUpdate="0" expression=""/>
+    <default field="sur_bloc" applyOnUpdate="0" expression="None"/>
+    <default field="model" applyOnUpdate="0" expression="@current_model"/>
   </defaults>
   <constraints>
-    <constraint notnull_strength="0" field="id" constraints="0" exp_strength="0" unique_strength="0"/>
-    <constraint notnull_strength="0" field="shape" constraints="0" exp_strength="0" unique_strength="0"/>
-    <constraint notnull_strength="1" field="name" constraints="3" exp_strength="0" unique_strength="1"/>
-    <constraint notnull_strength="0" field="formula" constraints="0" exp_strength="0" unique_strength="0"/>
-    <constraint notnull_strength="0" field="formula_name" constraints="0" exp_strength="0" unique_strength="0"/>
-    <constraint notnull_strength="0" field="ss_blocs" constraints="0" exp_strength="0" unique_strength="0"/>
-    <constraint notnull_strength="0" field="b_type" constraints="0" exp_strength="0" unique_strength="0"/>
-    <constraint notnull_strength="0" field="geom_ref" constraints="0" exp_strength="0" unique_strength="0"/>
-    <constraint notnull_strength="0" field="sur_bloc" constraints="0" exp_strength="0" unique_strength="0"/>
-    <constraint notnull_strength="1" field="model" constraints="1" exp_strength="0" unique_strength="0"/>
+    <constraint field="id" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="shape" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="name" notnull_strength="1" constraints="3" unique_strength="1" exp_strength="0"/>
+    <constraint field="formula" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="formula_name" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="ss_blocs" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="b_type" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="geom_ref" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="sur_bloc" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="model" notnull_strength="1" constraints="1" unique_strength="0" exp_strength="0"/>
   </constraints>
   <constraintExpressions>
-    <constraint exp="" desc="" field="id"/>
-    <constraint exp="" desc="" field="shape"/>
-    <constraint exp="" desc="" field="name"/>
-    <constraint exp="" desc="" field="formula"/>
-    <constraint exp="" desc="" field="formula_name"/>
-    <constraint exp="" desc="" field="ss_blocs"/>
-    <constraint exp="" desc="" field="b_type"/>
-    <constraint exp="" desc="" field="geom_ref"/>
-    <constraint exp="" desc="" field="sur_bloc"/>
-    <constraint exp="" desc="" field="model"/>
+    <constraint field="id" exp="" desc=""/>
+    <constraint field="shape" exp="" desc=""/>
+    <constraint field="name" exp="" desc=""/>
+    <constraint field="formula" exp="" desc=""/>
+    <constraint field="formula_name" exp="" desc=""/>
+    <constraint field="ss_blocs" exp="" desc=""/>
+    <constraint field="b_type" exp="" desc=""/>
+    <constraint field="geom_ref" exp="" desc=""/>
+    <constraint field="sur_bloc" exp="" desc=""/>
+    <constraint field="model" exp="" desc=""/>
   </constraintExpressions>
   <expressionfields/>
   <attributeactions>
     <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
   </attributeactions>
-  <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
+  <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
     <columns>
-      <column name="id" width="-1" hidden="0" type="field"/>
-      <column name="shape" width="-1" hidden="1" type="field"/>
-      <column name="name" width="-1" hidden="0" type="field"/>
-      <column name="formula" width="-1" hidden="1" type="field"/>
-      <column name="sur_bloc" width="-1" hidden="0" type="field"/>
-      <column name="model" width="-1" hidden="0" type="field"/>
-      <column name="ss_blocs" width="-1" hidden="0" type="field"/>
-      <column name="formula_name" width="-1" hidden="0" type="field"/>
-      <column name="e1" width="-1" hidden="0" type="field"/>
-      <column name="e2" width="-1" hidden="0" type="field"/>
-      <column name="b_type" width="-1" hidden="1" type="field"/>
-      <column name="geom_ref" width="-1" hidden="1" type="field"/>
+      <column width="-1" hidden="0" name="id" type="field"/>
+      <column width="-1" hidden="1" name="shape" type="field"/>
+      <column width="-1" hidden="0" name="name" type="field"/>
+      <column width="-1" hidden="1" name="formula" type="field"/>
+      <column width="-1" hidden="0" name="sur_bloc" type="field"/>
+      <column width="-1" hidden="0" name="model" type="field"/>
+      <column width="-1" hidden="0" name="ss_blocs" type="field"/>
+      <column width="-1" hidden="0" name="formula_name" type="field"/>
+      <column width="-1" hidden="0" name="e1" type="field"/>
+      <column width="-1" hidden="0" name="e2" type="field"/>
+      <column width="-1" hidden="1" name="b_type" type="field"/>
+      <column width="-1" hidden="1" name="geom_ref" type="field"/>
       <column width="-1" hidden="1" type="actions"/>
     </columns>
   </attributetableconfig>
@@ -535,47 +535,47 @@
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
   <editforminitfilepath/>
-  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-Les formulaires QGIS peuvent avoir une fonction Python qui est appelée lorsque le formulaire est
-ouvert.
-
-Utilisez cette fonction pour ajouter une logique supplémentaire à vos formulaires.
-
-Entrez le nom de la fonction dans le champ 
-"Fonction d'initialisation Python".
-Voici un exemple:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-    geom = feature.geometry()
-    control = dialog.findChild(QWidget, "MyLineEdit")
+  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+Les formulaires QGIS peuvent avoir une fonction Python qui est appelée lorsque le formulaire est
+ouvert.
+
+Utilisez cette fonction pour ajouter une logique supplémentaire à vos formulaires.
+
+Entrez le nom de la fonction dans le champ 
+"Fonction d'initialisation Python".
+Voici un exemple:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
   <attributeEditorForm>
     <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255">
-      <labelFont bold="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" italic="0" strikethrough="0" underline="0" style=""/>
+      <labelFont italic="0" strikethrough="0" style="" bold="0" underline="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
     </labelStyle>
-    <attributeEditorField name="name" showLabel="1" verticalStretch="0" index="2" horizontalStretch="0">
+    <attributeEditorField index="2" horizontalStretch="0" showLabel="1" name="name" verticalStretch="0">
       <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255">
-        <labelFont bold="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" italic="0" strikethrough="0" underline="0" style=""/>
+        <labelFont italic="0" strikethrough="0" style="" bold="0" underline="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
     </attributeEditorField>
-    <attributeEditorField name="model" showLabel="1" verticalStretch="0" index="9" horizontalStretch="0">
+    <attributeEditorField index="9" horizontalStretch="0" showLabel="1" name="model" verticalStretch="0">
       <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255">
-        <labelFont bold="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" italic="0" strikethrough="0" underline="0" style=""/>
+        <labelFont italic="0" strikethrough="0" style="" bold="0" underline="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
     </attributeEditorField>
-    <attributeEditorContainer name="Donnée d'entrées" collapsedExpressionEnabled="0" visibilityExpressionEnabled="0" showLabel="1" groupBox="0" collapsedExpression="" collapsed="0" verticalStretch="0" visibilityExpression="" type="Tab" columnCount="1" horizontalStretch="0">
+    <attributeEditorContainer visibilityExpression="" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" columnCount="1" visibilityExpressionEnabled="0" groupBox="0" name="Donnée d'entrées" collapsedExpression="" verticalStretch="0" collapsed="0" type="Tab">
       <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255">
-        <labelFont bold="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" italic="0" strikethrough="0" underline="0" style=""/>
+        <labelFont italic="0" strikethrough="0" style="" bold="0" underline="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
     </attributeEditorContainer>
-    <attributeEditorContainer name="Donnée sorties" collapsedExpressionEnabled="0" visibilityExpressionEnabled="0" showLabel="1" groupBox="0" collapsedExpression="" collapsed="0" verticalStretch="0" visibilityExpression="" type="Tab" columnCount="1" horizontalStretch="0">
+    <attributeEditorContainer visibilityExpression="" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" columnCount="1" visibilityExpressionEnabled="0" groupBox="0" name="Donnée sorties" collapsedExpression="" verticalStretch="0" collapsed="0" type="Tab">
       <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255">
-        <labelFont bold="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0" italic="0" strikethrough="0" underline="0" style=""/>
+        <labelFont italic="0" strikethrough="0" style="" bold="0" underline="0" description="MS Shell Dlg 2,7.8,-1,5,50,0,0,0,0,0"/>
       </labelStyle>
     </attributeEditorContainer>
   </attributeEditorForm>

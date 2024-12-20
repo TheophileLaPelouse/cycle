@@ -141,7 +141,25 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1" rowspan="6">
+   <item row="0" column="1" colspan="2">
+    <layout class="QHBoxLayout" name="message_bar_layout"/>
+   </item>
+   <item row="1" column="2">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Service</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QComboBox" name="service"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QWidget" name="progressbar_widget" native="true"/>
+   </item>
+   <item row="1" column="0" rowspan="6" colspan="2">
     <widget class="QTreeWidget" name="tree_widget">
      <column>
       <property name="text">
@@ -168,21 +186,6 @@
        <string>Chargement des styles</string>
       </property>
      </column>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <layout class="QHBoxLayout" name="message_bar_layout"/>
-   </item>
-   <item row="1" column="2">
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Service</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QComboBox" name="service"/>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>

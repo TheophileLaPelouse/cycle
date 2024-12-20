@@ -7,7 +7,7 @@ from datetime import datetime
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QFont
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTreeWidgetItem, QComboBox, QHBoxLayout, QLabel, QPushButton, QCheckBox
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTreeWidgetItem, QComboBox, QHBoxLayout, QLabel, QPushButton, QCheckBox, QProgressBar
 from qgis.gui import QgsMessageBar
 from ...database import get_projects_list, export_db, import_db, get_srid_from_file, remove_project
 from ...project import Project, backup_directory
@@ -60,6 +60,9 @@ class ProjectManager(QDialog):
         self.tree_widget.itemSelectionChanged.connect(self.__refresh_buttons)
         self.tree_widget.itemDoubleClicked.connect(self.open_project)
 
+        self.progress_bar = QProgressBar(self.progressbar_widget)
+        self.progress_bar.setVisible(False) # Pour l'instant elle n'est pas utilsée mais ç pourrait être bien pour informer l'utilisater que ça tourne.
+        
         self.project_list = project_list
         self.checkboxes = {}
         self.__refresh_tree()
@@ -125,6 +128,7 @@ class ProjectManager(QDialog):
                 else:
                     project_node.setText(2, 'missing api')
                     project_node.setForeground(2, Qt.red)
+            
 
         for i in range(4):
             self.tree_widget.resizeColumnToContents(i)

@@ -108,12 +108,13 @@ class Cycle(QObject):
             self.__toolbar = None
 
         self.__iface.newProjectCreated.disconnect(self.__project_loaded)
-        self.__iface.projectRead.disconnect(self.__project_loaded)
+        self.__iface.projectRead.disconnect(self.__project_loaded) 
         self.__iface.newProjectCreated.disconnect(self.update_dock_forced)
         self.__iface.projectRead.disconnect(self.update_dock_forced)
         
-        self.__dock_results.setParent(None)
-        self.__dock_results = None
+        if self.__dock_results is not None:
+            self.__dock_results.setParent(None)
+            self.__dock_results = None
 
 
     def print_current_layer(self, layer):
@@ -128,7 +129,6 @@ class Cycle(QObject):
         if QGisProjectManager.is_cycle_project():
             set_service(QgsProject.instance().readEntry('cycle', 'service', 'cycle')[0] )
             self.__toolbar = CycleToolbar(self.__log_manager)
-            # self.__toolbar.model_updated.connect()
             self.__iface.addToolBar(self.__toolbar)
             QgsProject.instance().customVariablesChanged.connect(self.__toolbar.variables_changed)
 
